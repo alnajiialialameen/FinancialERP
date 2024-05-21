@@ -1,0 +1,240 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+@section content{
+
+    <style>
+        .header-content {
+            font-size: 20px;
+            color: red;
+            padding: 15px;
+            background-color: #ff000021;
+            text-align: center;
+        }
+    </style>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <div class="grad"></div>
+
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                طباعة الشيكات 
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المالي </a></li>
+                <li class="active"> طباعة شيكات </li>
+               
+            </ol>
+            <label id="IsCheckPrinted" class="hidden">@ViewBag.IsCheckPrinted</label>
+        </section>
+
+        <h4 class="TransactionId hidden">@ViewBag.TransactionId</h4>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <div class="header-content hidden" id="header-content">
+                                تم استخراج شيك من قبل ... عند الطباعة سيتم التعديل علي البيانات السابقة
+                            </div>
+                        </div><!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="col-lg-3">
+                                <div class="box box-info">
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="checs-data" style="padding: 0 15px">
+                                                <div class="">
+                                                    <label for="dueDate"> التاريخ</label>
+                                                    <input type="text" class="form-control checs-input dueDate calendar" id="dueDate" name="dueDate" placeholder="تاريخ الشيك" autocomplete="off" />
+                                                </div>
+                                                <div class="">
+                                                    <label for="payNo">رقم الدفع</label>
+                                                    <input type="text" class="form-control checs-input payNo" id="payNo" disabled name="payNo" value="@ViewBag.TransactionId" placeholder="رقم الدفع" autocomplete="off" />
+                                                </div>
+                                                <div class="">
+                                                    <label for="amount">المبلغ </label>
+                                                    <input type="text" class="form-control checs-input amount" id="amount" name="amount" placeholder="المبلغ بالارقام" autocomplete="off" />
+                                                </div>
+                                                <div class="">
+                                                    <label for="checkNo">رقم الشيك </label>
+                                                    <input type="text" class="form-control checs-input checkNo" id="checkNo" name="checkNo" placeholder="رقم الشيك - المتسلسل" autocomplete="off" />
+                                                </div>
+                                                <div class="">
+                                                    <label for="recipient">اسم المستلم</label>
+                                                    <input type="text" class="form-control checs-input recipient" value="@ViewBag.Recipient" id="recipient" name="recipient" placeholder="اسم المستلم" autocomplete="off" />
+                                                </div>
+                                                <a class="btn btn-info btn-block" style="margin-top:20px" onclick="print()">طباعة</a>
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-9 img-fluid">
+                                
+                                <div class="row" style="position:relative">
+                                    <div class="checs-info" style="position:relative">
+                                        <span class="print-dueDate print-span"></span>
+                                        <span class="print-payNo print-span">@ViewBag.TransactionId</span>
+                                        <span class="print-amount print-span"></span>
+                                        <span class="print-textAmount print-span"></span>
+                                        <span class="print-recipient print-span">@ViewBag.Recipient</span>
+                                        <span class="print-checkNo print-span"></span>
+                                    </div>
+                                    <img src="~/Content/img/checs.jpg" style="max-width:100%"/>
+                                </div>
+                            </div>
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </section>
+
+
+    </div><!-- /.content-wrapper -->
+
+
+    <style>
+        .print-dueDate {
+            position: absolute;
+            top: 81px;
+            right: 160px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .print-payNo {
+            position: absolute;
+            top: 160px;
+            left: 284px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .print-amount {
+            position: absolute;
+            top: 210px;
+            left: 155px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .print-textAmount {
+            position: absolute;
+            top: 260px;
+            right: 285px;
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 1.7;
+        }
+
+        .print-recipient {
+            position: absolute;
+            top: 330px;
+            right: 220px;
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 1.7;
+        }
+
+        .print-span {
+            color:red
+        }
+        
+
+
+    </style>
+}
+
+
+
+@section scripts{
+
+    <script>
+        var dataTable;
+
+        $(function () {
+
+            $('.calendar').datepicker({
+                todayBtn: "linked",
+                language: "it",
+                autoclose: true,
+                todayHighlight: true,
+                format: 'dd/mm/yyyy'
+            });
+
+            if($('#IsCheckPrinted').text() == "true") {
+                $(".header-content").removeClass("hidden");
+            }
+
+            $(".amount").val(@ViewBag.amount);
+            $(".print-amount").text(@ViewBag.amount);
+            $(".print-payNo").text(@ViewBag.TransactionId);
+
+            $.ajax({
+                url: "/Home/ConvertToText?amount=" + @ViewBag.amount,
+                type: "POST",
+                data: JSON.stringify(),
+                contentType: "application/json charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                },
+                success: function (response) {
+                    $('.print-textAmount').html(response);
+                    //console.log(response);
+                }
+            });
+            $('.dueDate').on("change", function () {
+                $('.print-dueDate').html($(this).val());
+            });
+
+            $('.payNo').on("keyup", function () {
+                $('.print-payNo').html($(this).val());
+            });
+
+            $('.recipient').on("keyup", function () {
+                $('.print-recipient').html($(this).val());
+            });
+
+            $('.amount').on("keyup", function () {
+                $('.print-amount').html($(this).val());
+                $.ajax({
+                    url: "/Home/ConvertToText?amount=" + $(this).val(),
+                    type: "POST",
+                    data: JSON.stringify(),
+                    contentType: "application/json charset=utf-8",
+                    dataType: "json",
+                    error: function (response) {
+                        toastr[response.Status](response.Message, response.Title);
+                    },
+                    success: function (response) {
+                        $('.print-textAmount').html(response);
+                        //console.log(response);
+                    }
+                });
+            });
+
+
+
+        });//End Document Ready
+
+        function print() {
+            var TransactionId = $('.TransactionId').text();
+            var dueDate = moment($(".dueDate").val(), "DD/MM/YYYY").format("DD/MM/YYYY");
+
+            if ($('.dueDate').val() != null & $('.payNo').val() != null & $('.amount').val() != null & $('.checkNo').val() != null & $('.recipient').val() != null) {
+                window.location.href = "/PrintChecs/PrintChecs?Id=" + TransactionId + "&duedate=" + dueDate + "&payNo=" + $('.payNo').val() + "&amount="
+                    + $('.amount').val() + "&textAmount=" + $('.print-textAmount').text() + "&checkNo=" + $('.checkNo').val() + "&recipient=" + $('.print-recipient').text();
+            } else {
+                toastr["warrning"]("يجب ملأ كل الحقول", "تنبيه");
+
+            }
+        }
+    </script>
+}
+
+

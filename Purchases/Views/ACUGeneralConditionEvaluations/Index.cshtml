@@ -1,0 +1,380 @@
+﻿@using Purchases.Models;
+@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+    Entities db = new Entities();
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    @section content{
+    <div>
+        <div class="content-wrapper">
+            
+            <label class="hidden" id="OrderId">@ViewBag.OrderId</label>
+            <label class="hidden" id="CompetingCompanyId">@ViewBag.CompetingCompanyId</label>
+            <label id="CompanyRegisterationId" class="hidden">@ViewBag.CompanyRegisterationId</label>
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <h3>
+                    تقيم الشروط العامة ل / @ViewBag.CompanyName
+                </h3>
+                <ol class="breadcrumb">
+                    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                    <li><a href="#">Examples</a></li>
+                    <li class="active">User profile</li>
+                </ol>
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-3">
+                        <!-- About Me Box -->
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">تفاصيل الشركة</h3>
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                                <strong><i class="fa fa-dice-four margin-r-5"></i> اسم الشركة</strong>
+
+                                <p class="text-muted">
+                                    @ViewBag.CompanyName
+                                </p>
+                                <hr>
+                                <strong><i class="fa fa-id-card margin-r-5"></i> الترخيص</strong>
+
+                                <p class="text-muted">@ViewBag.LicenseNumber</p>
+                                <hr>
+                                <strong><i class="fa fa-map-marker margin-r-5"></i> العنوان</strong>
+
+                                <p class="text-muted">@ViewBag.Address</p>
+                                <hr>
+                                <strong><i class="fa fa-envelope margin-r-5"></i> الايميل</strong>
+
+                                <p class="text-muted">@ViewBag.Email</p>
+                                <hr>
+                                <strong><i class="fa fa-phone margin-r-5"></i> أرقام التلفونات</strong>
+                                <p>
+                                    <span class="text-muted">@ViewBag.Phones </span>
+                                </p>
+                                <hr>
+                                <strong><i class="fa fa-info margin-r-5"></i> ملحوظات</strong>
+
+                                <p class="text-muted">@ViewBag.Status</p>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                        <!-- /.box -->
+
+                        <h3>عن العطاء</h3>
+
+                        <!-- Profile Image -->
+                        <div class="box box-primary">
+                            <div class="box-body box-profile">
+                                <h3 class="profile-username text-center" id="OrderDescription">@ViewBag.Description</h3>
+
+                                <p class="text-muted text-center" id="DepartmentName">@ViewBag.DepartmentName</p>
+
+                                <ul class="list-group list-group-unbordered">
+                                    <li class="list-group-item">
+                                        <b>تاريخ الطلب</b> <span class="pull-left" id="OrderDate">@ViewBag.OrderDate</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>نوع الطلب</b> <span class="pull-left">مناقصة</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>الحالة الحالية</b> <span class="pull-left">مصدق</span>
+                                    </li>
+                                </ul>
+
+                                @*<a href="#CommitteeMember" class="btn btn-primary btn-block  nav-tabs" data-toggle="tab"><b>أعضاء اللجنه</b></a>*@
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                        <!-- /.box -->
+                    </div>
+                    <!-- /.col -->
+
+                    <div class="col-md-9">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                @*<lable>للوصول لمستندانا الشركة</lable>*@
+                                <br />
+                                <button class="btn btn-info" onclick="goToCompanyDocuments()"><h5>عرض مستندات الشركة</h5></button>
+                            </div>
+
+                            <div class="col-lg-6">
+                                @*<lable>للوصول لمستندانا الشركة</lable>*@
+                                <br />
+                                <a class="btn btn-success" style="float:left" href="~/ACUCompetingCompany/Index"><h5>عرض تفاصيل الشركة</h5></a>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="box">
+                            <div class="box-body">
+                                <table id="tbx" class="table table-bordered table-hover"></table>
+                            </div><!-- /.box-body -->
+                        </div><!-- /.box -->
+                        <!-- /.nav-tabs-custom -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+
+            </section>
+            <!-- /.content -->
+        </div>
+    </div>
+
+    }
+
+    @section scripts{
+    <script>
+
+        $(document).ready(function () {
+            var ACUCommitteFormationId = $('#ACUCommitteFormationId').text();
+            if (ACUCommitteFormationId != null & ACUCommitteFormationId != 0) {
+                //هنا اذا لم يتم عنل امر تشكيل من قبل لا نظهر ذر اضافة عضو جديد في جزئية أعضاء اللجنه
+                $('#btnAddCommitteeMembers').css("display", "block");
+
+                //$('#ResolutionName').prop('disabled', true);
+                //$('#ResolutionNo').prop('disabled', true);
+                //$('#ResolutionDate').prop('disabled', true);
+                //$('#Subject').prop('disabled', true);
+
+            } else {
+                //هنا اذا لم يتم عنل امر تشكيل من قبل لا نظهر ذر اضافة عضو جديد في جزئية أعضاء اللجنه
+                $('#btnAddCommitteeMembers').css("display", "none");
+
+                //$('#ResolutionName').prop('disabled', false);
+                //$('#ResolutionNo').prop('disabled', false);
+                //$('#ResolutionDate').prop('disabled', false);
+                //$('#Subject').prop('disabled', false);
+            }
+        });
+        
+        $(function () {
+            function loadData() {
+                var Id = $('#CompetingCompanyId').text();
+                dataTable = $('#tbx').DataTable({
+                    "language": {
+                        "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                        "search": "بحث"
+                    },
+                    ajax: {
+                        url: '/ACUGeneralConditionEvaluations/getAllGeneralConditions/'+Id,
+                        dataSrc: ''
+                    },
+                    columns: [
+                        {
+                            "title": "# ",
+                            "data": "Id"
+                        },
+                        {
+                            "title": "اسم البند",
+                            "width": "35%",
+                            "data": "Name"
+                        },
+                         {
+                             "title": "اقصي قيمة",
+                             "data": "MaxValue"
+                         },
+
+                        {
+                            "title": "التقييم",
+                            "width": "35%",
+                            "data": "InputValue",
+                            "render": function (data) {
+                                return '<input type="number"value="'+data+'" class="form-control" style="text-align:center" max="100"/>';
+                            }
+                        },
+                        {
+                            "title": "<i class='fa fa-cog'></i>",
+                            "data": null,
+                            "orderable": false,
+                            "render": function (data) {
+                                return '<div class="btn-group"> <button class="btn btn-success btnUpdateValue btn-sm" data-toggle="modal" data-target="#myModal">تعديل</button></div>';
+                            }
+                        },
+                        {
+                            "title": "Id",
+                            "data": "Id",
+                            "visible": false
+                        },
+                    ]
+                });
+            }
+            loadData();
+        });
+
+        /*----------------------------------------Companies Related Operations -----------------------------------------*/
+
+        function AddComp() {
+            var CompanyRegisterationId = $('#CompanyRegisterationIdList').val();
+            var Id = $('#Id').text();
+            var OrderId = $('#OrderId').text();
+            var CommitteeFormationId = $('#ACUCommitteFormationId').text();
+
+            obj = {
+                "CompanyRegisterationId": CompanyRegisterationId,
+                "Id": Id,
+                "OrderId": OrderId,
+                "CommitteFormationId": CommitteeFormationId,
+            };
+
+            console.clear();
+            console.log(obj);
+            var url = '';
+            var btnText = $('.save').text();
+            if (btnText == 'حفظ') {
+                url = '/ACUCommitteFormations/AddCompany';
+            }else{
+                url = '/ACUCommitteFormations/UpdateCompany';
+            }
+            $.ajax({
+                "type": "POST",
+                "url":url,
+                "dataType": "json",
+                "traditional": true,
+                "data": JSON.stringify(obj),
+                "contentType": "application/json  charset=utf-8",
+                "error": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                },
+                "success": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    dataTable.ajax.reload();
+                    $('#CompModal').modal('toggle');
+                }
+            });
+
+        }
+
+        function UpdateComp() {
+            var CompanyRegisterationId = $('#CompanyRegisterationId').text();
+            var Id = $('#Id').text();
+            var CommitteeFormationId = $('#CommitteeFormationId').val();
+
+            obj = {
+                "CompanyRegisterationId": CompanyRegisterationId,
+                "Id": OrderId,
+                "CommitteeFormationId": CommitteeFormationId,
+            };
+
+            console.clear();
+            console.log(obj);
+
+            $.ajax({
+                "type": "POST",
+                "url": '/ACUCommitteFormations/UpdateCompany',
+                "dataType": "json",
+                "traditional": true,
+                "data": JSON.stringify(obj),
+                "contentType": "application/json  charset=utf-8",
+                "error": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                },
+                "success": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    dataTable.ajax.reload();
+                    $('#myModal').modal('toggle');
+                }
+            });
+
+        }
+
+        $("#tbx").on('click', '.btnUpdateValue', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var Id = data["Id"];
+            var MaxValue = data["MaxValue"];
+            var InputValue = currentRow.find("td:eq(3) input[type='number']").val();
+            
+            console.clear();
+
+            var CompetingCompanyId = $('#CompetingCompanyId').text();
+            var CompanyRegisterationId = $('#CompanyRegisterationId').text();
+
+            obj = {
+                "GeneralConditionId": Id,
+                "CompetingCompanyId": CompetingCompanyId,
+                "InputValue": InputValue,
+            }
+            if (InputValue > MaxValue) {
+                toastr['error']('عفوا يجب ان تكون القيمة المدخلة اقل من او يساوي اعلي قيمة', 'خطأ');
+            } else {
+                $.ajax({
+                    "type": "POST",
+                    "url": '/ACUGeneralConditionEvaluations/Evaluate',
+                    "dataType": "json",
+                    "traditional": true,
+                    "data": JSON.stringify(obj),
+                    "contentType": "application/json  charset=utf-8",
+                    "error": function (response) {
+                        toastr[response.Status](response.Message, response.Title);
+                    },
+                    "success": function (response) {
+                        toastr[response.Status](response.Message, response.Title);
+                        dataTable.ajax.reload();
+                        $('#CompModal').modal('toggle');
+                    }
+                });
+
+            }
+            console.log(Id);
+            console.log(CompetingCompanyId);
+            console.log(MaxValue);
+            console.log(InputValue);
+        });
+
+        $("#compTab").on('click', '.btnDelete', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#compTab').DataTable().row(currentRow).data();
+            var Id = data['Id'];
+
+
+            console.clear();
+            console.log(Id);
+
+            $.ajax({
+                "type": "POST",
+                "url": '/ACUCommitteFormations/DeleteCompany?Id=' + Id,
+                "dataType": "json",
+                "traditional": true,
+                "data": JSON.stringify(obj),
+                "contentType": "application/json  charset=utf-8",
+                "error": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                },
+                "success": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    dataTable.ajax.reload();
+                }
+            });
+        });
+
+        function goToCompanyDocuments() {
+            var CompanyRegisterationId = $('#CompanyRegisterationId').text();
+            console.clear();
+            console.log(CompanyRegisterationId);
+            window.open('/ACUCompetingCompany/CompanyDocument/' + CompanyRegisterationId + '?page=1', '_blank');
+        }
+
+        function goToCompanyDetails() {
+
+        }
+
+        $('.cancel').on('click', function () {
+
+        });
+    </script>
+    }
+</body>
+</html>

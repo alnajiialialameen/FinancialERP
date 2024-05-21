@@ -1,0 +1,280 @@
+﻿@model Purchases.Models.ViewModal.AllViewMode
+@using Purchases.Models;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+@{
+    Entities db = new Entities();
+    AccountTree Select = new AccountTree();
+}
+
+<style type="text/css">
+    a:hover{
+            color: transparent;
+        }
+
+    .displaying {
+        display: none;
+    }
+
+    fieldset{
+        border: solid 1px #808080 !important;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .trans{
+        border: solid 1px #808080 !important; 
+        border-radius: 5px; 
+        width:70%; 
+        padding:5px;
+    }
+    
+    .legend{
+        position: absolute;
+        top: -25px;
+        left: 55px;
+        background-color: white;
+        padding: 0 10px;
+        transform: scale3d(1.2, 1.2, 1.2);
+    }
+
+
+</style>
+
+@section content{
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <div class="grad"></div>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                تفاصيل حساب / @Model.accName
+            </h1>
+            <label id="TransactionId" class="hidden">@ViewBag.TransactionId</label>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
+                <li class="active">تفاصيل الحساب</li>
+            </ol>
+        </section>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-8">
+                    <div class="box">
+                        <div class="box-body">
+                            <h4 style="margin-right:20px;">إحصائيات</h4>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <br />
+                                    <label class="text-center text-warning">عدد الصفوف(دائن)ـــــــــــــــــــــــــــــــــــ</label>
+                                    <label class="text-center text-info">@Model.countOfCridet</label>
+                                    <br /><br />
+                                    <label class="text-center text-info">عدد الصفوف(مدين)ـــــــــــــــــــــــــــــــــــ</label>
+                                    <label class="text-center text-success">@Model.countOfDebit</label>
+                                    <br /><br />
+                                    <label class="text-center text-success">اجمالي عدد الصفوف ـــــــــــــــــــــــــــــــ</label>
+                                    <label class="text-center text-danger">@Model.rowsCount</label>
+                                    <br /><br />
+                                </div>
+                                <div class="col-lg-6">
+                                    <br />
+                                    <label class="text-center text-info">اجمالي المبلغ(دائن)---------------------</label>
+                                    <label class="text-center text-warning">@Model.sumOfCridet</label>
+                                    <br /><br />
+                                    <label class="text-center text-warning">اجمالي المبلغ(مدين)---------------------</label>
+                                    <label class="text-center text-danger">@Model.sumOfDebit</label>
+                                    <br /><br />
+                                    <label class="text-center text-info">الرصيد الحالي---------------------------</label>
+                                    <label class="text-center text-success">@Model.balance</label>
+                                    <br /><br />
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="box">
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <h4 style="margin-right:20px;">اخر 5 حركات للحساب</h4>
+                            <div class="container" style="margin-top:30px;">
+                                <table id="myTbx" class="table table-bordered table-sm table-hover" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>تاريخ القيد</th>
+                                            <th>نوع القيد</th>
+                                            <th>العملة</th>
+                                            <th>سعر الصرف</th>
+                                            <th>المبلغ</th>
+                                            <th>#</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="myTbx">
+                                        @{ 
+                                            if (Model.lastFivetrans != null)
+                                            {
+                                                foreach (var item in Model.lastFivetrans.ToList())
+                                                {
+                                                <tr>
+                                                    <td id="transactionId">@item.transactionId</td>
+                                                    <td>@item.TransactionDate</td>
+                                                    <td>@item.DocumentType</td>
+                                                    <td>@item.CurrencyType</td>
+                                                    <td>@item.CurrencyType</td>
+                                                    <td>@item.Amount</td>
+                                                    <td><a href="#" class="btnDetails"><i class="fa fa-info-circle"></i></a></td>
+                                                </tr>
+                                                    }
+                                                }
+                                            }
+                                    </tbody>
+                                </table>
+                            </div><!-- /.box-body -->
+                        </div><!-- /.box -->
+                    </div><!-- /.col -->
+                </div>
+                <div class="col-xs-4">
+                    <div class="box">
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <fieldset style="border: solid 1px #808080 !important; padding: 10px; border-radius: 5px;">
+                                <label class="legend">بيانات الحساب</label>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>رقم الحساب</td>
+                                            <td><label class="trans">@ViewData.Eval("accTreeId")</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>اسم الحساب</td>
+                                            <td><label class="trans">@ViewData.Eval("accName")</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>المستوي في الشجرة</td>
+                                            <td><label class="trans"  >@ViewData.Eval("accLevel")</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>الحساب الاب</td>
+                                            <td><label class="trans"  >@ViewData.Eval("accParent")</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>كود الحساب</td>
+                                            <td><label class="trans">@ViewData.Eval("accCode")</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>نوع الحساب</td>
+                                            <td><label class="trans">@ViewData.Eval("accType")</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>طبيعة الحساب</td>
+                                            <td style="width:69%;"><label class="trans">@ViewData.Eval("accNature")</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>الحساب الختامي</td>
+                                            <td><label class="trans">@ViewData.Eval("accFinal")</label></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <br />
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <div class="buttons">
+
+            @*<div class="justify-content">
+                <a href="#" target="_blank" class="float one" >
+                    <i class="fas fa-file-export my-float" title="طباعة قيد اليومية" style='font-size:20px'></i>
+                </a>
+            </div>*@
+            <div class="justify-content">
+                <a href="/Transactions/printLedger/@Model.accTreeId" target="_blank" class="float two" >
+                    <i class="fas fa-receipt my-float" title="طباعة دفتر الاستاذ" style='font-size:20px'></i>
+                </a>
+            </div>
+
+            <div class="justify-content-start">
+                <a href="/Transactions/printData/@Model.accTreeId" target="_blank" class="float third" >
+                    <i class="fas fa-wallet my-float" title="طباعة قيد اليومية"  style='font-size:20px'>
+                    </i>
+                </a>
+            </div>
+
+            <div class="justify-content-start">
+                <a href="/AccountTree/index" target="_blank" class="float exit" style="bottom:50px" onclick="ExportToExcle()">
+                    <i class="fas fa-times-circle my-float" title="رجوع الي شجرة الحسابات" style='font-size:20px'>
+                    </i>
+                </a>
+            </div>
+
+            
+        </div>
+        </section>
+
+    </div><!-- /.content-wrapper -->
+
+    <div class="example-modal">
+        <div class="modal fade in" id="details-modal" data-backdrop="static">
+            <div class="modal-dialog" style="width:60% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"> عرض تفاصيل القيد</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead style="background-color:#808080">
+                                    <tr class="text-center">
+                                        <td>#</td>
+                                        <td>الحساب</td>
+                                        <td>مدين</td>
+                                        <td>دائن</td>
+                                    </tr>
+                                </thead>
+                                <tbody class="detailsTBody"></tbody>
+                            </table>
+                        </div>
+
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        </div>
+    </div>
+
+}
+
+@section scripts{
+
+    <script>
+
+        $('.myTbx').on('click', '.btnDetails', function () {
+        var currentRow = $(this).closest("tr");
+        var data = $('#tbx').DataTable().row(currentRow).data();
+        var TransactionId = currentRow.find('td:eq(0)').text();
+        
+        console.clear();
+        console.log(TransactionId);
+
+        $.post('/Transactions/getTransDetailsData', { "Id": TransactionId }, function (response) {
+            $('.detailsTBody').empty();
+            $.each(response, function (key, value) {
+                var rows = "<tr id='row' style='font-size: 16px;text-align:center;'>"
+                                + "<td class='id'>" + value.id + "</td>"
+                                + "<td class='accName'>" + value.accName + "</td>"
+                                + "<td class='accName'>" + value.debit + "</td>"
+                                + "<td class='credit'>" + value.credit + "</td>"
+                            + "</tr>";
+                $('.detailsTBody').append(rows);
+            });
+
+            $('#details-modal').modal("show");
+        });
+    });
+    </script>
+}

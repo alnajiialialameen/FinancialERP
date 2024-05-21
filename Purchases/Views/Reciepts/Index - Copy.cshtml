@@ -1,0 +1,398 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+
+@section content{
+
+
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <div class="grad"></div>
+
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                سندات القبض
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المالي </a></li>
+                <li class="active"> سندات القبض</li>
+            </ol>
+        </section>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <button type="button" class="btn btn-primary pull-left btn-add" data-toggle="modal" data-target="#add-modal"><i class="fa fa-plus-square">  </i> مستند جديد </button>
+                        </div><!-- /.box-header -->
+                        <div class="box-body">
+
+                            
+                            
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </section>
+
+
+    </div><!-- /.content-wrapper -->
+
+    <div class="example-modal">
+        <div class="modal fade in" id="add-modal" data-backdrop="static">
+            <div class="modal-dialog" style="width:90% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"> إضافة مستند قبض جديد</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="add-form">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="col-lg-3">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label for="ed-name">رقم السند</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control  receiptNumber disabled" id="receiptNumber" name="receiptNumber" placeholder="رقم السند" autocomplete="off">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label for="ed-name"> رقم المرجع</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control refNumber" id="refNumber" name="refNumber" placeholder="رقم المرحع" autocomplete="off">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label for="ed-name"> اسم المرجع</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control refName" id="refName" name="refName" placeholder="اسم المرجع " autocomplete="off">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <input type="radio" name="isCash" value="1" />
+                                                <label>
+                                                    نقدا
+                                                </label>
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <input type="radio" name="isCash" value="2" checked />
+                                                <label>
+                                                    شيك
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div class="row">
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <label id="fundLabelTitle">الصندوق</label>
+                                                    <select class="form-control list fund" name="fund" id="fund" style="width:100%"></select>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <label id="currencyLabelTitle">العملة</label>
+                                                    <select class="form-control list currency" name="currency" id="currency" style="width:100%"></select>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <label>البيان</label>
+                                                    <input class="form-control statment" id="statment" name="statment" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-3">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <input type="checkbox" name="susppend" id="susppend" />
+                                                <label>
+                                                    معلق
+                                                </label>
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <input type="checkbox" name="posted" id="posted" />
+                                                <label>
+                                                    مرحل
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <hr />
+
+                                        <div class="row" style="margin-right: 10px;">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <label>اسم المستلم</label>
+                                                    <input class="form-control recipient" id="recipient" name="recipient" />
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <label>تاريخ السند</label>
+                                                    <input class="form-control calendar receiptDate" id="receiptDate" name="receiptDate" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <select class="form-control list accTreeId det" id="accTreeId" style="width:100%" name="accTreeId"></select>
+                                </div>
+                                <div class="col-lg-2">
+                                    <input class="form-control amount det" id="amount" name="amount" />
+                                </div>
+                                <div class="col-lg-2">
+                                    <select class="form-control list currencyTypeId det" style="width:100%" id="currencyTypeId" name="currencyTypeId"></select>
+                                </div>
+                                <div class="col-lg-4">
+                                    <input class="form-control statement det" id="statement" name="statement" />
+                                </div>
+                            </div>
+
+                            <br />
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <a class="btn btn-primary btn-block"> إضافة <i class="fa fa-arrow-alt-circle-down"></i></a>
+                                </div>
+                            </div>
+                            <hr />
+                            <table id="tbl" class="dataTable table table-striped table-hover" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>اسم الحساب</th>
+                                        <th>المبلغ</th>
+                                        <th>العملة</th>
+                                        <th>البيان</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbod"></tbody>
+                            </table>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <button type="submit" class="btn btn-success btn-block" id="btnSave">حفظ</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div>
+    }
+
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+
+            function select2list(selector, url, placeholder) {
+                $(selector).select2({
+                    language: { inputTooShort: function () { return 'enter 1 letter at less'; } },
+                    ajax: {
+                        url: url,
+                        dataType: 'json',
+                        delay: 100,
+                        data: function (params) {
+                            return {
+                                q: params.term,
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+                            return {
+                                results: data,
+                                pagination: {
+                                    more: ((data.total_count) > (params.page * 20))
+                                }
+                            };
+                        },
+                        cache: true
+                    },
+                    placeholder: placeholder,
+                    minimumInputLength: 1,
+                });
+
+            };
+            select2list("#currencyTypeId", "/AccountTree/GetAccountType", "  نوع الحساب ");
+            select2list("#accTreeId", "/AccountTree/LoadTreeAdd", "  الحساب ");
+        });
+
+        //When button Add Clicked... Data send to the next table
+        $('#btnAdd').on('click', function () {
+            var accTreeId = $('.accTreeId').val();
+            var accTreeName = $('.accTreeId').text();
+            var amount = $('.amount').val();
+            var currencyTypeId = $('.currencyTypeId').val();
+            var currencyTypeName = $('.currencyTypeId').text();
+            var statement = $('.statement').val();
+
+            if (accTreeId != null & amount != null & currencyTypeId != null & statement != null) {
+                var row = '<tr><td>' + accTreeName + '</td><td>' + amount + '</td><td>' + currencyTypeName + '</td><td>' + statement + '</td></tr>';
+
+                $('#tbod').append(row);
+                $('.det').val('');
+                $('.det').text('');
+                $('.list').val(null).trigger('change');
+            } else {
+                toastr.error('يجب ملء جميع الحقول', 'خطأ');
+            }
+        });
+
+        //Validation Form Before Save Data
+        $('#add-form').bootstrapValidator({
+            onSuccess: function (e) {
+                save();
+                e.preventDefault();
+
+            },
+            submitButtons: 'button[type="submit"]',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                validating: 'fa fa-refresh fa-spin success-feedback-icons'
+            },
+            fields: {
+                fund: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل اسم الصندوق فارغ  '
+                        }
+                    }
+                },
+
+                currency: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل اسم العملة  فارغ'
+                        }
+                    }
+                },
+
+                recipient: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل اسم المستلم  فارغ'
+                        }
+                    }
+                },
+
+                statment: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل البيان  فارغ'
+                        }
+                    }
+                },
+
+                receiptDate: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل تاريخ السند فارغ'
+                        }
+                    }
+                },
+
+            }
+        });
+
+
+        //Save Function 
+        function save() {
+
+            var data = [];
+            RefNumber = $('#refNumber').text();
+            RefName = $('#refName').text();
+            IsCash = $("input[name= 'isCash']:checked").val(); currency
+            BankFundId = $("select[name= 'fund']").val();
+            CurrencyTypeId = $("select[name= 'currency']").val();
+            ReceiptNot = $("input[name= 'statment']").val();
+            Recipient = $("input[name= 'recipient']").val();
+            ReceiptDate = $("input[name= 'receiptDate']").val();
+            
+            
+
+            $(".virtualTable tbody tr").each(function (index) {
+                //EmployeeId = $(this).find('.id').text();
+                name = $(this).find('.name').text();
+                final = $(this).find('.finalVal').text();
+                type = $(this).find('.typeVal').text();
+                nature = $(this).find('.natureVal').text();
+                subCat = $(this).find('.subCatVal').text();
+                //---->Form validation goes here
+                data.push({
+                    AccName: name,
+                    AccParent: addAccParent,
+                    AccTypeId: type,
+                    AccNatureId: nature,
+                    AccFinalId: final,
+                    AccSubCategory: subCat
+                });
+                //if (type == 2) {
+                //    // AccSubCategory = $('#addAccSubCategory').val();
+                //    data.push({
+                //        AccSubCategory: subCat
+                //    });
+                //}
+
+            });
+            console.clear();
+            console.log(data);
+
+            $.ajax({
+                url: "/AccountTree/Create?addAccParentName=" + addAccParent,
+                type: "POST",
+                data: JSON.stringify(data),
+                contentType: "application/json charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                },
+                success: function (response) {
+                    if (response.Status == "warning") {
+                        toastr[response.Status](response.Message, response.Title);
+                    } else {
+                        toastr[response.Status](response.Message, response.Title);
+                        //$('.list').val(null).trigger('change');
+                        //$('#add-form').bootstrapValidator("resetForm", true);
+                        //$("table tbody tr").empty();
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+    </script>
+}
+
+
+
+

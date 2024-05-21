@@ -1,0 +1,407 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+@section content{
+
+    <style>
+        .success{
+            display: block;
+            background-color: #00a65a;
+            color: white;
+            width: 80px;
+            height: 25px;
+            text-align: center;
+            border-radius: 6px;
+            font-size: 18px;
+        }
+
+        .error{
+            display: block;
+            background-color: #d73925;
+            color: white;
+            width: 80px;
+            height: 25px;
+            text-align: center;
+            border-radius: 6px;
+            font-size: 18px;
+        }
+    </style>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <div class="grad"></div>
+
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                شيكات بنك / 
+                <span id="bankName">@ViewBag.bankName</span>
+                <span class="hidden" id="bankId">@ViewBag.bankId</span>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i>النظام المحاسبي </a></li>
+                <li class="active"> دليل البنوك</li>
+            </ol>
+
+        </section>
+
+
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <button type="button" class="btn btn-primary pull-left btn-add" data-toggle="modal" data-target="#add-modal"><i class="fa fa-plus-square">  </i> اضافة </button>
+                        </div>
+                        <div class="box-body">
+                            <table id="tbx" class="table table-bordered table-hover"></table>
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </section>
+
+
+    </div><!-- /.content-wrapper -->
+
+    <div class="example-modal">
+        <div class="modal fade in" id="add-modal">
+            <div class="modal-dialog" style="width:80% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"> إضافة شيك جديد</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <form method="post" id="add-form">
+                                    <div class="box .no-border">
+                                        <!-- /.box-header -->
+                                        <div class="box-body">
+                                            <!-- Input addon -->
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="box .no-border">
+                                                        <!-- /.box-header -->
+                                                        <div class="box-body">
+                                                            <!-- Input addon -->
+                                                            <div class="row">
+
+                                                                <div class="col-lg-12">
+                                                                    <div class="col-lg-4">
+                                                                        <div class="form-group">
+                                                                            <label for="BooKNumber">رقم الدفتر</label>
+                                                                            <div class="input-group">
+                                                                                <div class="input-group-addon">
+                                                                                    <i class="fa  fa-sort-numeric-down"></i>
+                                                                                </div>
+                                                                                <input type="number" class="form-control BooKNumber" name="BooKNumber" id="BooKNumber" placeholder="رقم الدفتر" autocomplete="off" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-4">
+                                                                        <div class="form-group">
+                                                                            <label for="StartFromNumber">يبدأ بالرقم</label>
+                                                                            <div class="input-group">
+                                                                                <div class="input-group-addon">
+                                                                                    <i class="fa  fa-sort-numeric-down"></i>
+                                                                                </div>
+                                                                                <input type="number" class="form-control StartFromNumber" name="StartFromNumber" id="StartFromNumber" placeholder="يبدأ بالرقم" autocomplete="off" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-4">
+                                                                        <div class="form-group">
+                                                                            <label for="EndToNumber">ينتهي بالرقم</label>
+                                                                            <div class="input-group">
+                                                                                <div class="input-group-addon">
+                                                                                    <i class="fa  fa-sort-numeric-down"></i>
+                                                                                </div>
+                                                                                <input type="number" class="form-control EndToNumber" name="EndToNumber" id="EndToNumber" placeholder="ينتهي بالرقم" autocomplete="off" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-lg-12 ">
+                                                                    <div class="pull-left">
+                                                                        <button type="button" class="btn btn-default " data-dismiss="modal">رجوع</button>
+                                                                        <button type="button" onclick="save()" class="btn btn-primary save">حفظ</button>
+                                                                    </div>
+
+                                                                    <div class="pull-right">
+                                                                        <input type="checkbox" id="IsFinished" value="1" checked />
+                                                                        <label type="text" id="CheckId" class="hidden"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- /.box-body -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- /.box-body -->
+                                    </div>
+                                </form>
+                            </div>
+                        </div><!-- /.row (main row) -->
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div>
+    
+    }
+
+@section scripts{
+
+    <script>
+    var dataTable;
+        $(function () {
+            function loadData() {
+                var bankId = $('#bankId').text();
+                dataTable = $('#tbx').DataTable({
+                    "language": {
+                        "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                        "search": "بحث"
+                    },
+                    ajax: {
+                        url: '/BankAccounts/LoadCheckData/' + bankId,
+                        dataSrc: ''
+                    },
+                    columns: [
+                        {
+                            "title": "# ",
+                            "data": "Id"
+                        },
+                        {
+                            "title": "رقم الدفتر",
+                            "data": "BooKNumber"
+                        },
+                        {
+                            "title": "يبدأ من الرقم",
+                            "data": "StartFromNumber"
+                        },
+                        {
+                            "title": "ينتهي في الرقم",
+                            "data": "EndToNumber"
+                        },
+                        {
+                            "title": "الحالة",
+                            "data": "IsFinished",
+                            "render": function (data) {
+                                if (data != false)
+                                    return '<span class="success">غير منتهي</span>';
+                                else
+                                    return '<span class="error">منتهي</span>';
+                            }
+                        },
+                        {
+                            "title": "<i class='fa fa-cog'></i>",
+                            "data": "Id",
+                            "width": "10%",
+                            "orderable": false,
+                            "render": function (data) {
+                                return '<div class="btn-opreation">'
+                                             + '<button class="btn btn-success openEditModal"><i class="fa fa-edit"></i></button> '
+                                             + '<button class="btn btn-danger btncheck " onClick="Delete('+data+')"><i class="fa fa-trash"></i></button> '
+                                     + '</div> ';
+
+                            }
+                        }
+                    ]
+
+                });
+            }
+            loadData();
+
+            function select2list(selector, url, placeholder) {
+                $(selector).select2({
+                    language: { inputTooShort: function () { return 'enter 1 letter at less'; } },
+                    ajax: {
+                        url: url,
+                        dataType: 'json',
+                        delay: 100,
+                        data: function (params) {
+                            return {
+                                q: params.term,
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+                            return {
+                                results: data,
+                                pagination: {
+                                    more: ((data.total_count) > (params.page * 20))
+                                }
+                            };
+                        },
+                        cache: true
+                    },
+                    placeholder: placeholder,
+                    minimumInputLength: 1,
+                });
+
+            };
+            select2list(".currency", "/BankAccounts/GetCurrencyType", " نوع عملة الحساب البنكي ");
+            select2list(".account-type", "/BankAccounts/GetBankAccountType", " نوع الحساب البنكي  ");
+            //select2list(".name", "/BankAccounts/GetBankName", "  الحساب البنكي  ");
+
+
+
+        $('#add-form').bootstrapValidator({
+            onSuccess: function (e) {
+                save();
+                e.preventDefault();
+
+            },
+            submitButtons: 'button[type="submit"]',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                validating: 'fa fa-refresh fa-spin success-feedback-icons'
+            },
+            fields: {
+                //name: {
+                //    validators: {
+                //        notEmpty: {
+                //            message: 'يجب الا يكون حقل اسم الادراة  فارغ'
+                //        }
+                //    }
+                //}
+
+            }
+        });
+
+
+
+
+
+   });//End Document Ready
+
+    //Open Edit Modal
+        $("#tbx").on('click', '.openEditModal', function () {
+        // get the current row
+        var currentRow = $(this).closest("tr");
+        console.clear();
+        console.log();
+        
+        $('#CheckId').text(currentRow.find("td:eq(0)").text());
+        $('#BooKNumber').val(currentRow.find("td:eq(1)").text());
+        $('#StartFromNumber').val(currentRow.find("td:eq(2)").text()); // get current row st 2TD value
+        $('#EndToNumber').val(currentRow.find("td:eq(3)").text()); // get current row st 2TD value
+        $('#IsFinished').val(currentRow.find("td:eq(4)").text());
+        $('#add-modal').modal('show');
+    });
+
+
+    //Validation And Save Edit Data
+    $('#edit-form').bootstrapValidator({
+        onSuccess: function (e) {
+            edit();
+            e.preventDefault();
+
+        },
+        submitButtons: 'button[type="submit"]',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok success-feedback-icons',
+            invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+            validating: 'fa fa-refresh fa-spin success-feedback-icons'
+        },
+        fields: {
+            edname: {
+                validators: {
+                    notEmpty: {
+                        message: 'يجب الا يكون حقل اسم الادارة  فارغ'
+                    }
+                }
+            }
+
+        }
+    });
+
+    function edit() {
+        var ob = {
+            "Id": $('#ed-id').val(),
+            "Name": $('#ed-name').val(),
+            "StructureCount": $('#edstructureCount').val()
+        };
+
+        $.ajax({
+            url: "@Url.Action("Edit", "Departments")",
+            type: "POST",
+            data: JSON.stringify(ob),
+            contentType: "application/json charset=utf-8",
+            dataType: "json",
+            error: function (response) {
+                //toastr[response.Status](response.Message, response.Title);
+            },
+            success: function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('#edit-form').bootstrapValidator('resetForm', true);
+                $('#edit-modal').modal('hide');
+                dataTable.ajax.reload();
+
+
+            }
+        });
+    };
+
+        
+        function save() {
+            var ob = {
+                "Id": $('#CheckId').text(),
+                "BankAccountId": $('#bankId').text(),
+                "BooKNumber": $('.BooKNumber').val(),
+                "StartFromNumber": $('.StartFromNumber').val(),
+                "EndToNumber": $('.EndToNumber').val(),
+                "IsFinished": $('.IsFinished').val(),
+            };
+            console.clear();
+            console.log(ob);
+            $.ajax({
+                url: "@Url.Action("CreateOrUpdate", "BankAccounts")",
+                type: "POST",
+            data: JSON.stringify(ob),
+            contentType: "application/json charset=utf-8",
+            dataType: "json",
+            error: function (response) {
+                //toastr[response.Status](response.Message, response.Title);
+            },
+            success: function (response) {
+                toastr[response.Status](response.Message, response.Title);
+
+                $('#add-form').bootstrapValidator('resetForm', true);
+                $('#add-modal').modal('hide');
+                //$('select').val(null).trigger('change');
+                dataTable.ajax.reload();
+            }
+        });
+        }
+
+
+        function Delete(Id) {
+            $.ajax({
+                url: "/BankAccounts/DeleteCheck/" + Id,
+                type: "GET",
+                data: null,
+                contentType: "application/json charset=utf-8",
+                error: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                },
+                success: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+
+                    $('#add-form').bootstrapValidator('resetForm', true);
+                    $('#add-modal').modal('hide');
+                    //$('select').val(null).trigger('change');
+                    dataTable.ajax.reload();
+                }
+        });
+        }
+    </script>
+
+}

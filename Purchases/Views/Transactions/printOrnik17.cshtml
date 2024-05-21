@@ -1,0 +1,176 @@
+﻿    
+     @{
+         ViewBag.Title = "PrintInvoice";
+         Layout = "~/Views/Shared/_LayoutPrint.cshtml";
+         //Layout = null;
+    }
+
+<style>
+    body {
+        direction: rtl;
+        font-size: 22px;
+        font-weight: 300;
+        margin:10px 20px;
+        padding:10px 20px
+    } 
+
+    .header {
+        width: 100%;
+        height: 140px;
+    }
+
+    .header .left-side {
+        width: 40%;
+        height: 130px;
+        float: left;
+        text-align: justify;
+        border: 2px solid #333;
+        background-color: transparent;
+        border-radius: 4px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .header .right-side {
+        width: 55%;
+        height: 130px;
+        line-height: 29px;
+        float: right;
+        text-align: right;
+        /*border: 2px solid #333;*/
+        background-color: transparent;
+        border-radius: 4px;
+        display: block;
+    }
+
+    .right-side .row {
+        display: block;
+        text-align: right;
+        font-size: 20px;
+        font-weight: 400;
+        margin:3px 10px;
+        /* border-bottom: 2px dotted black; */
+    }
+
+
+    table {
+        width: 100%;
+        border: solid 2px #333;
+        text-align: right;
+        margin-top:30px;
+    }
+
+    thead {
+        text-align: right;
+        border: solid 2px #333;
+    }
+
+    tbody {
+        text-align: center;
+        width: 96%;
+        border: solid 2px #333;
+        height:330px;
+    }
+
+    .center {
+        text-align: center;
+    }
+
+   .flex {
+       display: flex;
+       justify-content:space-around;
+   }
+
+</style>
+
+
+
+<div class="header">
+    <div class="left-side">
+        <label>مطار بورتسودان الدولي</label>
+    </div>
+
+    <div class="right-side">
+        <div class="row">
+            <strong>الوحدة:</strong>
+            <label for="">الادارة المالية</label>
+        </div>
+        <div class="row">
+            <strong>رقم العملية:</strong>
+            <label for=""></label>
+        </div>
+        <div class="row">
+            <strong>المدفوع له:</strong>
+            <label for="">الادارة المالية</label>
+        </div>
+        <div class="row">
+            <strong>السنة المالية:</strong>
+            <label for="">الادارة المالية</label>
+        </div>
+        <div class="row">
+            <strong>بالخصم علي البند:</strong>
+            <label for="">الادارة المالية</label>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>عدد المستندات</th>
+                <th>البيان</th>
+                <th>المبلغ</th>
+                <th>ضريبة 1%</th>
+                <th>الصافي</th>
+                <th>ملاحظات</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>uuuu</td>
+                <td>jjjjj</td>
+                <td>kjjkj</td>
+                <td>lllm</td>
+                <td>klklklk</td>
+                <td>kkjjklm</td>
+            </tr>
+            <tr>
+                <td>uuuu</td>
+                <td>jjjjj</td>
+                <td>kjjkj</td>
+                <td>lllm</td>
+                <td>klklklk</td>
+                <td>kkjjklm</td>
+            </tr>
+            <tr>
+                <td>uuuu</td>
+                <td>jjjjj</td>
+                <td>kjjkj</td>
+                <td>lllm</td>
+                <td>klklklk</td>
+                <td>kkjjklm</td>
+            </tr>
+            <tr>
+                <td>uuuu</td>
+                <td>jjjjj</td>
+                <td>kjjkj</td>
+                <td>lllm</td>
+                <td>klklklk</td>
+                <td>kkjjklm</td>
+            </tr>
+        </tbody>
+    </table>
+    <p>
+        أشهد بان المبلغ مستحق الدفع وأنه صحيح فيما يتعلق بالتضريب والجمع وفئات الدفع والقيام بالخدمات المطلوبة علي الوجه الاكمل وعليه فاني اطلب دفع المذكور أعلاه
+    </p>
+    <label for="">توقيع ثاني:...................................</label>
+    <p>الموظف المسؤول عن مراجعة الحساب</p>
+    <div class="center">
+        <p>تصدق بالدفع</p>
+    </div>
+    <div class="flex">
+        <p> توقيع أول :........................................ </p>
+        <p>دفع بشيك نمرة :.............................</p>
+    </div>
+</div>

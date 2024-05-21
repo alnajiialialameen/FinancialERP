@@ -1,0 +1,234 @@
+﻿@model IEnumerable<Purchases.Models.ViewModal.TransactionViewMode>
+
+@{
+    ViewBag.Title = "PrintInvoice";
+    Layout = "~/Views/Shared/_LayoutPrint.cshtml";
+
+    decimal sumOfCredit = @Convert.ToDecimal(@Model.Sum(x => x.credit));
+    decimal sumOfDebit = @Convert.ToDecimal(@Model.Sum(x => x.debit));
+    decimal clearAmount = sumOfCredit - sumOfDebit;
+}
+
+<style>
+
+     /*////////////////////////////////////////////////////Cupps/////////////////////////////////////////////*/
+       .invoiceCupps {
+            padding:10px;
+            font-family:Arial;
+        }
+       .invoiceCupps .invoice-Cupps-header {
+            border:2px solid #808080;
+            border-radius:5px;
+            padding:16px;
+            margin-bottom:10px;
+        }
+        
+       .invoiceCupps .invoice-Cupps-header .text-word {           
+           float:none;
+        }
+        .invoiceCupps .invoice-Cupps-header .text-word h6 {
+            font-size:21px;
+            font-weight:bolder;
+        }
+        .invoiceCupps .invoice-Cupps-header .image-R {
+            float:right;
+            margin-right:30px;
+            margin-top:-100px;       
+        }
+        .invoiceCupps .invoice-Cupps-header .image-L {
+            float:left;
+            margin-top:-10px;           
+        }
+
+        .invoiceCupps .invoice-Cupps-Body {
+            clear:both;
+        }
+
+        .invoiceCupps .invoice-Cupps-Body .h-mr {
+            margin-right:20px;
+            font-size:21px;
+        }
+
+        .invoiceCupps .invoice-Cupps-details th {
+            background-color:#ebefef
+        }
+
+        .invoiceCupps .invoice-Cupps-details table {
+            min-width:100%;
+            text-align:right;
+        }
+
+        .invoiceCupps .invoice-Cupps-details table,th,td {
+            border:1px solid #282a2c; 
+            padding:.5rem;
+            font-size:18px; 
+            text-align:center;      
+        }
+
+        .invoiceCupps .invoice-Cupps-details .footer {
+            background-color:#ebefef;
+            font-weight:bolder;
+            font-size:20px;  
+            max-width:30%;
+            margin-top:3%;
+            padding:16px;
+            line-height:30px;
+        }
+
+        .footer .titel{
+            float:right;
+        }
+        .footer .value{
+            float:left;
+        }
+
+</style>
+
+<section class="invoiceCupps">
+    <div class="invoice-Cupps-header">
+        <div class="image-L">
+            <img src="~/Temp/Image/WhiteLogo.png" height="100" />
+        </div>
+
+        <div class="text-center text-word">
+            <h6>شركة مطارات السودان المحدودة</h6>
+            <h6>الادارة العامة للشؤون المالية والمحاسبية</h6>
+            <h6>إدارة الحسابات</h6>
+
+        </div>
+
+        <div class="image-R">
+            <img src="~/Temp/Image/WhiteLogo.png" class="image-L" height="100" />
+        </div>
+
+    </div>
+
+    <div class="invoice-Cupps-Body" dir="rtl">
+        <div class="arline-header">
+            <h2 class="text-center"><u> حـ / @ViewBag.AccName</u></h2>
+        </div>
+    </div>
+
+    <div class="text-center invoice-Cupps-details" dir="rtl" style="width:100%;margin-bottom:40px;">
+        <table class="cupps-table-header" >
+           <thead>
+               <tr>
+                   <th colspan="3">منه</th>
+                   <th colspan="3">له</th>
+               </tr>
+               <tr>
+                   <th>
+                       المبلغ
+                   </th>
+                   <th>
+                       البيان
+                   </th>
+                   <th>
+                       التاريخ
+                   </th>
+                   <th>
+                       المبلغ
+                   </th>
+                   <th>
+                       البيان
+                   </th>
+                   <th>
+                       التاريخ
+                   </th>
+               </tr>
+
+           </thead>
+            <tbody id="myTBodey">
+               @{
+                   foreach (var item in Model.OrderBy(x => x.debit))
+                   {
+                    <tr>
+                        @{
+                            if (Convert.ToDecimal(item.credit) > 0) // credit
+                            {
+                                <td>@item.credit</td>
+                                <td class="text-right" style="padding-right:20px;"> حــ/ @item.accName</td>
+                                <td>@item.transDate</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            }
+                            else // debit
+                            {
+                                <td ></td>
+                                <td></td>
+                                <td></td>
+                                <td>@item.debit</td>
+                                <td class="text-right" style="padding-right:60px;"> حــ/ @item.accName</td>
+                                <td>@item.transDate</td>
+                            }
+                        }
+                    </tr>
+                    }
+            }
+
+            </tbody>
+        </table>
+
+
+        <div class="footer">
+
+            <div>
+                <label class="titel">إجمالي المبلغ (مدين)</label>
+                <label class="value">@Model.Sum(x => x.debit)</label>
+            </div>
+           <div>
+               <label class="titel">إجمالي المبلغ (دائن)</label>
+               <label class="value">@Model.Sum(x => x.credit)</label>
+           </div>
+            <div>
+                <label class="titel">صافي الحساب</label>
+                <label class="value">@clearAmount</label>
+            </div>
+            <div style="clear:both;"></div>
+        </div>
+    </div>
+</section>
+
+@section scripts{
+    <script src="~/Temp/plugins/jquery/jquery.min.js"></script>
+    
+    <script>
+           window.addEventListener("load", window.print());
+
+           $('.numberFormat').each(function () {
+               var item = $(this).text();
+
+               var N = round(item, 2);
+               /// var N = item.toFixed(2);
+
+
+               var num = Number(N).toLocaleString();
+               $(this).text(num);
+           });
+
+           function round(value, exp) {
+               if (typeof exp === 'undefined' || +exp === 0)
+                   return Math.round(value);
+
+               value = +value;
+               exp = +exp;
+
+               if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0))
+                   return NaN;
+
+               // Shift
+               value = value.toString().split('e');
+               value = Math.round(+(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp)));
+
+               // Shift back
+               value = value.toString().split('e');
+               return +(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp));
+           }
+
+           $('#myTBodey').on('click', '#posting', function () {
+               console.log('-------------------------------');
+           });
+
+    </script>
+}

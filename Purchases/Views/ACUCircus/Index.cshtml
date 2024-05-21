@@ -1,0 +1,650 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+@section content{
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <div class="grad"></div>
+
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                الطلبيات
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المالي </a></li>
+                <li class="active"> المشتريات</li>
+            </ol>
+
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <button type="button" class="btn btn-primary pull-left btnChange"><i class="fa fa-plus-square">  </i> طلبيات مسركة </button>
+                        </div>
+                    <!-- /.box-header -->
+                        <div class="box-body">
+                            <table id="tbx" class="table table-bordered table-hover"></table>
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </section>
+
+
+    </div><!-- /.content-wrapper -->
+    <!--------------   إضافة طلبية جديدة ---------------->
+    <div class="example-modal">
+        <div class="modal fade in" id="add-modal">
+            <div class="modal-dialog" style="width:90% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"> إضافة  طلبية جديدة</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+
+                                <div class="box .no-border">
+                                    <!-- /.box-header -->
+                                    <div class="box-body">
+                                        <!-- Start Box Of Basic Data -->
+                                        <form method="post" id="add-form">
+                                            <div class="box box-info">
+                                                <div class="box-header ">
+                                                    <h3 class="box-title">البيانات الاساسية</h3>
+                                                </div>
+                                                <div class="box-body">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label for="department"> الادارة </label>
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-addon">
+                                                                            <i class="fa  fa-city"></i>
+                                                                        </div>
+                                                                        <select class="form-control department" name="department" id="department" style="width:100%"></select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label for="description"> الموضوع </label>
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-addon">
+                                                                            <i class="fa  fa-book"></i>
+                                                                        </div>
+                                                                        <input class="form-control description description" name="description" id="description" placeholder="موضوع الطلب" autocomplete="off" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+
+
+                                                        <div class="col-lg-12">
+
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label for="orderdate"> تاريخ الطلب</label>
+                                                                    <div class="input-group">
+                                                                        <span class="input-group-addon">
+                                                                            <i class="fa fa-calendar-alt"></i>
+                                                                        </span>
+                                                                        <input type="text" class="form-control  calendar orderdate" id="orderdate" name="orderdate" placeholder="تاريخ الطلب" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label for="suggestprice">المبلغ المقترح </label>
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-addon">
+                                                                            <i class="fa  fa-money-bill"></i>
+                                                                        </div>
+                                                                        <input class="form-control suggestprice" name="suggestprice" id="suggestprice" placeholder="المبلغ المقترح من الادارة الطالبة" autocomplete="off" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label for="suggestprice"> صورة  الطلب </label>
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-addon">
+                                                                            <i class="fa  fa-file"></i>
+                                                                        </div>
+                                                                        <input type="file" class="form-control btn btn-default report-btn orderfile" id="orderfile" name="orderfile" style="position: relative; top: -1%; width:100%">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+
+
+
+                                                        </div>
+
+                                                    </div><!-- /.box -->
+                                                    <!-- Start Box Of Addational  Data -->
+                                                    <div class="box box-info">
+                                                        <div class="box-header ">
+                                                            <h3 class="box-title"> إضافي  </h3>
+                                                        </div>
+                                                        <div class="box-body">
+                                                            <div class="box-body">
+                                                                <table class="table table-bordered passenger-tbl" id="passenger-tbl">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th> الصنف</th>
+                                                                            <th>ت.الصنف</th>
+                                                                            <th style="width:20%"> العدد المطلوب</th>
+                                                                            <th class="text-center"><i class="fa fa-cogs"></i></th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody class="passenger-tbl-body"></tbody>
+
+                                                                </table>
+                                                                <button class="new-row" id="new-row" style="background:#00c0ef" value="newRow"><i class="fa fa-plus-square"></i>إضافة صف جديد</button>
+
+                                                            </div>
+
+                                                        </div><!-- /.box-body -->
+                                                    </div><!-- /.box -->
+
+
+
+
+
+
+                                                    <div class="col-lg-12 ">
+                                                        <div class="pull-left">
+                                                            <button type="button" class="btn btn-default " data-dismiss="modal">رجوع</button>
+                                                            <button type="submit" class="btn btn-primary save " value="add">حفظ</button>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <!-- /.box-body -->
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div><!-- /.row (main row) -->
+
+                            </div>
+                            @*<div class="modal-footer">
+
+                                </div>*@
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+
+
+    <!------------عرض فواتير الطلب------------------>
+    <div class="example-modal">
+        <div class="modal fade in" id="invoice-modal">
+            <div class="modal-dialog" style="width:90% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title invoice-modal-title">   </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                @*<form method="post" id="invoice-form">*@
+                                <div class="box .no-border">
+                                    <!-- /.box-header -->
+                                    <div class="box-body">
+                                        <!-- Start Box Of Basic Data -->
+                                        <div class="box box-info">
+                                            <div class="box-header ">
+                                                <h3 class="box-title"> الفواتير</h3>
+                                                <button type="button" class="btn btn-primary pull-left btn-add" data-toggle="modal" data-target="#addNewInvoice-modal"><i class="fa fa-plus-square">  </i> فاتورة جديدة </button>
+
+                                            </div>
+                                            <div class="box-body">
+                                                <div class="row">
+                                                    <div class="col-lg-12 " id="orderInvoice">
+                                                        <input id="invoice-orderId" class="hidden" />
+                                                        <table class="table table-hover table-responsive" id="tbl-order-invoice">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>المورد</th>
+                                                                    <th>استعراض</th>
+                                                                    <th>اختيار فاتورة</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="tbody-order-invoice"></tbody>
+                                                        </table>
+
+
+                                                    </div>
+
+                                                </div><!-- /.box -->
+
+                                                <div class="col-lg-12 ">
+                                                    <div class="pull-left">
+                                                        <button type="button" class="btn btn-default " data-dismiss="modal">رجوع</button>
+                                                        <button type="submit" class="btn btn-primary save " value="add">حفظ</button>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <!-- /.box-body -->
+                                        </div>
+
+                                        @*</form>*@
+                                    </div>
+                                </div><!-- /.row (main row) -->
+
+                            </div>
+                            @*<div class="modal-footer">
+
+                                </div>*@
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+    <!---------         إضافة فاتورة جديدة للطلب   ------------->
+    <div class="example-modal">
+        <div class="modal fade in" id="addNewInvoice-modal">
+            <div class="modal-dialog" style="width:70% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"> إضافة  فاتورة جديدة</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+
+                                <div class="box .no-border">
+                                    <!-- /.box-header -->
+                                    <div class="box-body">
+                                        <!-- Start Box Of Basic Data -->
+
+
+
+
+
+
+                                        <form method="post" id="addNewInvoice-form" enctype="multipart/form-data">
+                                            <div class="box box-info">
+                                                <div class="box-header ">
+                                                    <h3 class="box-title">فاتورة جديدة </h3>
+                                                </div>
+                                                <div class="box-body">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <div class="col-lg-6">
+
+                                                                <div class="report-row">
+                                                                    <div class="col-lg-12" style="margin-bottom:20px">
+                                                                        <div class="col-lg-8">
+                                                                            <select class="form-control list supplier" name="NewInvoiceSupplier" id="NewInvoiceSupplier" style="width:100%"></select>
+                                                                        </div>
+                                                                        <div class="col-lg-4">
+                                                                            <input type="file" class="btn btn-default report-btn" id="NewInvoiceFile" name="NewInvoiceFile" style="position: relative; top: -1%;" multiple>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+
+                                                    </div><!-- /.box -->
+
+                                                    <div class="col-lg-12 ">
+                                                        <div class="pull-left">
+                                                            <button type="button" class="btn btn-default " data-dismiss="modal">رجوع</button>
+                                                            <button type="submit" id="but_upload" class="btn btn-primary save " value="add">حفظ</button>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <!-- /.box-body -->
+                                            </div>
+
+                                        </form>
+
+
+
+                                    </div>
+                                </div><!-- /.row (main row) -->
+
+                            </div>
+                            @*<div class="modal-footer">
+
+                                </div>*@
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+    <!--------------  تكملة بيانات الفاتورة المختارة  ------------------->
+    <div class="example-modal">
+        <div class="modal fade in" id="invoicechoosed-modal">
+            <div class="modal-dialog" style="width:80% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"> بيانات الطلب </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <form method="post" id="invoicechoosed-form">
+                                    <div class="box box-info">
+                                        <div class="box-header ">
+                                            <h3 class="box-title">  </h3>
+                                        </div>
+                                        <div class="box-body">
+                                            <div class="box-body">
+                                                <input class="hidden" id="invoicechoosed-supplier" />
+
+
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="jobtitle"> العملة </label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-addon">
+                                                                <i class="fa  fa-user"></i>
+                                                            </div>
+                                                            <select class="form-control currencytype" name="currencytype" id="currencytype" style="width:100%"></select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="vattype"> نوع الضريبة </label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-addon">
+                                                                <i class="fa  fa-user"></i>
+                                                            </div>
+                                                            <select class="form-control vattype" name="vattype" id="vattype" style="width:100%"></select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <table class="table table-bordered invoicechoosed-tbl" id="invoicechoosed-tbl">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ت.الصنف</th>
+                                                            <th style="width:20%"> العدد المطلوب</th>
+                                                            <th>  سعر الوحدة</th>
+                                                            <th> الاجمالي </th>
+                                                            <th>  الضريبة</th>
+                                                            <th> الاجمالي بعد الضريبة </th>
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="invoicechoosed-tbl-body" id="invoicechoosed-tbl-body"></tbody>
+
+                                                </table>
+                                            </div>
+
+
+                                            <div class="col-lg-12 ">
+                                                <div class="pull-left">
+                                                    <button type="button" class="btn btn-default " data-dismiss="modal">رجوع</button>
+                                                    <button type="submit" class="btn btn-primary save " value="add">حفظ</button>
+                                                </div>
+                                            </div>
+
+                                        </div><!-- /.box-body -->
+
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div><!-- /.row (main row) -->
+
+                    </div>
+                    @*<div class="modal-footer">
+
+                        </div>*@
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div>
+
+
+
+
+
+
+<div class="modal fade in" id="CircuModal" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="width:50% !important">
+        <div class="modal-content">
+            <div class="modal-header .no-border">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"> تسجيل الطلبيات في السيرك</h4>
+                <label class="hidden" id="Id"></label>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <form method="post" id="add-form">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="DepartmentRecipientName"> اسم الادارة المرسلة </label>
+                                        <input class="form-control" id="DepartmentRecipientName" onkeyup="return validateText(this.value, 'DepartmentRecipientName');" name="DepartmentRecipientName" placeholder="اسم الادارة المستلمة" />
+                                        <label id="DepartmentSenderId" class="hidden">DepartmentSenderId</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="name">الايميل</label>
+                                        <input class="form-control" id="DepartmentSenderName" onkeyup="return validateText(this.value, 'DepartmentSenderName');" name="DepartmentSenderName" placeholder="اسم الادارة المرسلة" />
+                                        <label id="DepartmentRecipientId" class="hidden">DepartmentRecipientId</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="name">الموضوع</label>
+                                        <input class="form-control" type="text" disabled id="Subject" name="Subject" placeholder="الموضوع" />
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="name"> رقم الهاتف - 2 </label>
+                                        <input class="form-control" type="number" id="Phone2" onkeyup="return validatePhone(this.value, 'Phone2');" name="Phone2" placeholder="رقم الهاتف - 2" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="name"> العنوان </label>
+                                        <textarea class="form-control" id="Address" name="Address" placeholder="العنوان" cols="4"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-3">
+                                    <input type="checkbox" id="status" value="1" />
+                                    <label>مفعلة</label>
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" id="LicenseNumber" class="form-control" onkeyup="return validateText(this.value, 'LicenseNumber');" placeholder="رقم الرخصة التجارية" />
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div><!-- /.row (main row) -->
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary btnSave pull-right" onclick="SaveAndUpdate()">حفظ</button>
+                <button class="btn btn-danger btnCancel" data-dismiss="modal">إلغاء</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+}
+
+@section scripts{
+
+    <script>
+        function loadData(url) {
+            var dataTable = $('#tbx').DataTable({
+                "language": {
+                    "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                    "search": "بحث"
+                },
+                ajax: {
+                    url: url,
+                    dataSrc: ''
+                },
+                columns: [
+                    {
+                        "title": "# ",
+                        "data": "Id"
+                    },
+                    {
+                        "title": " الادارة   ",
+                        "data": "Department"
+                    },
+                    {
+                        "title": " الموضوع ",
+                        "data": "Description"
+                    },
+                    {
+                        "title": " تاريخ الطلب ",
+                        "data": "OrderDate",
+                    },
+                    {
+                        "title": "<i class='fa fa-cog'></i>",
+                        "data": null,
+                        "width": "10%",
+                        "orderable": false,
+                        "render": function (data) {
+                            return '<div class="btn-group">' +
+                                        '<button type="button" class="btn btn-default" data-toggle="dropdown">  <i class="fa fa-ellipsis-v"></i> </button> <div class="dropdown-menu btn-threePoint">' +
+                                        '<a class="dropdown-item" href="#" onclick="registerToCircus(' + data.Id + ')">التسجيل في السيرك</a> <br />' +
+                                        //'<a class="dropdown-item" href="#" onclick="viewOrderImage(' + data.Id + ')">عرض صورة الطلب</a> <br />' +
+                                  '</div></div>'
+
+                        },
+                    }
+                ]
+            });
+        }
+    $(function () {
+        $('.calendar').datepicker({
+            todayBtn: "linked",
+            language: "it",
+            autoclose: true,
+            todayHighlight: true,
+            dateFormat: 'dd/mm/yy'
+        });
+
+        
+        loadData('/ACUCircus/Orders');
+
+        $('.passenger-tbl').on('click', '.btn-remove', function () {
+            $(this).closest('tr').remove();
+
+        })
+    });
+
+    //Open Edit Modal
+    $("#tbx").on('click', '.openEditModal', function () {
+        // get the current row
+        var currentRow = $(this).closest("tr");
+
+        $('#ed-id').val(currentRow.find("td:eq(0)").text());
+        $('#edname').val(currentRow.find("td:eq(1)").text()); // get current row st 2TD value
+        $('#edphone').val(currentRow.find("td:eq(2)").text()); // get current row st 2TD value
+        $('#edit-modal').modal('show');
+
+    });
+
+
+    $('.btnChange').on('click', function () {
+        console.clear();
+        loadData('/ACUCircus/LoadCircuedData');
+
+    });
+
+    function registerToCircus(Id) {
+        window.open('Create?id=' + Id, target = "_blank");
+    }
+
+    //Validation And Save Edit Data
+    $('#edit-form').bootstrapValidator({
+        onSuccess: function (e) {
+            edit();
+            e.preventDefault();
+
+        },
+        submitButtons: 'button[type="submit"]',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok success-feedback-icons',
+            invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+            validating: 'fa fa-refresh fa-spin success-feedback-icons'
+        },
+        fields: {
+            edname: {
+                validators: {
+                    notEmpty: {
+                        message: 'يجب الا يكون حقل اسم المورد  فارغ'
+                    }
+                }
+            },
+            edphone: {
+                validators: {
+                    notEmpty: {
+                        message: 'يجب الا يكون حقل رقم الهاتف   فارغ'
+                    }
+                }
+            }
+
+        }
+    });
+    </script>
+}

@@ -1,0 +1,511 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+@section content{
+<div class="content-wrapper">
+    <div class="grad"></div>
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            السنه المالية
+
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-home"></i> النظام المالي </a></li>
+            <li class="active"> السنة</li>
+        </ol>
+
+    </section>
+
+
+
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <button type="button" class="btn btn-primary pull-left btn-add" data-toggle="modal" data-target="#add-modal"><i class="fa fa-plus-square">  </i> سنة جديده
+                         </button>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
+                        <table id="tbx" class="table table-bordered table-hover"></table>
+                    </div><!-- /.box-body -->
+                </div><!-- /.box -->
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </section>
+
+
+</div><!-- /.content-wrapper -->
+
+
+
+
+<div class="example-modal">
+    <div class="modal fade in" id="add-modal">
+        <div class="modal-dialog" style="width:80% !important">
+            <div class="modal-content">
+                <div class="modal-header .no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"> إضافة سنة جديده</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <form method="post" id="add-form">
+                                <div class="box .no-border">
+                                    <!-- /.box-header -->
+                                    <div class="box-body">
+                                        <!-- Input addon -->
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="col-lg-9">
+                                                    <div class="form-group">
+                                                        <label for="Year"> السنة </label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-home"></i></span>
+                                                            <input type="text" class="form-control  Year" id="Year" name="Year" placeholder="  السنة" autocomplete="off">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <button type="submit" class="btn btn-primary save" value="save" style="width: 100%;position: relative;top: 25px;">حفظ</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+
+                            </form>
+                        </div>
+                    </div><!-- /.row (main row) -->
+
+                </div>
+                @*<div class="modal-footer">
+
+                    </div>*@
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+
+
+
+       <!-- Edit Modal -->
+<div class="example-modal">
+    <div class="modal fade in" id="edit-modal">
+        <div class="modal-dialog" style="width:80% !important">
+            <div class="modal-content">
+                <div class="modal-header .no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">تعديل السنة </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <form method="post" id="edit-form">
+                                <div class="box .no-border">
+                                    <!-- /.box-header -->
+                                    <div class="box-body">
+                                        <!-- Input addon -->
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="col-lg-9">
+                                                    <div class="form-group">
+                                                        <label for="EdYear"> السنة</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-home"></i></span>
+                                                            <input id="EdId" class="EdId hidden" name="EdId" />
+                                                            <input type="text" class="form-control  EdYear" id="EdYear" name="EdYear" placeholder="العــــام " autocomplete="off">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <button type="submit" class="btn btn-primary" value="edit" style="width: 100%;position: relative;top: 25px;">حفظ</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+
+                            </form>
+                        </div>
+                    </div><!-- /.row (main row) -->
+
+                </div>
+                @*<div class="modal-footer">
+
+                    </div>*@
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+
+
+}
+
+@section scripts{
+
+    <script>
+
+        $(function () {
+
+
+            function loadData() {
+                dataTable = $('#tbx').DataTable({
+                    "language": {
+                        "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                        "search": "بحث"
+                    },
+                    ajax: {
+                        url: '/FinancialCycles/LoadData',
+                        dataSrc: ''
+                    },
+                    columns: [
+                        {
+                            "title": "# ",
+                            "data": "Id"
+                        },
+                        {
+                            "title": "السنة   ",
+                            "data": "Year"
+                        },
+                        {
+                            "title": "الاعتماد   ",
+                            "data": "Credint"
+                        },
+                        {
+                            "title": "الصرف الفعلي   ",
+                            "data": "ActualExchange"
+                        },
+                        {
+                            "title": "الانحراف النسبي   ",
+                            "data": "RelativeDeviation"
+                        },
+                        {
+                            "title": "نسبة الانحراف النسبي    ",
+                            "data": "RelativeRatio"
+                        },
+                        //{
+                        //    "title": "العام الحالي    ",
+                        //    "data": "CurrentYear"
+                        //},
+                      
+
+                        {
+                            "title": " اغلاق ",
+                            "data": null,
+                            "render": function (data) {
+                                if (data.IsClosed != true) {
+                                    return '<div class="btn-opreation">'
+                                                 //+ '<button class="btn btn-success transfer openEditModalHousing">تعديل <i class=" transfer-fa fa  fa-edit"></i></button> '
+                                                                        //+ '<button class="btn btn-danger transfer AdLastLevel"> إيقاف <i class=" transfer-fa fa  fa-edit"></i></button> '
+                                        + '<button class="btn btn-danger transfer" onclick="return Stop(' + data.Id + ') "> قفل العام <i class=" fa fa-edit align-middle"></i></button> '
+                                       + '</div> ';
+
+                                }
+
+                                else {
+                                    return '<div class="btn-opreation">'
+                                                 //+ '<button class="btn btn-success transfer openEditModalHousing">تعديل <i class=" transfer-fa fa  fa-edit"></i></button> '
+                                                                        //+ '<button class="btn btn-danger transfer AdLastLevel"> إيقاف <i class=" transfer-fa fa  fa-edit"></i></button> '
+                                        + '<button class="btn btn-success transfer" onclick="return UnStop(' + data.Id + ') ">  فتح العام <i class=" fa fa-edit align-middle"></i></button> '
+                                       + '</div> ';
+
+                                }
+                            }
+                        },
+                        {
+                            "title": "<i class='fa fa-cog'></i>",
+                            "data": null,
+                            "width": "10%",
+                            "orderable": false,
+                            "render": function (data) {
+                                return '<div class="btn-opreation">'
+                                             + '<button class="btn btn-success transfer openEditModal">تعديل <i class=" transfer-fa fa  fa-edit"></i></button> '
+                                                                              //+ '<button class="btn btn-success transfer openAditModal">  إضافة جهاز جديد <i class=" transfer-fa fa  fa-edit"></i></button> '
+
+                                    + '</div> '
+
+                                ;
+
+                            }
+                        }
+
+
+                    ]
+
+                });
+
+            }
+            loadData();
+
+
+
+
+
+
+            $('#add-form').bootstrapValidator({
+                onSuccess: function (e) {
+                    save();
+                    e.preventDefault();
+
+                },
+                submitButtons: 'button[type="submit"]',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                    invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                    validating: 'fa fa-refresh fa-spin success-feedback-icons'
+                },
+                fields: {
+                    Year: {
+                        validators: {
+                            notEmpty: {
+                                message: 'يجب الا يكون حقل العــــام  فارغ'
+                            }
+                        }
+                    }
+
+                }
+            });
+
+
+            //savee
+            
+            function save() {
+
+
+                var ob = {
+                    "Year": $('#Year').val()
+                };
+                $.ajax({
+                    url: "@Url.Action("Save", "FinancialCycles")",
+                    type: "POST",
+                data: JSON.stringify(ob),
+                contentType: "application/json charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    //toastr[response.Status](response.Message, response.Title);
+                },
+                success: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    //$('.Year').val(null);
+                    $('#add-form').bootstrapValidator('resetForm', true);
+
+                    $('#add-modal').modal('hide');
+                    dataTable.ajax.reload();
+
+
+                }
+            });
+
+            }
+
+
+            //Open Edit Modal
+            $("#tbx").on('click', '.openEditModal', function () {
+                // get the current row
+                var currentRow = $(this).closest("tr");
+
+                $('#EdId').val(currentRow.find("td:eq(0)").text());
+                $('#EdYear').val(currentRow.find("td:eq(1)").text()); // get current row 1st TD value
+                $('#edit-modal').modal('show');
+
+            });
+
+            //Validation And Save Edit Data
+            $('#edit-form').bootstrapValidator({
+                onSuccess: function (e) {
+                    edit();
+                    e.preventDefault();
+
+                },
+                submitButtons: 'button[type="submit"]',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                    invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                    validating: 'fa fa-refresh fa-spin success-feedback-icons'
+                },
+                fields: {
+                    EdYear: {
+                        validators: {
+                            notEmpty: {
+                                message: 'يجب الا يكون حقل  السنة فارغ'
+                            }
+                        }
+                    },
+                    
+                }
+            });
+
+
+
+            function edit() {
+
+
+                var ob = {
+                    "Id": $('#EdId').val(),
+                    "Year": $('#EdYear').val(),
+
+                };
+                $.ajax({
+                    url: "@Url.Action("Edit", "FinancialCycles")",
+                    type: "POST",
+                data: JSON.stringify(ob),
+                contentType: "application/json charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    //toastr[response.Status](response.Message, response.Title);
+                },
+                success: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    $('#edit-modal').modal('hide');
+                    dataTable.ajax.reload();
+
+                }
+            });
+        };
+
+
+
+
+        });
+        //stop last level 
+        function Stop(id) {
+            console.log(id);
+            //get the current row
+            var currentRow = $(this).closest("tr");
+
+            var id = id;
+
+            //var value = currentRow.find("td:eq(7)").text();
+            Swal.fire({
+                title: '   إغلاق ',
+                text: " هل تريد اغلاق هذا العام ",
+                // type: "input",
+                //  html: '<input id="swal-input1" class="swal2-input">',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'موافق',
+                cancelButtonText: 'رجوع'
+            }).then((result) => {
+                // var notes = $("#swal-input1").val();
+
+                if (result.isConfirmed) {
+                    // var notes = $("#swal-input1").val();
+                    // console.log(notes);
+                    console.log(id);
+                    StopBalances(id);
+                }
+            })
+
+        }
+        //unstop 
+
+        //stop last level 
+        function UnStop(id) {
+            console.log(id);
+            //get the current row
+            var currentRow = $(this).closest("tr");
+
+            var id = id;
+
+            //var value = currentRow.find("td:eq(7)").text();
+            Swal.fire({
+                title: '   فتح العام ',
+                text: " هل تريد فتح  هذا العام ",
+                // type: "input",
+                //  html: '<input id="swal-input1" class="swal2-input">',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'موافق',
+                cancelButtonText: 'رجوع'
+            }).then((result) => {
+                // var notes = $("#swal-input1").val();
+
+                if (result.isConfirmed) {
+                    // var notes = $("#swal-input1").val();
+                    // console.log(notes);
+                    console.log(id);
+                    UnStopBalances(id);
+                }
+            })
+
+        }
+
+
+
+        
+        // stop function
+        
+        function StopBalances(id) {
+            var ob = {
+                Id: id,
+                // Notes:notes
+            }
+            $.ajax({
+                url: "@Url.Action("StopBalances", "FinancialCycles")",
+                type: "POST",
+            data: JSON.stringify(ob),
+            contentType: "application/json charset=utf-8",
+            dataType: "json",
+            error: function (response) {
+                //toastr[response.Status](response.Message, response.Title);
+            },
+            success: function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                //$('#add-form').bootstrapValidator('resetForm', true);
+                //$('#add-modal').modal('hide');
+                // dataTable.ajax.reload();
+                dataTable.ajax.reload();
+
+            }
+        });
+        }
+        // un stop function
+
+        // stop function
+        
+        function UnStopBalances(id) {
+            var ob = {
+                Id: id,
+                // Notes:notes
+            }
+            $.ajax({
+                url: "@Url.Action("StopBalances", "FinancialCycles")",
+                type: "POST",
+            data: JSON.stringify(ob),
+            contentType: "application/json charset=utf-8",
+            dataType: "json",
+            error: function (response) {
+                //toastr[response.Status](response.Message, response.Title);
+            },
+            success: function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                //$('#add-form').bootstrapValidator('resetForm', true);
+                //$('#add-modal').modal('hide');
+                // dataTable.ajax.reload();
+                dataTable.ajax.reload();
+
+            }
+        });
+        }
+
+
+</script>
+}
+
+

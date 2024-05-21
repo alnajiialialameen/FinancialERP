@@ -1,0 +1,322 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+@section content{
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <div class="grad"></div>
+
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                إستعـــلام
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المالي </a></li>
+                <li class="active"> المشتريات</li>
+            </ol>
+
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            <label for="department"> الادارة </label>
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <i class="fa  fa-city"></i>
+                                                </div>
+                                                <select class="form-control department" name="department" id="department" style="width:100%"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            <label for="orderdate"> تاريخ الطلب </label>
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <i class="fa  fa-book"></i>
+                                                </div>
+                                                <input class="form-control calendar orderdate" name="orderdate" id="orderdate" placeholder="تاريخ الطلب" autocomplete="off" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            <label for="description"> الموضوع </label>
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <i class="fa  fa-book"></i>
+                                                </div>
+                                                <input class="form-control description description" name="description" id="description" placeholder="موضوع الطلب" autocomplete="off" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 ">
+                                    <div class="">
+                                        <button type="submit" class="btn btn-primary btn-block search " id="search">بحـــث</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- /.box-header -->
+                        <div class="box-body">
+                            <table id="tbx" class="table table-bordered table-hover"></table>
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </section>
+
+
+    </div><!-- /.content-wrapper -->
+    
+
+
+    <!------------عرض فواتير الطلب------------------>
+<div class="example-modal">
+    <div class="modal fade in" id="invoice-modal">
+        <div class="modal-dialog" style="width:90% !important">
+            <div class="modal-content">
+                <div class="modal-header .no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title invoice-modal-title">   </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            @*<form method="post" id="invoice-form">*@
+                            <div class="box .no-border">
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    <!-- Start Box Of Basic Data -->
+                                    <div class="box box-info">
+                                        <div class="box-header ">
+                                            <h3 class="box-title"> الفواتير</h3>
+
+                                        </div>
+                                        <div class="box-body">
+                                            <div class="row">
+                                                <div class="col-lg-12 " id="orderInvoice">
+                                                    <input id="invoice-orderId" class="hidden" />
+                                                    <table class="table table-hover table-responsive" id="tbl-order-invoice">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>المورد</th>
+                                                                <th>استعراض</th>
+                                                                <th>اختيار فاتورة</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="tbody-order-invoice"></tbody>
+                                                    </table>
+
+
+                                                </div>
+
+                                            </div><!-- /.box -->
+
+                                            <div class="col-lg-12 ">
+                                                <div class="pull-left">
+                                                    <button type="button" class="btn btn-default " data-dismiss="modal">رجوع</button>
+                                                    <button type="submit" class="btn btn-primary save " value="add">حفظ</button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <!-- /.box-body -->
+                                    </div>
+
+                                    @*</form>*@
+                                </div>
+                            </div><!-- /.row (main row) -->
+
+                        </div>
+                        @*<div class="modal-footer">
+
+                            </div>*@
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        </div>
+
+
+    </div>
+</div>
+
+
+
+  
+
+}
+
+
+@section scripts{
+
+
+
+    <script>
+        var dataTable;
+        $(function () {
+            $('.calendar').datepicker({
+                todayBtn: "linked",
+                language: "it",
+                autoclose: true,
+                todayHighlight: true,
+                dateFormat: 'dd/mm/yy'
+            });
+
+
+            $("#search").click(function () {
+                var description = $('#description').val();
+                var department = $('#department').val();
+                
+                var orderdate = moment($('#orderdate').val() , "DD/MM/YYYY").format("MM-DD-YYYY");
+                function loadData() {
+                    dataTable = $('#tbx').DataTable({
+                        "language": {
+                            "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                            "search": "بحث"
+                        },
+                        ajax: {
+                            url: '/SearchOrders/LoadData?department=' + department + "&description=" + description + "&orderdate=" + orderdate,
+                            dataSrc: ''
+                        },
+                        columns: [
+                            {
+                                "title": "# ",
+                                "data": "Id"
+                            },
+                            {
+                                "title": " الادارة   ",
+                                "data": "Department"
+                            },
+                            {
+                                "title": " الموضوع ",
+                                "data": "Description"
+                            },
+                            {
+                                "title": " تاريخ الطلب ",
+                                "data": "OrderDate",
+                            },
+                            {
+                                "title": "<i class='fa fa-cog'></i>",
+                                "data": null,
+                                "width": "10%",
+                                "orderable": false,
+                                "render": function (data) {
+                                    return '<div class="btn-group">' +
+                                                '<button type="button" class="btn btn-default" data-toggle="dropdown">  <i class="fa fa-ellipsis-v"></i> </button> <div class="dropdown-menu btn-threePoint">' +
+                                                '<a class="dropdown-item" href="#" onclick="getInvoiceOrder(' + data.Id + ')">الفواتير</a> <br />' +
+                                                '<a class="dropdown-item" href="#" onclick="viewOrderImage(' + data.Id + ')">عرض صورة الطلب</a> <br />' +
+                                          '</div></div>'
+
+                                },
+
+                            }
+
+
+                        ]
+
+                    });
+                }
+
+
+                if ($.fn.DataTable.isDataTable('#tbx')) {
+                    $('#tbx').DataTable().destroy();
+                }
+                loadData();
+                //loadData()
+            });
+
+
+
+            function select2list(selector, url, placeholder) {
+                $(selector).select2({
+                    language: { inputTooShort: function () { return 'enter 1 letter at less'; } },
+                    ajax: {
+                        url: url,
+                        dataType: 'json',
+                        delay: 100,
+                        data: function (params) {
+                            return {
+                                q: params.term,
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+                            return {
+                                results: data,
+                                pagination: {
+                                    more: ((data.total_count) > (params.page * 20))
+                                }
+                            };
+                        },
+                        cache: true
+                    },
+                    placeholder: placeholder,
+                    minimumInputLength: 1,
+                });
+
+            };
+            select2list(".department", "/ConsumeHrApi/GetDepartment", "  الادارة ");
+
+
+        });//end document
+
+
+        function getInvoiceOrder(id) {
+            $('#tbody-order-invoice').empty();
+
+            var url = "/Orders/GetInvoiceOrder?orderid=" + id;
+            $.get(url, function (data) {
+                //var item = '';
+                var k = 1;
+                $.each(data, function (i, item) {
+                    var rows = '<tr>' +
+                                        '<td class="hidden"><span class="report-name"> ' + item.SupplierId + ' </span></td>' +
+                                        '<td><span class="report-name"> ' + item.Supplier + ' </span></td>' +
+                                        '<td><a onclick="openpdf(' + item.OrderId + ' , ' + item.SupplierId + ')" class="btn btn-default" style="margin-right: 2%;"><i class="fa fa-print"></i></a></td>' +
+                                        '<td><input type="radio" name="r3" id="id' + item.Id + '"   class="flat-red  zxc invoicechoosed" disabled></td>' +
+
+                                        '<td></td>' +
+                                    '</tr>';
+                    $('#tbody-order-invoice').append(rows);
+                    if (item.IsChoosed == 1) {
+                        $('#id' + item.Id).prop('checked', true);
+                        $('#id' + item.Id).val("true");
+
+                        //$("#"+ item.Id).attr('checked', 'checked');
+                    } else {
+                        $('#id' + item.Id).val("false");
+
+                    }
+
+
+                });
+            });
+            $('#invoice-orderId').val(id);
+            $('#invoice-modal').modal('show');
+
+        };
+
+        function viewOrderImage(orderid) {
+            window.open("/Orders/viewOrderImage?id=" + orderid, "_blank");
+        }
+
+
+    </script>
+
+
+
+}
+
+

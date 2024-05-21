@@ -1,0 +1,464 @@
+﻿@using Microsoft.AspNet.Identity
+
+<!DOCTYPE html>
+<html>
+<head>
+    @RenderSection("Styles",required:false)
+    <meta charset="UTF-8">
+    <title>ERP System</title>
+
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.4 -->
+    
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap_rtl.css" rel="stylesheet" />    
+    <link href="~/Content/bootstrapValidator.min.css" rel="stylesheet" />
+   
+    <!-- Font Awesome -->
+    <link href="~/Content/all.css" rel="stylesheet" />
+    @*<link href="~/Content/datepicker3.css" rel="stylesheet" />*@
+    
+    <link href="~/Content/select2.min.css" rel="stylesheet" />
+    <link href="~/Content/datatable.bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/AdminLTE.min.css" rel="stylesheet" />
+    <link href="~/Content/_all-skins.min.css" rel="stylesheet" />
+    <link href="~/Content/stylee.css" rel="stylesheet" />
+    <link href="~/Content/toastr.min.css" rel="stylesheet" />
+    <link href="~/Content/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Temp/Tree/dist/themes/default/style.min.css" rel="stylesheet" />
+    <link href="~/Temp/sweetalert2/css/sweetalert2.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.picker.min.css" rel="stylesheet" />
+
+    <style type="text/css">
+        .displaying {
+            display: none;
+        }
+
+        fieldset {
+            border: solid 1px #808080 !important;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top:20px;
+        }
+
+        .trans {
+            border: solid 1px #808080 !important;
+            border-radius: 5px;
+            width: 100%;
+            padding: 5px;
+            margin-top:15px;
+        }
+
+        .trans-edit {
+            border: solid 1px #00ff21 !important;
+            border-radius: 5px;
+            width: 100%;
+            padding: 5px;
+            margin-top:15px;
+        }
+
+        .legend {
+            position: absolute;
+            top: 15px;
+            right:45px;
+            background-color: white;
+            padding: 0 10px;
+            transform: scale3d(1.2, 1.2, 1.2);
+        }
+        
+        .buttons{
+            display: flex !important;
+            align-content:space-between;
+        }
+
+        .float{
+	        position:fixed;
+	        width:40px;
+	        height:40px;
+	        bottom:50px;
+	        left:100px;
+	        border-radius:50px;
+	        text-align:center;
+	        box-shadow: 7px 2px 3px #7e7b7b; 
+        }
+
+       .one{
+	        background-color:#ff6a00;
+	        color:#FFF;
+        }
+
+       .two{
+            margin-left:70px;
+	        background-color:#0094ff;
+	        color:#FFF;
+        }
+
+        .third{
+            margin-left:140px;
+	        background-color:#0C9;
+	        color:#FFF;
+        }
+
+        .exit{
+            float:right;
+            bottom:120px;
+	        background-color:red;
+	        color:#FFF;
+        }
+
+        .my-float{
+	        margin-top:10px;
+        }
+
+        /*a:hover{
+            color: #FFF;
+        }*/
+
+    </style>
+
+    <style>
+        /* Tooltip container */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+        }
+
+        /* Tooltip text */
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            padding: 5px 0;
+            border-radius: 6px;
+            /* Position the tooltip text - see examples below! */
+            position: absolute;
+            z-index: 1;
+            content:"eeeeeeeeeeeeeee",
+        }
+
+        /* Show the tooltip text when you mouse over the tooltip container */
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
+    </style>
+
+</head>
+
+<body class="skin-blue sidebar-mini">
+    <div class="wrapper">
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="@Url.Action("Index","Home")" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini"><b>ERP</b></span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg"><b>ERP</b>&nbsp; System</span>
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <!-- User Account: style can be found in dropdown.less -->
+                      @using Purchases.Models;
+                      @using Purchases.Functions;
+                      @using Microsoft.AspNet.Identity;
+                        @{ 
+                            Entities db = new Entities();
+                            RoleController RoleController = new RoleController();
+                            var userid = User.Identity.GetUserId();
+                            var FullUserName = db.AspNetUsers.Find(userid).FullName;
+                            //var FullUserName = "User Name";
+                            var Role = RoleController.GetRole(userid);
+                        }
+
+                      @if (Request.IsAuthenticated)
+                      {
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img src="~/Content/img/user3.jpg" class="user-image pull-right" alt="User Image">
+                                <span class="hidden-xs"  style="display:inline-block !important">
+                                   @FullUserName
+                                </span>
+                            </a>
+
+                            <ul class="dropdown-menu">
+                                <!-- User image -->
+                                <li class="user-header">
+                                    <img src="~/Content/img/user3.jpg" />
+                                    <p>
+                                       @FullUserName
+                                        <small>@Role</small>
+                                    </p>
+                                </li>
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-right">
+                                        @*<a href="@Url.Action("ChangePassword","Account")" class="btn btn-default btn-flat">تغير كلمة المرور</a>*@
+                                        <button type="button" class="btn btn-primary  pull-left btn-add" data-toggle="modal" data-target="#changepassword-modal">تغير كلمة المرور</button>
+                                    </div>
+                                    <div class="pull-left">
+                                        <a class="btn btn-default btn-flat" href="javascript:document.getElementById('logoutForm').submit()">تسجيل خروج </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                      }
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- Sidebar user panel -->
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul class="sidebar-menu">
+                    
+
+
+
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fas fa-users"></i>
+                            <span style="font-weight:bold"> الحسابات</span>
+                            <i class="fa fa-angle-left pull-left"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href='@Url.Action("Index", "Reciepts")'><i class="fa fa-circle-notch"></i> سندات الصرف </a></li>
+                        </ul>
+                        @*<ul class="treeview-menu">
+                            <li><a href='@Url.Action("Index", "Transactions")'><i class="fa fa-circle-notch"></i>   القيود المحاسبية  </a></li>
+                        </ul>*@
+                        <ul class="treeview-menu">
+                            <li><a href='@Url.Action("Index", "BankTransfers")'><i class="fa fa-circle-notch"></i>   التحوويل بين البنوك   </a></li>
+                        </ul>
+                        <ul class="treeview-menu">
+                            <li><a href='@Url.Action("PostedTransactions", "Transactions")'><i class="fa fa-circle-notch"></i>   القيود المرحلة  </a></li>
+                        </ul>
+                    </li>
+                  
+                    
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-user-plus "></i>
+                            <span style="font-weight:bold"> المشتريات </span>
+                            <i class="fa fa-angle-left pull-left"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href='@Url.Action("Index", "Orders")'><i class="fa fa-circle-notch"></i> عروض اسعار </a></li>
+                            <li><a href='@Url.Action("Index2", "Orders")'><i class="fa fa-circle-notch"></i> عطاءات </a></li>
+                            <li><a href='@Url.Action("Index", "searchOrders")'><i class="fa fa-circle-notch"></i> استعلام </a></li>
+                        </ul>
+                    </li>
+
+
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-file-invoice"></i>
+                            <span style="font-weight:bold"> تفاصيل الحسابات الفرعية </span>
+                            <i class="fa fa-angle-left pull-left"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href='@Url.Action("Index", "BankAccounts")'><i class="fa fa-circle-notch"></i>دليل البنوك</a></li>
+                            <li><a href='@Url.Action("Index", "ACUCompetingCompany")'><i class="fa fa-circle-notch"></i>شركات العطاءات</a></li>
+                            <li><a href='@Url.Action("Index", "Suppliers")'><i class="fa fa-circle-notch"></i>  الموردين  </a></li>
+                        </ul>
+                    </li>
+
+
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-cogs "></i>
+                            <span style="font-weight:bold"> تهيئة النظام</span>
+                            <i class="fa fa-angle-left pull-left"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href='@Url.Action("Index", "AccountTree")'><i class="fa fa-circle-notch"></i>  دليل الحسابات  </a></li>
+                            <li><a href='@Url.Action("Index", "FinancialCycles")'><i class="fa fa-circle-notch"></i>   السنة المالية  </a></li>
+                            <li><a href='@Url.Action("Index", "Balances")'><i class="fa fa-circle-notch"></i> الموازنة </a></li>
+                            <li><a href='@Url.Action("Index", "items")'><i class="fa fa-circle-notch"></i>  الاصناف </a></li>
+                        </ul>
+    </li>
+
+
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-cogs "></i>
+                            <span style="font-weight:bold"> تقارير الورقية</span>
+                            <i class="fa fa-angle-left pull-left"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href='@Url.Action("printTaxReport", "Reports")'><i class="fa fa-circle-notch"></i>  ضريبة ال 1%  </a></li>
+                        </ul>
+                    </li>
+    @*@if (Role == "مدير النظام")
+                    {
+                        <li>
+                            <a href='@Url.Action("Index", "Account")'>
+                                <i class="fa fa-user-cog "></i> <span style="font-weight:bold">  إدارة المستخدمين</span>
+                            </a>
+                        </li>
+                    }*@
+
+
+
+
+                    @*<li class="header">LABELS</li>
+                    <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
+                    <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
+                    <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>*@
+                </ul>
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+
+        @RenderSection("content")
+
+        <footer class="main-footer">
+            <div class="pull-left hidden-xs">
+                <b>Version</b> 1.0
+            </div>
+            <strong>Copyright &copy; @DateTime.Now.Year <a href="#"> SACLTD. </a>.</strong> All rights reserved.
+        </footer>
+
+        <form method="post" action="/Account/LogOff/" id="logoutForm" style="display:none">
+            @Html.AntiForgeryToken()
+        </form>
+    </div>
+
+
+
+
+    <div class="example-modal">
+        <div class="modal fade in" data-backdrop="static" id="changepassword-modal">
+            <div class="modal-dialog" style="width:50% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"> تعديل كلمة المرور</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <form method="post" id="edit-form">
+                                    <div class="box .no-border">
+                                        <!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label for="ed-password"> كلمة المرور القديمة  </label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                                                        <input type="password" class="form-control   oldPassword" id="oldPassword" name="oldPassword" placeholder="كلمة المرور القديمة ">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label for="ed-password"> كلمة المرور الجديدة  </label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                                                        <input type="password" class="form-control   newPassword" id="newPassword" name="newPassword" placeholder="كلمة المرور الجديدة ">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label for="ed-password"> تاكيد كلمة المرور الجديدة  </label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                                                        <input type="password" class="form-control   reNewPassword" id="reNewPassword" name="reNewPassword" placeholder="تاكيد كلمة المرور الجديدة ">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12 ">
+                                                <div class="d-flex justify-content-between">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">رجوع</button>
+                                                    <button type="button" class="btn btn-warning btnResetPassword" value="btnResetPassword">تعديل</button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <!-- /.box-body -->
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div><!-- /.row (main row) -->
+
+                    </div>
+                    @*<div class="modal-footer">
+
+                        </div>*@
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div>
+
+
+
+    <script src="~/Scripts/jquery-2.1.4.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/all.js"></script>
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/bootstrapValidator.min.js"></script>
+    <script src="~/Scripts/select2.full.min.js"></script>
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
+    <script src="~/Scripts/app.min.js"></script>
+    <script src="~/Scripts/demo.js"></script>
+    <script src="~/Scripts/toastr.min.js"></script>
+    <script src="~/Scripts/printThis.js"></script>
+    <script src="~/Scripts/main.js"></script>
+    <script src="~/Scripts/jspdf.min.js"></script>
+    <script src="~/Scripts/html2canvas.js"></script>
+    <script src="~/Scripts/jquery-3.5.1.js"></script>
+    <script src="~/Scripts/jquery-ui.min.js"></script>
+    <script src="~/Temp/sweetalert2/js/sweetalert2.min.js"></script>
+    <script src="~/Temp/sweetalert2/js/sweetalert.js"></script>
+    <script src="~/Temp/Tree/dist/jstree.min.js"></script>
+ 
+    @RenderSection("scripts", required: false);
+
+    <script>
+        $('.btnResetPassword').click(function () {
+            var OldPassword = $('#oldPassword').val();
+            var NewPassword = $('#newPassword').val();
+            var ConfirmPassword = $('#reNewPassword').val();
+
+            var obj = {
+                "OldPassword": OldPassword,
+                "NewPassword": NewPassword,
+                "ConfirmPassword": ConfirmPassword,
+            }
+            console.clear();
+            console.log(obj);
+
+
+            if (NewPassword === ConfirmPassword) {
+                $.post('/Account/ChangePassword', { data: obj }, function (response) {
+
+                    toastr[response.Status](response.Message, response.Title);
+                });
+            } else {
+                toastr['error']('يجب تطابق كلمة المرور الجديدة وتاكيد كلمة المرور الجديدة', 'خطأ');
+            }
+
+
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,828 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+@using Purchases.Models;
+@{
+
+    Entities db = new Entities();
+
+    AccountTree Select = new AccountTree();
+
+    //   decimal C;
+    List<AccountTree> Model = db.AccountTrees.ToList();
+
+    // int TreeLevel = Convert.ToInt32(Model.Max(x => x.AccLevel));
+
+
+}
+
+@section content{
+
+
+  <!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <div class="grad"></div>
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            الشجرة الحسابية <i class="fas fa-folder"></i>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
+            <li class="active">  الشجرة الحسابية</li>
+        </ol>
+
+    </section>
+
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                            <div class="container" style="margin-top:30px;">
+                             
+                                 
+                                <div style="margin-right: 40px;">
+                                    <img src="~/Temp/Image/Tree4.png"height="50" />
+                                </div>
+                                <div id="Refresh-Tree">
+                                 
+                                  
+                                    @Html.Partial("_Tree")
+                                </div>
+                                <div>
+
+
+
+
+
+                                </div>
+                       
+
+
+
+                        <table id="dataTable" class="table table-bordered table-sm table-hover" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>الرقم </th>
+                                    <th>الحساب</th>
+                                    <th>تحت حساب</th>
+                                    <th> الحساب الاب</th>
+                                    <th>العمليات</th>
+
+                                </tr>
+                            </thead>
+
+                        </table>
+
+
+                       
+                        
+                       
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    </div><!-- /.box-body -->
+                </div><!-- /.box -->
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+         </div>
+    </section>
+
+
+</div><!-- /.content-wrapper -->
+
+
+
+<!---///////////////////////////////////////////////////////////////////////////Start Add Model//////////////////////////////////////////////////////////////////////////////-->
+
+<div class="example-modal">
+    <div class="modal fade in" id="add-modal">
+        <div class="modal-dialog" style="width:80% !important">
+            <div class="modal-content">
+                <div class="modal-header .no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"> إضافة حساب جديد</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            @*<form method="post" id="add-form">*@
+                                <div class="box .no-border">
+                                    <!-- /.box-header -->
+                                    <div class="box-body">
+                                        <!-- Input addon -->
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="box .no-border">
+                                                    <!-- /.box-header -->
+                                                    <div class="box-body">
+                                                        <!-- Input addon -->
+                                                        <div class="row">
+
+
+                                                            <div class="col-lg-12 our-title">
+                                                                <span class="addAccParentName">الحساب الاب</span>
+                                                                <span class="addAccParent hidden" id="addAccParent" ></span>
+                                                            </div>
+
+                                                            <div class="col-lg-12">
+                                                                <div class="col-lg-6">
+                                                                    <div class="form-group">
+                                                                        <label for="name">  اسم الحساب</label>
+                                                                        <div class="input-group">
+                                                                            <div class="input-group-addon">
+                                                                                <i class="fa  fa-book"></i>
+                                                                            </div>
+                                                                            <input class="form-control addAccName" name="addAccName" id="addAccName" placeholder="اسم الحساب" autocomplete="off" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="form-group">
+                                                                        <label for="name">الحساب الختامي</label>
+                                                                        <div class="input-group">
+                                                                            <div class="input-group-addon">
+                                                                                <i class="fa  fa-book"></i>
+                                                                            </div>
+                                                                            <select class="form-control list addAccFinal" name="addAccFinal" id="addAccFinal" style="width:100%"></select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-12">
+                                                                <div class="col-lg-6">
+                                                                    <div class="form-group">
+                                                                        <label for="name">   نوع الحساب</label>
+                                                                        <div class="input-group">
+                                                                            <div class="input-group-addon">
+                                                                                <i class="fa  fa-book"></i>
+                                                                            </div>
+                                                                            <select class="form-control list addAccType" name="addAccType" id="addAccType" style="width:100%"></select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="form-group">
+                                                                        <label for="structureCount">  طبيعة الحساب</label>
+                                                                        <div class="input-group">
+                                                                            <span class="input-group-addon"><i class="fa fa-cash-register"></i></span>
+                                                                            @*<select type="text" class="form-control structureCount" id="addAccParent" name="addAccParent" placeholder=" ادخل الحساب الذي تحتة  " autocomplete="off"></select>*@
+                                                                            <select type="text" id="addAccNature" name="addAccNature" class="form-control list addAccNature" placeholder="تحت بتد " style="width:100%"></select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            
+                                                            <div class="col-lg-12 hidden" id="AddAccSubDiv">
+                                                                <div class="col-lg-6">
+                                                                    <div class="form-group">
+                                                                        <label for="name"> تصنيف الحساب الفرعي</label>
+                                                                        <div class="input-group">
+                                                                            <div class="input-group-addon">
+                                                                                <i class="fa  fa-book"></i>
+                                                                            </div>
+                                                                            <select class="form-control list addAccSubCategory" name="addAccSubCategory" id="addAccSubCategory" style="width:100%"></select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                           <div class="col-lg-12">
+                                                               <button class="btn btn-primary btn-block " style="margin: 20px auto;" onclick="addToTable()">ترحيل</button>
+                                                           </div>
+                                                           
+                                                        </div>
+
+                                                        <div class="row">
+
+                                                            <table id="example1" class="table table-bordered table-striped virtualTable">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th style="text-align:center ;width:750px;">اسم الحساب</th>
+                                                                        <th style="text-align:center ;width:750px;">الحساب الختامي </th>
+                                                                        <th style="text-align:center ;width:750px;"> نوع الحساب</th>
+                                                                        <th style="text-align:center ;width:750px;"> طبيعة الحساب</th>
+                                                                        <th style="text-align:center ;width:750px;">  ت.الحساب الفرعي</th>
+                                                                        <th style="text-align:center;"><i class="fa fa-cogs"></i></th>
+
+
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody class="myTbody"></tbody>
+                                                                <tfoot>
+
+                                                                </tfoot>
+                                                            </table>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-12 ">
+                                                                <div class="pull-left">
+                                                                    <button type="button" class="btn btn-default " data-dismiss="modal">رجوع</button>
+                                                                    <button type="submit" id="btnSave" class="btn btn-primary save" onclick="saveVirtual()">حفظ</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /.box-body -->
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+
+                            @*</form>*@
+                        </div>
+                    </div><!-- /.row (main row) -->
+
+                </div>
+                @*<div class="modal-footer">
+
+                    </div>*@
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+<!---///////////////////////////////////////////////////////////////////////////End Add Model//////////////////////////////////////////////////////////////////////////////-->
+
+}
+
+
+@section scripts{
+
+<script>
+    $('#html').jstree();
+
+    var myId = 0;
+    var dataTable;
+    $(document).ready(function () {
+
+        $('.tree').on('click', 'span', function () {
+            $('#add-modal').modal('show');
+            // Get the text of the clicked node
+            var nodeText = nodeText =  $(this).text().trim();
+            $('.addAccParentName').text("الحساب الاب - " + nodeText);
+            $('#addAccParent').text(nodeText);
+
+
+            // Log or use the text as needed
+            //console.log('Clicked Node Text:', nodeText);
+        });
+
+
+        dataTable = $("#dataTable").DataTable({
+
+            "processing": true,
+            // "serverSide": true,
+            "ajax": {
+                "url": "/AccountTree/GetAllItem",
+                "type": "GET",
+                "datatype": "json",
+
+            },
+            "columns": [
+                { "data": "Id", "autowidth": true },
+                { "data": "AccName", "autowidth": true },
+                { "data": "AccParentName", "autowidth": true },
+                { "data": "GetParentNameList", "autowidth": true },
+                {
+                    "data": "Id", "width": "150px", "render": function (data) {
+                        return '<button class="btn btn-info transfer btn-dataTable" onclick="Detail(' + data + ')">تفاصيل</button> ' +
+                            '<button class="btn btn-danger transfer btn-dataTable" onclick="Delete(' + data + ')">حذف</button> ';
+                    }
+                },
+
+            ],
+            "language": {
+                              "sProcessing": "جارٍ التحميل...",
+                              "sLengthMenu": "أظهر _MENU_ مدخلات",
+                              "sZeroRecords": "لم يعثر على أية سجلات",
+                              "sInfo": "إظهار _START_ إلى _END_ من أصل _TOTAL_ مدخل",
+                              "sInfoEmpty": "يعرض 0 إلى 0 من أصل 0 سجل",
+                              "sInfoFiltered": "(منتقاة من مجموع _MAX_ مُدخل)",
+                              "sInfoPostFix": "",
+                              "sSearch": "ابحث:",
+                              "sUrl": "",
+                              "oPaginate": {
+                                  "sFirst": "الأول",
+                                  "sPrevious": "السابق",
+                                  "sNext": "التالي",
+                                  "sLast": "الأخير",
+                              }
+                          }
+        });
+
+
+
+        function select2list(selector, url, placeholder) {
+            $(selector).select2({
+                language: { inputTooShort: function () { return 'enter 1 letter at less'; } },
+                ajax: {
+                    url: url,
+                    dataType: 'json',
+                    delay: 100,
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data,
+                            pagination: {
+                                more: ((data.total_count) > (params.page * 20))
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: placeholder,
+                minimumInputLength: 1,
+            });
+
+        };
+        //select2list("#addAccParent", "/AccountTree/LoadTreeAdd", "  الحساب ");
+        select2list("#addAccType", "/AccountTree/GetAccountType", "  نوع الحساب ");
+        select2list("#addAccNature", "/AccountTree/GetAccountNature", "  طبيعة الحساب ");
+        select2list("#addAccFinal", "/AccountTree/GetAccountFinal", "  الحساب الختامي ");
+        select2list("#addAccSubCategory", "/AccountTree/GetAccountSubCategory", " تصنيف الحساب الفرعي ");
+
+        
+
+
+        //دي لمن الموظف يدخل ويضغط انتر ويظهر الاسم في الجدول الصغير
+        
+       
+
+
+        //دي دالة ذر الحذف في الجدول الصغير
+        $('.table-striped').on('click', '.btn-warning', function () {
+            $(this).closest('tr').remove();
+
+        });
+    });
+    
+    function Detail(Id) {
+        window.open("/Transactions/Detail/"+Id, "_blank");
+    }
+
+    //دالة فتح حقول الحساب الفرعي
+    $('#addAccType').on('change', function (e) {
+        $('#addAccSubCategory').val(null).trigger('change');
+        var AccType = $(this).val();
+        
+        switch (AccType) {
+            case "1":
+                $('#AddAccSubDiv').addClass("hidden");
+                break;
+            case "2":
+                $('#AddAccSubDiv').removeClass("hidden");
+                break;
+        }
+    });
+
+    //دي دالة ذر الحفظ
+    //دي دالة الحفظ في الجدول ال في داتابيز 
+    function saveVirtual() {
+
+        var data = [];
+
+        addAccParent = $('#addAccParent').text();
+        addAccParentName = $('.addAccParentName').text();
+
+        $(".virtualTable tbody tr").each(function (index) {
+            //EmployeeId = $(this).find('.id').text();
+            name = $(this).find('.name').text();
+            final = $(this).find('.finalVal').text();
+            type = $(this).find('.typeVal').text();
+            nature = $(this).find('.natureVal').text();
+            subCat = $(this).find('.subCatVal').text();
+            //---->Form validation goes here
+            data.push({
+                AccName: name,
+                AccParent: addAccParent,
+                AccTypeId : type,
+                AccNatureId : nature,
+                AccFinalId: final,
+                AccSubCategory: subCat
+            });
+
+            //if (type == 2) {
+            //    // AccSubCategory = $('#addAccSubCategory').val();
+            //    data.push({
+            //        AccSubCategory: subCat
+            //    });
+            //}
+           
+        });
+        console.clear();
+        console.log(data);
+        console.log(addAccParent);
+
+        $.ajax({
+            url: "/AccountTree/Create?accParentName=" + addAccParent,
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: "application/json charset=utf-8",
+            dataType: "json",
+            error: function (response) {
+                toastr[response.Status](response.Message, response.Title);
+            },
+            success: function (response) {
+                if (response.Status == "warning") {
+                    toastr[response.Status](response.Message, response.Title);
+                } else {
+                    toastr[response.Status](response.Message, response.Title);
+                    //$('.list').val(null).trigger('change');
+                    //$('#add-form').bootstrapValidator("resetForm", true);
+                    //$("table tbody tr").empty();
+                    window.location.reload();
+                }
+            }
+    });
+    }
+
+    $("#btnAddNode").click(function () {
+
+            fillTreeName();
+            
+
+    });
+
+           //-------------------------------------------------Start Add------------------------------------------------------------------------------------------------------------
+
+            $('#add-form').bootstrapValidator({
+                onSuccess: function (e) {
+                    save();
+                    e.preventDefault();
+
+                },
+                submitButtons: 'button[type="submit"]',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                    invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                    validating: 'fa fa-refresh fa-spin success-feedback-icons'
+                },
+                fields: {
+                    addAccName: {
+                        validators: {
+                            notEmpty: {
+                                message: 'يجب الا يكون حقل اسم الادراة  فارغ'
+                            }
+                        }
+                    }
+
+                }
+            });
+
+                //-------------------------------------------------End Add------------------------------------------------------------------------------------------------------------
+
+
+          //-----------------------------------------------------------------Start Edit---------------------------------------------------------------
+
+    //Open Edit Modal
+
+    function getData(id) {
+        fillTreeNameUpdate();
+
+        $("#edit-modal").modal('show');
+
+        $.ajax({
+            type: "GET",
+            url: "/AccountTree/GetDataForUpdate/" + id,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (response != null) {
+
+                    
+                  
+                    $('#edId').val(response.Id);
+                    $('#edAccName').val(response.AccName);
+                    $('#edAccCode').val(response.AccCode);
+                    $('#edAccParent').val(response.AccParent);
+                    
+                    $("#edAccParent").attr("disabled", "disabled");
+                    //alert(response.AccParent);
+
+                } else {
+                    alert("Something went wrong");
+                }
+            },
+            failure: function (response) {
+                //alert(response.responseText);
+            },
+            error: function (response) {
+                //alert(response.responseText);
+            }
+        });
+
+    }
+
+    
+                //Validation And Save Edit Data
+                $('#edit-form').bootstrapValidator({
+                    onSuccess: function (e) {
+                        edit();
+                        e.preventDefault();
+
+                    },
+                    submitButtons: 'button[type="submit"]',
+                    feedbackIcons: {
+                        valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                        invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                        validating: 'fa fa-refresh fa-spin success-feedback-icons'
+                    },
+                    fields: {
+                    edAccName: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'يجب الا يكون حقل اسم الادارة  فارغ'
+                                }
+                            }
+                        }
+
+                    }
+                });
+
+                function edit() {
+
+
+                    var ob = {
+                        "Id": $('#edId').val(),
+                        "AccCode": $('#edAccCode').val(),
+                        "AccName": $('#edAccName').val(),
+                        "AccParent": $('#edAccParent').val(),
+                        //"StructureCount": $('#edstructureCount').val()
+                    };
+                    $.ajax({
+                        url: "@Url.Action("Edit", "AccountTree")",
+                        type: "POST",
+                        data: JSON.stringify(ob),
+                        contentType: "application/json charset=utf-8",
+                        dataType: "json",
+                        error: function (response) {
+                            //toastr[response.Status](response.Message, response.Title);
+                        },
+                        success: function (response) {
+                            toastr[response.Status](response.Message, response.Title);
+
+                            //Refresh(0);
+                            // location.reload();
+                            dataTable.ajax.reload();
+                            Refresh();
+                            $('#edit-form').bootstrapValidator('resetForm', true);
+                            $('#edit-modal').modal('hide');
+                            // dataTable.ajax.reload();
+
+
+                        }
+                    });
+                };
+
+
+
+
+
+
+                function Refresh(id) {
+
+                    $("#AjaxLoader").show()
+
+                    $.get("/AccountTree/GetTreeParial", { id: id }, function (nn) {
+
+                        $("#Refresh-Tree").html(nn);
+                        //$("#myModal").modal('show');
+                        //$("#AjaxLoader").hide()
+                        //$('#html').jstree();
+                    })
+                }
+
+
+
+
+
+
+                function fillTreeName() {
+
+                    $('#addAccParent').empty();
+                
+
+                    $.ajax({
+                        url: "/AccountTree/LoadTree",
+                        type: "GET",
+                        contentType: "application/json;charset=utf-8",
+                        dataType: "json",
+                        success: function (result) {
+                            if (result) {
+
+                                var x;
+                                var html = "";
+                                $.each(result, function (key, item) {
+                                    html += "<option value='" + item.Id + "'>" + item.AccName + "</option>";
+                                });
+                                $('#addAccParent').append(html);
+                                //$('#DName2').append(html);
+
+                            }
+                        },
+                        error: function (errormessage) {
+                            alert(errormessage.responseText);
+                        }
+
+                    });
+
+
+
+                  
+                };
+
+                
+                function fillTreeNameUpdate() {
+
+                    $( document ).ready(function() {
+
+
+                    $('#edAccParent').empty();
+                    $.ajax({
+                        url: "/AccountTree/LoadTreeUpdate",
+                        type: "GET",
+                        contentType: "application/json;charset=utf-8",
+                        dataType: "json",
+                        success: function (result) {
+                            if (result) {
+
+                                var x;
+                                var html = "";
+                                $.each(result, function (key, item) {
+                                    html += "<option value='" + item.Id + "'>" + item.AccName + "</option>";
+                                });
+                                $('#edAccParent').append(html);
+                                //$('#DName2').append(html);
+
+                            }
+                        },
+                        error: function (errormessage) {
+                            alert(errormessage.responseText);
+                        }
+
+                    });
+                    });
+                };
+
+                //function select2list(selector, url, placeholder) {
+                //    $(selector).select2({
+                //        language: { inputTooShort: function () { return 'enter 1 letter at less'; } },
+                //        ajax: {
+                //            url: url,
+                //            dataType: 'json',
+                //            delay: 100,
+                //            data: function (params) {
+                //                return {
+                //                    q: params.term,
+                //                    page: params.page
+                //                };
+                //            },
+                //            processResults: function (data, params) {
+                //                params.page = params.page || 1;
+                //                return {
+                //                    results: data,
+                //                    pagination: {
+                //                        more: ((data.total_count) > (params.page * 20))
+                //                    }
+                //                };
+                //            },
+                //            cache: true
+                //        },
+                //        placeholder: placeholder,
+                //        minimumInputLength: 1,
+                //    });
+
+                //};
+                //select2list("#edAccParent", "/AccountTree/LoadTreeUpdate", "  الحساب ");
+          ///=========================================Cusrom Tree====================================================================
+
+
+                function Delete(id) {
+
+
+                    swal({
+                        title: "هل انت متاكد ",
+                        text: " OK تقوم بحذف العنصر! عند الضعط علي",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                     .then((willDelete) => {
+                         if (willDelete) {
+                             $.get("/AccountTree/Delete", { id: id }, function (res) {
+                                 if (res) {
+
+                                     if (res.message != null && res.message === "Used") {
+                                      //   toastr[response.Status](response.MessageText, response.Title);
+                                         toastr.error("لايمكن حذف هذا العنصر ", "تعذر الحذف");
+                                     }
+
+                                     if (res.message != null && res.message === "Delete") {
+                                         toastr.success("تم الحذف الحساب ", "الحذف");
+                                         Refresh();
+                                        /// toastr[response.Status](response.MessageText, response.Title);
+                                     }
+                                     dataTable.ajax.reload();
+                                 }
+                             });
+                         }
+                     });
+
+                }
+   
+
+
+
+                $('.select2').select2({
+                   
+                })
+  
+
+
+                function addToTable() {
+
+                        //هنا لازم ندخل اسم الحساب
+                        var addAccName = $('.addAccName').val();
+                        var addAccFinal = $('#select2-addAccFinal-container').text();
+                        var addAccType = $('#select2-addAccType-container').text();
+                        var addAccNature = $('#select2-addAccNature-container').text();
+                        var addAccSubCat = $('#select2-addAccSubCategory-container').text();
+
+                    /**/
+                    var addAccFinalVal = $('.addAccFinal').val();
+                    var addAccTypeVal = $('.addAccType').val();
+                    var addAccNatureVal = $('.addAccNature').val();
+                    var addAccSubCatVal = $('.addAccSubCategory').val();
+
+                    if(addAccTypeVal == 1){
+                        addAccSubCat = '';
+                        addAccSubCatVal = '';
+                    }
+
+                    if (addAccName.trim() != "" & addAccFinalVal != null & addAccTypeVal != null & addAccNatureVal != null) {
+                    //var y = $('#addAccName').text();
+                        if ((addAccTypeVal == 2 & addAccSubCatVal != null) | addAccTypeVal == 1) {
+                            var rows = "<tr id='row' style='font-size: 16px;text-align:center;'>"
+                                           + "<td class='name'>" + addAccName + "</td>"
+                                           + "<td class='nameVal hidden'>" + addAccName + "</td>"
+                                           + "<td class='final'>" + addAccFinal + "</td>"
+                                           + "<td class='finalVal hidden'>" + addAccFinalVal + "</td>"
+                                           + "<td class='type'>" + addAccType + "</td>"
+                                           + "<td class='typeVal hidden'>" + addAccTypeVal + "</td>"
+                                           + "<td class='nature'>" + addAccNature + "</td>"
+                                           + "<td class='natureVal hidden'>" + addAccNatureVal + "</td>"
+                                           + "<td class='subCat'>" + addAccSubCat + "</td>"
+                                           + "<td class='subCatVal hidden'>" + addAccSubCatVal + "</td>"
+                                           + '<td  class="employeeName" > <button id="delete"onclick="return deletes()" class="btn btn-warning transfer ">حذف<i class=" transfer-fa fa  fa-edit"></i></button>' + "</td>"
+                                           + "</tr>";
+                            $('.myTbody').append(rows);
+                            $('.addAccName').val('');
+                            $('.list').text(null).trigger('change');
+                            $('.list').val(null).trigger('change');
+                        } else {
+                            toastr["error"]("يجب ادخال اسم الحساب الفرعي", "خطأ");
+                        }
+                    } else {
+                        toastr["error"]("يجب ادخال اسم الحساب", "خطأ");
+                    }
+                }
+</script>
+}
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,610 @@
+﻿@model PagedList.IPagedList<Purchases.Models.ViewModal.CompanyDocumentViewModel>
+
+@using PagedList.Mvc;
+@using Purchases.Models;
+
+@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+    Entities db = new Entities();
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    @section content{
+        <div>
+            <div class="content-wrapper">
+                <label class="hidden" id="CompanyId">@ViewBag.CompanyId</label>
+                <label class="hidden" id="OrderId">@ViewBag.OrderId</label>
+                <label class="hidden" id="ACUCommitteFormationId">@ViewBag.ACUCommitteFormationId</label>
+                <label id="EmployeeId" class="hidden">EmployeeId</label>
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>
+                        مستندات شركة/ @ViewBag.CompanyName
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li><a href="#">Examples</a></li>
+                        <li class="active">User profile</li>
+                    </ol>
+                </section>
+                
+                <section class="content-header">
+                    @*<div class="row ml-4">*@
+                        <button class="btn btn-primary btnAdd pull-left" data-toggle="modal" data-target="#myModal"> مستند جديد <i class="fa fa-plus square"></i></button>
+                    @*</div>*@
+                </section>
+                <br /><br />
+                <!-- Main content -->
+                <section class="content">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <!-- About Me Box -->
+                            <div class="box box-primary">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">تفاصيل الشركة</h3>
+                                </div>
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    <strong><i class="fa fa-dice-four margin-r-5"></i> اسم الشركة</strong>
+                                   
+                                    <p class="text-muted">
+                                        @ViewBag.CompanyName
+                                    </p>
+                                    <hr>
+                                    <strong><i class="fa fa-id-card margin-r-5"></i> الترخيص</strong>
+
+                                    <p class="text-muted">@ViewBag.LicenseNumber</p>
+                                    <hr>
+                                    <strong><i class="fa fa-map-marker margin-r-5"></i> العنوان</strong>
+
+                                    <p class="text-muted">@ViewBag.Address</p>
+                                    <hr>
+                                    <strong><i class="fa fa-envelope margin-r-5"></i> الايميل</strong>
+
+                                    <p class="text-muted">@ViewBag.Email</p>
+                                    <hr>
+                                    <strong><i class="fa fa-phone margin-r-5"></i> أرقام التلفونات</strong>
+                                    <p>
+                                        <span class="text-muted">@ViewBag.Phones </span>
+                                    </p>
+                                    <hr>
+                                    <strong><i class="fa fa-info margin-r-5"></i> ملحوظات</strong>
+
+                                    <p class="text-muted">@ViewBag.Status</p>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                            
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-md-9">
+
+                            <div class="row">
+                                @foreach (var item in Model.ToList())
+                                { 
+                                    <div class="col-lg-4">
+                                        <div class="box box-primary">
+                                            <div class="box-body box-profile">
+                                                @*<h3 class="profile-username text-center" id="OrderDescription">هنا العنوان</h3>*@
+                                                <h5 class="profile-username text-center" style="margin-bottom:15px;" id="Title">@item.Title</h5>
+                                                <h5 class="profile-username text-center hidden" id="ACUCompetingCompanyDocumentId">@item.Id</h5>
+
+                                                <center>
+                                                    <a href="../../@item.ImagePath" target="_blank"><img src="~/Uploads/pdf1.png" height="150" width="150" /></a>
+                                                </center>
+
+                                                <p class="text-muted text-center note" style="margin-top:15px; white-space:nowrap; overflow:hidden; text-overflow: ellipsis;" id="Note">@item.Note</p>
+                                                <style>
+                                                    .note:hover {
+                                                     white-space:initial !important; 
+                                                     overflow:auto; 
+                                                     text-overflow: initial;
+                                                    }
+                                                </style>
+                                                <div class="profile-username">
+                                                    <div class="col-4">
+                                                        
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <a href="#" class="btn btn-warning btn-block col-md-3" onclick="getDocumentForUpdate(@item.Id)"><b>تعديل</b></a>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <a href="#" class="btn btn-danger btn-block col-md-3 pull-left" onclick="DeleteDocument(@item.Id, @item.CompetingCompanyId)"><b>حذف</b></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- /.box-body -->
+                                        </div>
+                                    </div>
+                                    <!-- /.col -->
+                                }
+                            </div>
+                            <hr style="border-top: 1px solid #948484;" />
+
+
+                            صفحة  @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) من  @Model.PageCount  (عدد كل العناصر @ViewBag.ItemCount)
+
+                            <div id="contentPager">
+                                @Html.PagedListPager(Model, page => Url.Action("CompanyDocument", new { Id = ViewBag.CompanyId, page = page }))
+                            </div>
+
+                            <br />
+                        </div>
+
+                        <!-- /.row -->
+                    </div>
+
+                </section>
+                <!-- /.content -->
+            </div>
+        </div>
+
+
+        <div class="modal fade in" id="myModal" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog" style="width:50% !important">
+                <div class="modal-content">
+                    <form method="post" id="add-form">
+                        <div class="modal-header .no-border">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title"> إضافة مستند جديدة</h4>
+                            <label class="hidden" id="DocumentId"></label>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label for="name"> عنوان المستند </label>
+                                                <input class="form-control" id="Titles" onkeyup="return validateText(this.value, 'Titles');" placeholder="اسم المستند" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label for="name">اختار المستند</label>
+                                                @*<input class="form-control" id="Name" onkeyup="return validateText(this.value, 'Name');" name="Name" placeholder="اسم المستند" />*@
+                                                <input type="file" id="ImagePath" name="ImagePath" accept="application/pdf">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                <label for="name"> الملحوظات </label>
+                                                <textarea class="form-control" id="Notes" placeholder="الملحوظات" rows="4"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <input type="checkbox" id="status" value="1" />
+                                            <label>مفعلة</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- /.row (main row) -->
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary btnSave pull-right">حفظ</button>
+                            <button class="btn btn-danger btnCancel" data-dismiss="modal">إلغاء</button>
+                        </div>
+                    </form>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+
+    }
+
+    @section scripts{
+        <script>
+
+        $(function () {
+            function loadData() {
+                dataTable = $('#tbx').DataTable({
+                    "language": {
+                        "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                        "search": "بحث"
+                    },
+                    ajax: {
+                        url: '/ACUCompetingCompany/getAllCompanies',
+                        dataSrc: ''
+                    },
+                    columns: [
+                        {
+                            "title": "# ",
+                            "data": "Id"
+                        },
+                        {
+                            "title": "الاسم",
+                            "data": "Name"
+                        },
+
+                        {
+                            "title": "رقم الهاتف",
+                            "data": "Phone1"
+                        },
+                        {
+                            "title": "رقم التسجيل",
+                            "data": "LicenseNumber"
+                        },
+
+                        {
+                            "title": "الايميل",
+                            "data": "Email"
+                        },
+                        {
+                            "title": "الحالة",
+                            "data": "StatusText"
+                        },
+
+                        {
+                            "title": "<i class='fa fa-cog'></i>",
+                            "data": null,
+                            "orderable": false,
+                            "render": function (data) {
+                                return '<div class="btn-group">' +
+                                            '<button type="button" class="btn btn-default" data-toggle="dropdown">  <i class="fa fa-ellipsis-v"></i> </button> <div class="dropdown-menu btn-threePoint">' +
+                                            '<a class="dropdown-item btnSelect" href="#">تعديل</a> <br />' +
+                                            '<a class="dropdown-item btnDelete" href="#">حذف</a> <br />' +
+                                            '<a class="dropdown-item btnDocument" href="#">المستندات</a> <br />' +
+                                        '</div></div>';
+                            }
+                        },
+                    ]
+                });
+            }
+            loadData();
+        });
+
+        //Date picker
+        $('.datepicker').datepicker({
+            autoclose: true
+        })
+
+        $('.btnAdd').click(function () {
+            $('.btnSave').removeClass('btn btn-warning');
+            $('.btnSave').addClass('btn btn-info');
+            $('.btnSave').text('حفظ');
+        });
+        var obj = [];
+
+        //$("#tbx").on('click', '.btnSelect', function () {
+        //    var currentRow = $(this).closest("tr");
+        //    var data = $('#tbx').DataTable().row(currentRow).data();
+        //    var Id = data['Id'];
+        //    console.clear();
+        //    console.log(Id);
+        //    $('#Id').text(Id);
+
+        //    $('#myModal').modal('show');
+
+        //    $('.btnSave').removeClass('btn btn-info');
+        //    $('.btnSave').addClass('btn btn-warning');
+        //    $('.btnSave').text('تعديل');
+
+        //    $.get('/ACUCompetingCompany/getCompanyById', { Id: Id }, function (response) {
+        //        //var data = JSON.stringify(response);
+        //        $('#Name').val(response['Name']);
+        //        $('#Phone1').val(response['Phone1']);
+        //        $('#Phone2').val(response['Phone2']);
+        //        $('#Email').val(response['Email']);
+        //        $('#Address').val(response['Address']);
+        //        var status = response['StatusText'];
+
+        //        if (status == 'غير مفعل')
+        //        {
+        //            $('#status').prop('checked', false);
+        //        }
+        //        else
+        //        {
+        //            $('#status').prop('checked', true);
+        //        }
+        //    });
+        //});
+
+        //$("#tbx").on('click', '.btnDelete', function () {
+        //    var currentRow = $(this).closest("tr");
+        //    var data = $('#tbx').DataTable().row(currentRow).data();
+        //    var Id = data['Id'];
+        //    var CompanyId = data['CompanyId'];
+        //    var Title = data['Title'];
+        //    var CommitteeJobId = $('#CommitteeJobId').val();
+
+        //    obj = {
+        //        "Id": Id,
+        //        "CompanyId": CompanyId,
+        //        "Title": Title
+        //    };
+        //    debugger;
+        //    console.clear();
+        //    console.log(Id);
+        //    console.log(CompanyId);
+        //    console.log(Title);
+
+        //    //$.ajax({
+        //    //    "type": "POST",
+        //    //    "url": '/ACUCompetingCompany/DeleteDocument?Id=' + Id + "&CompanyId = " + CompanyId  + "Title = " + Title,
+        //    //    "dataType": "json",
+        //    //    "traditional": true,
+        //    //    "data":null,
+        //    //    "contentType": "application/json  charset=utf-8",
+        //    //    "error": function (response) {
+        //    //        toastr[response.Status](response.Message, response.Title);
+        //    //    },
+        //    //    "success": function (response) {
+        //    //        toastr[response.Status](response.Message, response.Title);
+        //    //        dataTable.ajax.reload();
+        //    //    }
+        //    //});
+        //});
+
+        //$("#tbx").on('click', '.btnDocument', function () {
+        //    var currentRow = $(this).closest("tr");
+        //    var data = $('#tbx').DataTable().row(currentRow).data();
+        //    var Id = data['Id'];
+
+        //    window.open("/ACUCompetingCompany/CompanyDocument/" + Id, '_blank');
+        //});
+
+        function Save() {
+            var btnText = $('.btnSave').text();
+            var Title = $('#Titles').val();
+            var Note = $('#Notes').val();
+            var ImagePath = $('#ImagePath').val();
+            var CompetingCompanyId = $('#CompanyId').text();
+            var Id = $('#DocumentId').text();
+            var ACUCompetingCompanyDocumentId = $('#ACUCompetingCompanyDocumentId').text();
+
+            obj = {
+                "Title": Title,
+                "Note": Note,
+                "ImagePath": ImagePath,
+                "CompetingCompanyId": CompetingCompanyId,
+                "Id": ACUCompetingCompanyDocumentId
+            };
+
+            //debugger;
+            var fileUpload = $("#ImagePath").get(0);
+            var files = fileUpload.files;
+
+            // Create FormData object
+            var fileData = new FormData();
+
+            // Looping over all files and add it to FormData object
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+            }
+
+            // Adding one more key to FormData object
+            fileData.append("Title", $('#Titles').val());
+            fileData.append("Id", $('#DocumentId').text());
+            fileData.append("Note", $('#Notes').val());
+            fileData.append("CompetingCompanyId", CompetingCompanyId);
+            fileData.append("Id", ACUCompetingCompanyDocumentId);
+           
+
+            console.clear();
+            console.log(obj);
+            var url= '';
+            if (btnText == 'حفظ')
+            {
+                url = '/ACUCompetingCompany/AddDocument';
+            }else{
+                url = '/ACUCompetingCompany/UpdateDocument';
+            }
+
+            console.clear();
+            console.log(url);
+            $.ajax({
+                "type": "POST",
+                "url": url,
+                //"dataType": "json",
+                "traditional": true,
+                "contentType": false, // Not to set any content header
+                "processData": false,
+                //"data": JSON.stringify(obj),
+                "data": fileData,
+                //"contentType": "application/json  charset=utf-8",
+                "error": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    $('#myModal').modal('toggle');
+                    $('#tbx').DataTable().ajax.reload();
+                },
+                "success": function (response) {
+                    $('#myModal').modal('toggle');
+                    //$('#tbx').DataTable().ajax.reload();
+                    window.location.reload();
+                    toastr[response.Status](response.Message, response.Title);
+                }
+
+        });
+        }
+
+
+        $('#add-form').bootstrapValidator({
+            onSuccess: function (e) {
+                Save();
+                e.preventDefault();
+
+            },
+            submitButtons: 'button[type="submit"]',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                validating: 'fa fa-refresh fa-spin success-feedback-icons'
+            },
+            fields: {
+                //department: {
+                //    validators: {
+                //        notEmpty: {
+                //            message: 'يجب الا يكون حقل الادارة  فارغ'
+                //        }
+                //    }
+                //},
+                //description: {
+                //    validators: {
+                //        notEmpty: {
+                //            message: 'يجب الا يكون حقل موضوع الطلب فارغ'
+                //        }
+                //    }
+                //},
+                //orderdate: {
+                //    validators: {
+                //        notEmpty: {
+                //            message: 'يجب الا يكون حقل تاريخ الطلب فارغ'
+                //        }
+                //    }
+                //},
+                ImagePath: {
+                    validators: {
+                        file: {
+                            extension: 'pdf',
+                            type: 'application/pdf',
+                            message: 'يجب اختيار ملف على صيغة pdf '
+                        },
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل صورة الطلب فارغ'
+                        }
+                    }
+                },
+                'requierCount[]': {
+                    validators: {
+                        notEmpty: {
+                            message: 'Please specify at least one browser you use daily for development'
+                        }
+                    }
+                },
+            }
+        });
+
+        function AddCompetingCompany() {
+            var OrderId = $('#OrderId').text();
+            window.location.href = "/ACUCommitteFormations/AllEmployees/" + OrderId;
+        }
+
+        function UpdateCompetingCompany() {
+            var EmployeeId = $('#EmployeeId').text();
+            var Id = $('#Id').text();
+            var CommitteeJobId = $('#CommitteeJobId').val();
+
+            obj = {
+                "EmployeeId": EmployeeId,
+                "CommitteeJobId": CommitteeJobId,
+                "Id": Id,
+            };
+
+            console.clear();
+            console.log(obj);
+
+            $.ajax({
+                "type": "POST",
+                "url": '/ACUCommitteFormations/UpdateMember',
+                "dataType": "json",
+                "traditional": true,
+                "data": JSON.stringify(obj),
+                "contentType": "application/json  charset=utf-8",
+                "error": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                },
+                "success": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    dataTable.ajax.reload();
+                    $('#myModal').modal('toggle');
+                }
+            });
+
+        }
+        </script>
+
+        <script>
+            function validatePhone(Phone, fieldId) {
+
+                if (Phone == '' | Phone.match(/^\+(?:[0-9] ?){6,14}[0-9]$/) || Phone.length <=9)
+                {
+                    $('#' + fieldId).css({ "border": 'solid 2px red' });
+                    return false;
+                } else {
+                    $('#' + fieldId).css({ "border": 'solid 1px #d2d6de' });
+                    return true;
+                }
+                $.validator.addMethod('fnType', function (value, element) {
+                    return value.match(/^\+(?:[0-9] ?){6,14}[0-9]$/);
+                }, 'Enter Valid  phone number');
+            }
+
+            function validateEmail(email, fieldId) {
+                var regex = /^([a-zA-Z0-9_.+-])+\@@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+                if (email == '' | email.match(/^([a-zA-Z0-9_.+-])+\@@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/)) {
+                    $('#' + fieldId).css({ "border": 'solid 2px red' });
+                    return false;
+                } else {
+                    $('#' + fieldId).css({ "border": 'solid 1px #d2d6de' });
+                    return true;
+                }
+            }
+
+            function validateText(text, fieldId) {
+                if (text == '') {
+                    $('#' + fieldId).css({ "border": 'solid 2px red' });
+                    return false;
+                } else {
+                    $('#' + fieldId).css({ "border": 'solid 1px #d2d6de' });
+                    return true;
+                }
+            }
+            
+            /********************************************************************************/
+            
+            function OpenPDF(ImagePath) {
+                console.clear();
+                console.log(ImagePath);
+                window.open("../"+ImagePath, "width=500,height=500,top=100,left=500", "_blank");
+            }
+
+            function getDocumentForUpdate(Id)
+            {
+                console.clear();
+                $('#myModal').modal('toggle');
+                $.get('/ACUCompetingCompany/getDocument?Id='+Id, null, function(resopnse){
+                    console.log(resopnse['Title']);
+                    $("#Titles").val(resopnse['Title']);
+                    $('#Notes').val(resopnse['Note']);
+                    $('#DocumentId').text(resopnse['Id']);
+                    $('.btnSave').addClass('btn btn-warning');
+                    $('.btnSave').text('تعديل');
+                });
+            }
+
+            function DeleteDocument(Id, CompanyId){
+                var Title = $('#Title').text();
+
+                console.clear();
+                console.log(Id);
+                console.log(CompanyId);
+                console.log(Title);
+                $.post('/ACUCompetingCompany/DeleteDocument',{Id:Id, CompanyId:CompanyId, Title:Title + ".pdf" }, function(response){
+                    console.log(response);
+                    toastr[response.Status](response.Message, response.Title);
+                    window.location.reload();
+                });
+            }
+
+        </script>
+    }
+</body>
+</html>

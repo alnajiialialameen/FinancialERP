@@ -1,0 +1,147 @@
+﻿
+
+
+
+    @using Purchases.Models;
+@{
+
+ Entities db = new Entities();
+
+ AccountTree Select = new AccountTree();
+
+//   decimal C;
+ List<AccountTree> Model = db.AccountTrees.ToList();
+
+// int TreeLevel = Convert.ToInt32(Model.Max(x => x.AccLevel));
+
+
+}
+
+
+
+
+<link href="~/Temp/Tree/dist/themes/default-dark/style.min.css" rel="stylesheet" />
+
+<div id="html" class="demo tree" style="font-size:16px">
+    <ul>
+        <li>
+            <span> شجرة الحسابات</span>
+
+
+            @foreach (AccountTree T1 in Model.Where(x => x.AccParent == 0))
+            {
+                <ul>
+
+                    <li class="nodeId">
+                        <span class="hidden">@T1.Id</span> 
+                        @T1.AccName
+                        @foreach (AccountTree T2 in Model.Where(x => x.AccParent == T1.Id))
+                        {
+                            <ul>
+                                <li class="nodeId">
+                                    @T2.AccName
+                                    <span class="hidden">@T2.Id</span> 
+
+                                    @foreach (AccountTree T3 in Model.Where(x => x.AccParent == T2.Id))
+                                    {
+                                        <ul>
+                                            <li class="nodeId">
+                                                <span class="hidden">@T3.Id</span> 
+                                                @T3.AccName
+                                                @foreach (AccountTree T4 in Model.Where(x => x.AccParent == T3.Id))
+                                                {
+                                                    <ul>
+                                                        <li>
+                                                            @T4.AccName
+
+                                                            @foreach (AccountTree T5 in Model.Where(x => x.AccParent == T4.Id))
+                                                            {
+                                                                <ul>
+                                                                    <li>
+                                                                        @T5.AccName
+                                                                        @foreach (AccountTree T6 in Model.Where(x => x.AccParent == T5.Id))
+                                                                        {
+                                                                            <ul>
+                                                                                <li>
+                                                                                    @T6.AccName
+                                                                                    @foreach (AccountTree T7 in Model.Where(x => x.AccParent == T6.Id))
+                                                                                    {
+                                                                                        <ul>
+                                                                                            <li>
+                                                                                                @T7.AccName
+                                                                                                @foreach (AccountTree T8 in Model.Where(x => x.AccParent == T7.Id))
+                                                                                                {
+                                                                                                    <ul>
+                                                                                                        <li>@T8.AccName
+                                                                                                        @foreach (AccountTree T9 in Model.Where(x => x.AccParent == T8.Id))
+                                                                                                        {
+                                                                                                            <ul>
+                                                                                                                <li>@T9.AccName</li>
+                                                                                                            </ul>
+                                                                                                        }
+
+                                                                                                        </li>
+                                                                                                    </ul>
+                                                                                                }
+
+                                                                                            </li>
+                                                                                        </ul>
+                                                                                    }
+
+                                                                                </li>
+                                                                            </ul>
+                                                                        }
+
+
+                                                                    </li>
+                                                                </ul>
+                                                            }
+                                                        </li>
+
+
+
+                                                    </ul>
+                                                }
+
+
+                                            </li>
+                                        </ul>
+                                    }
+
+
+                                </li>
+                            </ul>
+                        }
+
+                    </li>
+
+
+
+                </ul>
+            }
+
+
+            @*<script src="~/Temp/plugins/jquery/jquery.min.js"></script>*@
+
+
+            <script src="~/Temp/Tree/dist/jstree.min.js"></script>
+
+            <script src="~/Scripts/jquery-3.5.1.js"></script>
+          
+
+          <script>
+
+              $('#html').jstree();
+          </script>
+
+
+
+
+
+
+        </li>
+    </ul>
+</div>
+
+
+

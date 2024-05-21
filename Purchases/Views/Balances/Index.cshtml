@@ -1,0 +1,1036 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+@section content{
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <div class="grad"></div>
+
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                بنـــود الموازنة
+
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المالي </a></li>
+                <li class="active"> البنـــــود</li>
+            </ol>
+
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <button type="button" class="btn btn-primary pull-left btn-add" data-toggle="modal" data-target="#add-modal"><i class="fa fa-plus-square">  </i> بند جديد </button>
+                        </div><!-- /.box-header -->
+                        <div class="box-body">
+                            <table id="tbx" class="table table-bordered table-hover"></table>
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </section>
+
+    </div><!-- /.content-wrapper -->
+
+    <div class="example-modal">
+        <div class="modal fade in" id="add-modal" data-backdrop="static" >
+            <div class="modal-dialog"  style="width:80%">
+                <div class="modal-content" >
+                    <div class="modal-header .no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"> إضافة فصل جديد</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="save-btn hidden">
+                             <a class="btn btn-primary" onclick="saveData()" style="position: fixed;  left: 44px; top: 50%; padding: 10px 25px;"> حفظ</a>
+                        </div>
+                        <div class="row row-choise">
+                            <div class="choise">
+                                <input type="radio" name="accNameChoise" class="accNameChoise" value="1" title="" />الاصول
+                            </div>
+
+                            <div class="choise">
+                                <input type="radio" name="accNameChoise" class="accNameChoise" value="2" title="" />الخصوم
+                            </div>
+
+                            <div class="choise">
+                                <input type="radio" name="accNameChoise" class="accNameChoise" value="3" title="" />الايرادات
+                            </div>
+
+                            <div class="choise">
+                                <input type="radio" name="accNameChoise" class="accNameChoise" value="4" title="" />المصروفات
+                            </div>
+
+                        </div>
+                        <div class="row"  style="margin-left:100px">
+
+                        <table id="tbl" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>اسم البند</th>
+                                    <th>الاعتماد</th>
+                                </tr>
+                            </thead>
+                            <tbody class="tbl-body">
+
+                            </tbody>
+                        </table>
+
+                        </div><!-- /.row (main row) -->
+                    </div>
+
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div>
+
+
+<div class="example-modal">
+    <div class="modal fade in" id="edit-modal" data-backdrop="static">
+        <div class="modal-dialog" style="width:80%">
+            <div class="modal-content">
+                <div class="modal-header .no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"> تعديل الموازنة(<label class="accParentName"></label>)</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="save-btn">
+                        <a class="btn btn-warning" onclick="updateData()" style="position: fixed;  left: 44px; top: 50%; padding: 10px 25px;"> تعديل</a>
+                    </div>
+
+                    <div class="row" style="margin-left:100px">
+                        <table id="tbl" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>اسم البند</th>
+                                    <th>الاعتماد</th>
+                                    <th>الصرف/الايراد الفعلي</th>
+                                    <th class="hidden">balanceId</th>
+                                </tr>
+                            </thead>
+                            <tbody class="editTbl-body"></tbody>
+                        </table>
+
+                    </div><!-- /.row (main row) -->
+                </div>
+
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+
+<style>
+/* Important part */
+.modal-dialog{
+    overflow-y: initial !important
+}
+.modal-body{
+    height: 80vh;
+    overflow-y: auto;
+}
+
+    .row-choise {
+        display: flex;
+        justify-content: space-between;
+    }
+</style>
+}
+
+@section scripts{
+
+    <script>
+     var financialCycleId = 0;
+
+     $(function () {
+         function loadData() {
+             dataTable = $('#tbx').DataTable({
+                 "language": {
+                     "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                     "search": "بحث"
+                 },
+                 ajax: {
+                     url: '/Balances/LoadData',
+                     dataSrc: ''
+                 },
+                 "columnDefs": [
+                  {
+                      "targets": 8,
+                      "visible": false
+                  }
+                 ],
+                 columns: [
+                     {
+                         "title": "# ",
+                         "data": "Id"
+                     },
+                     {
+                         "title": "العام ",
+                         "data": "Year"
+                     },
+                     {
+                         "title": "البــند  ",
+                         "data": "Name"
+                     },
+                     {
+                             "title": " الاعتماد ",
+                             "data": "Credint"
+                     },
+                     {
+                         "title": "الصرف / الايراد الفعلي  ",
+                         "data": "ActualExchange"
+                     },
+                     {
+                         "title": "الانحراف النسبي  ",
+                         "data": "RelativeDeviation"
+                     },
+                     {
+                         "title": "نسبة الانحراف  ",
+                         "data": "DeviationRatio"
+                     },
+                     {
+                         "title": "<i class='fa fa-cog'></i>",
+                         "data": null,
+                         "orderable": false,
+                         "render": function (data) {
+                             return '<div class="btn-opreation">'
+                                        + '<button class="btn btn-success" onClick="editMe(' + data.rootParentId + ')"><i class=" transfer-fa fa  fa-edit">  </i> تعديل </button>'
+                                    + '</div> ';
+                         }
+                     },
+                     {
+                         "title": "rootParentId",
+                         "data": "rootParentId",
+                     }
+                 ]
+             });
+         }
+         loadData();
+
+         function addNew() {
+             var type = $('input[name="accNameChoise"]:checked').val();
+             var financialCycleId = 1;
+
+             console.log(type);
+
+             $.ajax({
+                 url: "/Balances/getSubaccountForAddUpdate?type=" + type,
+                 type: "GET",
+                 //data: JSON.stringify(ob),
+                 contentType: "application/json charset=utf-8",
+                 dataType: "json",
+                 error: function (response) {
+                     //toastr[response.Status](response.Message, response.Title);
+                 },
+                 success: function (result) {
+                     if (result) {
+                         var x;
+                         var html = "";
+                         $.each(result, function (key, item) {
+                             html += "<tr id='row' style='font-size: 16px;text-align:center;'>"
+                            + "<td class='accId'>" + item.Id + "</td>"
+                            + "<td class='name'>" + item.Name + "</td>"
+                            + "<td class='credint' contenteditable='true'>" + item.Credint + "</td>"
+                            + "<td class='BalanceId hidden'>" + item.BalanceId + "</td>"
+                            + "</tr>";
+                         });
+                         $('.tbl-body').empty();
+                         $('.tbl-body').append(html);
+                     }
+                 }
+             });
+         }
+
+         $('.accNameChoise').on('change', function () {
+             addNew();
+             $('.save-btn').removeClass('hidden');
+         });
+
+         $('#add-form').bootstrapValidator({
+             onSuccess: function (e) {
+                 save();
+                 e.preventDefault();
+
+             },
+             submitButtons: 'button[type="submit"]',
+             feedbackIcons: {
+                 valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                 invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                 validating: 'fa fa-refresh fa-spin success-feedback-icons'
+             },
+             fields: {
+                 Name: {
+                     validators: {
+                         notEmpty: {
+                             message: 'يجب الا يكون حقل البنـــود  فارغ'
+                         }
+                     }
+                 }
+
+             }
+         });
+
+         $('#AddLastLevel').bootstrapValidator({
+             onSuccess: function (e) {
+                 SaveAccountTreeLastLevel();
+                 e.preventDefault();
+
+             },
+             submitButtons: 'button[type="submit"]',
+             feedbackIcons: {
+                 valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                 invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                 validating: 'fa fa-refresh fa-spin success-feedback-icons'
+             },
+             fields: {
+                 AccountTreeIdLastLevel: {
+                     validators: {
+                         notEmpty: {
+                             message: 'يجب الا يكون حقل القيد  فارغ'
+                         }
+                     }
+                 }
+                 ,
+                 Credint: {
+                     validators: {
+                         notEmpty: {
+                             message: 'يجب الا يكون حقل الاعتماد  فارغ'
+                         }
+                     }
+                 }
+
+             }
+         });
+
+         //functin for select2 pluging
+         function select2list(selector, url, placeholder) {
+             $(selector).select2({
+                 language: { inputTooShort: function () { return 'enter 1 letter at less'; } },
+                 ajax: {
+                     url: url,
+                     dataType: 'json',
+                     delay: 100,
+                     data: function (params) {
+                         return {
+                             q: params.term,
+                             page: params.page
+                         };
+                     },
+                     processResults: function (data, params) {
+                         params.page = params.page || 1;
+                         return {
+                             results: data,
+                             pagination: {
+                                 more: ((data.total_count) > (params.page * 20))
+                             }
+                         };
+                     },
+                     cache: true
+                 },
+                 placeholder: placeholder,
+                 minimumInputLength: 1,
+             });
+
+         };
+
+         select2list(".AccountTreeId", "/Balances/GetAccountTree", "الفصول");
+         select2list(".FinanceCycleId", "/Balances/GetFinanceCycle", "العــــام");
+         select2list(".EdAccountTreeId", "/Balances/GetAccountTree", "الفصول");
+         select2list(".EdFinanceCycleId", "/Balances/GetFinanceCycle", "العــــام");
+         select2list(".EdAccountTreeIdLevelOne", "/Balances/GetAccountTreeLevelOne", "البنـــود");
+         
+         select2list(".AccountTreeIdLastLevel", "/Balances/GetAccountTreeLastLevel", "القيود");
+
+         
+         //$('#adit-form-housing').bootstrapValidator({
+         //    onSuccess: function (e) {
+         //        saveHousing();
+         //        e.preventDefault();
+
+         //    },
+         //    submitButtons: 'button[type="submit"]',
+         //    feedbackIcons: {
+         //        valid: 'glyphicon glyphicon-ok success-feedback-icons',
+         //        invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+         //        validating: 'fa fa-refresh fa-spin success-feedback-icons'
+         //    },
+         //    fields: {
+         //        name: {
+         //            validators: {
+         //                notEmpty: {
+         //                    message: 'يجب الا يكون حقل المحلية  فارغ'
+         //                }
+         //            }
+         //        }
+
+         //    }
+         //});
+     });
+
+     function saveData() {
+         var obj = [];
+
+         $('.tbl-body tr').each(function () {
+             accId = $(this).find('.accId').text();
+             credint = $(this).find('.credint').text();
+             BalanceId = $(this).find('.BalanceId').text();
+
+             obj.push({
+                 "AccountTreeId": accId,
+                 "Credint": credint,
+                 "FinanceCycleId": "1",
+                 "ActualExchange": "0",
+                 "RelativeDeviation": "0",
+                 "DeviationRatio": "0",
+                 "Retainer": "0",
+                 "IsActive": 1,
+                 "Id": BalanceId
+             });
+         });
+
+         console.clear();
+         console.log(obj);
+
+         $.ajax({
+             url: "/Balances/CreateOUpdate",
+             type: "POST",
+             data: JSON.stringify(obj),
+             contentType: "application/json charset=utf-8",
+             dataType: "json",
+             error: function (response) {
+                 //toastr[response.Status](response.Message, response.Title);
+             },
+             success: function (response) {
+                 console.log(response);
+                 toastr[response.Status](response.Message, response.Title);
+                 //$('.Name').val(null);
+                 $('#add-modal').modal('hide');
+                 dataTable.ajax.reload();
+             }
+         });
+
+     }
+
+     function updateData() {
+         var obj = [];
+
+         $('.editTbl-body tr').each(function () {
+             accId = $(this).find('.accId').text();
+             credint = $(this).find('.credint').text();
+             BalanceId = $(this).find('.BalanceId').text();
+
+             obj.push({
+                 "AccountTreeId": accId,
+                 "Credint": credint,
+                 "FinanceCycleId": "1",
+                 "ActualExchange": "0",
+                 "RelativeDeviation": "0",
+                 "DeviationRatio": "0",
+                 "Retainer": "0",
+                 "IsActive": 1,
+                 "Id": BalanceId
+             });
+         });
+
+         console.clear();
+         console.log(obj);
+
+         $.ajax({
+             url: "/Balances/CreateOUpdate",
+             type: "POST",
+             data: JSON.stringify(obj),
+             contentType: "application/json charset=utf-8",
+             dataType: "json",
+             error: function (response) {
+                 //toastr[response.Status](response.Message, response.Title);
+             },
+             success: function (response) {
+                 console.log(response);
+                 toastr[response.Status](response.Message, response.Title);
+                 //$('.Name').val(null);
+                 $('#edit-modal').modal('hide');
+                 dataTable.ajax.reload();
+             }
+         });
+
+     }
+
+    //open edit modal
+     function editMe(Id) {
+         var financialCycleId = 1;
+
+         type = Id;
+         console.clear();
+         console.log(type);
+
+         $.ajax({
+             url: "/Balances/getSubaccountForAddUpdate?type=" + type,
+             type: "GET",
+             contentType: "application/json charset=utf-8",
+             dataType: "json",
+             error: function (response) {
+                 //toastr[response.Status](response.Message, response.Title);
+             },
+             success: function (result) {
+                 if (result) {
+                     var x;
+                     var html = "";
+                     var accParentName = "";
+                     $.each(result, function (key, item) {
+                         accParentName = item.AccParentName;
+                         html += "<tr id='row' style='font-size: 16px;text-align:center;'>"
+                        + "<td class='accId'>" + item.Id + "</td>"
+                        + "<td class='name'>" + item.Name + "</td>"
+                        + "<td class='credint' contenteditable='true' style='background-color:orange; color: white'>" + item.Credint + "</td>"
+                        + "<td class='actualExchange'>" + item.ActualExchange + "</td>"
+                        + "<td class='BalanceId hidden'>" + item.BalanceId + "</td>"
+                        + "</tr>";
+                     });
+
+                     $('.accParentName').text(accParentName);
+                     $('.editTbl-body').empty();
+                     $('.editTbl-body').append(html);
+                     $('#edit-modal').modal('show');
+                 }
+             }
+         });
+     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     @*function save() {
+         var ob = {
+             "FinanceCycleId": $('select[name="FinanceCycleId"]').val(),
+             "AccountTreeId": $('select[name="AccountTreeId"]').val(),
+             "Credint": $('input[name="Credint"]').val()
+
+            // "AccountTreeId": $('#Name').val()
+         };
+         $.ajax({
+             url: "@Url.Action("Save", "Balances")",
+             type: "POST",
+             data: JSON.stringify(ob),
+             contentType: "application/json charset=utf-8",
+             dataType: "json",
+             error: function (response) {
+                 //toastr[response.Status](response.Message, response.Title);
+             },
+             success: function (response) {
+                 toastr[response.Status](response.Message, response.Title);
+                 //$('.Name').val(null);
+                 $('#add-modal').modal('hide');
+                 dataTable.ajax.reload();
+
+             }
+         });
+
+     }
+
+        function saveAccountTreeLevelOne() {
+
+
+         var ob = {
+             "AccountTreeId": $('select[name="EdAccountTreeIdLevelOne"]').val(),
+             "Id": $('#ad-id').val()
+         };
+         $.ajax({
+             url: "@Url.Action("saveAccountTreeLevelOne", "Balances")",
+             type: "POST",
+         data: JSON.stringify(ob),
+         contentType: "application/json charset=utf-8",
+         dataType: "json",
+         error: function (response) {
+             //toastr[response.Status](response.Message, response.Title);
+         },
+         success: function (response) {
+             toastr[response.Status](response.Message, response.Title);
+             $('.name').val(null);
+             $('#add-modal-item-detail').modal('hide');
+             dataTable.ajax.reload();
+
+         }
+     });
+
+        }
+
+
+
+
+        //show add last level
+        //Open Adit Modal item detail
+        $("#tbx2").on('click', '.AdLastLevel', function () {
+            // get the current row
+            $('#ad-name').val(null);
+            var currentRow = $(this).closest("tr");
+
+            $('#IdLastLevel').val(currentRow.find("td:eq(0)").text());
+            // $('#ad-name').val(currentRow.find("td:eq(1)").text()); // get current row 1st TD value
+            $('#AdLastLevel').modal('show');
+
+        });
+        //save last level
+
+        function SaveAccountTreeLastLevel() {
+
+
+            var ob = {
+                "AccountTreeId": $('select[name="AccountTreeIdLastLevel"]').val(),
+                "Id": $('#IdLastLevel').val(),
+                "Credint": $('#Credint').val(),
+            };
+            $.ajax({
+                url: "@Url.Action("SaveAccountTreeLastLevel", "Balances")",
+                type: "POST",
+            data: JSON.stringify(ob),
+            contentType: "application/json charset=utf-8",
+            dataType: "json",
+            error: function (response) {
+                //toastr[response.Status](response.Message, response.Title);
+            },
+            success: function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('.name').val(null);
+                $('#add-modal-item-detail').modal('hide');
+                dataTable.ajax.reload();
+
+            }
+        });
+
+        }
+
+
+         //End Document Ready
+
+
+         ///////////////////////////////////////////////////////////////////////
+
+         //Open Edit Modal
+         $("#tbx").on('click', '.openEditModal', function () {
+             // get the current row
+             var currentRow = $(this).closest("tr");
+             var newOption = new Option(currentRow.find("td:eq(1)").text(), currentRow.find("td:eq(2)").text(), true, true);
+             var newOption2 = new Option(currentRow.find("td:eq(2)").text(), currentRow.find("td:eq(3)").text(), true, true);
+
+             $('select[name="EdAccountTreeId"]').append(newOption2).trigger('change');
+             $('select[name="EdFinanceCycleId"]').append(newOption).trigger('change');
+
+
+             $('#EdId').val(currentRow.find("td:eq(0)").text());
+            // $('#edname').val(currentRow.find("td:eq(1)").text()); // get current row 1st TD value
+             $('#edit-modal').modal('show');
+
+         });
+
+
+
+
+         //Open Edit Modal Housing
+         $("#tbx2").on('click', '.openEditModalHousing', function () {
+             // get the current row
+             var currentRow = $(this).closest("tr");
+
+             $('#ed-id-h').val(currentRow.find("td:eq(0)").text());
+             $('#adname-detail').val(currentRow.find("td:eq(1)").text()); // get current row 1st TD value
+             $('#edit-modal-housing').modal('show');
+
+         });
+
+
+
+         $("#close").on('click',  function () {
+
+             window.location.reload();
+
+         });
+
+         //Open Adit Modal item detail
+         $("#tbx").on('click', '.openAditModal', function () {
+             // get the current row
+             $('#ad-name').val(null);
+             var currentRow = $(this).closest("tr");
+
+             $('#ad-id').val(currentRow.find("td:eq(0)").text());
+            // $('#ad-name').val(currentRow.find("td:eq(1)").text()); // get current row 1st TD value
+             $('#add-modal-item-detail').modal('show');
+
+         });
+
+     //Open show  Modal HOUSING
+         $("#tbx").on('click', '.openHousingModal', function () {
+             // get the current row
+
+             var currentRow = $(this).closest("tr");
+
+             $('#ad-id2').val(currentRow.find("td:eq(0)").text());
+             $('#ad-name2').text(currentRow.find("td:eq(2)").text()); // get current row 1st TD value
+             var x=currentRow.find("td:eq(0)").text();
+             $('#show-modal-housing').modal('show');
+             console.log(x);
+
+
+             loadDataAccountTreeLevelOne(x);
+             // dataTable2.clear().draw();
+
+         });
+
+         //Open show  Modal LAST level
+         $("#tbx2").on('click', '.OpenLastLevelModel', function () {
+             // get the current row
+
+             var currentRow = $(this).closest("tr");
+
+             //$('#ad-id2').val(currentRow.find("td:eq(0)").text());
+             //$('#ad-name2').text(currentRow.find("td:eq(2)").text()); // get current row 1st TD value
+            var x = currentRow.find("td:eq(0)").text();
+             $('#ShowModalLastLevel').modal('show');
+             console.log(x);
+             //dataTable.clear().draw();
+                             // dataTable2.ajax.reload();
+
+             loadDataAccountTreeLevelTwo(x);
+        // dataTable2.clear().draw();
+
+         });
+         //Validation And Save Edit Data
+         $('#add-form-item-detail').bootstrapValidator({
+             onSuccess: function (e) {
+                 saveAccountTreeLevelOne();
+                 e.preventDefault();
+
+             },
+             submitButtons: 'button[type="submit"]',
+             feedbackIcons: {
+                 valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                 invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                 validating: 'fa fa-refresh fa-spin success-feedback-icons'
+             },
+             fields: {
+                 adname: {
+                     validators: {
+                         notEmpty: {
+                             message: 'يجب الا يكون حقل اسم البند فارغ'
+                         }
+                     }
+                 },
+
+
+             }
+         });
+
+
+         //Validation And Save Edit Data
+         $('#edit-form').bootstrapValidator({
+             onSuccess: function (e) {
+                 edit();
+                 e.preventDefault();
+
+             },
+             submitButtons: 'button[type="submit"]',
+             feedbackIcons: {
+                 valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                 invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                 validating: 'fa fa-refresh fa-spin success-feedback-icons'
+             },
+             fields: {
+                 EdFinancialCycleId: {
+                     validators: {
+                         notEmpty: {
+                             message: 'يجب الا يكون حقل  العــــام فارغ'
+                         }
+                     }
+                 },
+                 
+                 
+                 EdAccountTreeId: {
+                     validators: {
+                         notEmpty: {
+                             message: 'يجب الا يكون حقل  البنـــد  فارغ'
+                         }
+                     }
+                 },
+
+             }
+         });
+
+
+
+
+
+         //Validation And Save Edit Housing Data
+         $('#edit-form-housing').bootstrapValidator({
+             onSuccess: function (e) {
+                 editItemDetail();
+                 e.preventDefault();
+
+             },
+             submitButtons: 'button[type="submit"]',
+             feedbackIcons: {
+                 valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                 invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                 validating: 'fa fa-refresh fa-spin success-feedback-icons'
+             },
+             fields: {
+                 edname: {
+                     validators: {
+                         notEmpty: {
+                             message: 'يجب الا يكون حقل اسم الجهاز فارغ'
+                         }
+                     }
+                 },
+
+
+
+             }
+         });
+
+         function edit() {
+
+
+             var ob = {
+                 "Id": $('#EdId').val(),
+                 "AccountTreeId": $('select[name="EdAccountTreeId"]').val(),
+                 "FinancialCycleId": $('select[name="EdFinancialCycleId"]').val(),
+
+                 
+
+             };
+             console.log(ob);
+             $.ajax({
+                 url: "@Url.Action("Edit", "Balances")",
+                 type: "POST",
+             data: JSON.stringify(ob),
+             contentType: "application/json charset=utf-8",
+             dataType: "json",
+             error: function (response) {
+                 //toastr[response.Status](response.Message, response.Title);
+             },
+             success: function (response) {
+                 toastr[response.Status](response.Message, response.Title);
+                 $('#edit-modal').modal('hide');
+                 dataTable.ajax.reload();
+
+             }
+         });
+         };
+
+
+
+     function editItemDetail() {
+
+
+         var ob = {
+             "Id": $('#ed-id-h').val(),
+             "Name": $('#adname-detail').val(),
+
+         };
+         $.ajax({
+             url: "@Url.Action("EditItemDetails", "Items")",
+             type: "POST",
+         data: JSON.stringify(ob),
+         contentType: "application/json charset=utf-8",
+         dataType: "json",
+         error: function (response) {
+             //toastr[response.Status](response.Message, response.Title);
+         },
+         success: function (response) {
+             toastr[response.Status](response.Message, response.Title);
+             $('#edit-modal-housing').modal('hide');
+             dataTable2.ajax.reload();
+             window.location.reload
+
+         }
+     });
+     };
+
+        function loadDataAccountTreeLevelOne(id) {
+         console.log(id);
+
+         dataTable2 = $('#tbx2').DataTable({
+             "language": {
+                 "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                 "search": "بحث"
+             },
+             ajax: {
+                 url: '/Balances/loadDataAccountTreeLevelOne/' + id,
+                 dataSrc: ''
+
+             },
+             columns: [
+                 {
+                     "title": "# ",
+                     "data": "Id"
+                 },
+                 {
+                     "title": "إسم  البند  ",
+                     "data": "Name"
+                 },
+                 {
+                     "title": "الاعتماد  ",
+                     "data": "Credint"
+                 },
+                 {
+                     "title": "الصرف الفعلي  ",
+                     "data": "ActualExchange"
+                 },
+                 {
+                     "title": "  الانحراف النسبي  ",
+                     "data": "RelativeDeviation"
+                 },
+                  {
+                      "title": " نسبة الانحراف  ",
+                      "data": "DeviationRatio"
+                  },
+
+                 {
+                     "title": "عدد البنود  ",
+                     "data": null,
+                     "render": function (data) {
+                         return '<input readonly class="btn btn-info transfer btn-number-in OpenLastLevelModel" value=" ' + data.Count + ' "/>'
+                     }
+                 },
+
+
+                 {
+                     "title": "<i class='fa fa-cog'></i>",
+                     "data": null,
+                     "width": "30%",
+                     "orderable": false,
+                     "render": function (data) {
+                         return '<div class="btn-opreation">'
+                                      //+ '<button class="btn btn-success transfer openEditModalHousing">تعديل <i class=" transfer-fa fa  fa-edit"></i></button> '
+                                                                   + '<button class="btn btn-success transfer AdLastLevel">اضافة قيد <i class=" transfer-fa fa  fa-edit"></i></button> '
+
+
+                             + '</div> '
+
+                         ;
+
+                     }
+                 }
+
+
+             ]
+
+         });
+
+
+
+        }
+        function loadDataAccountTreeLevelTwo(id) {
+            console.log(id);
+
+            dataTable2 = $('#tbx3').DataTable({
+                "language": {
+                    "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                    "search": "بحث"
+                },
+                ajax: {
+                    url: '/Balances/loadDataAccountTreeLevelOne/' + id,
+                    dataSrc: ''
+
+                },
+                columns: [
+                    {
+                        "title": "# ",
+                        "data": "Id"
+                    },
+                    {
+                        "title": "إسم  البند  ",
+                        "data": "Name"
+                    },
+                    {
+                        "title": "الاعتماد  ",
+                        "data": "Credint"
+                    },
+                    {
+                        "title": "الصرف الفعلي  ",
+                        "data": "ActualExchange"
+                    },
+                    {
+                        "title": "  الانحراف النسبي  ",
+                        "data": "RelativeDeviation"
+                    },
+                     {
+                         "title": " نسبة الانحراف  ",
+                         "data": "DeviationRatio"
+                     },
+
+                    {
+                        "title": "عدد البنود  ",
+                        "data": null,
+                        "render": function (data) {
+                            return '<input readonly class="btn btn-info transfer btn-number-in OpenLastLevelModel" value=" ' + data.Count + ' "/>'
+                        }
+                    },
+
+
+                    {
+                        "title": "<i class='fa fa-cog'></i>",
+                        "data": null,
+                        "width": "30%",
+                        "orderable": false,
+                        "render": function (data) {
+                            return '<div class="btn-opreation">'
+                                         //+ '<button class="btn btn-success transfer openEditModalHousing">تعديل <i class=" transfer-fa fa  fa-edit"></i></button> '
+                                                                      + '<button class="btn btn-success transfer AdLastLevel">اضافة قيد <i class=" transfer-fa fa  fa-edit"></i></button> '
+
+
+                                + '</div> '
+
+                            ;
+
+                        }
+                    }
+
+
+                ]
+
+            });
+
+
+
+        }*@
+
+
+
+        
+    </script>
+}
+
+
+
+
+
+
+
+

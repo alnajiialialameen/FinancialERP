@@ -1,0 +1,31 @@
+﻿@media print {
+        .print-dueDate {
+            position: absolute;
+            top: 81px;
+            right: 160px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .print-payNo {
+            position: absolute;
+            top: 160px;
+            left: 284px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .print-amount {
+            position: absolute;
+            top: 210px;
+            left: 155px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .print-textAmount {
+            position: absolute;
+            top: 260px;
+            right: 285px;
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 1.7;
+        }
+}

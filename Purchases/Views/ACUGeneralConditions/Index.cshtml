@@ -1,0 +1,270 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+@section content{
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <div class="grad"></div>
+
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                الشروط العامة
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المالي </a></li>
+                <li class="active"> الشروط العامة</li>
+            </ol>
+        </section>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <button type="button" class="btn btn-primary pull-left btnAdd" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus-square">  </i> إضافة جديد </button>
+                        </div><!-- /.box-header -->
+                        <div class="box-body">
+                            <table id="tbx" class="table table-bordered table-hover"></table>
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </section>
+    </div><!-- /.content-wrapper -->
+
+
+<div class="modal fade in" id="myModal" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="width:50% !important">
+        <div class="modal-content">
+            <div class="modal-header .no-border">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"> إضافة شرط جديد</h4>
+                <label class="hidden" id="Id"></label>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <form method="post" id="add-form">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="name">الاسم</label>
+                                        <input class="form-control" id="Name" onkeyup="return validateText(this.value, 'Name');" placeholder="اسم الشرط" />
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="name">التقييم</label>
+                                        <input class="form-control" id="MaxValue" type="number" onkeyup="return validateText(this.value, 'MaxValue');" name="Name" placeholder="التقييم" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-3">
+                                    <input type="checkbox" id="IsActive" value="1" />
+                                    <label>مفعلة</label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div><!-- /.row (main row) -->
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary btnSave pull-right" onclick="Save()">حفظ</button>
+                <button class="btn btn-danger btnCancel" data-dismiss="modal">إلغاء</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+}
+
+@section scripts{
+
+    <script>
+
+        $(function () {
+            console.clear();
+            function loadData() {
+                dataTable2 = $('#tbx').DataTable({
+                    "language": {
+                        "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                        "search": "بحث"
+                    },
+                    ajax: {
+                        url: '/ACUGeneralConditions/getAllConditions',
+                        dataSrc: ''
+                    },
+                    columns: [
+                        {
+                            "title": "# ",
+                            "data": "Id"
+                        },
+                        {
+                            "title": "الاسم",
+                            "data": "Name"
+                        },
+                        {
+                            "title": "التقييم",
+                            "data": "MaxValue"
+                        },
+                        {
+                            "title": "<i class='fa fa-cog'></i>",
+                            "data": null,
+                            "width": "30%",
+                            "orderable": false,
+                            "render": function (data) {
+                            return  '<div class="btn-group">' +
+                                            '<button type="button" class="btn btn-default" data-toggle="dropdown">  <i class="fa fa-ellipsis-v"></i> </button> <div class="dropdown-menu btn-threePoint">' +
+                                            '<a class="dropdown-item btnSelect" href="#">تعديل</a> <br />' +
+                                            '<a class="dropdown-item btnDelete" href="#">حذف</a> <br />' +
+                                    '</div></div>';
+                            }
+                        }
+                    ]
+                });
+            }
+            loadData();
+        });
+
+        $('.btnAdd').click(function () {
+            $('.btnSave').removeClass('btn-warning');
+            $('.btnSave').addClass('btn-info');
+            $('.btnSave').text('حفظ');
+            $('#Name').val('');
+            $('#MaxValue').val('');
+            //$('#IsActive').val('');
+        });
+       
+        $("#tbx").on('click', '.btnSelect', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var Id = data['Id'];
+            console.clear();
+            console.log(Id);
+            $('#Id').text(Id);
+
+            $('#myModal').modal('show');
+            $('.btnSave').removeClass('btn btn-info');
+            $('.btnSave').addClass('btn btn-warning');
+            $('.btnSave').text('تعديل');
+
+            $.get('/ACUGeneralConditions/getConditionById', { Id: Id }, function (response) {
+                console.clear();
+                console.log(response);
+                //var data = JSON.stringify(response);
+                $('#Name').val(response['Name']);
+                $('#MaxValue').val(response['MaxValue']);
+                var IsActive = response['IsActive'];
+
+                if (IsActive == 'غير مفعل') {
+                    $('#IsActive').prop('checked', false);
+                }
+                else {
+                    $('#IsActive').prop('checked', true);
+                }
+            });
+        });
+
+        $("#tbx").on('click', '.btnDelete', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var Id = data['Id'];
+            var CommitteeJobId = $('#CommitteeJobId').val();
+
+            obj = {
+                "Id": Id,
+            };
+
+            console.clear();
+            console.log(obj);
+
+            $.ajax({
+                "type": "POST",
+                "url": '/ACUGeneralConditions/Delete',
+                "dataType": "json",
+                "traditional": true,
+                "data": JSON.stringify(obj),
+                "contentType": "application/json  charset=utf-8",
+                "error": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                },
+                "success": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    dataTable.ajax.reload();
+                }
+            });
+            dataTable.ajax.reload();
+        });
+
+        var obj = [];
+        function Save() {
+            var btnText = $('.btnSave').text();
+            var Name = $('#Name').val();
+            var MaxValue = $('#MaxValue').val();
+            var IsActive = $('#IsActive').val();
+            var Id = $('#Id').text();
+            var myIsActive = false;
+            if (IsActive == 1) {
+                myIsActive = true;
+            }
+            obj = {
+                "Name": Name,
+                "MaxValue": MaxValue,
+                "IsActive": myIsActive,
+                "Id": Id
+            };
+
+            var url = '';
+
+            if (btnText == 'حفظ')
+            {
+                url = '/ACUGeneralConditions/Add';
+            }else{
+                url = '/ACUGeneralConditions/Update';
+            }
+
+            console.log(url);
+            console.log(obj);
+            $.ajax({
+                "type": "POST",
+                "url": url,
+                "dataType": "json",
+                "traditional": true,
+                "data": JSON.stringify(obj),
+                "contentType": "application/json  charset=utf-8",
+                "error": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    $('#myModal').modal('toggle');
+                    $('#tbx').DataTable().ajax.reload();
+                },
+                "success": function (response) {
+                    $('#myModal').modal('toggle');
+                    //$('#tbx').DataTable().ajax.reload();
+                    window.location.reload();
+                    toastr[response.Status](response.Message, response.Title);
+                }
+
+        });
+        }
+
+    </script>
+
+    <script>
+            function validateText(text, fieldId) {
+                if (text == '') {
+                    $('#' + fieldId).css({ "border": 'solid 2px red' });
+                    return false;
+                } else {
+                    $('#' + fieldId).css({ "border": 'solid 1px #d2d6de' });
+                    return true;
+                }
+            }
+    </script>
+}

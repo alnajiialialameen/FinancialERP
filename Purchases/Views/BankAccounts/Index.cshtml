@@ -1,0 +1,418 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<style>
+    .content-wrapper .content{
+        display: flex;
+        min-height: 250px;
+        padding: 15px;
+        margin-right: auto;
+        margin-left: auto;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+</style>
+@section content{
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <div class="grad"></div>
+
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                دليل االبنوك
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i>النظام المحاسبي </a></li>
+                <li class="active"> دليل البنوك</li>
+            </ol>
+        </section>
+        <div class="content" style="display: flex; margin-right: 10px;">
+            <div class="col-lg-3">
+                <table id="tbx" class="table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>اسم البنك</th>
+                            <th>الشيكات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbxBody" style="font-size:18px;"></tbody>
+                </table>
+            </div>
+
+            <div class="col-lg-9">
+                <form method="post" id="addForm">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="box .no-border">
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    <!-- Input addon -->
+                                    <div class="row">
+
+                                        <div class="col-lg-12">
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="name"> الحساب البنكي</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-cash-register"></i></span>
+                                                        <input type="text" class="form-control name" disabled name="name" id="name" placeholder=" اسم الحساب البنكي" autocomplete="off" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="number">رقم الحساب البنكي</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-addon">
+                                                            <i class="fa  fa-sort-numeric-down"></i>
+                                                        </div>
+                                                        <input type="number" class="form-control number" name="number" id="number" placeholder=" رقم الحساب البنكي" autocomplete="off" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="account-type">نوع الحساب</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-cash-register"></i></span>
+                                                        <select class="form-control account-type" id="account-type" name="account-type" style="width:100%"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="currency"> العملة</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-cash-register"></i></span>
+                                                        <select class="form-control currency" id="currency" name="currency" style="width:100%"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="open-date">تاريخ فتح الحساب</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-cash-register"></i></span>
+                                                        <input type="text" class="form-control calendar open-date" id="open-date" name="open-date" placeholder="تاريخ فتح الحساب البنكي" autocomplete="off">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="iban">الرقم الدولي(IBAN)</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-cash-register"></i></span>
+                                                        <input type="text" class="form-control iban" id="iban" name="iban" placeholder="الرقم الدولي" autocomplete="off">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12 ">
+                                            <div class="pull-left">
+                                                <label class="hidden" id="AccountSubId">AccountSubId</label>
+                                                <label class="hidden" id="AccId"></label>
+                                                <label class="hidden" id="Id"></label>
+                                                <button type="reset" class="btn btn-default " data-dismiss="modal">الغاء</button>
+                                                <button type="submit" class="btn btn-primary save">حفظ</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+       
+    </div>  
+
+
+}
+
+@section scripts{
+    <script>
+        var dataTable;
+
+        $(function () {
+            function loadData() {
+                $.ajax({
+                    url: '/BankAccounts/LoadData',
+                    type: "POST",
+                    data: null,
+                    contentType: "application/json charset=utf-8",
+                    dataType: "json",
+                    error: function (response) {
+                        toastr[response.Status](response.Message, response.Title);
+                    },
+                    success: function (data) {
+                        var row = '';
+                        $.each(data, function (key, value) {
+                            var bankId = parseInt(value.BankId);
+                            if(bankId > 0)
+                            {
+                                row += '<tr>'
+                                    + '<td class="hidden getAccountSubId">' + value.Id + '</td>'
+                                    + '<td  class="name">' + value.Name + '</td>'
+                                    + '<td  class="check"><a href=""><i class="fa fa-money-check" style="color:green;"></a></i></td>'
+                                    + '<td  class="hidden bankId">' + bankId + '</td>'
+                                  + '</tr>';
+                            } else {
+                                row += '<tr>'
+                                    + '<td class="hidden getAccountSubId">' + value.Id + '</td>'
+                                    + '<td  class="name">' + value.Name + '</td>'
+                                    + '<td  class="check"><a href="#"><i class="fa fa-money-check" style="color:red;"></a></i></td>'
+                                    + '<td  class="hidden bankId">' + bankId + '</td>'
+                                  + '</tr>';
+                            }
+                        });
+                        $('#tbxBody').append(row);
+                    }
+                });
+            }
+
+            loadData();
+
+            function select2list(selector, url, placeholder) {
+                $(selector).select2({
+                    language: { inputTooShort: function () { return 'أدخل حرف واحد علي الاقل'; } },
+                    ajax: {
+                        url: url,
+                        dataType: 'json',
+                        delay: 100,
+                        data: function (params) {
+                            return {
+                                q: params.term,
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+                            return {
+                                results: data,
+                                pagination: {
+                                    more: ((data.total_count) > (params.page * 20))
+                                }
+                            };
+                        },
+                        cache: true
+                    },
+                    placeholder: placeholder,
+                    minimumInputLength: 1,
+                });
+            };
+
+            select2list(".currency", "/BankAccounts/GetCurrencyType", "عملة الحساب البنكي");
+            select2list(".account-type", "/BankAccounts/GetBankAccountType", "نوع الحساب البنكي");
+
+
+        $('#addForm').bootstrapValidator({
+            onSuccess: function (e) {
+                save();
+                e.preventDefault();
+
+            },
+            submitButtons: 'button[type="submit"]',
+            excluded: [':disabled'],
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                validating: 'fa fa-refresh fa-spin success-feedback-icons'
+            },
+            fields: {
+                name: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل اسم الحساب  فارغ'
+                        }
+                    }
+                },
+                number: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب ادخال رقم الحساب'
+                        }
+                    }
+                },
+                'account-type': {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب ادخال نوع الحساب'
+                        }
+                    }
+                },
+                currency: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب تحديد نوع العملة لهذا الحساب'
+                        }
+                    }
+                },
+                'open-date': {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب تحديد تاريخ فتح الحساب'
+                        }
+                    }
+                },
+                //iban: {
+                //    validators: {
+                //        notEmpty: {
+                //            message: 'يجب تحديد الرقم الدولي IBAN '
+                //        }
+                //    }
+                //},
+            }
+        });
+        });
+        //End Document Ready
+        
+
+        function save() {
+            console.log($(".open-date").val());
+            var ob = {
+                "BankAccountTypeId": $("select[name='account-type']").val(),
+                "Number": $("input[name='number']").val(),
+                "OpenDate": $(".open-date").val(),
+                "CurrencyTypeId": $("select[name='currency']").val(),
+                "IBan": $('#iban').val(),
+                "AccName": $('#name').val(),
+                "accParentName": "البنوك",
+                "AccId": $('#AccId').text(),
+                "Id": $('#Id').text(),
+                "AccountSubId": $('#AccountSubId').text(),
+                "AccCategoryId": "1",//Category Id for Banks = 1
+            };
+            console.clear();
+            console.log(ob);
+            var url = '';
+            if ($('.save').text() == 'حفظ') {
+                url = '/BankAccounts/Create';
+            } else {
+                url = '/BankAccounts/Update';
+            }
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: JSON.stringify(ob),
+                contentType: "application/json charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                },
+                success: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    $('#addForm').trigger("reset");
+                }
+            });
+        };
+
+        $("#tbx").on('click', '.name', function () {
+            // get the current row
+            var currentRow = $(this).closest("tr");
+            //get AccountSubId which is hidden value
+            var AccountSubId = currentRow.find("td:eq(0)").text();
+            var name = currentRow.find("td:eq(1)").text();
+
+            $('#AccountSubId').text(AccountSubId);          
+            $('#name').val(name);
+            $('#Id').text('');
+            $('#open-date').val(null);
+
+
+            $.ajax({
+                url: '/BankAccounts/getBankData?accountSubId=' + AccountSubId,
+                type: "POST",
+                data: null,
+                contentType: "application/json charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                },
+                success: function (data) {
+                    $('#Id').text(data['Id']);
+                    $('#name').val(name);
+                    $('#number').val(data['Number']);
+                    $('#currencyTypeId').val(data['CurrencyTypeId']);
+                    $('#account-type').val(data['BankAccountTypeId']);
+                    var openDate = moment(data['OpenDate']).format("DD/MM/YYYY");
+                    $('#open-date').val(openDate);
+                    $('#iban').val(data['IBan']);
+                }
+            });
+
+        });
+
+
+        $("#tbx").on('click', '.check', function () {
+            // get the current row
+            var currentRow = $(this).closest("tr");
+
+            var BankId = currentRow.find("td:eq(3)").text();
+            if (BankId > 0) {
+                window.open('/BankAccounts/Check?Id=' + BankId, '_blank');
+            } else {
+                toastr['error']('يجب إدخال بيانات البنك أولا', 'خطأ');
+            }
+
+        });
+
+        //Open Edd-Edit Modal
+        $("#tbx").on('click', '.openEditModal', function () {
+            // get the current row
+            var currentRow = $(this).closest("tr");
+        
+            var data = $('#tbx').DataTable().row(currentRow).data();
+
+            console.log(currentRow.find("td:eq(0)").text());
+
+            $('#Id').text(currentRow.find("td:eq(0)").text());
+            $('#name').val(currentRow.find("td:eq(1)").text());
+            $('#number').val(currentRow.find("td:eq(3)").text());
+            $('#open-date').val(currentRow.find("td:eq(5)").text());
+            $('#currency').val(data['CurrencyTypeId']);
+            $('#account-type').val(data['BankAccountTypeId']);
+            $('#iban').val(data['IBan']);
+            $('#AccountSubId'). text(data['AccountSubId']);
+            $('#AccId').text(data['AccId']);
+
+            $('.modal-title').html('تعديل بيانات البنك');
+            $('.save').text('تعديل');
+            $('.save').removeClass('btn-primary');
+            $('.save').addClass('btn-warning');
+
+            $('#add-modal').modal('show');
+        
+        }); 
+
+        $('.btn-add').on('click', function () {
+            //$('#addForm').bootstrapValidator({ "resetForm": true });
+
+            $('#name').val(null);
+            $('#number').val(null);
+            $('#account-type').val(null);
+            $('#currency').val(null);
+            $('#open-date').val(null);
+            $('#iban').val(null);
+
+            $('.modal-title').text('إضافة بنك جديد');
+            $('.save').text('حفظ');
+            $('.save').removeClass('btn-warning');
+            $('.save').addClass('btn-primary');
+            $('#add-modal').modal('show');
+        });
+
+        function goToCheck(Id) {
+                window.open('/BankAccounts/Check/' + Id, '_blank');
+            }
+    </script>
+
+}

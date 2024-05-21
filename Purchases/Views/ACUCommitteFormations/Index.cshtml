@@ -1,0 +1,906 @@
+﻿@using Purchases.Models;
+@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+    Entities db = new Entities();
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    @section content{
+    <div> 
+        <div class="content-wrapper">
+            
+            <label class="hidden" id="OrderId">@ViewBag.OrderId</label>
+            <label class="hidden" id="ACUCommitteFormationId">@ViewBag.ACUCommitteFormationId</label>
+            <label id="EmployeeId" class="hidden">EmployeeId</label>
+            <label id="CompanyRegisterationId" class="hidden">CompanyRegisterationId</label>
+            <label id="RetCommitteeTypeId" class="hidden">@ViewBag.CommitteeTypeId</label>
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <h1>
+                    تفاصيل العطاء
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                    <li><a href="#">Examples</a></li>
+                    <li class="active">User profile</li>
+                </ol>
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+
+                <div class="row">
+                    <div class="col-md-3">
+
+                        <!-- Profile Image -->
+                        <div class="box box-primary">
+                            <div class="box-body box-profile">
+                                @*<img class="profile-user-img img-responsive img-circle" src="../../dist/img/user4-128x128.jpg" alt="User profile picture">*@
+                                @*<h4>عن العطاء</h4>*@
+
+                                <h3 class="profile-username text-center" id="OrderDescription">@ViewBag.Description</h3>
+
+                                <p class="text-muted text-center" id="DepartmentName">@ViewBag.DepartmentName</p>
+
+                                <ul class="list-group list-group-unbordered">
+                                    <li class="list-group-item">
+                                        <b>تاريخ الطلب</b> <span class="pull-left" id="OrderDate">@ViewBag.OrderDate</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>نوع الطلب</b> <span class="pull-left">مناقصة</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>الحالة الحالية</b> <span class="pull-left">مصدق</span>
+                                    </li>
+                                </ul>
+
+                                <a href="#CommitteeMember" class="btn btn-primary btn-block  nav-tabs" data-toggle="tab"><b>أعضاء اللجنه</b></a>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                        <!-- /.box -->
+
+                        <!-- About Me Box -->
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">تفاصيل العطاء</h3>
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                                <strong><i class="fa fa-book margin-r-5"></i> عن العطاء</strong>
+
+                                <p class="text-muted">
+                                    B.S. in Computer Science from the University of Tennessee at Knoxville
+                                </p>
+
+                                <hr>
+
+                                <strong><i class="fa fa-map-marker margin-r-5"></i>الشروط</strong>
+
+                                <p class="text-muted">يجب ان تتحق جميع الشروط الاولية.</p>
+                                <p class="text-muted">يجب ان تتحق جميع الشروط الاولية.</p>
+                                <p class="text-muted">يجب ان تتحق جميع الشروط الاولية.</p>
+                                <p class="text-muted">يجب ان تتحق جميع الشروط الاولية.</p>
+
+                                <hr>
+
+                                @*<strong><i class="fa fa-pencil margin-r-5"></i> Skills</strong>
+
+                                <p>
+                                    <span class="label label-danger">UI Design</span>
+                                    <span class="label label-success">Coding</span>
+                                    <span class="label label-info">Javascript</span>
+                                    <span class="label label-warning">PHP</span>
+                                    <span class="label label-primary">Node.js</span>
+                                </p>
+
+                                <hr>*@
+
+                                <strong><i class="fa fa-file-text-o margin-r-5"></i> الملحوظات</strong>
+
+                                <p>يجب ان يتم التصديق اولاز</p>
+                                <p>يجب ان يتم التصديق اولاز</p>
+                                <p>يجب ان يتم التصديق اولاز</p>
+                                <p>يجب ان يتم التصديق اولاز</p>
+                                <p>يجب ان يتم التصديق اولاز</p>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                        <!-- /.box -->
+                    </div>
+                    <!-- /.col -->
+
+                    <div class="col-md-9">
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a href="#CommitteFormation" data-toggle="tab">أمر التشكيل</a></li>
+                                <li><a href="#CommitteeMember" data-toggle="tab">أعضاء اللجنة</a></li>
+                                <li><a href="#CommitteeCompanies" data-toggle="tab">الشركات والمؤسسات</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="active tab-pane" id="CommitteFormation" >
+                                    <form class="form-horizontal">
+                                        <div class="form-group">
+                                            <label for="ResolutionName" class="col-sm-2 control-label">اسم القرار</label>
+
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" value="@ViewBag.ResolutionName" id="ResolutionName" placeholder="اسم القرار" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="ResolutionNo" class="col-sm-2 control-label">رقم القرار</label>
+
+                                            <div class="col-sm-10">
+                                                <input type="number" min="0" class="form-control" value="@ViewBag.ResolutionNo" id="ResolutionNo" placeholder="رقم القرار" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="ResolutionDate" class="col-sm-2 control-label">التاريخ</label>
+                                            <div class="input-group date col-sm-10">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                                <input type="text" class="form-control pull-right datepicker" value="@ViewBag.ResolutionDate" id="ResolutionDate" required>
+                                            </div>
+                                        </div>
+                                        <!-- /.input group -->
+                                        <div class="form-group">
+                                            <label for="Subject" class="col-sm-2 control-label">نص القرار</label>
+
+                                            <div class="col-sm-10">
+                                                <textarea class="form-control"  id="Subject" placeholder="نص القرار" required>@ViewBag.Subject</textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="ResolutionNo1" class="col-sm-2 control-label">تصديق القرار؟</label>
+                                            
+                                            <div class="col-sm-10">
+                                                <input type="checkbox" required checked>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="CommitteeTypeId" class="col-sm-2 control-label">نوع العطاء</label>
+
+                                            <div class="col-sm-10">
+                                                <select class="form-control" id="CommitteeTypeId">
+                                                    <option value="-1">-إختار نوع العطاء أولا-</option>
+                                                    @{
+                                                        foreach (var item in db.CommitteeTypes.Where(x => x.IsActive == true).ToList())
+                                                        {
+                                                            if (@ViewBag.CommitteeTypeId == item.Id)
+                                                            {
+                                                                <option value="@item.Id" selected>@item.Name</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item.Id">@item.Name</option>
+                                                            }
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-2 col-sm-4">
+                                                <button type="button" id="btnSave" class="btn btn-success" onclick="SaveOrUpdate()">حفظ</button>
+                                            </div>
+                                            <div class="col-sm-offset-2 col-sm-4">
+                                                @*<button type="button" class="btn btn-warning" onclick="Update()">تعديل</button>*@
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- /.tab-pane -->
+                                <div class="tab-pane" id="CommitteeCompanies">
+                                    <div class="box">
+                                        <div class="box-header">
+                                            <button class="btn btn-primary btnAddCompany pull-left"><i class="fa fa-plus-square"></i> شركة جديدة</button>
+                                            @*<button type="button" id="btnAddCommitteeMembers" class="btn btn-primary pull-left" onclick="AddCompetingCompany()"><i class="fa fa-plus-square">  </i> عضو جديد </button>*@
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <table id="compTab" class="table table-bordered table-hover"></table>
+                                        </div><!-- /.box-body -->
+                                    </div><!-- /.box -->
+                                </div>
+                                <!-- /.tab-CommitteeMember -->
+                                <div class="tab-pane" id="CommitteeMember">
+                                    <div class="box">
+                                        <div class="box-header">
+                                            <button type="button" id="btnAddCommitteeMember" class="btn btn-primary pull-left" onclick="AddCommitteeMembers()"><i class="fa fa-plus-square">  </i> عضو جديد </button>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <table id="tbx" class="table table-bordered table-hover"></table>
+                                        </div><!-- /.box-body -->
+                                    </div><!-- /.box -->
+                                </div>
+                                <!-- /.tab-CommitteeMember -->
+                          
+                            </div>
+                            <!-- /.tab-content -->
+                        </div>
+                        <!-- /.nav-tabs-custom -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+
+            </section>
+            <!-- /.content -->
+        </div>
+    </div>
+
+    <div class="modal fade in" id="myModal" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:50% !important">
+            <div class="modal-content">
+                <div class="modal-header .no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"> إضافة عضو جديد</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <form method="post" id="add-form">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="name"> اسم العضو </label>
+                                            <label class="form-control  disabled" id="MemberName" name="MemberName">MemberName</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="name">الوظيفة في اللجنة</label>
+                                            <select id="CommitteeJobId" class="form-control">
+                                                <option value="-1">-إختار الوظيفة-</option>
+                                                @{
+                                                    foreach (var item in db.CommitteeJobs.ToList())
+                                                    {
+                                                        <option value="@item.Id">
+                                                            @item.Name
+                                                        </option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div><!-- /.row (main row) -->
+
+                    <div class="row">
+                       <div class="col-lg-12">
+                           <div class="d-flex justify-content-center">
+                               <label class="hidden" id="Id" name="Id">Id</label>
+                               <button type="submit" class="btn btn-primary save" onclick="UpdateMember()">حفظ</button>
+                               <button type="submit" class="btn btn-danger cancel">إلغاء</button>
+                           </div>
+                       </div>
+                    </div>
+                    <br />
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+
+    <div class="modal fade in" id="CompModal" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:50% !important">
+            <div class="modal-content">
+                <div class="modal-header .no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"> إضافة شركة جديدة</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <form method="post" id="add-form">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label for="name">إسم الشركة</label>
+                                            <select id="CompanyRegisterationIdList" class="form-control">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div><!-- /.row (main row) -->
+
+                </div>
+            <div class="modal-footer" >
+                <div>
+                    <label class="hidden" id="Id" name="Id">Id</label>
+                    <button type="submit" class="btn btn-primary btnSave " style="float:right" onclick="AddComp()">حفظ</button>
+                    <button type="submit" class="btn btn-danger cancel" data-dismiss="modal">إلغاء</button>
+                </div>
+            </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    }
+
+    @section scripts{
+    <script>
+
+        $(document).ready(function () {
+            LoadComapaniesToList();
+            var ACUCommitteFormationId = $('#ACUCommitteFormationId').text();
+            if (ACUCommitteFormationId != null & ACUCommitteFormationId != 0) {
+                //هنا اذا لم يتم عنل امر تشكيل من قبل لا نظهر ذر اضافة عضو جديد في جزئية أعضاء اللجنه
+                $('#btnAddCommitteeMembers').css("display", "block");
+                $('#btnSave').text('تعديل');
+                $('#btnSave').removeClass('btn-success');
+                $('#btnSave').addClass('btn-warning');
+
+                //$('#ResolutionName').prop('disabled', true);
+                //$('#ResolutionNo').prop('disabled', true);
+                //$('#ResolutionDate').prop('disabled', true);
+                //$('#Subject').prop('disabled', true);
+
+            } else {
+                //هنا اذا لم يتم عنل امر تشكيل من قبل لا نظهر ذر اضافة عضو جديد في جزئية أعضاء اللجنه
+                $('#btnAddCommitteeMembers').css("display", "none");
+                $('#btnSave').text('حفظ');
+                $('#btnSave').removeClass('btn-warning');
+                $('#btnSave').addClass('btn-success');
+
+                //$('#ResolutionName').prop('disabled', false);
+                //$('#ResolutionNo').prop('disabled', false);
+                //$('#ResolutionDate').prop('disabled', false);
+                //$('#Subject').prop('disabled', false);
+            }
+        });
+        
+        //loading data
+        $(function () {
+            function loadData() {
+                var OrderId = $('#OrderId').text();
+                dataTable = $('#tbx').DataTable({
+                    "language": {
+                        "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                        "search": "بحث"
+                    },
+                    ajax: {
+                        url: '/ACUCommitteFormations/getAllCommitteMemebers/' + OrderId,
+                        dataSrc: ''
+                    },
+                    columns: [
+                        {
+                            "title": "# ",
+                            "data": "EmployeeId"
+                        },
+                        {
+                            "title": "الاسم",
+                            "width": "68%",
+                            "data": "Name"
+                        },
+
+                        {
+                            "title": "نوع التوظيف",
+                            "data": "EmploymetType"
+                        },
+                        {
+                            "title": "الادارة",
+                            "width": "68%",
+                            "data": "Department"
+                        },
+
+                        {
+                            "title": "الدرجة",
+                            "data": "Grade"
+                        },
+                        {
+                            "title": "الوظيفة",
+                            "data": "Job"
+                        },
+
+                        {
+                            "title": "<i class='fa fa-cog'></i>",
+                            "data": null,
+                            "orderable": false,
+                            "render": function (data) {
+                                //return '<div class="btn-group">'
+                                //            + '<button class="btn btn-warning transfer openEditModal"  data-toggle="modal" data-target="#add-modal">تعديل <i class="transfer-fa fa  fa-edit"></i></button> ' +
+                                //            + '<button class="btn btn-danger delete" >حذف<i class="transfer-fa fa  fa-edit"></i></button> '
+                                //       + '</div> ';fa fa-remove
+
+                                return '<div class="btn-group"> <button type="button" class="btn btn-danger btnDelete btn-sm" > إلغاء <i class="fa fa-trash"></i></button> <button class="btn btn-warning btnSelect btn-sm" data-toggle="modal" data-target="#myModal">تعديل<i class="fa fa-edit"></i></button></div>';
+                            }
+                        },
+                        {
+                            "title": "Id",
+                            "data": "Id",
+                            "visible": false
+                        },
+                    ]
+                });
+            }
+            loadData();
+        });
+
+        //Date picker
+        $('.datepicker').datepicker({
+            autoclose: true
+        })
+
+        var obj = [];
+        /*---------------------------------------------Committee Members Operations------------------------------------------------------------*/
+        $("#tbx").on('click', '.btnSelect', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var EmployeeId = currentRow.find("td:eq(0)").text();
+            var MemberName = currentRow.find("td:eq(1)").text();
+            var Id = data['Id'];
+            console.clear();
+            console.log(EmployeeId);
+            console.log(Id);
+            $('#EmployeeId').text(EmployeeId);
+            $('#Id').text(Id);
+            $('#MemberName').text(MemberName);
+
+            $('#myModal').modal('show');
+        });
+
+        $("#tbx").on('click', '.btnDelete', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var Id = data['Id'];
+            var CommitteeJobId = $('#CommitteeJobId').val();
+
+            obj = {
+                "Id": Id,
+            };
+
+            console.clear();
+            console.log(obj);
+
+            $.ajax({
+                "type": "POST",
+                "url": '/ACUCommitteFormations/DeleteMember',
+                "dataType": "json",
+                "traditional": true,
+                "data": JSON.stringify(obj),
+                "contentType": "application/json  charset=utf-8",
+                "error": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                },
+                "success": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    dataTable.ajax.reload();
+                }
+            });
+        });
+
+        function AddCommitteeMembers() {
+            var OrderId = $('#OrderId').text();
+            window.open("/ACUCommitteFormations/AllEmployees/" + OrderId, '_blank').focus();
+        }
+
+        function UpdateMember() {
+            var EmployeeId = $('#EmployeeId').text();
+            var Id = $('#Id').text();
+            var CommitteeJobId = $('#CommitteeJobId').val();
+
+            obj = {
+                "EmployeeId": EmployeeId,
+                "CommitteeJobId": CommitteeJobId,
+                "Id": Id,
+            };
+
+            console.clear();
+            console.log(obj);
+
+            $.ajax({
+                "type": "POST",
+                "url": '/ACUCommitteFormations/UpdateMember',
+                "dataType": "json",
+                "traditional": true,
+                "data": JSON.stringify(obj),
+                "contentType": "application/json  charset=utf-8",
+                "error": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                },
+                "success": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    dataTable.ajax.reload();
+                    $('#myModal').modal('toggle');
+                }
+            });
+
+        }
+
+        /*---------------------------------------------End Committee Members Operations------------------------------------------------------------*/
+
+
+
+
+
+
+
+        /*---------------------------------------- Main Operations -----------------------------------------*/
+
+        function SaveOrUpdate() {
+            var btnTxt = $('#btnSave').text();
+            if (btnTxt == 'تعديل') {
+                Update();
+            } else {
+                Save();
+            }
+            LoadComapaniesToList();
+        }
+
+        function Save() {
+            var ResolutionName = $('#ResolutionName').val();
+            var ResolutionNo = $('#ResolutionNo').val();
+            var ResolutionDate = $('#ResolutionDate').val();
+            var Subject = $('#Subject').val();
+            var OrderId = $('#OrderId').text();
+            var ACUCommitteFormationId = $('#ACUCommitteFormationId').text();
+            var CommitteeTypeId = $('#CommitteeTypeId').val();
+
+            obj = {
+                "ResolutionName": ResolutionName,
+                "ResolutionNo": ResolutionNo,
+                "ResolutionDate": ResolutionDate,
+                "Subject": Subject,
+                "OrderId": OrderId,
+                "Id": ACUCommitteFormationId,
+                "CommitteeTypeId": CommitteeTypeId,
+            };
+
+            console.clear();
+            console.log(obj);
+            console.log(ACUCommitteFormationId);
+            if (ResolutionName != '' & ResolutionNo != '' & ResolutionDate != '' & Subject != '' & OrderId != '' & CommitteeTypeId != '') {
+                $.ajax({
+                    "type": "POST",
+                    "url": '/ACUCommitteFormations/Add',
+                    "dataType": "json",
+                    "traditional": true,
+                    "data": JSON.stringify(obj),
+                    "contentType": "application/json  charset=utf-8",
+                    "error": function (response) {
+                        toastr[response.Status](response.Message, response.Title);
+                    },
+                    "success": function (response) {
+                        toastr[response.Status](response.Message, response.Title);
+                        $('#RetCommitteeTypeId').text(CommitteeTypeId);
+                    }
+                });
+            } else {
+                toastr["error"]("عفوا... يجب ملء كافة الحقول", "خطأ");
+            }
+
+        }
+        
+        function Update() {
+            var ResolutionName = $('#ResolutionName').val();
+            var ResolutionNo = $('#ResolutionNo').val();
+            var ResolutionDate = $('#ResolutionDate').val();
+            var Subject = $('#Subject').val();
+            var OrderId = $('#OrderId').text();
+            var ACUCommitteFormationId = $('#ACUCommitteFormationId').text();
+            var CommitteeTypeId = $('#CommitteeTypeId').val();
+
+            obj = {
+                "ResolutionName": ResolutionName,
+                "ResolutionNo": ResolutionNo,
+                "ResolutionDate": ResolutionDate,
+                "Subject": Subject,
+                "OrderId": OrderId,
+                "Id": ACUCommitteFormationId,
+                "CommitteeTypeId": CommitteeTypeId,
+            };
+
+            console.clear();
+            console.log(obj);
+            console.log(ACUCommitteFormationId);
+            if (ResolutionName != '' & ResolutionNo != '' & ResolutionDate != '' & Subject != '' & OrderId != '' & ACUCommitteFormationId != '' & CommitteeTypeId !='') {
+                $.ajax({
+                    "type": "POST",
+                    "url": '/ACUCommitteFormations/Update',
+                    "dataType": "json",
+                    "traditional": true,
+                    "data": JSON.stringify(obj),
+                    "contentType": "application/json  charset=utf-8",
+                    "error": function (response) {
+                        toastr[response.Status](response.Message, response.Title);
+                    },
+                    "success": function (response) {
+                        toastr[response.Status](response.Message, response.Title);
+                        $('#RetCommitteeTypeId').text(CommitteeTypeId);
+                    }
+                });
+            } else {
+                toastr["error"]("عفوا... يجب ملء كافة الحقول", "خطأ");
+            }
+        }
+
+        /*---------------------------------------- End Main Operations -----------------------------------------*/
+
+
+
+
+
+        /*----------------------------------------Companies Related Operations -----------------------------------------*/
+
+        $('.btnAddCompany').on('click', function () {
+            $('#CompModal').modal('show');
+            LoadComapaniesToList();
+        });
+
+        function LoadComapaniesToList() {
+            var CommitteeTypeId = $('#RetCommitteeTypeId').text();
+
+            if (CommitteeTypeId != '') {
+                $.ajax({
+                    "type": "GET",
+                    "url": '/ACUCommitteFormations/GetCompaniesForList?CommitteeTypeId=' + CommitteeTypeId,
+                    "dataType": "json",
+                    "traditional": true,
+                    "contentType": "application/json  charset=utf-8",
+                    "error": function (response) {
+                        toastr[response.Status](response[0].Message, response[0].Title);
+                    },
+                    "success": function (response) {
+                        $("#CompanyRegisterationIdList").empty();
+                        $("#CompanyRegisterationIdList").append('<option value="-1">-إختار الشركة-</option>');
+                        
+                        $.each(response, function () {
+                            $("#CompanyRegisterationIdList").append("<option  value =" +  this.Id + ">" + this.Name + "</option>");
+                        });
+                    }
+                });
+            }
+            //else {
+            //    toastr['error']('wertyulkjhgxcvbnm,mnb', 'خطأ' )
+            //}
+        }
+
+        $(function () {
+            var OrderId = $('#OrderId').text();
+
+            function loadCompData() {
+                dataTable = $('#compTab').DataTable({
+                    "language": {
+                        "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                        "search": "بحث"
+                    },
+                    ajax: {
+                        url: '/ACUCompetingCompany/getAllCompaniesInOrder?Id=' + OrderId,
+                        dataSrc: ''
+                    },
+                    columns: [
+                        {
+                            "title": "# ",
+                            "data": "Id"
+                        },
+                        {
+                            "title": "الاسم",
+                            "data": "Name"
+                        },
+
+                        {
+                            "title": "رقم الهاتف",
+                            "data": "Phone1"
+                        },
+                        {
+                            "title": "رقم التسجيل",
+                            "data": "LicenseNumber"
+                        },
+
+                        {
+                            "title": "الايميل",
+                            "data": "Email"
+                        },
+                        {
+                            "title": "الحالة",
+                            "data": "StatusText"
+                        },
+
+                        {
+                            "title": "<i class='fa fa-cog'></i>",
+                            "data": null,
+                            "orderable": false,
+                            "render": function (data) {
+                                return '<div class="btn-group">' +
+                                            '<button type="button" class="btn btn-default" data-toggle="dropdown">  <i class="fa fa-ellipsis-v"></i> </button> <div class="dropdown-menu btn-threePoint">' +
+                                            '<a class="dropdown-item btnSelect" href="#">تعديل</a> <br />' +
+                                            '<a class="dropdown-item btnDelete" href="#">حذف</a> <br />' +
+                                            '<a class="dropdown-item btnDocument" href="#">المستندات</a> <br />' +
+                                            '<a class="dropdown-item btnEvaluation" href="#">التقييم</a> <br />' +
+                                        '</div></div>';
+                            }
+                        },
+                        {
+                            "title": "رقم الشركة",
+                            "data": "CompanyId",
+                            visible:false
+                        },
+                        
+                    ]
+                });
+            }
+            loadCompData();
+        });
+
+        function AddComp() {
+            var CompanyRegisterationId = $('#CompanyRegisterationIdList').val();
+            var Id = $('#Id').text();
+            var OrderId = $('#OrderId').text();
+            var CommitteeFormationId = $('#ACUCommitteFormationId').text();
+
+            obj = {
+                "CompanyRegisterationId": CompanyRegisterationId,
+                "Id": OrderId,
+                "OrderId": OrderId,
+                "CommitteFormationId": CommitteeFormationId,
+            };
+
+            console.clear();
+            console.log(obj);
+            debugger
+            var url = '';
+            var btnText = $('.btnSave').text();
+            if (btnText == 'حفظ') {
+                url = '/ACUCommitteFormations/AddCompany';
+            }else{
+                url = '/ACUCommitteFormations/UpdateCompany';
+            }
+            $.ajax({
+                "type": "POST",
+                "url":url,
+                "dataType": "json",
+                "traditional": true,
+                "data": JSON.stringify(obj),
+                "contentType": "application/json  charset=utf-8",
+                "error": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                },
+                "success": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    dataTable.ajax.reload();
+                    $('#CompModal').modal('toggle');
+                }
+            });
+
+        }
+
+        function UpdateComp() {
+            var CompanyRegisterationId = $('#CompanyRegisterationId').text();
+            var Id = $('#Id').text();
+            var CommitteeFormationId = $('#CommitteeFormationId').val();
+
+            obj = {
+                "CompanyRegisterationId": CompanyRegisterationId,
+                "Id": OrderId,
+                "CommitteeFormationId": CommitteeFormationId,
+            };
+
+            console.clear();
+            console.log(obj);
+
+            $.ajax({
+                "type": "POST",
+                "url": '/ACUCommitteFormations/UpdateCompany',
+                "dataType": "json",
+                "traditional": true,
+                "data": JSON.stringify(obj),
+                "contentType": "application/json  charset=utf-8",
+                "error": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                },
+                "success": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    dataTable.ajax.reload();
+                    $('#myModal').modal('toggle');
+                }
+            });
+
+        }
+
+        $("#compTab").on('click', '.btnSelect', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#compTab').DataTable().row(currentRow).data();
+            var Id = data['Id'];
+            console.clear();
+            console.log(Id);
+            $('#Id').text(Id);
+
+            $('#CompModal').modal('show');
+
+            $('.save').removeClass('btn btn-info');
+            $('.save').addClass('btn btn-warning');
+            $('.save').text('تعديل');
+            $('.modal-title').text('تعديل اختيار الشركة المنافسة');
+
+
+            //$.get('/ACUCompetingCompany/getCompanyById', { Id: Id }, function (response) {
+            //    //var data = JSON.stringify(response);
+            //    $('#Name').val(response['Name']);
+            //    $('#Phone1').val(response['Phone1']);
+            //    $('#Phone2').val(response['Phone2']);
+            //    $('#Email').val(response['Email']);
+            //    $('#Address').val(response['Address']);
+            //    $('#LicenseNumber').val(response['LicenseNumber']);
+            //    var status = response['StatusText'];
+
+            //    if (status == 'غير مفعل') {
+            //        $('#status').prop('checked', false);
+            //    }
+            //    else {
+            //        $('#status').prop('checked', true);
+            //    }
+            //});
+        });
+
+        $("#compTab").on('click', '.btnDelete', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#compTab').DataTable().row(currentRow).data();
+            var Id = data['Id'];
+
+
+            console.clear();
+            console.log(Id);
+
+            $.ajax({
+                "type": "POST",
+                "url": '/ACUCommitteFormations/DeleteCompany?Id=' + Id,
+                "dataType": "json",
+                "traditional": true,
+                "data": JSON.stringify(obj),
+                "contentType": "application/json  charset=utf-8",
+                "error": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                },
+                "success": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    dataTable.ajax.reload();
+                }
+            });
+        });
+
+        $("#compTab").on('click', '.btnDocument', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#compTab').DataTable().row(currentRow).data();
+            var Id = data['CompanyId'];
+            console.log(Id);
+            window.open("/ACUCompetingCompany/CompanyDocument/" + Id, '_blank');
+        });
+
+        $("#compTab").on('click', '.btnEvaluation', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#compTab').DataTable().row(currentRow).data();
+            var Id = data['Id'];
+            var OrderId = $('#OrderId').text();
+            console.log(Id);
+            window.open("/ACUGeneralConditionEvaluations/Index/" + Id + '?OrderId=' + OrderId, '_blank');
+        });
+
+        $('.cancel').on('click', function () {
+
+        });
+        /*----------------------------------------End Companies Related Operations -----------------------------------------*/
+
+    </script>
+    }
+</body>
+</html>
