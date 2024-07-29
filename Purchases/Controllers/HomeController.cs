@@ -14,8 +14,6 @@ namespace Purchases.Controllers
         Entities db = new Entities();
         public ActionResult Index()
         {
-            
-
             //الصنف الاكثر طلبا
             ViewBag.RushItem =  db.OrderDetiails.GroupBy(f => f.ItemDetail).OrderByDescending(a => a.Count()).First().Select(f=>f.ItemDetail.Name).FirstOrDefault();
             ViewBag.RushItemCount =  db.OrderDetiails.GroupBy(f => f.ItemDetail).OrderByDescending(a => a.Count()).First().Sum(f=>f.RequierCount);

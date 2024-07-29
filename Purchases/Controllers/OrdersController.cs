@@ -9,6 +9,7 @@ using Purchases.Models.ViewModal;
 using System.IO;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json;
+using Microsoft.AspNet.Identity;
 
 namespace Purchases.Controllers
 {
@@ -72,6 +73,7 @@ namespace Purchases.Controllers
             }).Where(f => f.text.Contains(q));
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult GetItemDetail(string q ,int fk)
         {
             var data = db.ItemDetails.Select(p => new
@@ -82,8 +84,7 @@ namespace Purchases.Controllers
             }).Where(f=>f.text.Contains(q) & f.itemid == fk);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-
+        
         public ActionResult GetSupplier(string q)
         {
             var data = db.Suppliers.Select(p => new
@@ -99,15 +100,14 @@ namespace Purchases.Controllers
         //تسجيل طلب جديد 
         [HttpPost]
         public ActionResult Create()
-
         {
-
             // Checking no of files injected in Request object  
             if (Request.Files.Count > 0)
             {
+                var userid = User.Identity.GetUserId();
+
                 try
                 {
-
                     //  Get all files from Request object  
                     HttpFileCollectionBase files = Request.Files;
 
@@ -136,20 +136,22 @@ namespace Purchases.Controllers
                             o.Description = HttpContext.Request.Form["Description"];
                             o.OrderDate =  Convert.ToDateTime(HttpContext.Request.Form["OrderDate"]);
                             o.CreatedDate = DateTime.Now;
-                            //o.SuggestPrice = Convert.ToDecimal(HttpContext.Request.Form["SuggestPrice"]);
                             o.OrderTypeId = 1;
+                            o.CreatedBy = userid;
+                            o.CreatedDate = DateTime.Now;
+
+                            //o.SuggestPrice = Convert.ToDecimal(HttpContext.Request.Form["SuggestPrice"]);
                             db.Orders.Add(o);
 
                             fname = o.Id + Path.GetExtension(file.FileName);
                             OrderImage oi = new OrderImage();
                             oi.OrderId = o.Id;
                             oi.Path = Path.Combine(Server.MapPath("~/OrderImage/"), fname);
+                            oi.CreatedBy = userid;
+                            oi.CreationDate = DateTime.Now;
                             db.OrderImages.Add(oi);
-
-
+                            
                             var ItemId = HttpContext.Request.Form["ItemId"].Split(',');
-
-
                             var ItemDetailId = HttpContext.Request.Form["ItemDetailId"].Split(',');
                             var RequierCount = HttpContext.Request.Form["RequierCount"].Split(',');
 
@@ -166,6 +168,8 @@ namespace Purchases.Controllers
                                     od.ItemId = Convert.ToInt32(ItemId[i]);
                                     od.ItemDetialId = Convert.ToInt32(ItemDetailId[i]);
                                     od.RequierCount = Convert.ToInt32(RequierCount[i]);
+                                    od.CreatedBy = userid;
+                                    od.CreationDate = DateTime.Now;
                                     odlist.Add(od);
                                 }//--if end
 
@@ -195,16 +199,16 @@ namespace Purchases.Controllers
 
 
         }
+
         public ActionResult CreateNewInvoice(int OrderId , int SupplierId)
         {
-            
-            
             // Checking no of files injected in Request object  
             if (Request.Files.Count > 0)
             {
+                var userid = User.Identity.GetUserId();
+
                 try
                 {
-
                     //  Get all files from Request object  
                     HttpFileCollectionBase files = Request.Files;
                     
@@ -244,6 +248,8 @@ namespace Purchases.Controllers
                                 InvoiceImage ii = new InvoiceImage();
                                 ii.OrderId = OrderId;
                                 ii.SupplierId = SupplierId;
+                                ii.CreatedBy = userid;
+                                ii.CreationDate = DateTime.Now;
                                 ii.Path = Path.Combine(Server.MapPath("~/InvoiceImage/"), fname);
                                 db.InvoiceImages.Add(ii);
                             }
@@ -252,10 +258,11 @@ namespace Purchases.Controllers
                                 InvoiceImage fd = db.InvoiceImages.FirstOrDefault(z => z.OrderId == OrderId & z.SupplierId == SupplierId);
                                 fd.OrderId = OrderId;
                                 fd.SupplierId = SupplierId;
+                                fd.UpdatedBy = userid;
+                                fd.UpdatingDate = DateTime.Now;
                                 fd.Path = Path.Combine(Server.MapPath("~/InvoiceImage/"), fname);
                                 db.Entry(fd).State = EntityState.Modified;
                             }
-                            
                         }
 
                         // Get the complete folder path and store the file inside it.  
@@ -291,8 +298,7 @@ namespace Purchases.Controllers
             }).Where(f=>f.OrderId == orderid);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-
+        
         public ActionResult viewOrderImage(int id)
         {
             string path = db.OrderImages.FirstOrDefault(f => f.OrderId == id).Path;
@@ -301,17 +307,16 @@ namespace Purchases.Controllers
             byte[] FileBytes = System.IO.File.ReadAllBytes(ReportURL);
             return File(FileBytes, "application/pdf");
         }
+
         public FileResult GetReport(int orderid ,int supplierid)
         {
-
             string path  = db.InvoiceImages.FirstOrDefault(f => f.OrderId == orderid & f.SupplierId == supplierid).Path;
 
             string ReportURL = path;
             byte[] FileBytes = System.IO.File.ReadAllBytes(ReportURL);
             return File(FileBytes, "application/pdf");
         }
-
-
+        
         public ActionResult CheckInvoice(int orderid)
         {
             if(!db.InvoiceImages.Any(f=>f.OrderId == orderid & f.IsChoosed == true))
@@ -339,15 +344,11 @@ namespace Purchases.Controllers
         //تكملة بيانات الفاتورة بعد الاختيار
         public ActionResult InvoiceChoosed(OrderVM data , int orderid , int supplierid)
         {
-
-
-
             List<OrderDetiail> odlist = new List<OrderDetiail>();
+            var userid = User.Identity.GetUserId();
 
             for (int i = 0; i <= data.OrderDetailId.Length - 1; i++)
             {
-
-
                 if (data.ItemPrice[i] != 0)
                 {
 
@@ -356,6 +357,8 @@ namespace Purchases.Controllers
 
                     od.ItemPrice = data.ItemPrice[i];
                     od.Price = data.ItemPrice[i] * od.RequierCount;
+                    od.UpdatedBy = userid;
+                    od.UpdatingDate = DateTime.Now;
 
                     odlist.Add(od);
                     db.Entry(od).State = EntityState.Modified;
@@ -366,7 +369,6 @@ namespace Purchases.Controllers
             }
 
             List<InvoiceImage> ini = db.InvoiceImages.Where(f => f.OrderId == orderid).ToList();
-
             
             foreach(var i in ini)
             {
@@ -387,7 +389,8 @@ namespace Purchases.Controllers
             o.ActualPrice = odlist.Sum(f => f.Price);
             o.Vat = odlist.Sum(f => f.Price) * data.VatType/100;
             o.PriceWithVat = odlist.Sum(f => f.Price) + (odlist.Sum(f => f.Price) * data.VatType / 100);
-
+            o.UpdatedBy = userid;
+            o.UpdatingDate = DateTime.Now;
             //o.CurrencyTypeId = data.CurrencyType;
 
             db.Entry(o).State = EntityState.Modified;

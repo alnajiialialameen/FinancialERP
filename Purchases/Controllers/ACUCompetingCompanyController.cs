@@ -1,4 +1,4 @@
-﻿using Purchases.MyLogic;
+﻿ using Purchases.MyLogic;
 using PagedList;
 using Purchases.Models;
 using Purchases.Models.ViewModal;
@@ -11,6 +11,7 @@ using System.Web;
 using System.Web.Mvc;
 using Purchases.Class;
 using System.Security;
+using Microsoft.AspNet.Identity;
 
 namespace Purchases.Controllers
 {
@@ -137,12 +138,14 @@ namespace Purchases.Controllers
         [HttpPost]
         public ActionResult Add(CompetingCompanyViewModel model)
         {
+            var userid = User.Identity.GetUserId();
+
             try
             {
                 TreeClass ClsTree = new TreeClass();
                 if (!db.CompanyRegisterations.Any(x => x.AccountTreeId == model.AccountTreeId))
                 {
-                    int AccountTreeId = ClsTree.AddToTree("شركات العطاءات", model.Name, 2, 4);
+                    int AccountTreeId = ClsTree.AddToTree("شركات العطاءات", model.Name, 2, 4, userid);
 
                     CompanyRegisteration obj = new CompanyRegisteration();
                     obj.Name = model.Name;
@@ -155,6 +158,8 @@ namespace Purchases.Controllers
                     obj.IsAgentCompany = model.IsAgentComapny;
                     obj.IsQualified = model.IsQualified;
                     obj.LicenseNumber = model.LicenseNumber;
+                    obj.CreatedBy = userid;
+                    obj.CreationDate = DateTime.Now;
 
                     db.CompanyRegisterations.Add(obj);
                     db.SaveChanges();
@@ -189,12 +194,14 @@ namespace Purchases.Controllers
         [HttpPost]
         public ActionResult AddOld(CompetingCompanyViewModel model)
         {
+            var userid = User.Identity.GetUserId();
+
             try
             {
                 TreeClass ClsTree = new TreeClass();
                 if (!db.CompanyRegisterations.Any(x => x.LicenseNumber == model.LicenseNumber))
                 {
-                    int AccountTreeId = ClsTree.AddToTree("شركات العطاءات", model.Name, 2, 4);
+                    int AccountTreeId = ClsTree.AddToTree("شركات العطاءات", model.Name, 2, 4, userid);
 
                     CompanyRegisteration obj = new CompanyRegisteration();
                     obj.Name = model.Name;
@@ -230,6 +237,8 @@ namespace Purchases.Controllers
         {
             try
             {
+                var userid = User.Identity.GetUserId();
+
                 if (db.CompanyRegisterations.Any(x => x.Id == model.Id))
                 {
                     CompanyRegisteration obj = db.CompanyRegisterations.Find(model.Id);
@@ -243,6 +252,8 @@ namespace Purchases.Controllers
                     obj.LicenseNumber = model.LicenseNumber;
                     obj.IsAgentCompany = model.IsAgentComapny;
                     obj.IsQualified = model.IsQualified;
+                    obj.UpdatedBy = userid;
+                    obj.UpdatingDate = DateTime.Now;
 
                     AccountTree treeObj = db.AccountTrees.Find(obj.AccountTreeId);
                     treeObj.AccName = model.Name;
@@ -414,6 +425,8 @@ namespace Purchases.Controllers
         {
             try
             {
+                var userid = User.Identity.GetUserId();
+
                 string FilePath = myExtention.UploadFile(model.CompetingCompanyId, model.Title);
 
                 CompanyDocument obj = new CompanyDocument();
@@ -422,6 +435,8 @@ namespace Purchases.Controllers
                 obj.ImagePath = FilePath;
                 obj.CompanyRegisterationId = model.CompetingCompanyId;
                 obj.Note = model.Note;
+                obj.CreatedBy = userid;
+                obj.CreationDate = DateTime.Now;
                     
                 db.CompanyDocuments.Add(obj);
                 db.SaveChanges();
@@ -445,6 +460,8 @@ namespace Purchases.Controllers
         {
             try
             {
+                var userid = User.Identity.GetUserId();
+
                 if (db.CompanyDocuments.Any(x => x.Id == model.Id))
                 {
                     string FilePath = myExtention.UploadFile(model.CompetingCompanyId, model.Title);
@@ -459,6 +476,8 @@ namespace Purchases.Controllers
                     obj.Title = model.Title;
                     obj.ImagePath = model.ImagePath;                    
                     obj.Note = model.Note;
+                    obj.CreatedBy = userid;
+                    obj.CreationDate = DateTime.Now;
 
                     db.Entry(obj).State = EntityState.Modified;
                     db.SaveChanges();
@@ -506,7 +525,6 @@ namespace Purchases.Controllers
             }
         }
 
-
         /*-----------------------------------------------------------------------------*/
         [HttpPost]
         public ActionResult UploadPdfFileOriginal()
@@ -514,6 +532,8 @@ namespace Purchases.Controllers
             // Checking no of files injected in Request object  
             if (Request.Files.Count > 0)
             {
+                var userid = User.Identity.GetUserId();
+
                 try
                 {
                     //  Get all files from Request object  
@@ -542,18 +562,21 @@ namespace Purchases.Controllers
                             o.CreatedDate = DateTime.Now;
                             o.SuggestPrice = Convert.ToDecimal(HttpContext.Request.Form["SuggestPrice"]);
                             o.OrderTypeId = 1;
+                            o.CreatedBy = userid;
+                            o.CreatedDate = DateTime.Now;
+
                             db.Orders.Add(o);
 
                             fname = o.Id + Path.GetExtension(file.FileName);
                             OrderImage oi = new OrderImage();
                             oi.OrderId = o.Id;
                             oi.Path = Path.Combine(Server.MapPath("~/OrderImage/"), fname);
+                            oi.CreatedBy = userid;
+                            oi.CreationDate = DateTime.Now;
+
                             db.OrderImages.Add(oi);
 
-
                             var ItemId = HttpContext.Request.Form["ItemId"].Split(',');
-
-
                             var ItemDetailId = HttpContext.Request.Form["ItemDetailId"].Split(',');
                             var RequierCount = HttpContext.Request.Form["RequierCount"].Split(',');
 
@@ -570,14 +593,14 @@ namespace Purchases.Controllers
                                     od.ItemId = Convert.ToInt32(ItemId[i]);
                                     od.ItemDetialId = Convert.ToInt32(ItemDetailId[i]);
                                     od.RequierCount = Convert.ToInt32(RequierCount[i]);
+                                    od.CreatedBy = userid;
+                                    od.CreationDate = DateTime.Now;
+
                                     odlist.Add(od);
-
                                 }//--if end
-
                             }//-- for end
 
                             db.OrderDetiails.AddRange(odlist);
-
                         }
 
                         // Get the complete folder path and store the file inside it.  
@@ -597,18 +620,20 @@ namespace Purchases.Controllers
             {
                 return Json(new { Message = "لم يتم إختيار ملف", Title = "خطأ", Status = "error" });
             }
-
-
         }
 
-        public static int UpdateImagePath(int Id, string profileImagePath)
+        public int UpdateImagePath(int Id, string profileImagePath)
         {
             int res = 0;
             try
             {
+                var userid = User.Identity.GetUserId();
+
                 CompanyDocument obj = db.CompanyDocuments.Find(Id);
 
                 obj.ImagePath = profileImagePath;
+                obj.UpdatedBy = userid;
+                obj.UpdatingDate = DateTime.Now;
 
                 db.Entry(obj).State = EntityState.Modified;
                 res = db.SaveChanges();

@@ -1,4 +1,5 @@
-﻿using Purchases.Models;
+﻿using Microsoft.AspNet.Identity;
+using Purchases.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -67,10 +68,11 @@ namespace Purchases.Controllers
 
             return View();
         }
-
-
+        
         public ActionResult PrintChecs(int Id, string dueDate , string payNo , string amount, string textAmount, string checkNo, string recipient)
         {
+            var userid = User.Identity.GetUserId();
+
             ViewBag.dueDate = dueDate;
             ViewBag.payNo = payNo;
             ViewBag.amount = amount;
@@ -93,13 +95,16 @@ namespace Purchases.Controllers
                 obj.DueDate = Convert.ToDateTime(dueDate);
                 obj.Recipient = recipient;
                 obj.BankAccountId = bankObj.Id;
+                obj.CreatedBy = userid;
+                obj.CreationDate = DateTime.Now;
 
                 db.PrintChecks.Add(obj);
                 db.SaveChanges();
 
                 //هنا مفترض نعمل ترحيل طوالي عشان ما تاني يدخلوا ليهو اي تعديل بعد ما يطلع الشيك
                 tarnsObj.Recipient = recipient;
-
+                tarnsObj.UpdatedBy = userid;
+                tarnsObj.UpdatingDate = DateTime.Now;
                 db.Entry(tarnsObj).State = EntityState.Modified;
                 db.SaveChanges();
             }
@@ -114,10 +119,13 @@ namespace Purchases.Controllers
                 obj.DueDate = Convert.ToDateTime(dueDate);
                 obj.Recipient = recipient;
                 obj.BankAccountId = bankObj.Id;
+                obj.UpdatedBy = userid;
+                obj.UpdatingDate = DateTime.Now;
                 
                 //هنا مفترض نعمل ترحيل طوالي عشان ما تاني يدخلوا ليهو اي تعديل بعد ما يطلع الشيك
                 tarnsObj.Recipient = recipient;
-
+                tarnsObj.UpdatedBy = userid;
+                tarnsObj.UpdatingDate = DateTime.Now;
                 db.Entry(obj).State = EntityState.Modified;
                 db.Entry(tarnsObj).State = EntityState.Modified;
                 db.SaveChanges();
@@ -125,7 +133,5 @@ namespace Purchases.Controllers
 
             return View();
         }
-
-
     }
 }

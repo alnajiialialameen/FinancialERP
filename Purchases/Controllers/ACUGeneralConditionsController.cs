@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Purchases.Models;
 using Purchases.Models.ViewModal;
+using Microsoft.AspNet.Identity;
 
 namespace Purchases.Controllers
 {
@@ -65,12 +66,16 @@ namespace Purchases.Controllers
         {
             try
             {
+                var userid = User.Identity.GetUserId();
+
                 if (!db.GeneralConditions.Any(x => x.Id== model.Id))
                 {
                     GeneralCondition obj = new GeneralCondition();
                     obj.Name = model.Name;
                     obj.MaxValue = model.MaxValue;
                     obj.IsActive = model.IsActive;
+                    obj.CreatedBy = userid;
+                    obj.CreationDate = DateTime.Now;
 
                     db.GeneralConditions.Add(obj);
                     db.SaveChanges();
@@ -97,13 +102,17 @@ namespace Purchases.Controllers
         {
             try
             {
+                var userid = User.Identity.GetUserId();
+
                 if (db.GeneralConditions.Any(x => x.Id == model.Id))
                 {
                     GeneralCondition obj = db.GeneralConditions.Find(model.Id);
                     obj.Name = model.Name;
                     obj.MaxValue = model.MaxValue;
                     obj.IsActive = model.IsActive;
-
+                    obj.UpdatedBy = userid;
+                    obj.UpdatingDate = DateTime.Now;
+                    
                     db.Entry(obj).State = EntityState.Modified;
                     db.SaveChanges();
 

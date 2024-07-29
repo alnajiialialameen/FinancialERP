@@ -1,4 +1,5 @@
-﻿using Purchases.Class;
+﻿using Microsoft.AspNet.Identity;
+using Purchases.Class;
 using Purchases.Models;
 using Purchases.Models.ViewModal;
 using Purchases.ViewModel;
@@ -17,13 +18,13 @@ namespace Purchases.Controllers
         // GET: AccountTree
         Entities db = new Entities();
         TreeClass ClsTree = new TreeClass();
+
         // GET: AccountTree
         public ActionResult Index()
         {
             return View();
         }
-
-
+        
         public ActionResult LoadTree()
         {
             IQueryable<AccountTree> AccountTree = db.AccountTrees;
@@ -54,8 +55,7 @@ namespace Purchases.Controllers
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-
+        
         public ActionResult LoadTreeUpdate()
         {
 
@@ -146,7 +146,9 @@ namespace Purchases.Controllers
         //دالة الحفظ بعد التعديل
         public ActionResult Create(List<TreeAccVM> dataList, string accParentName)
         {
-            string result = ClsTree.AddToTree(dataList, accParentName);
+            var userid = User.Identity.GetUserId();
+
+            string result = ClsTree.AddToTree(dataList, accParentName, userid);
 
             if(result == "success")
             {
@@ -229,9 +231,6 @@ namespace Purchases.Controllers
             //}
         }
 
-
-
-
         public ActionResult GetAllItem()
         {
 
@@ -273,21 +272,19 @@ namespace Purchases.Controllers
 
         public ActionResult Edit(TreeModel model)
         {
+            var userid = User.Identity.GetUserId();
 
             if (model.Id >= 0)
             {
-
                 if (db.AccountTrees.Any(x => x.AccName == model.AccName && x.Id != model.Id))
                 {
                     return Json(new { Message = "هذا البند موجود  مسبقا في الشجرة المحاسبية", Title = "عملية الاضافة", Status = "error" });
-
                 }
 
                 AccountTree AccountTree = db.AccountTrees.Find(model.Id);
-
                 AccountTree.AccName = model.AccName;
-
-
+                AccountTree.CreatedBy = userid;
+                AccountTree.CreationDate = DateTime.Now;
 
                 db.Entry(AccountTree).State = EntityState.Modified;
                 db.SaveChanges();
@@ -295,26 +292,16 @@ namespace Purchases.Controllers
             }
             else
             {
-
                 return Json(new { Message = "حدث خطأ اثناء التعديل", Title = "خطأ", Status = "error" });
-
             }
-
         }
-
-
-
-
 
         public ActionResult GetTreeParial(int? id)
         {
-
             List<AccountTree> Model = db.AccountTrees.ToList();
+
             return PartialView("_Tree");
-
         }
-
-
 
         public ActionResult Delete(int? id)
         {
@@ -353,9 +340,6 @@ namespace Purchases.Controllers
             return Json(new { Status = "success", Message = "تم حذف البند", Title = " الحذف" }, JsonRequestBehavior.AllowGet);
         }
 
-
-
-
         /*Get Data For Select2 Inputs*/
         public ActionResult GetAccountType(string q)
         {
@@ -366,6 +350,7 @@ namespace Purchases.Controllers
             }).Where(f => f.text.Contains(q));
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult GetAccountNature(string q)
         {
             var data = db.AccountNatures.Select(p => new
@@ -375,6 +360,7 @@ namespace Purchases.Controllers
             }).Where(f => f.text.Contains(q));
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult GetAccountFinal(string q)
         {
             var data = db.AccountFinals.Select(p => new
@@ -394,6 +380,5 @@ namespace Purchases.Controllers
             }).Where(f => f.text.Contains(q));
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
     }
 }

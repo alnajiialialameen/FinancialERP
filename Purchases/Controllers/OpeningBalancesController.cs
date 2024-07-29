@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Purchases.Models;
 using Purchases.Models.ViewModal;
+using Microsoft.AspNet.Identity;
 
 namespace Purchases.Controllers
 {
@@ -22,6 +23,8 @@ namespace Purchases.Controllers
             OpeningBalance ob = new OpeningBalance();
             OpeningBalanceDetail obd = new OpeningBalanceDetail();
             ob.FinancialCycleId = 1;
+            var userid = User.Identity.GetUserId();
+
             List<OpeningBalanceDetail> obdlist = new List<OpeningBalanceDetail>();
             foreach(var d in data)
             {
@@ -30,17 +33,21 @@ namespace Purchases.Controllers
                 o.Debit = d.Debit;
                 o.Credit = d.Credit;
                 o.Note = d.Note;
+                o.CreatedBy = userid;
+                o.CreationDate = DateTime.Now;
+
                 obdlist.Add(o);
             }
 
             ob.Debit = obdlist.Sum(d => d.Debit);
             ob.OpeningBalanceDetails = obdlist;
+            ob.CreatedBy = userid;
+            ob.CreationDate = DateTime.Now;
             db.OpeningBalances.Add(ob);
 
             db.SaveChanges();
             return Json(new { Message = "هذا البند موجود  مسبقا في الشجرة المحاسبية", Title = "عملية الاضافة", Status = "error" });
         }
-        
-
+       
     }
 }

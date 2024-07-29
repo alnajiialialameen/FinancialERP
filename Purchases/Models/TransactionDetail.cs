@@ -15,14 +15,20 @@ namespace Purchases.Models
     public partial class TransactionDetail
     {
         public int Id { get; set; }
-        public Nullable<int> TransactionId { get; set; }
-        public Nullable<int> AccTreeId { get; set; }
+        public int TransactionId { get; set; }
+        public int AccTreeId { get; set; }
         public Nullable<int> BalanceId { get; set; }
         public Nullable<decimal> Debit { get; set; }
         public Nullable<decimal> Credit { get; set; }
         public string Note { get; set; }
+        public string CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreationDate { get; set; }
+        public string UpdatedBy { get; set; }
+        public Nullable<System.DateTime> UpdatingDate { get; set; }
     
         public virtual AccountTree AccountTree { get; set; }
+        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
         public virtual Balance Balance { get; set; }
         public virtual Transaction Transaction { get; set; }
     }

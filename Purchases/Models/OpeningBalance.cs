@@ -26,7 +26,13 @@ namespace Purchases.Models
         public Nullable<decimal> Credit { get; set; }
         public Nullable<decimal> Difference { get; set; }
         public Nullable<System.DateTime> Date { get; set; }
+        public string CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreationDate { get; set; }
+        public string UpdatedBy { get; set; }
+        public Nullable<System.DateTime> UpdatingDate { get; set; }
     
+        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
         public virtual FinancialCycle FinancialCycle { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OpeningBalanceDetail> OpeningBalanceDetails { get; set; }

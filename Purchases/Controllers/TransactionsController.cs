@@ -8,6 +8,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Purchases.MyLogic;
+using Microsoft.AspNet.Identity;
 
 namespace Purchases.Controllers
 {
@@ -105,9 +106,10 @@ namespace Purchases.Controllers
         [HttpPost]
         public ActionResult Create(List<TransactionViewMode> data)
         {
-            //var userId = User.Identity.getUserId();
             try
             {
+                var userid = User.Identity.GetUserId();
+
                 if (data.Sum(x => x.credit) == data.Sum(x => x.debit))
                 {
                     Transaction jou = new Transaction();
@@ -120,6 +122,7 @@ namespace Purchases.Controllers
                     jou.Note = data.FirstOrDefault().note;
                     jou.IsPosted = false;
                     jou.CreatedDate = DateTime.Today;
+                    jou.CreatedBy = userid;
 
                     db.Transactions.Add(jou);
                     db.SaveChanges();
@@ -129,17 +132,19 @@ namespace Purchases.Controllers
                     {
                         TransactionDetail jouDet = new TransactionDetail();
 
-                        jouDet.AccTreeId = item.accTrreId;
+                        jouDet.AccTreeId = Convert.ToInt32(item.accTrreId);
                         jouDet.TransactionId = jou.Id;
                         jouDet.Debit = item.debit;
                         jouDet.Credit = item.credit;
                         jouDet.Note = item.note;
                         jouDet.BalanceId = item.balanceId;
                         int type = item.credit > 0 ? 1 : 0;
+                        jouDet.CreatedBy = userid;
+                        jouDet.CreationDate = DateTime.Today;
 
                         decimal newAmount = Convert.ToDecimal(item.debit + item.credit);
                         int balanceId = Convert.ToInt32(item.balanceId);
-                        myExtention.UpdateActualExchange(balanceId, 0, newAmount, type);
+                        myExtention.UpdateActualExchange(balanceId, 0, newAmount, userid);
 
                         jouDetList.Add(jouDet);
                     }
@@ -156,7 +161,7 @@ namespace Purchases.Controllers
             }
             catch (Exception e)
             {
-                return Json(new { Message = "حدث خطأ أثناء عملية الإضافة", Title = "خطأ", Status = "error" });
+                return Json(new { Message = "حدث خطأ أثناء عملية الإضافة(Exception)", Title = "خطأ", Status = "error" });
             }
         }
 
@@ -165,9 +170,12 @@ namespace Purchases.Controllers
         {
             try
             {
+                var userid = User.Identity.GetUserId();
                 Transaction transaction = db.Transactions.Find(Id);
 
                 transaction.IsPosted = true;
+                transaction.UpdatedBy = userid;
+                transaction.UpdatingDate = DateTime.Today;
 
                 db.Entry(transaction).State = EntityState.Modified;
                 db.SaveChanges();
@@ -185,9 +193,12 @@ namespace Purchases.Controllers
         {
             try
             {
+                var userid = User.Identity.GetUserId();
                 Transaction transaction = db.Transactions.Find(Id);
 
                 transaction.HasAddedTax = HasAddedTax;
+                transaction.UpdatedBy = userid;
+                transaction.UpdatingDate = DateTime.Today;
 
                 db.Entry(transaction).State = EntityState.Modified;
                 db.SaveChanges();
@@ -205,9 +216,12 @@ namespace Purchases.Controllers
         {
             try
             {
+                var userid = User.Identity.GetUserId();
                 Transaction transaction = db.Transactions.Find(Id);
 
                 transaction.HasTax = HasTax;
+                transaction.UpdatedBy = userid;
+                transaction.UpdatingDate = DateTime.Today;
 
                 if (HasTax)
                 {
@@ -218,6 +232,8 @@ namespace Purchases.Controllers
                     transDet.Debit = transaction.Amount * (decimal)0.01;
                     transDet.Credit = 0;
                     transDet.Note = transaction.Note;
+                    transDet.UpdatedBy = userid;
+                    transDet.UpdatingDate = DateTime.Today;
 
                     db.TransactionDetails.Add(transDet);
                 }
@@ -251,8 +267,7 @@ namespace Purchases.Controllers
             ViewBag.CurrencyType = trans.CurrencyType.Name != null? trans.CurrencyType.Name : "غير مدخل";
             ViewBag.ExchangeRate = trans.ExchangeRate != null? trans.ExchangeRate.ToString() : "غير مدخل";
             ViewBag.Note = trans.Note != null ? trans.Note :"غير مدخل";
-
-
+            
             return View(trans);
         }
 
@@ -265,8 +280,8 @@ namespace Purchases.Controllers
 
                 obj.id = item.Id;
                 obj.accTrreId = item.AccTreeId;
-                obj.balanceId = item.BalanceId;
-                obj.balanceAccName = item.Balance.AccountTree.AccName;
+                obj.balanceId = item.BalanceId?? item.BalanceId;
+                obj.balanceAccName = item.BalanceId != null?item.Balance.AccountTree.AccName : "";
                 obj.accName = item.AccountTree.AccName;
                 obj.credit = item.Credit;
                 obj.debit = item.Debit;
@@ -386,6 +401,8 @@ namespace Purchases.Controllers
         {
             try
             {
+                var userid = User.Identity.GetUserId();
+
                 if (data.Sum(x => x.credit) == data.Sum(x => x.debit))
                 {
                     //Firstly update Transaction data 
@@ -393,8 +410,9 @@ namespace Purchases.Controllers
                     var currencyId = data.FirstOrDefault().currencyId;
                     var transactionDate1 = data.FirstOrDefault().transactionDate;
                     DateTime transactionDate = Convert.ToDateTime(transactionDate1);
-                    var ExchangeRate = db.CurrencyDetails.FirstOrDefault(x => x.CurrencyTypeId == currencyId & x.Month == transactionDate.Month & x.Year == transactionDate.Year).ExchangeRate;
+                    //var ExchangeRate = db.CurrencyDetails.FirstOrDefault(x => x.CurrencyTypeId == currencyId & x.Month == transactionDate.Month & x.Year == transactionDate.Year).ExchangeRate;
                     var transObj = db.Transactions.Find(transactionId);
+                    var ExchangeRate = 1;
 
                     transObj.DocumentTypeId = 1;
                     transObj.CurrencyId = data.FirstOrDefault().currencyId;
@@ -404,6 +422,8 @@ namespace Purchases.Controllers
                     transObj.Note = data.FirstOrDefault().note;
                     transObj.IsPosted = false;
                     transObj.CreatedDate = DateTime.Today;
+                    transObj.UpdatingDate = DateTime.Today;
+                    transObj.UpdatedBy = userid;
 
                     db.Entry(transObj).State = EntityState.Modified;
                     db.SaveChanges();
@@ -414,22 +434,22 @@ namespace Purchases.Controllers
                         if (data.Any(x => x.accTrreId == item.AccTreeId))//update
                         {
                             var obj = data.FirstOrDefault(x => x.accTrreId == item.AccTreeId);
-                            item.AccTreeId = obj.accTrreId;
+                            item.AccTreeId = Convert.ToInt32(item.AccTreeId);
                             item.BalanceId = obj.balanceId;
                             item.Credit = obj.credit;
                             item.Debit = obj.debit;
-                            item.TransactionId = transactionId;
+                            item.TransactionId = Convert.ToInt32(transactionId);
                             item.Note = obj.note;
-
-                            int type = obj.credit > 0 ? 1 : 0;
+                            item.UpdatedBy = userid;
+                            item.UpdatingDate = DateTime.Today;
 
                             decimal oldAmount = Convert.ToDecimal(item.Debit + item.Credit);
                             int oldBalanceId = Convert.ToInt32(item.BalanceId);
-                            myExtention.UpdateActualExchange(oldBalanceId, oldAmount, 0, type);
+                            myExtention.UpdateActualExchange(oldBalanceId, oldAmount, 0, userid);
 
                             decimal newAmount = Convert.ToDecimal(obj.debit + obj.credit);
                             int newBalanceId = Convert.ToInt32(obj.balanceId);
-                            myExtention.UpdateActualExchange(newBalanceId, 0, newAmount, type);
+                            myExtention.UpdateActualExchange(newBalanceId, 0, newAmount, userid);
 
                             db.Entry(item).State = EntityState.Modified;
                             db.SaveChanges();
@@ -437,12 +457,9 @@ namespace Purchases.Controllers
                         //اذا البند ده موجود في قاعدة البيانات و ما موجود في البيانات المدخلة يبقى المستخدم عمل ليهو حذف في الشاشة لكن فعليا ما اتحذف من قاعدة البيانات
                         else if (!data.Any(x => x.accTrreId == item.AccTreeId)) //Delete
                         {
-
-                            int type = item.Credit > 0 ? 1 : 0;
-
                             decimal oldAmount = Convert.ToDecimal(item.Debit + item.Credit);
                             int oldBalanceId = Convert.ToInt32(item.BalanceId);
-                            myExtention.UpdateActualExchange(oldBalanceId, oldAmount, 0, type);
+                            myExtention.UpdateActualExchange(oldBalanceId, oldAmount, 0, userid);
 
                             db.TransactionDetails.Remove(item);
                             db.SaveChanges();
@@ -455,18 +472,18 @@ namespace Purchases.Controllers
                         if(!db.TransactionDetails.Any(x=>x.TransactionId == transactionId & x.AccTreeId == item.accTrreId))
                         {
                             TransactionDetail transDet = new TransactionDetail();
-                            transDet.AccTreeId = item.accTrreId;
+                            transDet.AccTreeId = Convert.ToInt32(item.accTrreId);
                             transDet.BalanceId = item.balanceId;
                             transDet.Credit = item.credit;
                             transDet.Debit = item.debit;
-                            transDet.TransactionId = transactionId;
+                            transDet.TransactionId = Convert.ToInt32(transactionId);
                             transDet.Note = item.note;
-
-                            int type = item.credit > 0 ? 1 : 0;
+                            transDet.CreatedBy = userid;
+                            transDet.CreationDate = DateTime.Today;
 
                             decimal Amount = Convert.ToDecimal(item.debit + item.credit);
                             int BalanceId = Convert.ToInt32(item.balanceId);
-                            myExtention.UpdateActualExchange(BalanceId, 0, Amount, type);
+                            myExtention.UpdateActualExchange(BalanceId, 0, Amount, userid);
                             
                             db.TransactionDetails.Add(transDet);
                             db.SaveChanges();
@@ -496,15 +513,17 @@ namespace Purchases.Controllers
         {
             try
             {
+                var userid = User.Identity.GetUserId();
+
                 var transDetObj = db.TransactionDetails.Find(Id);
                 var balanceId = Convert.ToInt32(transDetObj.BalanceId);
                 var Credit = transDetObj.Credit;
                 var Debit = transDetObj.Debit;
-                
+
                 int type = transDetObj.Credit > 0 ? 1 : 0;
 
                 var oldAmount = Convert.ToDecimal(Credit + Debit);
-                myExtention.UpdateActualExchange(balanceId, oldAmount, 0, type);
+                myExtention.UpdateActualExchange(balanceId, oldAmount, 0, type, userid);
 
                 db.TransactionDetails.Remove(transDetObj);
                 db.SaveChanges();
@@ -676,6 +695,67 @@ namespace Purchases.Controllers
             //ViewBag.SelectedDate = DateTime.Today.ToShortDateString();
 
             return View();
+        }
+
+        public ActionResult printDataByDates(DateTime dateFrom, DateTime dateTo)
+        {
+            List<TransactionViewMode> data = new List<TransactionViewMode>();
+            var dList = db.TransactionDetails.Where(x => DbFunctions.TruncateTime(x.Transaction.TransactionDate) >= dateFrom & DbFunctions.TruncateTime(x.Transaction.TransactionDate) <= dateTo).ToList();
+            foreach (var item in dList)
+            {
+                //if (Convert.ToDateTime(item1.TransactionDate).Date == myDate.Date)
+                //{
+                //    foreach (var item in db.TransactionDetails.Where(x => x.TransactionId == item1.Id))
+                //    {
+                TransactionViewMode obj = new TransactionViewMode();
+
+                obj.transactionId = Convert.ToInt32(item.TransactionId);
+                obj.accName = item.AccountTree.AccName;
+                obj.credit = item.Credit;
+                obj.debit = item.Debit;
+                obj.transactionDate = item.Transaction.TransactionDate;
+                obj.note = item.Transaction.Note != null ? item.Transaction.Note : "غير مدخل";
+
+                data.Add(obj);
+                //}
+                // }
+            }
+            ViewBag.SumOfAmount = data.Sum(x => x.credit);
+            ViewBag.dateFrom = dateFrom.ToShortDateString();
+            ViewBag.dateTo = dateTo.ToShortDateString();
+
+            return View(data);
+        }
+        
+        public ActionResult printLedgerByDates(int Id, DateTime dateFrom, DateTime dateTo)
+        {
+            List<TransactionViewMode> data = new List<TransactionViewMode>();
+            string AccName = db.AccountTrees.Find(Id).AccName;
+            ViewBag.AccName = AccName;
+
+            var dList = db.TransactionDetails.Where(x => x.AccTreeId == Id & DbFunctions.TruncateTime(x.Transaction.TransactionDate) >= dateFrom & DbFunctions.TruncateTime(x.Transaction.TransactionDate) <= dateTo)
+                .Select(x => x.TransactionId).ToList();
+            foreach (var item1 in dList)
+            {
+                foreach (var item in db.TransactionDetails.Where(x => x.TransactionId == item1 & x.AccTreeId != Id))
+                {
+                    TransactionViewMode obj = new TransactionViewMode();
+
+                    obj.transactionId = Convert.ToInt32(item.TransactionId);
+                    obj.accName = item.AccountTree.AccName;
+                    obj.credit = item.Credit;
+                    obj.debit = item.Debit;
+                    obj.transDate = item.Transaction.TransactionDate != null ? item.Transaction.TransactionDate.Value.ToShortDateString() : "";
+                    obj.note = item.Transaction.Note != null ? item.Transaction.Note : "غير مدخل";
+
+                    data.Add(obj);
+                }
+            }
+            ViewBag.SumOfAmount = data.Sum(x => x.credit);
+            ViewBag.SelectedDate = DateTime.Today.ToShortDateString();
+            ViewBag.dateFrom = dateFrom.ToShortDateString();
+            ViewBag.dateTo = dateTo.ToShortDateString();
+            return View(data);
         }
         
     }

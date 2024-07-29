@@ -19,7 +19,13 @@ namespace Purchases.Models
         public string ImagePath { get; set; }
         public string Title { get; set; }
         public string Note { get; set; }
+        public Nullable<System.DateTime> CreationDate { get; set; }
+        public string CreatedBy { get; set; }
+        public Nullable<System.DateTime> UpdatingDate { get; set; }
+        public string UpdatedBy { get; set; }
     
+        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
         public virtual CompanyRegisteration CompanyRegisteration { get; set; }
     }
 }

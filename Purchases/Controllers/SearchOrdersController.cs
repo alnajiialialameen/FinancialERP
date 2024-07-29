@@ -15,12 +15,9 @@ namespace Purchases.Controllers
         {
             return View();
         }
-
-
-
+        
         public ActionResult LoadData(int ?department ,  DateTime ? orderdate , string description)
         {
-
             //DateTime date = Convert.ToDateTime(orderdate);
             IQueryable<Order> orders = db.Orders;
 
@@ -48,8 +45,6 @@ namespace Purchases.Controllers
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-
-
+        
     }
 }

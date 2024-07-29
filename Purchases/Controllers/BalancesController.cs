@@ -1,4 +1,5 @@
-﻿using Purchases.Class;
+﻿using Microsoft.AspNet.Identity;
+using Purchases.Class;
 using Purchases.Models;
 using System;
 using System.Collections.Generic;
@@ -83,6 +84,8 @@ namespace Purchases.Controllers
 
             if (model.Count > 0)
             {
+                var userid = User.Identity.GetUserId();
+
                 createList = model.Where(d => d.Credint > 0 & !db.Balances.Any(m => m.AccountTreeId == d.AccountTreeId)).ToList();
                 updateList = model.Where(d => db.Balances.Any(m => m.AccountTreeId == d.AccountTreeId)).ToList();
 
@@ -91,13 +94,16 @@ namespace Purchases.Controllers
                     item.FinanceCycleId = 1;
                     Balance obj = db.Balances.Find(item.Id);
 
-                    trcls.updateFinancialCycleCredint(1, obj.Credint, item.Credint);
+                    trcls.updateFinancialCycleCredint(1, obj.Credint, item.Credint, userid);
 
                     obj.Credint = item.Credint;
+                    obj.UpdatedBy = userid;
+                    obj.CreationDate = DateTime.Now;
+
                     db.Entry<Balance>(obj).State = EntityState.Modified;
                 }
 
-                trcls.updateFinancialCycleCredint(1, 0, createList.Sum(x=>x.Credint));
+                trcls.updateFinancialCycleCredint(1, 0, createList.Sum(x=>x.Credint), userid);
                 db.Balances.AddRange(createList);
                 db.SaveChanges();
 
@@ -106,17 +112,7 @@ namespace Purchases.Controllers
 
             return Json(new { Message = "خطأ في عملية الاضافة", Title = "خطأ", Status = "error" });
         }
-        
-
-        public ActionResult test2()
-        {
-            DateTime transactionDate = new DateTime(2024, 3, 16);
-            var val = trcls.geet(transactionDate);
-
-            return Json(val, JsonRequestBehavior.AllowGet);
-        }
-
-
+     
         public ActionResult test()
         {
             var val = trcls.test(1);

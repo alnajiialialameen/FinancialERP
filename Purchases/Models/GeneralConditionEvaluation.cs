@@ -25,5 +25,7 @@ namespace Purchases.Models
     
         public virtual CompetingCompany CompetingCompany { get; set; }
         public virtual GeneralCondition GeneralCondition { get; set; }
+        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
     }
 }

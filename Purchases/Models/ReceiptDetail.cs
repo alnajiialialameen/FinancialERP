@@ -21,8 +21,14 @@ namespace Purchases.Models
         public Nullable<decimal> CurrencyValue { get; set; }
         public Nullable<decimal> Amount { get; set; }
         public string Statement { get; set; }
+        public string CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreationDate { get; set; }
+        public string UpdatedBy { get; set; }
+        public Nullable<System.DateTime> UpdatingDate { get; set; }
     
         public virtual AccountTree AccountTree { get; set; }
+        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
         public virtual Receipt Receipt { get; set; }
         public virtual CurrencyType CurrencyType { get; set; }
     }

@@ -11,7 +11,7 @@ namespace Purchases.MyLogic
     public class myExtention
     {
         static Entities db = new Entities();
-        //upload pdf file
+        //upload file
         public static string UploadFile(int? Id, string Title)
         {
             //check if there are 
@@ -108,16 +108,16 @@ namespace Purchases.MyLogic
                 else
                 {
                     return -1;
-                }
-
-                
+                } 
             }
             catch(Exception e)
             {
                 return -1;
             }
         }
+
         /*---------------------------------------------------------*/
+        //not work
         public static string UploadAnnouncementsImages(int Id, HttpPostedFile file, int i)
         {
             //check if there are 
@@ -139,7 +139,7 @@ namespace Purchases.MyLogic
             return fileName;
         }
 
-        public static int UpdateActualExchange(int BalanceId, decimal oldAmount, decimal newAmount, int type)
+        public static int UpdateActualExchange(int BalanceId, decimal oldAmount, decimal newAmount, int type,  string userid)
         {
             try
             {
@@ -156,8 +156,10 @@ namespace Purchases.MyLogic
                         balanceObj.ActualExchange = balanceObj.ActualExchange - oldAmount - newAmount;
                     }
 
-                    //balanceObj.RelativeDeviation = balanceObj.Credint - balanceObj.ActualExchange;
-                    //balanceObj.DeviationRatio =  balanceObj.ActualExchange > 0? Convert.ToDecimal((balanceObj.RelativeDeviation / balanceObj.ActualExchange)) / 100 : 0;
+                    balanceObj.RelativeDeviation = balanceObj.Credint - balanceObj.ActualExchange;
+                    balanceObj.DeviationRatio =  balanceObj.ActualExchange > 0? Convert.ToDecimal((balanceObj.RelativeDeviation / balanceObj.Credint)) / 100 : 0;
+                    balanceObj.UpdatedBy = userid;
+                    balanceObj.UpdatingDate = DateTime.Now;
 
                     db.Entry(balanceObj).State = EntityState.Modified;
                     db.SaveChanges();
@@ -169,6 +171,36 @@ namespace Purchases.MyLogic
                     return 0;
                 }
             }catch(Exception e)
+            {
+                return -1;
+            }
+        }
+
+        public static int UpdateActualExchange(int BalanceId, decimal oldAmount, decimal newAmount, string userid)
+        {
+            try
+            {
+                if (BalanceId > 0)
+                {
+                    var balanceObj = db.Balances.Find(BalanceId);
+
+                    balanceObj.ActualExchange = balanceObj.ActualExchange - oldAmount + newAmount;
+                    balanceObj.RelativeDeviation = balanceObj.Credint - balanceObj.ActualExchange;
+                    balanceObj.DeviationRatio = balanceObj.ActualExchange > 0 ? Convert.ToDecimal((balanceObj.RelativeDeviation / balanceObj.Credint)) / 100 : 0;
+                    balanceObj.UpdatedBy = userid;
+                    balanceObj.UpdatingDate = DateTime.Now;
+
+                    db.Entry(balanceObj).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            catch (Exception e)
             {
                 return -1;
             }

@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Purchases.Models;
 using Purchases.Models.ViewModal;
 using System.Data.Entity;
+using Microsoft.AspNet.Identity;
 
 namespace Purchases.Controllers
 
@@ -37,6 +38,8 @@ namespace Purchases.Controllers
         {
             if(data.FromAccTreeId != data.ToAccTreeId)
             {
+                var userid = User.Identity.GetUserId();
+
                 if (ModelState.IsValid)
                 {
                     int currencyFrom = (int)db.BankAccounts.FirstOrDefault(d => d.AccountSub.AccTreeId == data.FromAccTreeId).CurrencyTypeId;
@@ -51,22 +54,29 @@ namespace Purchases.Controllers
                         t.TransactionDate = data.TransactionDate;
                         t.CreatedDate = DateTime.Now;
                         t.Note = data.Note;
+                        t.CreatedBy = userid;
+                        t.CreatedDate = DateTime.Now;
+
                         db.Transactions.Add(t);
+
 
                         TransactionDetail tdDebit = new TransactionDetail();
                         TransactionDetail tdCredit = new TransactionDetail();
-
-
+                        
                         tdDebit.AccTreeId = data.FromAccTreeId;
                         tdDebit.Debit = data.Amount;
                         tdDebit.Credit = 0;
                         tdDebit.TransactionId = t.Id;
+                        tdDebit.CreatedBy = userid;
+                        tdDebit.CreationDate = DateTime.Now;
                         db.TransactionDetails.Add(tdDebit);
                         
                         tdCredit.AccTreeId = data.ToAccTreeId;
                         tdCredit.Credit = data.Amount;
                         tdCredit.Debit = 0;
                         tdCredit.TransactionId = t.Id;
+                        tdCredit.CreatedBy = userid;
+                        tdCredit.CreationDate = DateTime.Now;
                         db.TransactionDetails.Add(tdCredit);
 
                         db.SaveChanges();
@@ -83,12 +93,13 @@ namespace Purchases.Controllers
 
             return Json(new { Message = " عذرا حدث خطأ اثناء عملية الاضافة ", Title = "خطأ", Status = "error" }, JsonRequestBehavior.AllowGet);
         }
-
-
+        
         public ActionResult Update(BankTransferVM data)
         {
             if (data.FromAccTreeId != data.ToAccTreeId)
             {
+                var userid = User.Identity.GetUserId();
+
                 if (ModelState.IsValid)
                 {
                     int currencyFrom = (int)db.BankAccounts.FirstOrDefault(d => d.AccountSub.AccTreeId == data.FromAccTreeId).CurrencyTypeId;
@@ -102,6 +113,8 @@ namespace Purchases.Controllers
                         t.DocumentTypeId = 5;
                         t.TransactionDate = data.TransactionDate;
                         t.CreatedDate = DateTime.Now;
+                        t.UpdatedBy = userid;
+                        t.UpdatingDate = DateTime.Now;
                         t.Note = data.Note;
 
                         db.Entry(t).State = EntityState.Modified;
@@ -118,12 +131,16 @@ namespace Purchases.Controllers
                             tdDebit.Debit = data.Amount;
                             tdDebit.Credit = 0;
                             tdDebit.TransactionId = t.Id;
+                            tdDebit.CreatedBy = userid;
+                            tdDebit.CreationDate = DateTime.Now;
                             db.TransactionDetails.Add(tdDebit);
 
                             tdCredit.AccTreeId = data.ToAccTreeId;
                             tdCredit.Credit = data.Amount;
                             tdCredit.Debit = 0;
                             tdCredit.TransactionId = t.Id;
+                            tdCredit.CreatedBy = userid;
+                            tdCredit.CreationDate = DateTime.Now;
                             db.TransactionDetails.Add(tdCredit);
 
                             db.SaveChanges();
@@ -141,8 +158,7 @@ namespace Purchases.Controllers
 
             return Json(new { Message = " عذرا حدث خطأ اثناء عملية التعديل ", Title = "خطأ", Status = "error" }, JsonRequestBehavior.AllowGet);
         }
-
-
+        
         //populat List 
         public ActionResult GetAccTreeId (string q)
         {

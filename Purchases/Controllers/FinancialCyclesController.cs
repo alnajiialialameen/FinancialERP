@@ -1,4 +1,5 @@
-﻿using Purchases.Models;
+﻿using Microsoft.AspNet.Identity;
+using Purchases.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -40,12 +41,16 @@ namespace Purchases.Controllers
 
         public ActionResult Save(FinancialCycle ob)
         {
+            var userid = User.Identity.GetUserId();
             FinancialCycle f = new FinancialCycle();
 
             f.Year = ob.Year;
             f.ActualExchange = 0;
             f.RelativeDeviation = 0;
             f.RelativeRatio = 0;
+            f.UpdatedBy = userid;
+            f.UpdatingDate = DateTime.Now;
+
             f.CurrentYear = true;
 
             db.FinancialCycles.Add(f);
@@ -58,6 +63,8 @@ namespace Purchases.Controllers
         {
             if (data.Id != 0 && data.Year != null)
             {
+                var userid = User.Identity.GetUserId();
+
                 int c = db.FinancialCycles.Where(f => f.Id != data.Id && f.Year == data.Year).Count();
                 if (c == 0)
                 {
@@ -65,33 +72,36 @@ namespace Purchases.Controllers
                     // TeacherMaterial tm = db.TeacherMaterials.Single(f => f.TeacherId == data.Id && f.IsSpecialtyMaterial == true);
 
                     t.Year = data.Year;
-
+                    t.UpdatedBy = userid;
+                    t.UpdatingDate = DateTime.Now;
 
                     db.Entry(t).State = EntityState.Modified;
                     db.SaveChanges();
                     return Json(new { Message = "تمت عملية التعديل بنجاح", Title = "نجاح", Status = "success" });
                 }
-
             }
 
             return Json(new { Message = "حدث خطأ اثناء التعديل", Title = "خطأ", Status = "error" });
         }
-
-
+        
         public ActionResult StopBalances(FinancialCycle data)
         {
             if (data.Id != 0)
             {
+                var userid = User.Identity.GetUserId();
+
                 FinancialCycle O = db.FinancialCycles.Find(data.Id);
                 if (O.IsClosed == true)
                 {
-
                     O.IsClosed = false;
                 }
                 else
                 {
                     O.IsClosed = true;
                 }
+
+                O.UpdatedBy = userid;
+                O.UpdatingDate = DateTime.Now;
                 db.Entry(O).State = EntityState.Modified;
                 db.SaveChanges();
                 return Json(new { Message = "تمت تكملة الاجراء بنجاح شكرا ", Title = "نجاح", Status = "success" });
@@ -99,6 +109,5 @@ namespace Purchases.Controllers
             }
             return Json(new { Message = " عذرا حدث خطأ أثناء العملية", Title = "خطأ", Status = "error" });
         }
-
     }
 }

@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Purchases.Models;
 using Purchases.MyLogic;
 using Purchases.Models.ViewModal;
+using Microsoft.AspNet.Identity;
 
 namespace Purchases.Controllers
 {
@@ -101,7 +102,9 @@ namespace Purchases.Controllers
         {
             try
             {
-                if(!db.CommitteFormations.Any(x=>x.OrderId == model.OrderId))
+                var userid = User.Identity.GetUserId();
+
+                if (!db.CommitteFormations.Any(x=>x.OrderId == model.OrderId))
                 {
                     CommitteFormation obj = new CommitteFormation();
                     obj.OrderId = model.OrderId;
@@ -109,6 +112,9 @@ namespace Purchases.Controllers
                     obj.ResolutionDate = model.ResolutionDate;
                     obj.ResolutionName = model.ResolutionName;
                     obj.Subject = model.Subject;
+                    obj.CommitteeTypeId = model.CommitteeTypeId;
+                    obj.CreatedBy = userid;
+                    obj.CreationDate = DateTime.Now;
 
                     db.CommitteFormations.Add(obj);
                     int Id = db.SaveChanges();
@@ -132,12 +138,17 @@ namespace Purchases.Controllers
         {
             try
             {
+                var userid = User.Identity.GetUserId();
+
                 CommitteFormation obj = db.CommitteFormations.Find(model.Id);
                 obj.OrderId = model.OrderId;
                 obj.ResolutionNo = model.ResolutionNo;
                 obj.ResolutionDate = model.ResolutionDate;
                 obj.ResolutionName = model.ResolutionName;
                 obj.Subject = model.Subject;
+                obj.CommitteeTypeId = model.CommitteeTypeId;
+                obj.UpdatedBy = userid;
+                obj.UpdatingDate = DateTime.Now;
 
                 db.Entry(obj).State = EntityState.Modified;
                 int Id = db.SaveChanges();
@@ -150,8 +161,7 @@ namespace Purchases.Controllers
                 return Json(new { Message = "حدث خطأ أثناء عملية التعديل", Title = "خطأ", Status = "error" });
             }
         }
-
-
+        
         // GET: ACUCommitteFormations
         public ActionResult Index(int Id)
         {
@@ -168,10 +178,14 @@ namespace Purchases.Controllers
                 ViewBag.DepartmentName = db.Orders.Find(Id).DepartmentName;
                 ViewBag.Description = db.Orders.Find(Id).Description;
                 ViewBag.ACUCommitteFormationId = committeFormations.Id;
+                ViewBag.CommitteeTypeId = committeFormations.CommitteeTypeId;
             }
             else
             {
+                var orderObj = db.Orders.Find(Id);
+
                 ViewBag.OrderId = Id;
+                ViewBag.OrderDate = orderObj.OrderDate.Value.Day.ToString() + "-" + orderObj.OrderDate.Value.Month.ToString() + "-" + orderObj.OrderDate.Value.Year;
             }
             return View();
         }
@@ -182,12 +196,16 @@ namespace Purchases.Controllers
         {
             try
             {
-                if(!db.CommitteeMembers.Any(x => x.CommitteeFormationId == model.CommitteFormationId & x.EmployeeId == model.EmployeeId))
+                var userid = User.Identity.GetUserId();
+
+                if (!db.CommitteeMembers.Any(x => x.CommitteeFormationId == model.CommitteFormationId & x.EmployeeId == model.EmployeeId))
                 {
                     CommitteeMember obj = new CommitteeMember();
                     obj.CommitteeFormationId = model.CommitteFormationId;
                     obj.EmployeeId = model.EmployeeId;
                     obj.CommitteeJobId = model.CommitteeJobId;
+                    obj.CreatedBy = userid;
+                    obj.CreationDate = DateTime.Now;
 
                     db.CommitteeMembers.Add(obj);
                     int Id = db.SaveChanges();
@@ -204,19 +222,22 @@ namespace Purchases.Controllers
                 return Json(new { Message = "حدث خطأ أثناء عملية الإضافة", Title = "خطأ", Status = "error" });
             }
         }
-
-
+        
         [ActionName("UpdateMember")]
         [HttpPost]
         public ActionResult UpdateCommitteeMembers(CommitteeMemberViewModel model)
         {
             try
             {
+                var userid = User.Identity.GetUserId();
+
                 if (db.CommitteeMembers.Any(x => x.Id == model.Id & x.EmployeeId == model.EmployeeId))
                 {
                     CommitteeMember obj = db.CommitteeMembers.Find(model.Id);
                     
                     obj.CommitteeJobId = model.CommitteeJobId;
+                    obj.UpdatedBy = userid;
+                    obj.UpdatingDate = DateTime.Now;
 
                     db.Entry(obj).State = EntityState.Modified;
                     db.SaveChanges();
@@ -233,8 +254,7 @@ namespace Purchases.Controllers
                 return Json(new { Message = "حدث خطأ أثناء العملية ", Title = "خطأ", Status = "error" });
             }
         }
-
-
+        
         [ActionName("DeleteMember")]
         [HttpPost]
         public ActionResult DeleteCommitteeMembers(CommitteeMemberViewModel model)
@@ -260,8 +280,7 @@ namespace Purchases.Controllers
                 return Json(new { Message = "حدث خطأ أثناء العملية ", Title = "خطأ", Status = "error" });
             }
         }
-
-
+        
         /*----------------------------------------Companies Related Operations -----------------------------------------*/
         [ActionName("AddCompany")]
         [HttpPost]
@@ -269,12 +288,16 @@ namespace Purchases.Controllers
         {
             try
             {
+                var userid = User.Identity.GetUserId();
+
                 if (!db.CompetingCompanies.Any(x => x.OrderId == model.OrderId & x.CompanyRegisterationId == model.CompanyRegisterationId))
                 {
                     CompetingCompany obj = new CompetingCompany();
                     obj.CommitteeFormationId = model.CommitteFormationId;
                     obj.OrderId = model.OrderId;
                     obj.CompanyRegisterationId = model.CompanyRegisterationId;
+                    obj.CreatedBy = userid;
+                    obj.CreationDate = DateTime.Now;
 
                     db.CompetingCompanies.Add(obj);
                     int Id = db.SaveChanges();
@@ -292,18 +315,21 @@ namespace Purchases.Controllers
             }
         }
 
-
         [ActionName("UpdateCompany")]
         [HttpPost]
         public ActionResult UpdateCommitteeCompanies(CommitteeMemberViewModel model)
         {
             try
             {
+                var userid = User.Identity.GetUserId();
+
                 if (!db.CompetingCompanies.Any(x => x.Id == model.Id & x.CompanyRegisterationId == model.CompanyRegisterationId))
                 {
                     CompetingCompany obj = db.CompetingCompanies.Find(model.Id);
 
                     obj.CompanyRegisterationId = model.CompanyRegisterationId;
+                    obj.CreatedBy = userid;
+                    obj.UpdatingDate = DateTime.Now;
 
                     db.Entry(obj).State = EntityState.Modified;
                     db.SaveChanges();
@@ -320,7 +346,6 @@ namespace Purchases.Controllers
                 return Json(new { Message = "حدث خطأ أثناء العملية ", Title = "خطأ", Status = "error" });
             }
         }
-
 
         [ActionName("DeleteCompany")]
         [HttpPost]
@@ -347,7 +372,6 @@ namespace Purchases.Controllers
                 return Json(new { Message = "حدث خطأ أثناء العملية ", Title = "خطأ", Status = "error" });
             }
         }
-
 
         [ActionName("GetCompaniesForList")]
         [HttpGet]
@@ -394,13 +418,13 @@ namespace Purchases.Controllers
                     else
                     {
                         data.Clear();
-                        return Json(new { Message = "حدث خطأ أثناء العملية ", Title = "خطأ", Status = "error" }, JsonRequestBehavior.AllowGet);
+                        return Json(new { Message = "حدث خطأ أثناء العملية1111 ", Title = "خطأ", Status = "error" }, JsonRequestBehavior.AllowGet);
                     }
                 }
                 else
                 {
                     data.Clear();
-                    return Json(new { Message = "حدث خطأ أثناء العملية ", Title = "خطأ", Status = "error" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { Message = "حدث خطأ أثناء العملية222 ", Title = "خطأ", Status = "error" }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception e)

@@ -7,6 +7,7 @@ using Purchases.Models;
 using System.Data.Entity;
 using Purchases.Models.ViewModal;
 using Purchases.Class;
+using Microsoft.AspNet.Identity;
 
 namespace Purchases.Controllers
 {
@@ -14,11 +15,13 @@ namespace Purchases.Controllers
     {
         Entities db = new Entities();
         TreeClass treecls = new TreeClass();
+        
         // GET: BankAccounts
         public ActionResult Index()
         {
             return View();
         }
+
         public ActionResult LoadData()
         {
             var data = db.AccountSubs.Where(x => x.AccountTree.AccParent == 7).Select(p => new
@@ -30,8 +33,7 @@ namespace Purchases.Controllers
             
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-
+        
         public ActionResult getBankData(int accountSubId)
         {
             var data = new object();
@@ -54,13 +56,13 @@ namespace Purchases.Controllers
             
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-
+        
         [HttpPost]
         public ActionResult Create(BankViewmodel data)
         {
             try
             {
+                var userid = User.Identity.GetUserId();
                 //int res = treecls.AddToTree(data.accParentName, data.AccName, 2, data.AccCategoryId);
 
                 if (data.Id > 0)
@@ -72,6 +74,8 @@ namespace Purchases.Controllers
                     b.OpenDate = Convert.ToDateTime(data.OpenDate);
                     b.CurrencyTypeId = data.CurrencyTypeId;
                     b.IBan = data.IBan;
+                    b.UpdatedBy = userid;
+                    b.UpdatingDate = DateTime.Now;
 
                     db.Entry(b).State = EntityState.Modified;
                     db.SaveChanges();
@@ -88,6 +92,8 @@ namespace Purchases.Controllers
                     b.OpenDate = Convert.ToDateTime(data.OpenDate);
                     b.CurrencyTypeId = data.CurrencyTypeId;
                     b.IBan = data.IBan;
+                    b.CreatedBy = userid;
+                    b.CreationDate = DateTime.Now;
 
                     db.BankAccounts.Add(b);
                     db.SaveChanges();
@@ -105,6 +111,7 @@ namespace Purchases.Controllers
         {
             try
             {
+                var userid = User.Identity.GetUserId();
                 BankAccount bank = db.BankAccounts.Find(data.Id);
                 AccountTree tree = db.AccountTrees.Find(data.AccId);
 
@@ -115,6 +122,8 @@ namespace Purchases.Controllers
                 bank.OpenDate = Convert.ToDateTime(data.OpenDate);
                 bank.CurrencyTypeId = data.CurrencyTypeId;
                 bank.IBan = data.IBan;
+                bank.UpdatedBy = userid;
+                bank.UpdatingDate = DateTime.Now;
 
                 db.Entry(bank).State = EntityState.Modified;
                 db.Entry(tree).State = EntityState.Modified;
@@ -160,8 +169,6 @@ namespace Purchases.Controllers
             }).Where(x => x.text.Contains(q));
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        
-
 
         public ActionResult checkCode(int Id)
         {
@@ -176,7 +183,6 @@ namespace Purchases.Controllers
         {
             if(Id > 0)
             {
-
                 var bank = db.BankAccounts.Find(Id);
                 var bankName = db.AccountTrees.FirstOrDefault(x => x.Id == bank.AccountSub.AccTreeId).AccName;
 
@@ -200,26 +206,48 @@ namespace Purchases.Controllers
                 StartFromNumber = p.StartFromNumber,
                 EndToNumber = p.EndToNumber,
                 BooKNumber = p.BooKNumber,
-                IsFinished = p.IsFinished,
+                IsFinished = p.IsFinished == true?"منتهي" : "غير منتهي",
                 BankAccountId = p.BankAccountId
             });
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult CreateOrUpdate(Check model)
+        public ActionResult CreateOrUpdate(CheckVM model)
         {
             try
             {
-                if(model.Id > 0)
+                var userid = User.Identity.GetUserId();
+                
+                if (model.Id > 0)
                 {
-                    db.Entry(model).State = EntityState.Modified;
+                    var obj = db.Checks.Find(model.Id);
+
+                    obj.StartFromNumber = model.StartFromNumber;
+                    obj.EndToNumber = model.EndToNumber;
+                    obj.BankAccountId = model.BankAccountId;
+                    obj.BooKNumber = model.BooKNumber;
+                    obj.IsFinished = model.IsFinished;
+                    obj.UpdatedBy = userid;
+                    obj.UpdatingDate = DateTime.Now;
+
+                    db.Entry(obj).State = EntityState.Modified;
                     db.SaveChanges();
 
                     return Json(new { Message = "تمت عملية التعديل  بنجاح", Title = "نجاح", Status = "success" }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    db.Checks.Add(model);
+                    Check obj = new Check();
+
+                    obj.StartFromNumber = model.StartFromNumber;
+                    obj.EndToNumber = model.EndToNumber;
+                    obj.BankAccountId = model.BankAccountId;
+                    obj.BooKNumber = model.BooKNumber;
+                    obj.IsFinished = false;
+                    obj.CreatedBy = userid;
+                    obj.CreationDate = DateTime.Now;
+
+                    db.Checks.Add(obj);
                     db.SaveChanges();
 
                     return Json(new { Message = "تمت عملية الاضافة  بنجاح", Title = "نجاح", Status = "success" }, JsonRequestBehavior.AllowGet);
@@ -235,8 +263,12 @@ namespace Purchases.Controllers
         {
             try
             {
+                var userid = User.Identity.GetUserId();
+
                 var data = db.Checks.Find(Id);
                 data.IsFinished = true;
+                data.UpdatedBy = userid;
+                data.UpdatingDate = DateTime.Now;
 
                 db.Entry(data).State = EntityState.Modified;
                 db.SaveChanges();

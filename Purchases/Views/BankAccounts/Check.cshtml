@@ -65,7 +65,7 @@
     </div><!-- /.content-wrapper -->
 
     <div class="example-modal">
-        <div class="modal fade in" id="add-modal">
+        <div class="modal fade in" id="add-modal" data-backdrop="static">
             <div class="modal-dialog" style="width:80% !important">
                 <div class="modal-content">
                     <div class="modal-header .no-border">
@@ -131,7 +131,7 @@
                                                                     </div>
 
                                                                     <div class="pull-right">
-                                                                        <input type="checkbox" id="IsFinished" value="1" checked />
+                                                                        <input type="checkbox" id="IsFinished" value="1" />
                                                                         <label type="text" id="CheckId" class="hidden"></label>
                                                                     </div>
                                                                 </div>
@@ -192,7 +192,7 @@
                             "title": "الحالة",
                             "data": "IsFinished",
                             "render": function (data) {
-                                if (data != false)
+                                if (data != 'منتهي')
                                     return '<span class="success">غير منتهي</span>';
                                 else
                                     return '<span class="error">منتهي</span>';
@@ -324,10 +324,20 @@
     });
 
     function edit() {
+        var IsFinished = false;
+
+        if ($('.IsFinished').is(':checked')) {
+            IsFinished = true;
+        } else {
+            IsFinished = false;
+        }
+
+
         var ob = {
             "Id": $('#ed-id').val(),
             "Name": $('#ed-name').val(),
-            "StructureCount": $('#edstructureCount').val()
+            "StructureCount": $('#edstructureCount').val(),
+            "IsFinished": IsFinished
         };
 
         $.ajax({
@@ -352,13 +362,21 @@
 
         
         function save() {
+            var IsFinished = 0;
+
+            if ($('.IsFinished').is(':checked')) {
+                IsFinished = 1;
+            } else {
+                IsFinished = 0;
+            }
+
             var ob = {
                 "Id": $('#CheckId').text(),
                 "BankAccountId": $('#bankId').text(),
                 "BooKNumber": $('.BooKNumber').val(),
                 "StartFromNumber": $('.StartFromNumber').val(),
                 "EndToNumber": $('.EndToNumber').val(),
-                "IsFinished": $('.IsFinished').val(),
+                "IsFinished": IsFinished,
             };
             console.clear();
             console.log(ob);
@@ -381,7 +399,6 @@
             }
         });
         }
-
 
         function Delete(Id) {
             $.ajax({

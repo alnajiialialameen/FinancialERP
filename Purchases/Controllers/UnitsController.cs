@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Purchases.Models;
 using System.Data.Entity;
+using Microsoft.AspNet.Identity;
 
 namespace Purchases.Controllers
 {
@@ -26,13 +27,17 @@ namespace Purchases.Controllers
             });
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-
+        
         [HttpPost]
         public ActionResult Create(Unit data)
         {
+            var userid = User.Identity.GetUserId();
+
             Unit t = new Unit();
             t.Name = data.Name;
+            t.CreatedBy = userid;
+            t.CreationDate = DateTime.Now;
+
             db.Units.Add(t);
             db.SaveChanges();
 
@@ -43,16 +48,21 @@ namespace Purchases.Controllers
         {
             if (data.Id != 0 && data.Name != null)
             {
-                if(!db.Units.Any(f=>f.Name == data.Name))
+                var userid = User.Identity.GetUserId();
+
+                if (!db.Units.Any(f=>f.Name == data.Name))
                 {
                     Unit t = db.Units.Find(data.Id);
                     t.Name = data.Name;
+                    t.UpdatedBy = userid;
+                    t.UpdatingDate = DateTime.Now;
+
                     db.Entry(t).State = EntityState.Modified;
                     db.SaveChanges();
                     return Json(new { Message = "تمت عملية التعديل بنجاح", Title = "نجاح", Status = "success" });
                 }
-
             }
+
             return Json(new { Message = "حدث خطأ اثناء التعديل", Title = "خطأ", Status = "error" });
         }
 

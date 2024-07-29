@@ -179,8 +179,7 @@ namespace Purchases.Class
                 return -1;
             }
         }
-
-
+        
         public int getRootParentId(int? accTreeId)
         {
             try
@@ -210,17 +209,19 @@ namespace Purchases.Class
             }
         }
 
-        public void updateFinancialCycleCredint(int Id, decimal? oldAmount, decimal? newAmount)
+        public void updateFinancialCycleCredint(int Id, decimal? oldAmount, decimal? newAmount, string userid)
         {
             FinancialCycle obj = db.FinancialCycles.Find(Id);
 
             obj.Credint = obj.Credint == null | obj.Credint <= 0 ? newAmount : obj.Credint - oldAmount + newAmount;
+            obj.UpdatedBy = userid;
+            obj.UpdatingDate = DateTime.Now;
 
             db.Entry(obj).State = EntityState.Modified;
             db.SaveChanges();
         }
 
-        public void updateParentFinancialCycleCredint(int financeCycleId, int Id, decimal? oldAmount, decimal? newAmount)
+        public void updateParentFinancialCycleCredint(int financeCycleId, int Id, decimal? oldAmount, decimal? newAmount, string userid)
         {
             try
             {
@@ -229,6 +230,9 @@ namespace Purchases.Class
                     var obj = db.Balances.FirstOrDefault(x => x.AccountTreeId == Id & x.FinanceCycleId == financeCycleId);
 
                     obj.Credint = obj.Credint - oldAmount + newAmount;
+                    obj.UpdatedBy = userid;
+                    obj.UpdatingDate = DateTime.Now;
+
                     db.Entry(obj).State = EntityState.Modified;
                     db.SaveChanges();
                 }
@@ -284,7 +288,6 @@ namespace Purchases.Class
             }
 
             return vaList;
-            //return data;
         }
         
         //دي حقت الموازنة كل بند اب(رئيسي) و التفاصيل حقته في الشجرة وضعها والصرف الفعلي ليها في الموازنة كيف حسب تاريخ معين.......ممكن نستخدمة في التقارير
@@ -329,7 +332,6 @@ namespace Purchases.Class
             //return vaList;
             return data;
         }
-
         
         //دي حقت الموازنة لكل بند في الشجرة وضعه والصرف الفعلي ليهو في الموازنة وصل الحدي وين.......ممكن نستخدمة في التقارير
         // دي ما شغالة
@@ -360,7 +362,7 @@ namespace Purchases.Class
 
 
         //for all tree
-        public string AddToTree(List<TreeAccVM> dataList, string accParentName)
+        public string AddToTree(List<TreeAccVM> dataList, string accParentName, string userid)
         {
             if (dataList.Count() > 0)
             {
@@ -395,12 +397,17 @@ namespace Purchases.Class
                             d.AccTypeId = data.AccTypeId;
                             d.AccNatureId = data.AccNatureId;
                             d.AccFinalId = data.AccFinalId;
+                            d.CreatedBy = userid;
+                            d.CreationDate = DateTime.Now;
 
                             if (data.AccTypeId == 2)//حساب فرعي
                             {
                                 AccountSub sub = new AccountSub();
                                 sub.AccCategoryId = data.AccSubCategory;
                                 sub.AccTreeId = AccId;
+                                sub.CreatedBy = userid;
+                                sub.CreationDate = DateTime.Now;
+
                                 db.AccountSubs.Add(sub);
                             }
 
@@ -437,7 +444,7 @@ namespace Purchases.Class
         }
         
         //for bankAccount
-        public int AddToTree(string accParentName, string accName, int accTypeId, int accSubCategory)
+        public int AddToTree(string accParentName, string accName, int accTypeId, int accSubCategory, string userid)
         {
             int res = 0;
             //يجب اختبار اسم الحساب الاب اولا
@@ -476,7 +483,9 @@ namespace Purchases.Class
                         d.AccNatureId = parentAccountTree.AccNatureId;
                         d.AccFinalId = parentAccountTree.AccFinalId;
                         d.IsActive = true;
-                    
+                        d.CreatedBy = userid;
+                        d.CreationDate = DateTime.Now;
+
                         //parent
                         if (parentAccountTree == null)
                         {
@@ -504,6 +513,8 @@ namespace Purchases.Class
                             //sub.AccCategoryId = data.AccSubCategory;
                             sub.AccCategoryId = accSubCategory;
                             sub.AccTreeId = AccId;
+                            sub.CreatedBy = userid;
+                            sub.CreationDate = DateTime.Now;
                             db.AccountSubs.Add(sub);
 
                             db.AccountTrees.Add(d);
@@ -528,20 +539,7 @@ namespace Purchases.Class
 
             return res;
         }
-
-        public object geet(DateTime dateFrom)
-        {
-            var data = db.Balances.Where(x=>x.TransactionDetails.Any(td=>td.BalanceId==x.Id)).ToList();
-
-            //var data1 = db.Transactions.Where(d => d.TransactionDate != null & DbFunctions.TruncateTime(d.TransactionDate) >= DbFunctions.TruncateTime(dateFrom))
-            //               .Select(x => x.TransactionDetails
-            //               .Where(b => db.Balances.Any(d => d.AccountTreeId == b.AccTreeId))
-            //               .Select(f => new {f.BalanceId, f.Id, f.AccTreeId, f.AccountTree.AccName, f.Debit, f.Credit })).ToList();
-
-            return data;
-        }
-
-
+        
 
 
 

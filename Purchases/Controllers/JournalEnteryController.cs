@@ -1,4 +1,5 @@
-﻿using Purchases.Models;
+﻿using Microsoft.AspNet.Identity;
+using Purchases.Models;
 using Purchases.Models.ViewModal;
 using System;
 using System.Collections.Generic;
@@ -45,9 +46,12 @@ namespace Purchases.Controllers
         {
             try
             {
+                var userid = User.Identity.GetUserId();
                 JournalEntery jou = new JournalEntery();
                 jou.Statement = data.FirstOrDefault().statement;
                 jou.JournalDate = data.FirstOrDefault().journalDate;
+                jou.CreatedBy = userid;
+                jou.CreationDate = DateTime.Now;
 
                 db.JournalEnteries.Add(jou);
 
@@ -60,6 +64,8 @@ namespace Purchases.Controllers
                     jouDet.JournalEnteryId = jou.Id;
                     jouDet.Amount = item.amount;
                     jouDet.IsCredit = item.isCredit;
+                    jouDet.CreatedBy = userid;
+                    jouDet.CreationDate = DateTime.Now;
 
                     jouDetList.Add(jouDet);
                 }
@@ -73,7 +79,6 @@ namespace Purchases.Controllers
             {
                 return Json(new { Message = "حدث خطأ أثناء عملية الإضافة", Title = "خطأ", Status = "error" });
             }
-            return View();
         }
        
         public ActionResult printData()

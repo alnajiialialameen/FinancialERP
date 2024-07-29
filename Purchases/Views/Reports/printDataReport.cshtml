@@ -1,0 +1,167 @@
+﻿
+@{
+    ViewBag.Title = "TaxReport";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<h2>TaxReport</h2>
+
+@section content
+{
+    <div class="content-wrapper">
+        <div class="grad"></div>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                قيود اليومية
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
+                <li class="active">  قيود اليومية</li>
+            </ol>
+        </section>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="transactionDate"> من تاريخ</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar-alt"></i>
+                            </span>
+                            <input type="text" class="form-control  calendar DateFrom" id="DateFrom" name="DateFrom" placeholder=" من تاريخ " autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="transactionDate"> الي تاريخ</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar-alt"></i>
+                            </span>
+                            <input type="text" class="form-control  calendar DateTo" id="DateTo" name="DateTo" placeholder="الى تاريخ " autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                @*<div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="name">اسم الحساب</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-book"></i>
+                            </div>
+                            <select class="form-control list addAccName" name="addAccName" id="addAccName" style="width:100%"></select>
+                        </div>
+                    </div>
+                </div>*@
+            </div>
+            <div class="row">
+                <div class=" col-md-3">
+                    <button id="btnsearch" onclick="Search()" class="btn btn-primary btn-sm form-control">بحث</button>
+
+
+                </div>
+
+                <div class=" col-md-3">
+                    <button id="btnall" onclick="PrintData()" class="btn form-control btn-info btn-sm">طباعة التقرير </button>
+
+                </div>
+            </div>
+        </section>
+    </div>
+}
+
+
+
+@section scripts{
+
+    <script>
+    var myId = 0;
+    var dataTable;
+
+    $(document).ready(function () {
+        function select2list(selector, url, placeholder) {
+            $(selector).select2({
+                language: { inputTooShort: function () { return 'ادخل حرف واحد علي الاقل'; } },
+                ajax: {
+                    url: url,
+                    dataType: 'json',
+                    delay: 100,
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data,
+                            pagination: {
+                                more: ((data.total_count) > (params.page * 20))
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: placeholder,
+                minimumInputLength: 1,
+            });
+
+        };
+        select2list("#addAccName", "/Transactions/getAccTrees", "اسم الحساب");
+    });
+
+    function PrintData() {
+        //var Id = $('.addAccName').val();
+        //var DateFrom = $('.DateFrom').val();
+        //var DateTo = $('.DateTo').val();
+        var DateFrom = $('#DateFrom').val();
+        var DateTo = $('#DateTo').val();
+
+        if (DateFrom === "" || DateTo === "") {
+            Swal.fire({
+                icon: "error",
+                title: "خطاء ",
+                text: "الرجاء اختيار التاريخين بشكل صحيح",
+               
+            });
+            return;
+        }
+
+        DateFrom = moment(DateFrom, "DD/MM/YYYY").format("MM/DD/yyyy");
+        DateTo = moment(DateTo, "DD/MM/YYYY").format("MM/DD/yyyy");
+
+
+        var url = "/Transactions/printDataByDates?dateFrom=" + DateFrom + "&dateTo=" + DateTo;
+        window.open(url, '_blank').focus();
+    }
+    //function Search() {
+    //    var DateFrom = $('#DateFrom').val();
+    //    var DateTo = $('#DateTo').val();
+
+    //    if (DateFrom === "" || DateTo === "") {
+    //        alert("Please enter both dates");
+    //        return;
+    //    }
+
+    //    $.ajax({
+    //        url: "/Transactions/SearchDataByDates",
+    //        type: "GET",
+    //        data: {
+    //            dateFrom: DateFrom,
+    //            dateTo: DateTo
+    //        },
+    //        success: function (data) {
+    //            $("#results").html(data);
+    //        },
+    //        error: function (xhr, status, error) {
+    //            alert("An error occurred while processing your request: " + error);
+    //        }
+    //    });
+    //}
+
+     </script>
+}

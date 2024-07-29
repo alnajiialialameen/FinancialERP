@@ -15,7 +15,7 @@ namespace Purchases.Models
     public partial class PrintCheck
     {
         public int Id { get; set; }
-        public Nullable<int> TransactionId { get; set; }
+        public int TransactionId { get; set; }
         public Nullable<int> BankAccountId { get; set; }
         public Nullable<int> CheckId { get; set; }
         public Nullable<int> PayNo { get; set; }
@@ -23,7 +23,13 @@ namespace Purchases.Models
         public Nullable<decimal> Amount { get; set; }
         public Nullable<System.DateTime> DueDate { get; set; }
         public string Recipient { get; set; }
+        public string CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreationDate { get; set; }
+        public string UpdatedBy { get; set; }
+        public Nullable<System.DateTime> UpdatingDate { get; set; }
     
+        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
         public virtual BankAccount BankAccount { get; set; }
         public virtual Check Check { get; set; }
         public virtual Transaction Transaction { get; set; }

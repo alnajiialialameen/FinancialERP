@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Purchases.Models;
 using Purchases.MyLogic;
 using Purchases.Models.ViewModal;
+using Microsoft.AspNet.Identity;
 
 namespace Purchases.Controllers
 {
@@ -109,6 +110,8 @@ namespace Purchases.Controllers
         {
             try
             {
+                var userid = User.Identity.GetUserId();
+
                 if (model.Id > 0) //update
                 {
                     if (!db.Circus.Any(x => x.FNo == model.FNo & x.Id != model.Id)) //نتاكد انه رقم الملف غير موجود في طلب اخر
@@ -126,6 +129,8 @@ namespace Purchases.Controllers
                         obj.CircusDate = DateTime.Today;
                         obj.Subject = model.Subject;
                         obj.Signatur = model.Signatur;
+                        obj.UpdatedBy = userid;
+                        obj.UpdatingDate = DateTime.Now;
 
                         db.Entry(obj).State = EntityState.Modified;
                         db.SaveChanges();
@@ -154,6 +159,8 @@ namespace Purchases.Controllers
                         obj.CircusDate = DateTime.Today;
                         obj.Subject = model.Subject;
                         obj.Signatur = model.Signatur;
+                        obj.CreatedBy = userid;
+                        obj.CreationDate = DateTime.Now;
 
                         db.Circus.Add(obj);
                         db.SaveChanges();
@@ -197,6 +204,8 @@ namespace Purchases.Controllers
         {
             try
             {
+                var userid = User.Identity.GetUserId();
+
                 if (db.Circus.Any(x => x.Id == model.Id))
                 {
                     Circu obj = db.Circus.Find(model.Id);
@@ -212,6 +221,8 @@ namespace Purchases.Controllers
                     obj.CircusDate = DateTime.Today;
                     obj.Subject = model.Subject;
                     obj.Signatur = model.Signatur;
+                    obj.UpdatedBy = userid;
+                    obj.UpdatingDate = DateTime.Now;
 
                     db.Entry(obj).State = EntityState.Modified;
                     db.SaveChanges();

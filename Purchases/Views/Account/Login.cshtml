@@ -1,8 +1,6 @@
 ﻿@{
     Layout = "";
 }
-
-
 <html>
 <head>
     <title>Login</title>
@@ -17,11 +15,6 @@
 </head>
 <body>
 
-
-
-
-
-
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-4 col-md-offset-4  login-content">
@@ -29,8 +22,6 @@
                 <div class="account-wall">
 
                     <img class="profile-img" src="~/Content/img/Logo.png" alt="">
-
-
 
                     <div class="row">
                         <form id="login-form" method="post" action="@Url.Action("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl })">
@@ -84,6 +75,9 @@
 
 
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('username').focus();
+        });
         $(function () {
 
 

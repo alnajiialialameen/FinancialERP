@@ -24,5 +24,7 @@ namespace Purchases.Models
         public string UpdatedBy { get; set; }
     
         public virtual TechnicalCondition TechnicalCondition { get; set; }
+        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
     }
 }

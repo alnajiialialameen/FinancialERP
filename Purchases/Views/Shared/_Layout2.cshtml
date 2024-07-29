@@ -234,10 +234,11 @@
                         </a>
                         <ul class="treeview-menu">
                             <li><a href='@Url.Action("Index", "Reciepts")'><i class="fa fa-circle-notch"></i> سندات الصرف </a></li>
+                            <li><a href='@Url.Action("Index", "Reciepts")'><i class="fa fa-circle-notch"></i> سندات القبض </a></li>
                         </ul>
-                        @*<ul class="treeview-menu">
+                        <ul class="treeview-menu">
                             <li><a href='@Url.Action("Index", "Transactions")'><i class="fa fa-circle-notch"></i>   القيود المحاسبية  </a></li>
-                        </ul>*@
+                        </ul>
                         <ul class="treeview-menu">
                             <li><a href='@Url.Action("Index", "BankTransfers")'><i class="fa fa-circle-notch"></i>   التحوويل بين البنوك   </a></li>
                         </ul>
@@ -293,11 +294,15 @@
                     <li class="treeview">
                         <a href="#">
                             <i class="fa fa-cogs "></i>
-                            <span style="font-weight:bold"> تقارير الورقية</span>
+                            <span style="font-weight:bold"> التقارير الورقية</span>
                             <i class="fa fa-angle-left pull-left"></i>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href='@Url.Action("printTaxReport", "Reports")'><i class="fa fa-circle-notch"></i>  ضريبة ال 1%  </a></li>
+                            <li><a href='@Url.Action("TaxReport", "Reports")'><i class="fa fa-circle-notch"></i>  ضريبة ال 1%  </a></li>
+                            <li><a href='@Url.Action("printLedgerReport", "Reports")'><i class="fa fa-circle-notch"></i>  دفتر الأستاذ  </a></li>
+                            <li><a href='@Url.Action("printDataReport", "Reports")'><i class="fa fa-circle-notch"></i>  قيد اليومية  </a></li>
+                            <li><a href='@Url.Action("printBudgetReport", "Reports")'><i class="fa fa-circle-notch"></i>  موقف الموازنة  </a></li>
+                            @*<li><a href='@Url.Action("printFiveTaxReport", "Reports")'><i class="fa fa-circle-notch"></i>  ضريبة ال 5%  </a></li>*@
                         </ul>
                     </li>
     @*@if (Role == "مدير النظام")

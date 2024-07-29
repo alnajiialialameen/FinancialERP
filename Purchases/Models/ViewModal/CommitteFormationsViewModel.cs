@@ -11,6 +11,7 @@ namespace Purchases.Models.ViewModal
         public int OrderId { get; set; }
         public string ResolutionName { get; set; }
         public int ResolutionNo { get; set; }
+        public int CommitteeTypeId { get; set; }
         public DateTime ResolutionDate { get; set; }
         public string Subject { get; set; }
     }

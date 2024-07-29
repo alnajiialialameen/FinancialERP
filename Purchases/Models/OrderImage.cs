@@ -18,7 +18,13 @@ namespace Purchases.Models
         public string Path { get; set; }
         public Nullable<int> Sort { get; set; }
         public Nullable<int> OrderId { get; set; }
+        public string CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreationDate { get; set; }
+        public string UpdatedBy { get; set; }
+        public Nullable<System.DateTime> UpdatingDate { get; set; }
     
+        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
         public virtual Order Order { get; set; }
     }
 }

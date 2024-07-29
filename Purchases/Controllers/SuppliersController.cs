@@ -1,4 +1,5 @@
-﻿using Purchases.Models;
+﻿using Microsoft.AspNet.Identity;
+using Purchases.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -33,14 +34,16 @@ namespace Purchases.Controllers
         {
             if (data.Name != null)
             {
-                
+                var userid = User.Identity.GetUserId();
+
                 if (!db.Suppliers.Any(x=>x.Name == data.Name))
                 {
                     Supplier s = new Supplier();
 
                     s.Name = data.Name;
                     s.Phone = data.Phone;
-
+                    s.CreatedBy = userid;
+                    s.CreationDate = DateTime.Now;
                     db.Suppliers.Add(s);
                     db.SaveChanges();
                     return Json(new { Message = "تمت عملية الإضافة  بنجاح", Title = "نجاح", Status = "success" });
@@ -54,13 +57,16 @@ namespace Purchases.Controllers
         {
             if (data.Id != 0 && data.Name != null)
             {
-              
+                var userid = User.Identity.GetUserId();
+
                 if (!db.Suppliers.Any(x => x.Name == data.Name & x.Id != data.Id))
                 {
                     Supplier f = db.Suppliers.Find(data.Id);
 
                     f.Name = data.Name;
                     f.Phone = data.Phone;
+                    f.UpdatedBy = userid;
+                    f.UpdatingDate = DateTime.Now;
 
                     db.Entry(f).State = EntityState.Modified;
                     db.SaveChanges();
@@ -68,8 +74,7 @@ namespace Purchases.Controllers
                 }
                 return Json(new { Message = "هذا الاسم مكرر", Title = "تنبيه", Status = "warning" });
             }
-
-
+            
             return Json(new { Message = "حدث خطأ اثناء التعديل", Title = "خطأ", Status = "error" });
         }
     }

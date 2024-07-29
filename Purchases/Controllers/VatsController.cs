@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
 using Purchases.Models;
+using Microsoft.AspNet.Identity;
 
 namespace Purchases.Controllers
 {
@@ -17,6 +18,7 @@ namespace Purchases.Controllers
         {
             return View();
         }
+
         public ActionResult LoadData()
         {
             var data = db.Vats.Select(b => new {
@@ -41,9 +43,14 @@ namespace Purchases.Controllers
         [HttpPost]
         public ActionResult Create(Vat data)
         {
+            var userid = User.Identity.GetUserId();
+
             Vat t = new Vat();
             t.Name = data.Name;
             t.Value = data.Value;
+            t.CreatedBy = userid;
+            t.CreationDate = DateTime.Now;
+
             db.Vats.Add(t);
             db.SaveChanges();
 
@@ -55,18 +62,24 @@ namespace Purchases.Controllers
         {
             if (data.Id != 0 && data.Name != null && data.Value != null)
             {
+                var userid = User.Identity.GetUserId();
+
                 if (db.Vats.Any(f => f.Name == data.Name && f.Id == data.Id))
                 {
                     Vat t = db.Vats.Find(data.Id);
                     t.Name = data.Name;
                     t.Value = data.Value;
+                    t.UpdatedBy = userid;
+                    t.UpdatingDate = DateTime.Now;
+
                     db.Entry(t).State = EntityState.Modified;
                     db.SaveChanges();
                     return Json(new { Message = "تمت عملية التعديل بنجاح", Title = "نجاح", Status = "success" });
                 }
-
             }
+
             return Json(new { Message = "حدث خطأ اثناء التعديل", Title = "خطأ", Status = "error" });
         }
+
     }
 }

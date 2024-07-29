@@ -91,12 +91,6 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>البيان</td>
-                                            <td>
-                                                <label class="form-control trans mainNote" id="Note" name="Note">@ViewBag.Note</label>
-                                            </td>
-                                        </tr>
-                                        <tr>
                                             <td>العملة</td>
                                             <td>
                                                 <label class="form-control trans mainCurrencyType" name="CurrencyType" id="CurrencyType">@ViewBag.CurrencyType</label>
@@ -108,6 +102,13 @@
                                                 <label class="form-control trans ExchangeRate" id="ExchangeRate" name="ExchangeRate">@ViewBag.ExchangeRate</label>
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <td>البيان</td>
+                                            <td>
+                                                <textarea rows="5" disabled class="form-control trans mainNote" id="Note" name="Note">@ViewBag.Note</textarea>
+                                            </td>
+                                        </tr>
+
                                     </tbody>
                                 </table>
                             </fieldset>
@@ -136,7 +137,7 @@
                                         <div class="row">
                                             <form id="add-form">
                                                 <div class="col-lg-12">
-                                                    <div class="col-lg-3">
+                                                    <div class="col-lg-4">
                                                         <div class="form-group">
                                                             <label for="name">اسم الحساب</label>
                                                             <div class="input-group">
@@ -148,7 +149,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-lg-3">
+                                                    <div class="col-lg-4">
                                                         <div class="form-group">
                                                             <label for="name">المبلغ مدين</label>
                                                             <div class="input-group">
@@ -160,7 +161,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-lg-3">
+                                                    <div class="col-lg-4">
                                                         <div class="form-group">
                                                             <label for="name">المبلغ دائن</label>
                                                             <div class="input-group">
@@ -174,7 +175,7 @@
                                                     </div>
 
 
-                                                    <div class="col-lg-3">
+                                                    @*<div class="col-lg-3">
                                                         <div class="form-group">
                                                             <label for="addBalanceId">بند الخصم</label>
                                                             <div class="input-group">
@@ -184,7 +185,7 @@
                                                                 <select class="form-control list addBalanceId" name="addBalanceId" id="addBalanceId" style="width:100%"></select>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div>*@
 
                                                 </div>
 
@@ -205,7 +206,7 @@
                                                             <th style="text-align:center ;width:750px;">اسم الحساب</th>
                                                             <th style="text-align:center ;width:750px;">المبلغ(مدين)</th>
                                                             <th style="text-align:center ;width:750px;">المبلغ(دائن)</th>
-                                                            <th style="text-align:center ;width:750px;">بند الخصم</th>
+                                                            @*<th style="text-align:center ;width:750px;">بند الخصم</th>*@
                                                             <th style="text-align:center;"><i class="fa fa-cogs"></i></th>
                                                         </tr>
                                                     </thead>
@@ -288,7 +289,7 @@
                                     <div class="row">
                                         <form id="add-form">
                                             <div class="col-lg-12">
-                                                <div class="col-lg-3">
+                                                <div class="col-lg-4">
                                                     <div class="form-group">
                                                         <label for="name">اسم الحساب</label>
                                                         <div class="input-group">
@@ -300,7 +301,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-lg-3">
+                                                <div class="col-lg-4">
                                                     <div class="form-group">
                                                         <label for="name">المبلغ مدين</label>
                                                         <div class="input-group">
@@ -312,7 +313,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-lg-3">
+                                                <div class="col-lg-4">
                                                     <div class="form-group">
                                                         <label for="name">المبلغ دائن</label>
                                                         <div class="input-group">
@@ -326,7 +327,7 @@
                                                 </div>
 
 
-                                                <div class="col-lg-3">
+                                                @*<div class="col-lg-3">
                                                     <div class="form-group">
                                                         <label for="addBalanceId">بند الخصم</label>
                                                         <div class="input-group">
@@ -336,7 +337,7 @@
                                                             <select class="form-control list addBalanceId" name="addBalanceId" id="addBalanceId" style="width:100%"></select>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div>*@
 
                                             </div>
 
@@ -357,7 +358,7 @@
                                                         <th style="text-align:center ;width:750px;">اسم الحساب</th>
                                                         <th style="text-align:center ;width:750px;">المبلغ(مدين)</th>
                                                         <th style="text-align:center ;width:750px;">المبلغ(دائن)</th>
-                                                        <th style="text-align:center ;width:750px;">بند الخصم</th>
+                                                        @*<th style="text-align:center ;width:750px;">بند الخصم</th>*@
                                                         <th style="text-align:center;"><i class="fa fa-cogs"></i></th>
                                                     </tr>
                                                 </thead>
@@ -405,7 +406,7 @@
                     },
                     "columnDefs": [
                       {
-                          "targets": [5, 6],
+                          "targets": [4],
                           'visible': false
                         }
                     ],
@@ -430,10 +431,10 @@
                             "title": "دائن",
                             "data": "credit"
                         },
-                        {
-                            "title": "بند الخصم",
-                            "data": "balanceAccName"
-                        },
+                        //{
+                        //    "title": "بند الخصم",
+                        //    "data": "balanceAccName"
+                        //},
                         //{
                         //    "title": '<i class="fa fa-cogs"></i>',
                         //    "data": null,
@@ -447,10 +448,10 @@
                             "title": "accTrreId",
                             "data": "accTrreId"
                         },
-                        {
-                            "title": "balanceId",
-                            "data": "balanceId"
-                        }
+                        //{
+                        //    "title": "balanceId",
+                        //    "data": "balanceId"
+                        //}
                     ]
                 });
 
@@ -487,7 +488,7 @@
 
             };
             select2list("#addAccName", "/Transactions/getAccTrees", "اسم الحساب");
-            select2list("#addBalanceId", "/Transactions/getBalanceIds", "بند الخصم");
+            //select2list("#addBalanceId", "/Transactions/getBalanceIds", "بند الخصم");
             select2list("#addCurrencyType", "/Transactions/getCurrency", "العملة");
             select2list("#finalCurrencyType", "/Transactions/getCurrency", "العملة");
 
@@ -548,10 +549,10 @@
                     minimumInputLength: 'يجب الا يكون حقل اسم الحساب  فارغ',
                     range: 'الرقم خارج المدي',
                 },
-                addBalanceId: {
-                    required: 'يجب الا يكون حقل اسم الحساب  فارغ',
-                    minimumInputLength: 'يجب الا يكون حقل اسم الحساب  فارغ',
-                }
+                //addBalanceId: {
+                //    required: 'يجب الا يكون حقل اسم الحساب  فارغ',
+                //    minimumInputLength: 'يجب الا يكون حقل اسم الحساب  فارغ',
+                //}
             },
             messages: {
                 addAccName: {
@@ -570,10 +571,10 @@
                     minimumInputLength: 0,
                     range: [0.1, 9999999999],
                 },
-                addBalanceId: {
-                    required: true,
-                    minimumInputLength: 0,
-                }
+                //addBalanceId: {
+                //    required: true,
+                //    minimumInputLength: 0,
+                //}
             }
 
         });
@@ -636,8 +637,8 @@
                                 + "<td class='name'>" + accTreeName + "</td>"
                                 + "<td class='accDebit'>" + accDebit + "</td>"
                                 + "<td class='accCrited'>" + accCrited + "</td>"
-                                + "<td class='hidden balanceId'>" + balanceId + "</td>"
-                                + "<td class='balanceAccTreeName'>" + balanceAccTreeName + "</td>"
+                                //+ "<td class='hidden balanceId'>" + balanceId + "</td>"
+                                //+ "<td class='balanceAccTreeName'>" + balanceAccTreeName + "</td>"
                                 //+ '<td  class="tdBtnDelete" > <button id="delete" class="btn btn-warning transfer delete">حذف<i class=" transfer-fa fa  fa-trash"></i></button>  <a href="#" id="edit" class="edit"><i class=" transfer-fa fa  fa-pen"></i></a>' + "</td>"
                                 + '<td  class="tdBtnDelete" > <button id="delete" class="btn btn-warning transfer delete">حذف<i class=" transfer-fa fa  fa-trash"></i></button>' + "</td>"
                         + '</tr>';
@@ -652,7 +653,7 @@
                         "amount": 0,
                         "credit": accCrited,
                         "debit": 0,
-                        "balanceId": balanceId,
+                        //"balanceId": balanceId,
                         "isCredit": "true",
                     });
                 } else {
@@ -663,7 +664,7 @@
                         "Amount": 0,
                         "credit": 0,
                         "debit": accDebit,
-                        "balanceId": balanceId,
+                        //"balanceId": balanceId,
                         "IsCredit": "false",
                     });
                 }
@@ -680,6 +681,7 @@
             accTreeId = parseInt(accTreeId);
 
             rptList = rptList.filter(item => item.accTrreId !== accTreeId);
+            //rptList = rptList.splice(rptList.indexOf(x=>x.accTreeId == accTreeId),1);
 
             console.log(rptList);
             $(this).closest('tr').remove();
@@ -691,18 +693,19 @@
             var addAccNameId = $('.addAccName').val();
             var creditAmount = $('#creditAmount').val();
             var debitAmount = $('#debitAmount').val();
-            var addBalanceId = $('#addBalanceId').val();
-            var addAccBalanceName = $('#select2-addBalanceId-container').text();
+            //var addBalanceId = $('#addBalanceId').val();
+           // var addAccBalanceName = $('#select2-addBalanceId-container').text();
 
             console.clear();
             var isFound = false;
 
-            if (addAccName.trim() != "" & addAccNameId != null & creditAmount != null & debitAmount != null & (creditAmount > 0 | debitAmount > 0) & addBalanceId != null) {
+            //if (addAccName.trim() != "" & addAccNameId != null & creditAmount != null & debitAmount != null & (creditAmount > 0 | debitAmount > 0) & addBalanceId != null) {
+                if (addAccName.trim() != "" & addAccNameId != null & creditAmount != null & debitAmount != null & (creditAmount > 0 | debitAmount > 0)) {
                 $('.myVirtualTbody tr').each(function () {
-                    
                     var accNameId = $(this).find('td:eq(0)').text();
-                    
-                    if (accNameId == addAccNameId) {
+                 
+
+                    if (accNameId == rptList.some(item => item.accTrreId === addAccNameId)) {
                         //break here if found
                         isFound = true;
                         return false;
@@ -715,7 +718,8 @@
                                     + "<td class='name'>" + addAccName + "</td>"
                                     + "<td class='debitAmount'>" + debitAmount + "</td>"
                                     + "<td class='creditAmount'>" + creditAmount + "</td>"
-                                    + "<td class='addAccBalanceName'>" + addAccBalanceName + "</td>"
+                                    //+ "<td class='addAccBalanceName'>" + addAccBalanceName + "</td>"
+                                    //+ "<td class='addAccBalanceName'></td>"
                                     + "<td class='transDetailId hidden'>" + 0 + "</td>"
                                     + '<td class="btnDelete" > <button id="delete" class="btn btn-warning transfer delete">حذف<i class=" transfer-fa fa  fa-trash"></i></button>' + "</td>"
                                 + "</tr>";
@@ -724,7 +728,7 @@
                     $('.creditAmount').val(0);
                     $('.debitAmount').val(0);
                     $('.amount').val('');
-                    $('.addBalanceId').val(null);
+                    //$('.addBalanceId').val(null);
                     //$('.list').text(null).trigger('change');
                     isFound = false;
 
@@ -735,7 +739,7 @@
                             "amount": 0,
                             "credit": creditAmount,
                             "debit": 0,
-                            "BalanceId": +addBalanceId,
+                            //"BalanceId": +addBalanceId,
                             "isCredit": "true",
                             "transDetailId":null,
                         });
@@ -746,7 +750,7 @@
                             "Amount": 0,
                             "credit": 0,
                             "debit": debitAmount,
-                            "BalanceId": +addBalanceId,
+                            //"BalanceId": +addBalanceId,
                             "IsCredit": "false",
                             "transDetailId": null,
                         });
@@ -779,6 +783,10 @@
                 totalDebitAmount += parseInt(value.debit);
                 totalCreditAmount += parseInt(value.credit);
             });
+
+            console.log(totalDebitAmount);
+            console.log(totalCreditAmount);
+
             $('.presntTBody').empty();
 
             if (totalDebitAmount == totalCreditAmount) {

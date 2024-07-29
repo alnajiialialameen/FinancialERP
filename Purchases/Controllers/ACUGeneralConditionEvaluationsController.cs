@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Purchases.Models;
 using Purchases.Models.ViewModal;
+using Microsoft.AspNet.Identity;
 
 namespace Purchases.Controllers
 {
@@ -70,12 +71,16 @@ namespace Purchases.Controllers
         public ActionResult Evaluate(GeneralConditionsViewModel model)
         {
             try {
+                var userid = User.Identity.GetUserId();
+
                 if (!db.GeneralConditionEvaluations.Any(x => x.GeneralConditionId == model.GeneralConditionId & x.CompetingCompanyId == model.CompetingCompanyId))
                 {
                     GeneralConditionEvaluation obj = new GeneralConditionEvaluation();
                     obj.CompetingCompanyId = model.CompetingCompanyId;
                     obj.GeneralConditionId = model.GeneralConditionId;
                     obj.Value = model.InputValue;
+                    obj.CreatedBy = userid;
+                    obj.CreationDate = DateTime.Now;
 
                     db.GeneralConditionEvaluations.Add(obj);
                     db.SaveChanges();
@@ -88,6 +93,8 @@ namespace Purchases.Controllers
                     obj.CompetingCompanyId = model.CompetingCompanyId;
                     obj.GeneralConditionId = model.GeneralConditionId;
                     obj.Value = model.InputValue;
+                    obj.UpdatedBy = userid;
+                    obj.UpdatingDate = DateTime.Now;
 
                     db.Entry(obj).State = EntityState.Modified;
                     db.SaveChanges();
@@ -101,6 +108,8 @@ namespace Purchases.Controllers
             }
         }
 
+
+        /*-----------------------------------------------------------------------------------------------------------*/
         // GET: ACUGeneralConditionEvaluations/Details/5
         public ActionResult Details(int? id)
         {

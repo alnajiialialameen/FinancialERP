@@ -205,9 +205,10 @@
     <Compile Include="Controllers\BalancesController.cs" />
     <Compile Include="Controllers\BankAccountsController.cs" />
     <Compile Include="Controllers\BankTransfersController.cs" />
+    <Compile Include="Controllers\CatchReceiptsController.cs" />
     <Compile Include="Controllers\ConsumeHrApiController.cs" />
+    <Compile Include="Controllers\CurrencyDetailsController.cs" />
     <Compile Include="Controllers\CurrencyTypesController.cs" />
-    <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\FinancialCyclesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ItemsController.cs" />
@@ -215,7 +216,6 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\OpeningBalancesController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
-    <Compile Include="Controllers\PrintChec.cs" />
     <Compile Include="Controllers\PrintChecsController.cs" />
     <Compile Include="Controllers\RecieptsController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
@@ -260,6 +260,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AspNetUserLogin.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AspNetUserRole.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Balance.cs">
@@ -388,9 +391,6 @@
     <Compile Include="Models\Supplier.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\sysdiagram.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\TechnicalCondition.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -415,6 +415,7 @@
     </Compile>
     <Compile Include="Models\ViewModal\BankTransferVM.cs" />
     <Compile Include="Models\ViewModal\BankViewmodel.cs" />
+    <Compile Include="Models\ViewModal\CheckVM.cs" />
     <Compile Include="Models\ViewModal\CircuViewModel.cs" />
     <Compile Include="Models\ViewModal\CommitteeMemberViewModel.cs" />
     <Compile Include="Models\ViewModal\CommitteFormationsViewModel.cs" />
@@ -653,12 +654,21 @@
     <Content Include="Views\Reciepts\printOrnik17.cshtml" />
     <Content Include="Views\Reports\printTaxReport-1.cshtml" />
     <Content Include="Views\Reports\printTaxReport.cshtml" />
+    <Content Include="Views\Reports\printFiveTaxReport.cshtml" />
+    <Content Include="Views\Reports\printBudgetReport.cshtml" />
+    <Content Include="Views\Reports\printDataReport.cshtml" />
+    <Content Include="Views\Reports\printLedgerReport.cshtml" />
+    <Content Include="Views\Reports\TaxReport.cshtml" />
+    <Content Include="Views\Transactions\printDataByDates.cshtml" />
+    <Content Include="Views\Transactions\printLedgerByDates.cshtml" />
+    <Content Include="Views\CatchReceipts\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="InvoiceImage\" />
     <Folder Include="OrderImage\" />
     <Folder Include="Views\ConsumeHrApi\" />
+    <Folder Include="Views\CurrencyDetails\" />
     <Folder Include="webfonts\" />
   </ItemGroup>
   <ItemGroup>

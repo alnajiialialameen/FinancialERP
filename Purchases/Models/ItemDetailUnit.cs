@@ -19,7 +19,13 @@ namespace Purchases.Models
         public Nullable<int> UnitId { get; set; }
         public Nullable<int> EqualFromMini { get; set; }
         public Nullable<bool> IsMini { get; set; }
+        public string CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreationDate { get; set; }
+        public string UpdatedBy { get; set; }
+        public Nullable<System.DateTime> UpdatingDate { get; set; }
     
+        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
         public virtual ItemDetail ItemDetail { get; set; }
         public virtual Unit Unit { get; set; }
     }

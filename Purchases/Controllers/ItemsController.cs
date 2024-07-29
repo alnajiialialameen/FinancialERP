@@ -1,4 +1,5 @@
-﻿using Purchases.Models;
+﻿using Microsoft.AspNet.Identity;
+using Purchases.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -17,6 +18,7 @@ namespace Purchases.Controllers
         {
             return View();
         }
+
         public ActionResult LoadData()
         {
             var data = db.Items.Select(b => new {
@@ -28,15 +30,19 @@ namespace Purchases.Controllers
             });
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-
+        
         [HttpPost]
         public ActionResult Save(Item data)
         {
             if(!db.Items.Any(f=>f.Name == data.Name))
             {
+                var userid = User.Identity.GetUserId();
+
                 Item t = new Item();
                 t.Name = data.Name;
+                t.CreatedBy = userid;
+                t.CreationDate = DateTime.Now;
+
                 db.Items.Add(t);
                 db.SaveChanges();
                 return Json(new { Message = "تمت عملية الاضافة بنجاح", Title = "نجاح", Status = "success" });
@@ -48,17 +54,18 @@ namespace Purchases.Controllers
         {
             if (data.Id != 0 && data.Name != null)
             {
+                var userid = User.Identity.GetUserId();
+
                 //int c = db.Items.Where(f => f.Id != data.Id && f.Name == data.Name).Count();
                 if (!db.Items.Any(f => f.Id != data.Id && f.Name == data.Name))
-                
-                    //if (c == 0)
                 {
                     Item t = db.Items.Find(data.Id);
                     // TeacherMaterial tm = db.TeacherMaterials.Single(f => f.TeacherId == data.Id && f.IsSpecialtyMaterial == true);
 
                     t.Name = data.Name;
-
-
+                    t.UpdatedBy = userid;
+                    t.UpdatingDate = DateTime.Now;
+                    
                     db.Entry(t).State = EntityState.Modified;
                     db.SaveChanges();
                     return Json(new { Message = "تمت عملية التعديل بنجاح", Title = "نجاح", Status = "success" });
@@ -68,10 +75,7 @@ namespace Purchases.Controllers
 
             return Json(new { Message = "حدث خطأ اثناء التعديل", Title = "خطأ", Status = "error" });
         }
-
-
-
-
+        
         public ActionResult LoadDataItemDetail(int? id)
         {
             var datad = db.ItemDetails.Select(p => new
@@ -82,14 +86,20 @@ namespace Purchases.Controllers
             }).Where(p => p.ItemId == id);
             return Json(datad, JsonRequestBehavior.AllowGet);
         }
+
         [HttpPost]
         public ActionResult saveItemDetails(ItemDetail data)
         {
             if(!db.ItemDetails.Any(f=>f.Name == data.Name))
             {
+                var userid = User.Identity.GetUserId();
+
                 ItemDetail t = new ItemDetail();
                 t.Name = data.Name;
                 t.ItemId = data.Id;
+                t.CreatedBy = userid;
+                t.CreationDate = DateTime.Now;
+
                 db.ItemDetails.Add(t);
                 db.SaveChanges();
                 return Json(new { Message = "تمت عملية الاضافة بنجاح", Title = "نجاح", Status = "success" });
@@ -101,10 +111,15 @@ namespace Purchases.Controllers
         {
             if (data.Id != 0 && data.Name != null)
             {
-                if(!db.ItemDetails.Any(f => f.Id != data.Id && f.Name == data.Name))
+                var userid = User.Identity.GetUserId();
+
+                if (!db.ItemDetails.Any(f => f.Id != data.Id && f.Name == data.Name))
                 {
                     ItemDetail h = db.ItemDetails.Find(data.Id);
                     h.Name = data.Name;
+                    h.UpdatedBy = userid;
+                    h.UpdatingDate = DateTime.Now;
+
                     db.Entry(h).State = EntityState.Modified;
                     db.SaveChanges();
                     return Json(new { Message = "تمت عملية التعديل بنجاح", Title = "نجاح", Status = "success", JsonRequestBehavior.AllowGet });
@@ -112,8 +127,5 @@ namespace Purchases.Controllers
             }
             return Json(new { Message = "هذا العنصر موجود سلفا", Title = "تنبيه", Status = "warning" });
         }
-
-
-
     }
-    }
+}

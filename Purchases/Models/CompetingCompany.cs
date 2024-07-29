@@ -33,6 +33,8 @@ namespace Purchases.Models
         public virtual CommitteFormation CommitteFormation { get; set; }
         public virtual CompanyRegisteration CompanyRegisteration { get; set; }
         public virtual AccountTree AccountTree { get; set; }
+        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
         public virtual Order Order { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GeneralConditionEvaluation> GeneralConditionEvaluations { get; set; }

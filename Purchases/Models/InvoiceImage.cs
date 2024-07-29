@@ -20,7 +20,13 @@ namespace Purchases.Models
         public Nullable<int> OrderId { get; set; }
         public Nullable<int> SupplierId { get; set; }
         public Nullable<bool> IsChoosed { get; set; }
+        public string CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreationDate { get; set; }
+        public string UpdatedBy { get; set; }
+        public Nullable<System.DateTime> UpdatingDate { get; set; }
     
+        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
         public virtual Order Order { get; set; }
         public virtual Supplier Supplier { get; set; }
     }

@@ -1,4 +1,5 @@
-﻿using Purchases.Models;
+﻿using Microsoft.AspNet.Identity;
+using Purchases.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -44,12 +45,15 @@ namespace Purchases.Controllers
         {
             if (data.Name != null)
             {
+                var userid = User.Identity.GetUserId();
 
                 if (!db.CurrencyTypes.Any(x => x.Name == data.Name))
                 {
                     CurrencyType s = new CurrencyType();
 
                     s.Name = data.Name;
+                    s.CreatedBy = userid;
+                    s.CreationDate = DateTime.Now;
 
                     db.CurrencyTypes.Add(s);
                     db.SaveChanges();
@@ -65,11 +69,15 @@ namespace Purchases.Controllers
         {
             if (data.Id != 0 && data.Name != null)
             {
+                var userid = User.Identity.GetUserId();
 
                 if (!db.CurrencyTypes.Any(x => x.Id != data.Id & x.Name == data.Name))
                 {
                     CurrencyType f = db.CurrencyTypes.Find(data.Id);
                     f.Name = data.Name;
+                    f.UpdatedBy = userid;
+                    f.UpdatingDate = DateTime.Now;
+
                     db.Entry(f).State = EntityState.Modified;
                     db.SaveChanges();
                     return Json(new { Message = "تمت عملية التعديل بنجاح", Title = "نجاح", Status = "success" });

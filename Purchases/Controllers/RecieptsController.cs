@@ -1,4 +1,5 @@
-﻿using Purchases.Models;
+﻿using Microsoft.AspNet.Identity;
+using Purchases.Models;
 using Purchases.Models.ViewModal;
 using Purchases.MyLogic;
 using SACLERP.CurencyOperation;
@@ -45,7 +46,7 @@ namespace Purchases.Controllers
                     ExchangeRate = p.ExchangeRate,
                     TransactionDate = p.TransactionDate.Value.Year + "/" + p.TransactionDate.Value.Month + "/" + p.TransactionDate.Value.Day,
                     Note = p.Note,
-                    //HasAddedTax = p.HasAddedTax == true?  "مضمن 17%" : "غير مضمنة",
+                    HasAddedTaxTxt = p.HasAddedTax == true?  "مضمن 17%" : "غير مضمنة",
                     HasAddedTax = p.HasAddedTax,
                     HasTax = p.HasTax,
 
@@ -56,58 +57,69 @@ namespace Purchases.Controllers
 
         public ActionResult Create(List<RecieptVM> modal)
         {
-            DateTime now = DateTime.Now;
-            Transaction t = new Transaction();
-            List<TransactionDetail> tdList = new List<TransactionDetail>();
-            t.CurrencyId = modal[0].Currency;
-            t.TransactionDate = Convert.ToDateTime(modal[0].TransactionDate);
-            t.CreatedDate = now;
-            t.Note = modal[0].CreditNote;
-            t.DocumentTypeId = 3;
-            t.Amount = modal.Sum(x => x.DebitAmount);
-            t.Recipient = modal[0].Recipient;
-
-            foreach (var data in modal)
+            try
             {
-                TransactionDetail td = new TransactionDetail();
-                td.TransactionId = t.Id;
-                if (data.CreditAccTreeId != 0)
+                DateTime now = DateTime.Now;
+                Transaction t = new Transaction();
+                var userid = User.Identity.GetUserId();
+
+                List<TransactionDetail> tdList = new List<TransactionDetail>();
+                t.CurrencyId = modal[0].Currency;
+                t.TransactionDate = Convert.ToDateTime(modal[0].TransactionDate);
+                t.CreatedDate = now;
+                t.Note = modal[0].CreditNote;
+                t.DocumentTypeId = 3;
+                t.Amount = modal.Sum(x => x.DebitAmount);
+                t.Recipient = modal[0].Recipient;
+                int balanceAccTreeId = modal[0].BalanceAccTreeId;
+                t.CreatedBy = userid;
+                t.CreatedDate = now;
+
+                foreach (var data in modal)
                 {
-                    td.AccTreeId = data.CreditAccTreeId;
-                    td.Credit = modal.Sum(x => x.DebitAmount);
-                    td.BalanceId = data.BalanceAccTreeId;
-                    td.Debit = 0;
-                    td.Note = data.CreditNote;
+                    TransactionDetail td = new TransactionDetail();
+                    td.TransactionId = t.Id;
+                    if (data.CreditAccTreeId != 0)
+                    {
+                        td.AccTreeId = data.CreditAccTreeId;
+                        td.Credit = modal.Sum(x => x.DebitAmount);
+                        td.BalanceId = data.BalanceAccTreeId;
+                        td.Debit = 0;
+                        td.Note = data.CreditNote;
+                    }
+                    else
+                    {
+                        td.AccTreeId = data.DebitAccTreeId;
+                        td.Debit = data.DebitAmount;
+                        td.BalanceId = data.BalanceAccTreeId;
+                        td.Credit = 0;
+                        td.Note = data.DebitNote;
+                    }
 
-                    int type = data.CreditAmount > 0 ? 1 : 0;
-
-                    decimal newAmount = Convert.ToDecimal(td.Credit);
-                    int balanceId = Convert.ToInt32(data.BalanceAccTreeId);
-                    myExtention.UpdateActualExchange(balanceId, 0, newAmount, type);
+                    td.CreatedBy = userid;
+                    td.CreationDate = now;
+                    tdList.Add(td);
                 }
-                else
+
+                decimal newAmount = Convert.ToDecimal(t.Amount);
+                int balanceId = Convert.ToInt32(balanceAccTreeId);
+                int res = myExtention.UpdateActualExchange(balanceId, 0, newAmount, userid);
+
+                if (res > 0)
                 {
-                    td.AccTreeId = data.DebitAccTreeId;
-                    td.Debit = data.DebitAmount;
-                    td.BalanceId = data.BalanceAccTreeId;
-                    td.Credit = 0;
-                    td.Note = data.DebitNote;
+                    db.Transactions.Add(t);
+                    db.TransactionDetails.AddRange(tdList);
+                    db.SaveChanges();
 
-                    int type = data.CreditAmount > 0 ? 1 : 0;
-
-                    decimal newAmount = Convert.ToDecimal(data.DebitAmount + data.CreditAmount);
-                    int balanceId = Convert.ToInt32(data.BalanceAccTreeId);
-                    myExtention.UpdateActualExchange(balanceId, 0, newAmount, type);
+                    return Json(new { Message = " تمت عملية الحفظ بنجاح ", Title = "نجاح", Status = "success" });
                 }
 
-                tdList.Add(td);
+                return Json(new { Message = " عفوا لم تتم عملية الحفظ بنجاح ", Title = "خطأ", Status = "error" });
             }
-
-            db.Transactions.Add(t);
-            db.TransactionDetails.AddRange(tdList);
-            db.SaveChanges();
-
-            return Json(new { Message = " تمت عملية التحويل بنجاح ", Title = "نجاح", Status = "success" });
+            catch (Exception e)
+            {
+                return Json(new { Message = " عفوا حدث خطأ اثناء العملية (Exception) ", Title = "خطأ", Status = "error" });
+            }
         }
 
         public ActionResult PrintChecs()

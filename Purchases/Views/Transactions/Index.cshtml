@@ -3,7 +3,6 @@
     Layout = "~/Views/Shared/_Layout2.cshtml";
 }
 
-
 <style>
     .displaying{
         display:none;
@@ -17,11 +16,11 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-            قيود اليومية
+            سندات القيد
         </h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
-            <li class="active">  قيود اليومية</li>
+            <li class="active">  سندات القيد</li>
         </ol>
     </section>
 
@@ -61,7 +60,7 @@
                                     <div class="row">
                                         <form id="add-form">
                                             <div class="col-lg-12">
-                                                <div class="col-lg-3">
+                                                <div class="col-lg-4">
                                                     <div class="form-group">
                                                         <label for="name">اسم الحساب</label>
                                                         <div class="input-group">
@@ -73,7 +72,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-lg-3">
+                                                <div class="col-lg-4">
                                                     <div class="form-group">
                                                         <label for="debitAmount">المبلغ مدين</label>
                                                         <div class="input-group">
@@ -85,7 +84,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-lg-3">
+                                                <div class="col-lg-4">
                                                     <div class="form-group">
                                                         <label for="creditAmount">المبلغ دائن</label>
                                                         <div class="input-group">
@@ -97,7 +96,7 @@
                                                     </div>
                                                 </div>
                                             
-                                                <div class="col-lg-3">
+                                                @*<div class="col-lg-3">
                                                     <div class="form-group">
                                                         <label for="addBalanceId">بند الخصم</label>
                                                         <div class="input-group">
@@ -107,7 +106,7 @@
                                                             <select class="form-control list addBalanceId" name="addBalanceId" id="addBalanceId" style="width:100%"></select>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div>*@
 
                                             </div>
 
@@ -128,7 +127,7 @@
                                                       <th style="text-align:center ;width:750px;">اسم الحساب</th>
                                                       <th style="text-align:center ;width:750px;">مدين</th>
                                                       <th style="text-align:center ;width:750px;">دائن</th>
-                                                      <th style="text-align:center ;width:750px;">بند الخصم</th>
+                                                      @*<th style="text-align:center ;width:750px;">بند الخصم</th>*@
                                                       <th style="text-align:center;"><i class="fa fa-cogs"></i></th>
                                                   </tr>
                                               </thead>
@@ -265,8 +264,7 @@
 
 }
 
-@section scripts{
-    
+@section scripts{    
 <script>
     var myId = 0;
     var dataTable;
@@ -385,7 +383,7 @@
 
         };
         select2list("#addAccName", "/Transactions/getAccTrees", "اسم الحساب");
-        select2list("#addBalanceId", "/Transactions/getBalanceIds", "بند الخصم");
+        //select2list("#addBalanceId", "/Transactions/getBalanceIds", "بند الخصم");
         select2list("#addCurrencyType", "/Transactions/getCurrency", "العملة");
 
     });
@@ -405,6 +403,13 @@
             validating: 'fa fa-refresh fa-spin success-feedback-icons'
         },
         fields: {
+            //addBalanceId: {
+            //    validators: {
+            //        notEmpty: {
+            //            message: 'يجب الا يكون حقل بند الخصم  فارغ'
+            //        }
+            //    }
+            //},
             addAccName: {
                 validators: {
                     notEmpty: {
@@ -412,14 +417,28 @@
                     }
                 }
             },
-            amount: {
+            creditAmount: {
                 validators: {
                     notEmpty: {
-                        message: 'يجب الا يكون حقل المبلغ فارغ'
+                        message: 'يجب الا يكون حقل المبلغ  فارغ'
                     }
                 }
-            }
-
+            },
+            debitAmount: {
+                validators: {
+                    notEmpty: {
+                        message: 'يجب الا يكون حقل المبلغ  فارغ'
+                    }
+                }
+            },
+            //amount: {
+            //    validators: {
+            //        notEmpty: {
+            //            message: 'يجب الا يكون حقل المبلغ فارغ'
+            //        }
+            //    }
+            //}
+    
         }
     });
     $('#add-statement-form').bootstrapValidator({
@@ -460,7 +479,7 @@
         var addAccName = $('#select2-addAccName-container').text();
         var addAccNameId = $('.addAccName').val();
         var addBalanceAccName = $('#select2-addBalanceId-container').text();
-        var addBalanceId = $('.addBalanceId').val();
+        //var addBalanceId = $('.addBalanceId').val();
         var creditAmount = $('#creditAmount').val();
         var debitAmount = $('#debitAmount').val();
         //var Amount = $('#amount').val();
@@ -481,7 +500,8 @@
 
         var isFound = false;
 
-        if (addAccName.trim() != "" & addAccNameId != null & addBalanceId != null & creditAmount >= 0 & debitAmount >= 0) {
+        //if (addAccName.trim() != "" & addAccNameId != null & addBalanceId != null & creditAmount >= 0 & debitAmount >= 0) {
+            if (addAccName.trim() != "" & addAccNameId != null & creditAmount >= 0 & debitAmount >= 0) {
             $('.myTbody tr').each(function () {
                 var id = $(this).find('td:eq(0)').text();
                 console.log(id);
@@ -499,7 +519,7 @@
                                 + "<td class='name'>" + addAccName + "</td>"
                                 + "<td class='debitAmount'>" + debitAmount + "</td>"
                                 + "<td class='creditAmount'>" + creditAmount + "</td>"
-                                + "<td class='creditAmount'>" + addBalanceAccName + "</td>"
+                               // + "<td class='creditAmount'>" + addBalanceAccName + "</td>"
                                 + "<td class='transDetailId hidden'>" + 0 + "</td>"
                                 + '<td class="btnDelete"> <button id="delete" class="btn btn-warning transfer delete">حذف<i class=" transfer-fa fa  fa-trash"></i></button>' + "</td>"
                             + "</tr>";
@@ -509,11 +529,13 @@
                 $('.amount').val('');
                 $('.list').text(null).trigger('change');
                 $('.list').val(null).trigger('change');
+                $('.debitAmount').val('');
+                $('.creditAmount').val('');
                 isFound = false;
 
                 if (creditAmount > 0) {
                     rptList.push({
-                        "balanceId": addBalanceId,
+                        //"balanceId": addBalanceId,
                         "addAccName": addAccName,
                         "accTrreId": addAccNameId,
                         "amount": 0,
@@ -523,7 +545,7 @@
                     });
                 } else {
                     rptList.push({
-                        "balanceId": addBalanceId,
+                        //"balanceId": addBalanceId,
                         "addAccName": addAccName,
                         "accTrreId": addAccNameId,
                         "Amount": 0,

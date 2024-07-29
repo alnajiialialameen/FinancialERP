@@ -12,12 +12,14 @@ namespace Purchases.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class sysdiagram
+    public partial class AspNetUserRole
     {
-        public string name { get; set; }
-        public int principal_id { get; set; }
-        public int diagram_id { get; set; }
-        public Nullable<int> version { get; set; }
-        public byte[] definition { get; set; }
+        public string UserId { get; set; }
+        public string RoleId { get; set; }
+        public string CreatedBy { get; set; }
+    
+        public virtual AspNetRole AspNetRole { get; set; }
+        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
     }
 }
