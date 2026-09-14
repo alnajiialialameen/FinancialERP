@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "TaxReport";
     Layout = "~/Views/Shared/_Layout2.cshtml";
 }
@@ -45,29 +44,32 @@
                         </div>
                     </div>
                 </div>
-                @*<div class="col-lg-4">
+                <div class="col-lg-4">
                     <div class="form-group">
-                        <label for="name">اسم الحساب</label>
+                        <label for="transactionDate">اختار البنك</label>
                         <div class="input-group">
-                            <div class="input-group-addon">
-                                <i class="fa fa-book"></i>
-                            </div>
-                            <select class="form-control list addAccName" name="addAccName" id="addAccName" style="width:100%"></select>
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar-alt"></i>
+                            </span>
+                            <select class="form-control bankId" id="bankId" name="bankId"></select>
                         </div>
                     </div>
-                </div>*@
+                </div>
             </div>
             <div class="row">
                 <div class=" col-md-3">
                     <button id="btnsearch" onclick="Search()" class="btn btn-primary btn-sm form-control">بحث</button>
-
-
                 </div>
 
                 <div class=" col-md-3">
                     <button id="btnall" onclick="PrintData()" class="btn form-control btn-info btn-sm">طباعة التقرير </button>
-
                 </div>
+            </div>
+
+            <div class="row" style="margin: 30px;">
+                <table id="tbl" class="dataTable table table-striped table-hover" style="width:100%">
+                    <tbody id="tbod"></tbody>
+                </table>
             </div>
         </section>
     </div>
@@ -78,90 +80,69 @@
 @section scripts{
 
     <script>
-    var myId = 0;
-    var dataTable;
+        var myId = 0;
+        var dataTable;
+        $(function () {
+            select2list(".bankId", "/Shared/getAllBanks", "  اسم الحساب ");
+        });
 
-    $(document).ready(function () {
-        function select2list(selector, url, placeholder) {
-            $(selector).select2({
-                language: { inputTooShort: function () { return 'ادخل حرف واحد علي الاقل'; } },
-                ajax: {
-                    url: url,
-                    dataType: 'json',
-                    delay: 100,
-                    data: function (params) {
-                        return {
-                            q: params.term,
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data,
-                            pagination: {
-                                more: ((data.total_count) > (params.page * 20))
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                placeholder: placeholder,
-                minimumInputLength: 1,
-            });
+        function PrintData() {
+            debugger;
+            var DateFrom = $('#DateFrom').val();
+            var DateTo = $('#DateTo').val();
+            var bankId = $('.bankId').val();
 
-        };
-        select2list("#addAccName", "/Transactions/getAccTrees", "اسم الحساب");
-    });
+            //if (DateFrom === "" || DateTo === "") {
+            //    Swal.fire({
+            //        icon: "error",
+            //        title: "خطاء ",
+            //        text: "الرجاء اختيار التاريخين بشكل صحيح",
+            //    });
+            //    return;
+            //}
 
-    function PrintData() {
-        //var Id = $('.addAccName').val();
-        //var DateFrom = $('.DateFrom').val();
-        //var DateTo = $('.DateTo').val();
-        var DateFrom = $('#DateFrom').val();
-        var DateTo = $('#DateTo').val();
-
-        if (DateFrom === "" || DateTo === "") {
-            Swal.fire({
-                icon: "error",
-                title: "خطاء ",
-                text: "الرجاء اختيار التاريخين بشكل صحيح",
-               
-            });
-            return;
+            var url = "/Reports/printDataInDateRange?bankId=" + bankId + "&dateFrom=" + DateFrom + "&dateTo=" + DateTo;
+            window.open(url, '_blank');
         }
 
-        DateFrom = moment(DateFrom, "DD/MM/YYYY").format("MM/DD/yyyy");
-        DateTo = moment(DateTo, "DD/MM/YYYY").format("MM/DD/yyyy");
+        function Search() {
+            var DateFrom = $('#DateFrom').val();
+            var DateTo = $('#DateTo').val();
+            var bankId = $('.bankId').val();
 
+            dataTable = $('#tbl').DataTable({
+                destroy: true,
+                "language": {
+                    "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                    "search": "بحث"
+                },
+                ajax: {
+                    url: "/Reports/GetDataInDateRangeForSearch?bankId=" + bankId + "&dateFrom=" + DateFrom + "&dateTo=" + DateTo,
+                    dataSrc: ''
+                },
+                columns: [
+                    {
+                        "title": "# ",
+                        "data": "transactionId"
+                    },
+                    {
+                        "title": "البيان",
+                        "data": "note"
+                    },
+                    {
+                        "title": "المبلغ",
+                        "data": "amount",
+                        "render": function (data) {
+                            return formatNumber(data.toString());
+                        }
+                    },
+                    {
+                        "title": "تاريخ العملية",
+                        "data": "transactionDateStr"
+                    },
+                ]
+            });
+        }
 
-        var url = "/Transactions/printDataByDates?dateFrom=" + DateFrom + "&dateTo=" + DateTo;
-        window.open(url, '_blank').focus();
-    }
-    //function Search() {
-    //    var DateFrom = $('#DateFrom').val();
-    //    var DateTo = $('#DateTo').val();
-
-    //    if (DateFrom === "" || DateTo === "") {
-    //        alert("Please enter both dates");
-    //        return;
-    //    }
-
-    //    $.ajax({
-    //        url: "/Transactions/SearchDataByDates",
-    //        type: "GET",
-    //        data: {
-    //            dateFrom: DateFrom,
-    //            dateTo: DateTo
-    //        },
-    //        success: function (data) {
-    //            $("#results").html(data);
-    //        },
-    //        error: function (xhr, status, error) {
-    //            alert("An error occurred while processing your request: " + error);
-    //        }
-    //    });
-    //}
-
-     </script>
+    </script>
 }

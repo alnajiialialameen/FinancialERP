@@ -103,6 +103,19 @@
                                             </div>
                                         </div>
 
+                                        <div class="col-lg-12">
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="airportName"> المطار </label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-plane-departure"></i></span>
+                                                        <select class="form-control airportName list" id="airportName" name="airportName" style="width:100%"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
                                         <div class="col-lg-12 ">
                                             <div class="pull-left">
                                                 <button type="button" class="btn btn-default" data-dismiss="modal">رجوع</button>
@@ -181,6 +194,21 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+
+                                            <div class="col-lg-12">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="edairportName"> المطار </label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-plane-departure"></i></span>
+                                                            <select class="form-control edairportName list" id="edairportName" name="edairportName" style="width:100%"></select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
                                         </div>
 
                                         <div class="col-lg-12 ">
@@ -216,8 +244,10 @@
            //$(function () {
             $(document).ready(function () {
                 loadData();
-
+                
                 select2list(".role", "/Account/getAllRoles", " صلاحية المستخدم ");
+                select2listNew(".airportName", "/Account/getAirports", "المطار الذي يعمل به");
+                select2listNew(".edairportName", "/Account/getAirports", "المطار الذي يعمل به");
             });
             function loadData() {
                     dataTable = $('#tbx').DataTable({
@@ -435,6 +465,7 @@
                         //"ConfirmPassword": $('#password').val(),
                         "UserName": $('#user-name').val(),
                         "Phone": $('#name').val(),
+                        "AirportName": $('#airportName').val(),
                         "Role" : $('#role').text()
                     };
                     console.clear();
@@ -469,6 +500,7 @@
                         "UserName": $('#ed-user-name').val(),
                         "Phone": $('#ed-name').val(),
                         "Id": $('#ed-id').val(),
+                        "AirportName": $('#edairportName').val(),
                         "Role": $('#select2-ed-role-container').text(),
                     };
                     console.clear();

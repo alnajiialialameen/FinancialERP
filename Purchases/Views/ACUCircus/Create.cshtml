@@ -7,162 +7,156 @@
 
 @section content{
 
-<div class="content-wrapper">
-    <div class="grad"></div>
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <h1>
-            التسجيل في السيرك
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-home"></i> النظام المالي </a></li>
-            <li class="active"> التسجيل في السيرك</li>
-        </ol>
+    <div class="content-wrapper">
+        <div class="grad"></div>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                التسجيل في السيرك
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المالي </a></li>
+                <li class="active"> التسجيل في السيرك</li>
+            </ol>
 
-    </section>
+        </section>
 
-    <label id="CommitteeFormationId" class="hidden">@ViewBag.ACUCommitteFormationId</label>
-    <label id="OrderId" class="hidden">@ViewBag.OrderId</label>
-    <label id="Id" class="hidden">@ViewBag.Id</label>
-    <label id="EmployeeId" class="hidden">EmployeeId</label>
-    
-    <section class="content">
-        <div class="row">
-            <div class="col-lg-9">
-                <div class="box box-primary" style="padding:16px;">
-                    <br />
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label for="DepartmentSenderName"> اسم الادارة المرسلة </label>
-                                <label class="form-control  disabled" id="DepartmentSenderName" name="DepartmentSenderName">@ViewBag.DepartmentSenderName</label>
-                                <label class="hidden" id="DepartmentSenderId">@ViewBag.DepartmentSenderId</label>
+        <label id="CommitteeFormationId" class="hidden">@ViewBag.ACUCommitteFormationId</label>
+        <label id="OrderId" class="hidden">@ViewBag.OrderId</label>
+        <label id="Id" class="hidden">@ViewBag.Id</label>
+        <label id="EmployeeId" class="hidden">EmployeeId</label>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="box box-primary" style="padding:16px;">
+                        <br />
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="DepartmentSenderName"> اسم الادارة المرسلة </label>
+                                    <label class="form-control  disabled" id="DepartmentSenderName" name="DepartmentSenderName">@ViewBag.DepartmentSenderName</label>
+                                    <label class="hidden" id="DepartmentSenderId">@ViewBag.DepartmentSenderId</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="DepartmentRecipientName"> اسم الادارة المستلمة </label>
+                                    <label class="form-control  disabled" id="DepartmentRecipientName" name="DepartmentRecipientName">@ViewBag.DepartmentRecipientName</label>
+                                    <label class="hidden" id="DepartmentRecipientId">@ViewBag.DepartmentRecipientId</label>
+                                </div>
                             </div>
                         </div>
 
-                        
-
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label for="DepartmentRecipientName"> اسم الادارة المستلمة </label>
-                                <label class="form-control  disabled" id="DepartmentRecipientName" name="DepartmentRecipientName">@ViewBag.DepartmentRecipientName</label>
-                                <label class="hidden" id="DepartmentRecipientId">@ViewBag.DepartmentRecipientId</label>
+                        <br />
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="Subject"> الموضوع </label>
+                                    <label class="form-control  disabled" id="Subject" name="Subject">@ViewBag.Subject</label>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <br />
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label for="Subject"> الموضوع </label>
-                                <label class="form-control  disabled" id="Subject" name="Subject">@ViewBag.Subject</label>
+
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="OrderDate"> تاريخ الطلب </label>
+                                    <label class="form-control  disabled" id="OrderDate" name="OrderDate">@ViewBag.OrderDate</label>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label for="OrderDate"> تاريخ الطلب </label>
-                                <label class="form-control  disabled" id="OrderDate" name="OrderDate">@ViewBag.OrderDate</label>
+                        <br />
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="FNo">رقم الملف</label>
+                                    <input type="text" class="form-control" id="FNo" value="@ViewBag.FNo" name="FNo" placeholder="رقم الملف" />
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="CircusDate"> تاريخ السيرك(تاريخ اليوم) </label>
+                                    <label class="form-control  disabled" id="CircusDate" name="CircusDate">@ViewBag.CircusDate</label>
+                                </div>
                             </div>
                         </div>
 
-                        
-                    </div>
-                    <br />
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label for="FNo">رقم الملف</label>
-                                <input type="text" class="form-control" id="FNo" value="@ViewBag.FNo" name="FNo" placeholder="رقم الملف"/>
+                        <br />
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="ReceiverEmployeeName"> اسم الموظف المستلم (من اسم المستخدم)</label>
+                                    <label class="form-control  disabled" id="ReceiverEmployeeName" name="ReceiverEmployeeName">@ViewBag.ReceiverEmployeeName</label>
+                                    <label class="hidden" id="ReceiverId">@ViewBag.ReceiverId</label>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label for="CircusDate"> تاريخ السيرك(تاريخ اليوم) </label>
-                                <label class="form-control  disabled" id="CircusDate" name="CircusDate">@ViewBag.CircusDate</label>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="Signatur"> التوقيع </label>
+                                    <label class="form-control  disabled" id="Signatur" name="Signatur">@ViewBag.Signatur</label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                     <br />
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label for="ReceiverEmployeeName"> اسم الموظف المستلم (من اسم المستخدم)</label>
-                                <label class="form-control  disabled" id="ReceiverEmployeeName" name="ReceiverEmployeeName">@ViewBag.ReceiverEmployeeName</label>
-                                <label class="hidden" id="ReceiverId">@ViewBag.ReceiverId</label>
-                            </div>
-                        </div>
+                        @{
+                            int orderId = Convert.ToInt32(@ViewBag.OrderId);
 
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label for="Signatur"> التوقيع </label>
-                                <label class="form-control  disabled" id="Signatur" name="Signatur">@ViewBag.Signatur</label>
-                            </div>
-                        </div>
-                    </div>
-                    @{
-                        int orderId = Convert.ToInt32(@ViewBag.OrderId);
-
-                        if (db.Circus.Any(x => x.OrderId == orderId))
-                        {
-                            <br />
-                            <button type="button" class="btn btn-warning btn-block btnSave" onclick="RegisterToCircu()"><b>تعديل بيانات السيرك</b></button>
-                            <br />
+                            if (db.Circus.Any(x => x.OrderId == orderId))
+                            {
+                                <br />
+                                <button type="button" class="btn btn-warning btn-block btnSave" onclick="RegisterToCircu()"><b>تعديل بيانات السيرك</b></button>
+                                <br />
+                            }
+                            else
+                            {
+                                <br />
+                                <button type="button" class="btn btn-success btn-block btnSave" onclick="RegisterToCircu()"><b>التسجيل في السيرك</b></button>
+                                <br />
+                            }
                         }
-                        else
-                        {
-                            <br />
-                            <button type="button" class="btn btn-success btn-block btnSave" onclick="RegisterToCircu()"><b>التسجيل في السيرك</b></button>
-                            <br />
-                        }
-                    }
-                    
 
-                </div>
-            </div>
 
-            <div class="col-lg-3">
-
-                <!-- Profile Image -->
-                <div class="box box-primary">
-                    <div class="box-body box-profile">
-                        @*<img class="profile-user-img img-responsive img-circle" src="../../dist/img/user4-128x128.jpg" alt="User profile picture">*@
-                        <h4>عن العطاء</h4>
-
-                        <h3 class="profile-username text-center" id="OrderDescription">@ViewBag.Subject</h3>
-
-                        <p class="text-muted text-center" id="DepartmentName">@ViewBag.DepartmentSenderName</p>
-
-                        <ul class="list-group list-group-unbordered">
-                            <li class="list-group-item">
-                                <b>تاريخ الطلب</b> <span class="pull-left" id="OrderDate">@ViewBag.OrderDate</span>
-                            </li>
-                            <li class="list-group-item">
-                                <b>نوع الطلب</b> <span class="pull-left">مناقصة</span>
-                            </li>
-                            <li class="list-group-item">
-                                <b>الحالة الحالية</b> <span class="pull-left">مصدق</span>
-                            </li>
-                            @*<li class="list-group-item">
-                                <b>تاريخ أمر التشكيل</b> <span class="pull-left" id="ResolutionDate">@ViewBag.ResolutionDate</span>
-                            </li>*@
-                        </ul>
-
-                        <a href="~/ACUCommitteFormations/Index/@ViewBag.OrderId" class="btn btn-primary btn-block"><b>انتقل للطلب</b></a>
                     </div>
-                    <!-- /.box-body -->
                 </div>
-                <!-- /.box -->
-            </div>
 
-        <!-- /.col -->
-        </div>
-        <!-- /.row -->
-    </section>
+                <div class="col-lg-3">
+
+                    <!-- Profile Image -->
+                    <div class="box box-primary">
+                        <div class="box-body box-profile">
+                            <h4>عن العطاء</h4>
+
+                            <h3 class="profile-username text-center" id="OrderDescription">@ViewBag.Subject</h3>
+
+                            <p class="text-muted text-center" id="DepartmentName">@ViewBag.DepartmentSenderName</p>
+
+                            <ul class="list-group list-group-unbordered">
+                                <li class="list-group-item">
+                                    <b>تاريخ الطلب</b> <span class="pull-left" id="OrderDate">@ViewBag.OrderDate</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>نوع الطلب</b> <span class="pull-left">مناقصة</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>الحالة الحالية</b> <span class="pull-left">مصدق</span>
+                                </li>
+                            </ul>
+
+                            <a href="~/ACUCommitteFormations/Index/@ViewBag.OrderId" class="btn btn-primary btn-block"><b>انتقل للطلب</b></a>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </section>
     </div>
 
-    <div class="modal fade in" id="myModal"  data-backdrop="static" data-keyboard="false">
+    <div class="modal fade in" id="myModal" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" style="width:50% !important">
             <div class="modal-content">
                 <div class="modal-header .no-border">
@@ -183,47 +177,41 @@
 
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label for="name">الوظيفة في اللجنة</label>                                            
-                                                <select id="CommitteeJobId" class="form-control">
-                                                    <option value="-1">-إختار الوظيفة-</option>
-                                                    @{
-                                                        foreach (var item in db.CommitteeJobs.ToList())
-                                                        {
-                                                            <option value="@item.Id">
-                                                                @item.Name
-                                                            </option>
-                                                        }
+                                            <label for="name">الوظيفة في اللجنة</label>
+                                            <select id="CommitteeJobId" class="form-control">
+                                                <option value="-1">-إختار الوظيفة-</option>
+                                                @{
+                                                    foreach (var item in db.CommitteeJobs.ToList())
+                                                    {
+                                                        <option value="@item.Id">
+                                                            @item.Name
+                                                        </option>
                                                     }
-                                                </select>                                            
+                                                }
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
                             </form>
                         </div>
                     </div><!-- /.row (main row) -->
-                    
+
                 </div>
 
-            <div class="modal-footer">
-                <div class="row">
-                    <button type="submit" class="btn btn-primary save" style="float:right" onclick="AddMember()">حفظ</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="close" >إلغاء</button>
+                <div class="modal-footer">
+                    <div class="row">
+                        <button type="submit" class="btn btn-primary save" style="float:right" onclick="AddMember()">حفظ</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="close">إلغاء</button>
+                    </div>
                 </div>
-            </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div>
-    <!-- /.modal -->
-
-
 }
 
 @section scripts{
 
     <script>
-        ///var dataTable = $("#tbx").DataTable();
-   
-
         var obj = [];
         $("#tbx").on('click', '.transfer', function () {
             var currentRow = $(this).closest("tr");
@@ -234,7 +222,7 @@
             console.log(EmployeeId);
             $('#EmployeeId').text(EmployeeId);
             $('#MemberName').text(MemberName);
-            
+
             $('#myModal').modal('show');
         });
 
@@ -251,9 +239,6 @@
                 "OrderId": OrderId,
             };
 
-            console.clear();
-            console.log(obj);
-            
             $.ajax({
                 "type": "POST",
                 "url": '/ACUCommitteFormations/AddMember',
@@ -270,9 +255,7 @@
                     $('#myModal').modal('toggle');
                 }
             });
-
         }
-
 
         function RegisterToCircu() {
             var OrderId = $('#OrderId').text();
@@ -305,17 +288,6 @@
 
             var btnSatveText = $('.btnSave').text();
 
-
-            //var url = '';
-            //if (btnSatveText == 'التسجيل في السيرك') {
-            //    url = '/ACUCircus/Create';
-            //} else {
-            //    url = '/ACUCircus/Update';
-            //}
-
-            console.clear();
-            console.log(circu);
-            //console.log(url);
             if (FNo != "") {
                 $('#FNo').css({ 'border': '1px solid #ccc' });
                 $.ajax({
@@ -332,8 +304,7 @@
                         toastr[response.Status](response.Message, response.Title);
                     }
                 });
-            } else
-            {
+            } else {
                 $('#FNo').css({ 'border': '2px solid red' });
                 toastr["error"]("يجب ملء حقل رقم الملف", "خطأ");
             }

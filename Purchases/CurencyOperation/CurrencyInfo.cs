@@ -4,11 +4,11 @@ using System.Linq;
 using System.Web;
 
 
-namespace SACLERP.CurencyOperation
+namespace Purchases.CurencyOperation
 {
     public class CurrencyInfo
     {
-        public enum Currencies { Syria = 0, UAE, SaudiArabia, Tunisia, Gold };
+        public enum Currencies { Sudan = 0, UAE, SaudiArabia, Tunisia, Gold };
 
         #region Constructors
 
@@ -16,12 +16,12 @@ namespace SACLERP.CurencyOperation
         {
             switch (currency)
             {
-                case Currencies.Syria:
+                case Currencies.Sudan:
                     CurrencyID = 0;
-                    CurrencyCode = "SYP";
+                    CurrencyCode = "SDG";
                     IsCurrencyNameFeminine = true;
-                    EnglishCurrencyName = "Syrian Pound";
-                    EnglishPluralCurrencyName = "Syrian Pounds";
+                    EnglishCurrencyName = "Sudanese Pound";
+                    EnglishPluralCurrencyName = "Sudanese Pounds";
                     EnglishCurrencyPartName = "Piaster";
                     EnglishPluralCurrencyPartName = "Piasteres";
                     Arabic1CurrencyName = "جنيه";

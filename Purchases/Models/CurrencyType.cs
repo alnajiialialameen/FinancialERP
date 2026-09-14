@@ -18,6 +18,7 @@ namespace Purchases.Models
         public CurrencyType()
         {
             this.BankAccounts = new HashSet<BankAccount>();
+            this.DeletedTransactions = new HashSet<DeletedTransaction>();
             this.Receipts = new HashSet<Receipt>();
             this.ReceiptDetails = new HashSet<ReceiptDetail>();
             this.Transactions = new HashSet<Transaction>();
@@ -27,6 +28,7 @@ namespace Purchases.Models
     
         public int Id { get; set; }
         public string Name { get; set; }
+        public Nullable<bool> IsLocalCurrency { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreationDate { get; set; }
         public string UpdatedBy { get; set; }
@@ -36,6 +38,8 @@ namespace Purchases.Models
         public virtual AspNetUser AspNetUser1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BankAccount> BankAccounts { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DeletedTransaction> DeletedTransactions { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Receipt> Receipts { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -7,7 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Purchases.Models;
-using Purchases.Models.ViewModal;
+using Purchases.Models.ViewModel;
 using Microsoft.AspNet.Identity;
 
 namespace Purchases.Controllers
@@ -68,7 +68,7 @@ namespace Purchases.Controllers
         }
 
         [HttpPost]
-        public ActionResult Evaluate(GeneralConditionsViewModel model)
+        public ActionResult Evaluate(GeneralConditionsVM model)
         {
             try {
                 var userid = User.Identity.GetUserId();

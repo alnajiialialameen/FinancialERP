@@ -46,7 +46,6 @@ namespace Purchases.Models
         public virtual DbSet<AccountSubCategory> AccountSubCategories { get; set; }
         public virtual DbSet<AccountTree> AccountTrees { get; set; }
         public virtual DbSet<AccountType> AccountTypes { get; set; }
-        public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
         public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUserRole> AspNetUserRoles { get; set; }
@@ -55,19 +54,23 @@ namespace Purchases.Models
         public virtual DbSet<BankAccount> BankAccounts { get; set; }
         public virtual DbSet<BankAccountType> BankAccountTypes { get; set; }
         public virtual DbSet<Check> Checks { get; set; }
+        public virtual DbSet<DeletedTransaction> DeletedTransactions { get; set; }
+        public virtual DbSet<DeletedTransactionDetail> DeletedTransactionDetails { get; set; }
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<DocumentType> DocumentTypes { get; set; }
         public virtual DbSet<FinancialCycle> FinancialCycles { get; set; }
-        public virtual DbSet<JournalEntery> JournalEnteries { get; set; }
-        public virtual DbSet<JournalEnteryDetail> JournalEnteryDetails { get; set; }
+        public virtual DbSet<FinancialCycleAccountTree> FinancialCycleAccountTrees { get; set; }
         public virtual DbSet<OpeningBalance> OpeningBalances { get; set; }
         public virtual DbSet<OpeningBalanceDetail> OpeningBalanceDetails { get; set; }
         public virtual DbSet<PrintCheck> PrintChecks { get; set; }
         public virtual DbSet<Receipt> Receipts { get; set; }
         public virtual DbSet<ReceiptDetail> ReceiptDetails { get; set; }
         public virtual DbSet<ReceiptType> ReceiptTypes { get; set; }
+        public virtual DbSet<Recipient> Recipients { get; set; }
+        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Transaction> Transactions { get; set; }
         public virtual DbSet<TransactionDetail> TransactionDetails { get; set; }
+        public virtual DbSet<TransactionRecipient> TransactionRecipients { get; set; }
         public virtual DbSet<Vat> Vats { get; set; }
         public virtual DbSet<CurrencyDetail> CurrencyDetails { get; set; }
         public virtual DbSet<CurrencyType> CurrencyTypes { get; set; }
@@ -81,6 +84,7 @@ namespace Purchases.Models
         public virtual DbSet<OrderType> OrderTypes { get; set; }
         public virtual DbSet<Supplier> Suppliers { get; set; }
         public virtual DbSet<Unit> Units { get; set; }
+        public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
     
         public virtual ObjectResult<Nullable<decimal>> GetLastAccNumber(Nullable<int> accParentId)
         {

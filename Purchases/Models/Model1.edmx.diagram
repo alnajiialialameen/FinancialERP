@@ -4,231 +4,245 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="5bf70fa887e4469f96689137d2f35ac3" Name="Diagram1">
-        <EntityTypeShape EntityType="FinancialERPModel.Circu" Width="1.5" PointX="6" PointY="77.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.CommitteeJob" Width="1.5" PointX="3" PointY="45.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.CommitteeMember" Width="1.5" PointX="5.25" PointY="67.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.CommitteeType" Width="1.5" PointX="3" PointY="49.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.CommitteFormation" Width="1.5" PointX="8.25" PointY="65.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.CompanyDocument" Width="1.5" PointX="6" PointY="72.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.CompanyRegisteration" Width="1.5" PointX="9" PointY="77.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.CompetingCompany" Width="1.5" PointX="13.5" PointY="83.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.GeneralCondition" Width="1.5" PointX="3" PointY="62.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.GeneralConditionEvaluation" Width="1.5" PointX="15.75" PointY="73.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.TechnicalCondition" Width="1.5" PointX="18.75" PointY="79.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.TechnicalConditionEvaluation" Width="1.5" PointX="21" PointY="77.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.Tender" Width="1.5" PointX="10.5" PointY="83.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.AccountFinal" Width="1.5" PointX="3" PointY="66.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.AccountNature" Width="1.5" PointX="3" PointY="70" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.AccountSub" Width="1.5" PointX="13.5" PointY="77.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.AccountSubCategory" Width="1.5" PointX="3" PointY="73.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.AccountTree" Width="1.5" PointX="11.25" PointY="72.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.AccountType" Width="1.5" PointX="3" PointY="77" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.AspNetRole" Width="1.5" PointX="3" PointY="80.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.AspNetUserClaim" Width="1.5" PointX="3" PointY="83.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.AspNetUserLogin" Width="1.5" PointX="3" PointY="86.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.AspNetUserRole" Width="1.5" PointX="5.25" PointY="83.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.AspNetUser" Width="1.5" PointX="0.75" PointY="67.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.Balance" Width="1.5" PointX="16.5" PointY="83" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.BankAccount" Width="1.5" PointX="15.75" PointY="93.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.BankAccountType" Width="1.5" PointX="3" PointY="89.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.Check" Width="1.5" PointX="21" PointY="83.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.Department" Width="1.5" PointX="3" PointY="93" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.DocumentType" Width="1.5" PointX="3" PointY="96.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.FinancialCycle" Width="1.5" PointX="3" PointY="99.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.JournalEntery" Width="1.5" PointX="3" PointY="104.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.JournalEnteryDetail" Width="1.5" PointX="13.5" PointY="88.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.OpeningBalance" Width="1.5" PointX="5.25" PointY="86.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.OpeningBalanceDetail" Width="1.5" PointX="16.5" PointY="77.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.PrintCheck" Width="1.5" PointX="23.25" PointY="81.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.Receipt" Width="1.5" PointX="13.5" PointY="93.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.ReceiptDetail" Width="1.5" PointX="18.75" PointY="92.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.ReceiptType" Width="1.5" PointX="3" PointY="108.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.Transaction" Width="1.5" PointX="8.25" PointY="95.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.TransactionDetail" Width="1.5" PointX="18.75" PointY="84" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.Vat" Width="1.5" PointX="3" PointY="111.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.CurrencyDetail" Width="1.5" PointX="5.25" PointY="93.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.CurrencyType" Width="1.5" PointX="3" PointY="120" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.InvoiceImage" Width="1.5" PointX="7.5" PointY="102.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.Item" Width="1.5" PointX="3" PointY="124.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.ItemDetail" Width="1.5" PointX="8.25" PointY="91.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.ItemDetailUnit" Width="1.5" PointX="10.5" PointY="101" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.Order" Width="1.5" PointX="5.25" PointY="98.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.OrderDetiail" Width="1.5" PointX="10.5" PointY="95" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.OrderImage" Width="1.5" PointX="7.5" PointY="84.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.OrderType" Width="1.5" PointX="3" PointY="128.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.Supplier" Width="1.5" PointX="3" PointY="131.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancialERPModel.Unit" Width="1.5" PointX="3" PointY="135.5" IsExpanded="true" />
-        <AssociationConnector Association="FinancialERPModel.FK_Circus_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Circus_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Circus_Order" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CommitteeJob_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CommitteeJob_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CommitteeMember_CommitteeJob" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CommitteeMember_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CommitteeMember_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CommitteeMember_CommitteeFormation" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CommitteeType_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CommitteeType_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CommitteFormation_CommitteeType" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CommitteFormation_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CommitteFormation_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CommitteFormation_Order" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CompetingCompany_CommitteFormation" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Tender_CommitteFormation" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CompanyDocument_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CompanyDocument_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CompanyDocument_CompanyRegisteration" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CompanyRegisteration_AccountTree" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CompanyRegisteration_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CompanyRegisteration_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CompetingCompany_CompanyRegisteration" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CompetingCompany_AccountTree" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CompetingCompany_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CompetingCompany_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CompetingCompany_Order" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_GeneralConditionEvaluation_CompetingCompany" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_GeneralCondition_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_GeneralCondition_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_GeneralConditionEvaluation_GeneralCondition" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_GeneralConditionEvaluation_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_GeneralConditionEvaluation_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_TechnicalCondition_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_TechnicalCondition_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_TechnicalCondition_Tender" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_TechnicalConditionEvaluation_TechnicalCondition" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_TechnicalConditionEvaluation_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_TechnicalConditionEvaluation_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Tender_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Tender_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Tender_Order" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AccountFinal_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AccountFinal_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AccountTree_AccountFinal" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AccountNature_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AccountNature_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AccountTree_AccountNature" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AccountSub_AccountSubCategory" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AccountSub_AccountTree" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AccountSub_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AccountSub_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_BankAccount_AccountSub" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AccountSubCategory_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AccountSubCategory_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AccountTree_AccountType" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AccountTree_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AccountTree_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Balance_AccountTree" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_JournalEnteryDetail_AccountTree" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_OpeningBalanceDetail_AccountTree" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Receipt_AccountTree" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_ReceiptDetail_AccountTree" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_TransactionDetail_AccountTree" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AccountType_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AccountType_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AspNetRoles_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AspNetUserClaims_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AspNetUserLogins_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AspNetUserRoles_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_AspNetUsers_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Balance_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Balance_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_BankAccount_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_BankAccount_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_BankAccountType_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_BankAccountType_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Check_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Check_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CurrencyDetail_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CurrencyDetail_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CurrencyDetail_CurrencyDetail" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CurrencyType_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CurrencyType_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Department_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Department_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_DocumentType_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_DocumentType_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_FinancialCycle_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_FinancialCycle_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_InvoiceImage_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_InvoiceImage_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Item_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Item_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_ItemDetail_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_ItemDetail_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_ItemDetailUnit_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_ItemDetailUnit_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_JournalEntery_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_JournalEntery_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_JournalEnteryDetail_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_JournalEnteryDetail_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_OpeningBalance_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_OpeningBalance_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_OpeningBalanceDetail_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_OpeningBalanceDetail_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Order_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Order_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_OrderDetiail_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_OrderDetiail_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_OrderImage_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_OrderImage_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_OrderType_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_OrderType_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_PrintCheck_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_PrintCheck_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Receipt_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Receipt_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_ReceiptDetail_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_ReceiptDetail_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_ReceiptType_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_ReceiptType_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Supplier_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Supplier_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Transaction_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Transaction_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_TransactionDetail_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_TransactionDetail_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Unit_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Unit_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Vat_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Vat_AspNetUsers1" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Balance_Balance" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Balance_FinancialCycle" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_TransactionDetail_Balance" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_BankAccount_BankAccountType" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_BankAccount_CurrencyType" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Check_BankAccount" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_PrintCheck_BankAccount" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_PrintCheck_Check" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Transaction_Transaction" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_OpeningBalance_FinancialCycle" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_JournalEnteryDetail_JournalEntery" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_OpeningBalanceDetail_OpeningBalance" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_PrintCheck_Transaction" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Receipt_CurrencyType" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Receipt_ReceiptType" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_ReceiptDetail_Receipt" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_ReceiptDetail_CurrencyType" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Transaction_CurrencyType" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_TransactionDetail_Transaction" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Order_Vat" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_CurrencyDetail_CurrencyType" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Order_CurrencyType" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_InvoiceImage_Order" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_InvoiceImage_Supplier" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_ItemDetail_Item" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_OrderDetiail_Item" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_ItemDetailUnit_ItemDetail" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_OrderDetiail_ItemDetail" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_ItemDetailUnit_Unit" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Order_OrderType" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_Order_Supplier" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_OrderDetiail_Order" ManuallyRouted="false" />
-        <AssociationConnector Association="FinancialERPModel.FK_OrderImage_Order" ManuallyRouted="false" />
+      <Diagram DiagramId="f7b2e06d6f794818b8950671c66eed5e" Name="Diagram1">
+        <EntityTypeShape EntityType="FinancialERP1Model.Circu" Width="1.5" PointX="6" PointY="84.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.CommitteeJob" Width="1.5" PointX="3" PointY="52.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.CommitteeMember" Width="1.5" PointX="5.25" PointY="74.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.CommitteeType" Width="1.5" PointX="3" PointY="56.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.CommitteFormation" Width="1.5" PointX="8.25" PointY="72.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.CompanyDocument" Width="1.5" PointX="6" PointY="80.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.CompanyRegisteration" Width="1.5" PointX="9" PointY="84.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.CompetingCompany" Width="1.5" PointX="13.5" PointY="90.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.GeneralCondition" Width="1.5" PointX="3" PointY="69.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.GeneralConditionEvaluation" Width="1.5" PointX="15.75" PointY="81.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.TechnicalCondition" Width="1.5" PointX="18.75" PointY="87.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.TechnicalConditionEvaluation" Width="1.5" PointX="21" PointY="82.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.Tender" Width="1.5" PointX="10.5" PointY="91.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.AccountFinal" Width="1.5" PointX="3" PointY="73.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.AccountNature" Width="1.5" PointX="3" PointY="77" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.AccountSub" Width="1.5" PointX="13.5" PointY="85.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.AccountSubCategory" Width="1.5" PointX="3" PointY="80.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.AccountTree" Width="1.5" PointX="11.25" PointY="79.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.AccountType" Width="1.5" PointX="3" PointY="84" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.AspNetUserClaim" Width="1.5" PointX="3" PointY="90.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.AspNetUserLogin" Width="1.5" PointX="3" PointY="93.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.AspNetUserRole" Width="1.5" PointX="5.25" PointY="91" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.AspNetUser" Width="1.5" PointX="0.75" PointY="74.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.Balance" Width="1.5" PointX="16.5" PointY="90.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.BankAccount" Width="1.5" PointX="15.75" PointY="99.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.BankAccountType" Width="1.5" PointX="3" PointY="96.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.Check" Width="1.5" PointX="21" PointY="92.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.DeletedTransaction" Width="1.5" PointX="8.25" PointY="103.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.DeletedTransactionDetail" Width="1.5" PointX="18.75" PointY="92.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.Department" Width="1.5" PointX="3" PointY="100.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.DocumentType" Width="1.5" PointX="3" PointY="103.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.FinancialCycle" Width="1.5" PointX="3" PointY="107.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.FinancialCycleAccountTree" Width="1.5" PointX="13.5" PointY="96.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.OpeningBalance" Width="1.5" PointX="5.25" PointY="94.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.OpeningBalanceDetail" Width="1.5" PointX="16.5" PointY="85.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.PrintCheck" Width="1.5" PointX="24.25" PointY="88" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.Receipt" Width="1.5" PointX="13.5" PointY="99.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.ReceiptDetail" Width="1.5" PointX="18.75" PointY="100" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.ReceiptType" Width="1.5" PointX="3" PointY="113" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.Recipient" Width="1.5" PointX="6" PointY="114.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.sysdiagram" Width="1.5" PointX="3" PointY="116.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.Transaction" Width="1.5" PointX="8.25" PointY="95.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.TransactionDetail" Width="1.5" PointX="21.75" PointY="87.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.TransactionRecipient" Width="1.5" PointX="21" PointY="98.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.Vat" Width="1.5" PointX="3" PointY="119.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.CurrencyDetail" Width="1.5" PointX="5.25" PointY="101.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.CurrencyType" Width="1.5" PointX="3" PointY="127.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.InvoiceImage" Width="1.5" PointX="7.5" PointY="109.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.Item" Width="1.5" PointX="3" PointY="132.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.ItemDetail" Width="1.5" PointX="11.25" PointY="108.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.ItemDetailUnit" Width="1.5" PointX="13.5" PointY="108.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.Order" Width="1.5" PointX="5.25" PointY="106" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.OrderDetiail" Width="1.5" PointX="16.5" PointY="105.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.OrderImage" Width="1.5" PointX="7.5" PointY="91" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.OrderType" Width="1.5" PointX="3" PointY="136.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.Supplier" Width="1.5" PointX="3" PointY="139.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinancialERP1Model.Unit" Width="1.5" PointX="3" PointY="143.625" IsExpanded="true" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Circus_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Circus_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Circus_Order" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CommitteeJob_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CommitteeJob_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CommitteeMember_CommitteeJob" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CommitteeMember_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CommitteeMember_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CommitteeMember_CommitteeFormation" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CommitteeType_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CommitteeType_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CommitteFormation_CommitteeType" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CommitteFormation_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CommitteFormation_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CommitteFormation_Order" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CompetingCompany_CommitteFormation" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Tender_CommitteFormation" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CompanyDocument_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CompanyDocument_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CompanyDocument_CompanyRegisteration" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CompanyRegisteration_AccountTree" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CompanyRegisteration_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CompanyRegisteration_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CompetingCompany_CompanyRegisteration" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CompetingCompany_AccountTree" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CompetingCompany_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CompetingCompany_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CompetingCompany_Order" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_GeneralConditionEvaluation_CompetingCompany" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_GeneralCondition_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_GeneralCondition_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_GeneralConditionEvaluation_GeneralCondition" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_GeneralConditionEvaluation_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_GeneralConditionEvaluation_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_TechnicalCondition_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_TechnicalCondition_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_TechnicalCondition_Tender" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_TechnicalConditionEvaluation_TechnicalCondition" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_TechnicalConditionEvaluation_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_TechnicalConditionEvaluation_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Tender_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Tender_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Tender_Order" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AccountFinal_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AccountFinal_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AccountTree_AccountFinal" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AccountNature_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AccountNature_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AccountTree_AccountNature" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AccountSub_AccountSubCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AccountSub_AccountTree" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AccountSub_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AccountSub_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_BankAccount_AccountSub" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AccountSubCategory_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AccountSubCategory_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AccountTree_AccountType" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AccountTree_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AccountTree_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Balance_AccountTree" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_DeletedTransactionDetail_AccountTree" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_FinancialCycleAccountTree_AccountTree" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_FinancialCycleAccountTree_AccountTree1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_OpeningBalanceDetail_AccountTree" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Receipt_AccountTree" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_ReceiptDetail_AccountTree" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_TransactionDetail_AccountTree" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AccountType_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AccountType_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AspNetUserClaims_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AspNetUserLogins_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AspNetUserRoles_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AspNetUsers_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AspNetUsers_FinancialCycle" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Balance_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Balance_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_BankAccount_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_BankAccount_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_BankAccountType_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_BankAccountType_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Check_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Check_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CurrencyDetail_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CurrencyDetail_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CurrencyDetail_CurrencyDetail" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CurrencyType_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CurrencyType_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_DeletedTransaction_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Department_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Department_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_DocumentType_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_DocumentType_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_FinancialCycle_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_FinancialCycle_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_InvoiceImage_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_InvoiceImage_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Item_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Item_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_ItemDetail_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_ItemDetail_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_ItemDetailUnit_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_ItemDetailUnit_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_OpeningBalance_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_OpeningBalance_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_OpeningBalanceDetail_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_OpeningBalanceDetail_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Order_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Order_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_OrderDetiail_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_OrderDetiail_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_OrderImage_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_OrderImage_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_OrderType_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_OrderType_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_PrintCheck_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_PrintCheck_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Receipt_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Receipt_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_ReceiptDetail_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_ReceiptDetail_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_ReceiptType_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_ReceiptType_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Supplier_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Supplier_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_sysdiagrams_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Transaction_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Transaction_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_TransactionDetail_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_TransactionDetail_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Unit_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Unit_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Vat_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Vat_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Balance_Balance" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Balance_FinancialCycle" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_DeletedTransactionDetail_Balance" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_TransactionDetail_Balance" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_BankAccount_BankAccountType" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_BankAccount_CurrencyType" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Check_BankAccount" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_PrintCheck_BankAccount" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_TransactionRecipient_BankAccount" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_PrintCheck_Check" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_DeletedTransaction_CurrencyType" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_DeletedTransaction_DocumentType" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_DeletedTransaction_FinancialCycle" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_DeletedTransactionDetail_DeletedTransaction" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Transaction_Transaction" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_FinancialCycleAccountTree_FinancialCycle" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_OpeningBalance_FinancialCycle" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Transaction_FinancialCycle" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_OpeningBalanceDetail_OpeningBalance" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_PrintCheck_Transaction" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Receipt_CurrencyType" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Receipt_ReceiptType" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_ReceiptDetail_Receipt" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_ReceiptDetail_CurrencyType" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Transaction_Recipient" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Transaction_CurrencyType" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_TransactionDetail_Transaction" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_TransactionRecipient_Transaction" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Order_Vat" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_CurrencyDetail_CurrencyType" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Order_CurrencyType" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_InvoiceImage_Order" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_InvoiceImage_Supplier" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_ItemDetail_Item" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_OrderDetiail_Item" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_ItemDetailUnit_ItemDetail" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_OrderDetiail_ItemDetail" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_ItemDetailUnit_Unit" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Order_OrderType" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_Order_Supplier" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_OrderDetiail_Order" ManuallyRouted="false" />
+        <AssociationConnector Association="FinancialERP1Model.FK_OrderImage_Order" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="FinancialERP1Model.AspNetRole" Width="1.5" PointX="3" PointY="65.875" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AspNetRoles_AspNetUsers" />
+        <AssociationConnector Association="FinancialERP1Model.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

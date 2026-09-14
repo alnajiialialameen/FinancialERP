@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using Purchases.Models;
 using Purchases.MyLogic;
-using Purchases.Models.ViewModal;
+using Purchases.Models.ViewModel;
 using Microsoft.AspNet.Identity;
+using System.Threading.Tasks;
 
 namespace Purchases.Controllers
 {
@@ -72,7 +71,7 @@ namespace Purchases.Controllers
         }
 
         // GET: Circus/Create
-        public ActionResult Create(int Id)
+        public async Task<ActionResult> Create(int Id)
         {
             ConsumeHRAPI api = new ConsumeHRAPI();
 
@@ -83,10 +82,10 @@ namespace Purchases.Controllers
             ViewBag.DepartmentSenderId = obj.DepartmentId;
             ViewBag.DepartmentSenderName = obj.DepartmentName;
             ViewBag.DepartmentRecipientId = 5;//ده الرقم الخاص بالادارة العامة للشؤون االمالية والمحاسبية
-            ViewBag.DepartmentRecipientName = api.getDepartments().FirstOrDefault(x => x.id == 5).text;
+            ViewBag.DepartmentRecipientName = api.getDepartments().Result.FirstOrDefault(x => x.id == 5).text;
             ViewBag.OrderDate = obj.OrderDate.Value.Day + " - " + obj.OrderDate.Value.Month + " - " + obj.OrderDate.Value.Year;
             ViewBag.CircusDate = DateTime.Today.Day + " - " + DateTime.Today.Month + " - " + DateTime.Today.Year;
-            ViewBag.DepartmentRecipientName = api.getDepartments().FirstOrDefault(x=>x.id == 5).text;
+            ViewBag.DepartmentRecipientName = api.getDepartments().Result.FirstOrDefault(x=>x.id == 5).text;
             string ReceiverEmployeeName = api.getAllEmployees().FirstOrDefault(x => x.Id == 1721).Name;
             ViewBag.ReceiverEmployeeName = ReceiverEmployeeName;
             ViewBag.ReceiverId = 1721;
@@ -106,7 +105,7 @@ namespace Purchases.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public ActionResult CreateOrUpdate(CircuViewModel model)
+        public ActionResult CreateOrUpdate(CircuVM model)
         {
             try
             {
@@ -200,7 +199,7 @@ namespace Purchases.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public ActionResult Update(CircuViewModel model)
+        public ActionResult Update(CircuVM model)
         {
             try
             {

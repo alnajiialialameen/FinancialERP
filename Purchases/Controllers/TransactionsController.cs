@@ -1,186 +1,160 @@
-﻿using Purchases.Models;
+﻿using Microsoft.AspNet.Identity;
+using Purchases.Models;
 using Purchases.Models.ViewModal;
+using Purchases.Models.ViewModel;
+using Purchases.MyLogic;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
-using System.Globalization;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using Purchases.MyLogic;
-using Microsoft.AspNet.Identity;
 
 namespace Purchases.Controllers
 {
     public class TransactionsController : Controller
     {
-        private Entities db = new Entities();
+        private readonly Entities db;
+        private readonly Transact obj;
 
-        // GET: Transactions
+        // constructor
+        public TransactionsController()
+        {
+            db = new Entities();
+            obj = new Transact(db);
+        }
+
+        // سندات القيد
         public ActionResult Index()
         {
             return View();
         }
 
+        // سندات القيد
+        public ActionResult IndexAll()
+        {
+            return View();
+        }
+
+        //تسويات المرتبات
+        public ActionResult SalariesSettlement()
+        {
+            return View();
+        }
+
+        //بحث بي اسم المستلم
+        public ActionResult SearchByRecipient()
+        {
+            return View();
+        }
+
+        //  شاشة القيود المرحلة
         public ActionResult PostedTransactions()
         {
             return View();
         }
 
+        // جلب جميع البيانات بغض النظر عن نوع القيد هو قبض او صرف او تحويل او غيره
+        [HttpGet]
         public ActionResult LoadDataAll()
         {
-            var data = db.Transactions
-                .Select(p => new
-                {
-                    TransactionId = p.Id,
-                    Currency = p.CurrencyType.Name,
-                    DocumentType = p.DocumentType.Name,
-                    TotalAmount = p.Amount,
-                    ExchangeRate = p.ExchangeRate,
-                    TransactionDate = p.TransactionDate.Value.Year + "/" + p.TransactionDate.Value.Month + "/" + p.TransactionDate.Value.Day,
-                    Note = p.Note,
-
-                }).ToList();
-
+            var data = obj.GetAllData();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        
+
+        // جلب بيانات سندات القيد
+        [HttpGet]
         public ActionResult LoadData()
         {
-            var data = db.Transactions.Where(x => x.IsPosted != true & x.DocumentTypeId == 1)
-                .Select(p => new
-                {
-                    TransactionId = p.Id,
-                    Currency = p.CurrencyType.Name,
-                    DocumentType = p.DocumentType.Name,
-                    TotalAmount = p.Amount,
-                    ExchangeRate = p.ExchangeRate,
-                    TransactionDate = p.TransactionDate.Value.Year + "/" + p.TransactionDate.Value.Month + "/" + p.TransactionDate.Value.Day  ,
-                    Note = p.Note,
-                }).ToList();
-
+            var data = obj.GetData(1);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        
+
+        // جلب القيود المرحلة
+        [HttpGet]
         public ActionResult LoadDataPosted()
         {
-            var data = db.Transactions.Where(x => x.IsPosted == true)
-                .Select(p => new
-                {
-                    TransactionId = p.Id,
-                    Currency = p.CurrencyType.Name,
-                    DocumentType = p.DocumentType.Name,
-                    TotalAmount = p.Amount,
-                    ExchangeRate = p.ExchangeRate,
-                    TransactionDate = p.TransactionDate.Value.Year + "/" + p.TransactionDate.Value.Month + "/" + p.TransactionDate.Value.Day,
-                    Note = p.Note,
-                }).ToList();
-
+            var userid = User.Identity.GetUserId();
+            var data = obj.GetDataPosted(userid);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        
-        public ActionResult getAccTrees(string q)
+
+        // تحميل البيانات في شاشة تسوية المرتبات
+        [HttpGet]
+        public ActionResult LoadDataForSettlement()
         {
-            var data = db.AccountTrees.Where(x => db.AccountSubs.Any(s => s.AccTreeId == x.Id))
-                        .Select(p => new { id = p.Id, text = p.AccName }).Where(f => f.text.Contains(q)).ToList();
+            var data = obj.GetData(8);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult getBalanceIds(string q)
+        // جلب البيانات  في شاشة البحث باسم المستلم
+        [HttpGet]
+        public ActionResult LoadDataForSearchByRecipient()
         {
-            var data = db.Balances.Where(x => db.AccountTrees.Any(s => s.Id == x.AccountTreeId))
-                        .Select(p => new { id = p.Id, text = p.AccountTree.AccName }).Where(f => f.text.Contains(q)).ToList();
-
+            var data = obj.GetData(-1); // القيمة دي عشان يجيب لي كل البيانات بدون فرز
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult getCurrency(string q)
-        {
-            var data = db.CurrencyTypes
-                        .Select(p => new { id = p.Id, text = p.Name }).Where(f => f.text.Contains(q)).ToList();
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-        
+        // حفظ بيانات سندات القيد + تسويات المرتبات
         [HttpPost]
-        public ActionResult Create(List<TransactionViewMode> data)
+        public ActionResult Create(List<TransactionVM> data)
         {
-            try
+            var userid = User.Identity.GetUserId();
+            int res = obj.PostData(data, userid);
+
+            if (res > 0)
             {
-                var userid = User.Identity.GetUserId();
-
-                if (data.Sum(x => x.credit) == data.Sum(x => x.debit))
-                {
-                    Transaction jou = new Transaction();
-
-                    jou.DocumentTypeId = 1;
-                    jou.CurrencyId = data.FirstOrDefault().currencyId;
-                    jou.Amount = data.Sum(x => x.credit);
-                    jou.TransactionDate = data.FirstOrDefault().transactionDate;
-                    jou.ExchangeRate = data.FirstOrDefault().exchangeRate;
-                    jou.Note = data.FirstOrDefault().note;
-                    jou.IsPosted = false;
-                    jou.CreatedDate = DateTime.Today;
-                    jou.CreatedBy = userid;
-
-                    db.Transactions.Add(jou);
-                    db.SaveChanges();
-
-                    List<TransactionDetail> jouDetList = new List<TransactionDetail>();
-                    foreach (var item in data)
-                    {
-                        TransactionDetail jouDet = new TransactionDetail();
-
-                        jouDet.AccTreeId = Convert.ToInt32(item.accTrreId);
-                        jouDet.TransactionId = jou.Id;
-                        jouDet.Debit = item.debit;
-                        jouDet.Credit = item.credit;
-                        jouDet.Note = item.note;
-                        jouDet.BalanceId = item.balanceId;
-                        int type = item.credit > 0 ? 1 : 0;
-                        jouDet.CreatedBy = userid;
-                        jouDet.CreationDate = DateTime.Today;
-
-                        decimal newAmount = Convert.ToDecimal(item.debit + item.credit);
-                        int balanceId = Convert.ToInt32(item.balanceId);
-                        myExtention.UpdateActualExchange(balanceId, 0, newAmount, userid);
-
-                        jouDetList.Add(jouDet);
-                    }
-
-                    db.TransactionDetails.AddRange(jouDetList);
-                    db.SaveChanges();
-
-                    return Json(new { Message = "تمت عملية الإضافة  بنجاح", Title = "نجاح", Status = "success" });
-                }
-                else
-                {
-                    return Json(new { Message = "يجب أن يتساوي الجانب المدين مع الجانب الدائن", Title = "خطأ", Status = "error" });
-                }
+                return Json(new { Message = "تمت عملية الإضافة  بنجاح", Title = "نجاح", Status = "success" });
             }
-            catch (Exception e)
+            else if (res == 0)
+            {
+                return Json(new { Message = "يجب أن يتساوي الجانب المدين مع الجانب الدائن", Title = "خطأ", Status = "error" });
+            }
+            else
             {
                 return Json(new { Message = "حدث خطأ أثناء عملية الإضافة(Exception)", Title = "خطأ", Status = "error" });
             }
         }
 
+        // حفظ بيانات الحركة في سندات القبض
+        [HttpPost]
+        public ActionResult CreateRec(List<TransactionVM> data)
+        {
+            var userid = User.Identity.GetUserId();
+            int res = obj.PostData(data, userid);
+
+            if (res > 0)
+            {
+                return Json(new { Message = "تمت عملية الإضافة  بنجاح", Title = "نجاح", Status = "success" });
+            }
+            else if (res == 0)
+            {
+                return Json(new { Message = "يجب أن يتساوي الجانب المدين مع الجانب الدائن", Title = "خطأ", Status = "error" });
+            }
+            else
+            {
+                return Json(new { Message = "حدث خطأ أثناء عملية الإضافة(Exception)", Title = "خطأ", Status = "error" });
+            }
+        }
+
+        // ترحيل القيد
         [HttpPost]
         public ActionResult Posting(int Id)
         {
             try
             {
                 var userid = User.Identity.GetUserId();
-                Transaction transaction = db.Transactions.Find(Id);
+                int res = obj.PostingTransaction(Id, userid);
 
-                transaction.IsPosted = true;
-                transaction.UpdatedBy = userid;
-                transaction.UpdatingDate = DateTime.Today;
-
-                db.Entry(transaction).State = EntityState.Modified;
-                db.SaveChanges();
-
-                return Json(new { Message = "تمت عملية الترحيل  بنجاح", Title = "نجاح", Status = "success" });
+                if (res > 0)
+                {
+                    return Json(new { Message = "تمت عملية الترحيل  بنجاح", Title = "نجاح", Status = "success" });
+                }
+                else
+                {
+                    return Json(new { Message = "حدث خطأ أثناء عملية الترحيل", Title = "خطأ", Status = "error" });
+                }
             }
             catch (Exception e)
             {
@@ -188,575 +162,474 @@ namespace Purchases.Controllers
             }
         }
 
+        // اضافة / حذف ضريبة 17 % للحركة
         [HttpPost]
-        public ActionResult Add17Tax(int Id, bool HasAddedTax)
+        public ActionResult Add17Tax(int Id, bool HasAddedTax, decimal? AddedTaxPercent)
         {
             try
             {
                 var userid = User.Identity.GetUserId();
-                Transaction transaction = db.Transactions.Find(Id);
+                int res = obj.Add17Tax(Id, HasAddedTax, AddedTaxPercent, userid);
 
-                transaction.HasAddedTax = HasAddedTax;
-                transaction.UpdatedBy = userid;
-                transaction.UpdatingDate = DateTime.Today;
-
-                db.Entry(transaction).State = EntityState.Modified;
-                db.SaveChanges();
-
-                return Json(new { Message = "تمت عملية الترحيل  بنجاح", Title = "نجاح", Status = "success" });
+                if (res > 0)
+                {
+                    return Json(new { Message = "تمت العملية بنجاح", Title = "نجاح", Status = "success" });
+                }
+                else if (res == -100)
+                {
+                    return Json(new { Message = "لا توجد بنود لتحميل الضريبة عليها", Title = "خطأ", Status = "error" });
+                }
+                else
+                {
+                    return Json(new { Message = "حدث خطأ أثناء العملية", Title = "خطأ", Status = "error" });
+                }
             }
             catch (Exception e)
             {
-                return Json(new { Message = "حدث خطأ أثناء عملية الترحيل", Title = "خطأ", Status = "error" });
+                return Json(new { Message = "حدث خطأ أثناء العملية (Exception)", Title = "خطأ", Status = "error" });
             }
         }
-        
+        // اضافة / حذف ضريبة 1 % للحركة
         [HttpPost]
         public ActionResult AddTax(int Id, bool HasTax)
         {
             try
             {
                 var userid = User.Identity.GetUserId();
-                Transaction transaction = db.Transactions.Find(Id);
+                int res = obj.AddTax(Id, HasTax, userid);
 
-                transaction.HasTax = HasTax;
-                transaction.UpdatedBy = userid;
-                transaction.UpdatingDate = DateTime.Today;
-
-                if (HasTax)
+                if (res > 0)
                 {
-                    TransactionDetail transDet = new TransactionDetail();
-                    transDet.TransactionId = Id;
-                    //transDet.BalanceId = ;
-                    transDet.AccTreeId = 228;
-                    transDet.Debit = transaction.Amount * (decimal)0.01;
-                    transDet.Credit = 0;
-                    transDet.Note = transaction.Note;
-                    transDet.UpdatedBy = userid;
-                    transDet.UpdatingDate = DateTime.Today;
-
-                    db.TransactionDetails.Add(transDet);
+                    return Json(new { Message = "تمت العملية بنجاح", Title = "نجاح", Status = "success" });
+                }
+                else if (res == -100)
+                {
+                    return Json(new { Message = "لا توجد بنود لتحميل الضريبة عليها", Title = "خطأ", Status = "error" });
+                }
+                else if (res == -200)
+                {
+                    return Json(new { Message = "ضريبة ال 1% مدخلة مسبقا", Title = "خطأ", Status = "error" });
                 }
                 else
                 {
-                    var taxObj = db.TransactionDetails.Where(x => x.TransactionId == Id & x.AccTreeId == 228).FirstOrDefault();
-
-                    db.TransactionDetails.Remove(taxObj);
+                    return Json(new { Message = "حدث خطأ أثناء العملية", Title = "خطأ", Status = "error" });
                 }
-
-                db.Entry(transaction).State = EntityState.Modified;
-                db.SaveChanges();
-
-                return Json(new { Message = "تمت عملية الترحيل  بنجاح", Title = "نجاح", Status = "success" });
             }
             catch (Exception e)
             {
-                return Json(new { Message = "حدث خطأ أثناء عملية الترحيل", Title = "خطأ", Status = "error" });
+                return Json(new { Message = "حدث خطأ أثناء العملية (Exception)", Title = "خطأ", Status = "error" });
             }
         }
-        
+        // اضافة / حذف الدمغة للحركة
+        [HttpPost]
+        public ActionResult AddStamp(int Id, decimal stampValue)
+        {
+            try
+            {
+                var userid = User.Identity.GetUserId();
+                int res = obj.AddStamp(Id, stampValue, userid);
+
+                if (res > 0)
+                {
+                    return Json(new { Message = "تمت العملية بنجاح", Title = "نجاح", Status = "success" });
+                }
+                else
+                {
+                    return Json(new { Message = "حدث خطأ أثناء العملية", Title = "خطأ", Status = "error" });
+                }
+            }
+            catch (Exception e)
+            {
+                return Json(new { Message = "حدث خطأ أثناء العملية", Title = "خطأ", Status = "error" });
+            }
+        }
+
+        // اضافة / حذف الدمغة للحركة
+        [HttpPost]
+        public ActionResult AddIncomeTax(int Id, decimal IncomeTaxValue)
+        {
+            try
+            {
+                var userid = User.Identity.GetUserId();
+                int res = obj.AddIncomeTax(Id, IncomeTaxValue, userid);
+
+                if (res > 0)
+                {
+                    return Json(new { Message = "تمت العملية بنجاح", Title = "نجاح", Status = "success" });
+                }
+                else
+                {
+                    return Json(new { Message = "حدث خطأ أثناء العملية", Title = "خطأ", Status = "error" });
+                }
+            }
+            catch (Exception e)
+            {
+                return Json(new { Message = "حدث خطأ أثناء العملية", Title = "خطأ", Status = "error" });
+            }
+        }
+
+        // تعديل بيانات الحركة
         public ActionResult Edit(int Id)
         {
             var trans = db.Transactions.Find(Id);
             ViewBag.TransactionId = Id;
 
-            string TransactionDate = trans.TransactionDate != null? trans.TransactionDate.Value.Date.ToString("dd/MM/yyyy"):"غير مدخل";
-            
+            //string TransactionDate = trans.TransactionDate != null ? trans.TransactionDate.Value.Date.ToString("dd/MM/yyyy") : "غير مدخل";
+            string TransactionDate = trans.TransactionDate != null ? trans.TransactionDate.Value.Date.ToShortDateString() : "غير مدخل";
+
             ViewBag.TransactionDate = TransactionDate;
-            ViewBag.Note = trans.Note != null? trans.Note :"غير مدخل";
-            ViewBag.CurrencyType = trans.CurrencyType.Name != null? trans.CurrencyType.Name : "غير مدخل";
-            ViewBag.ExchangeRate = trans.ExchangeRate != null? trans.ExchangeRate.ToString() : "غير مدخل";
-            ViewBag.Note = trans.Note != null ? trans.Note :"غير مدخل";
-            
+            ViewBag.Recipient = trans.Recipient;
+            ViewBag.Note = trans.Note != null ? trans.Note.Trim() : "غير مدخل";
+            ViewBag.CurrencyType = trans.CurrencyType.Name != null ? trans.CurrencyType.Name : "غير مدخل";
+            ViewBag.ExchangeRate = trans.ExchangeRate != null ? trans.ExchangeRate.ToString() : "غير مدخل";
+            ViewBag.Note = trans.Note != null ? trans.Note : "غير مدخل";
+
             return View(trans);
         }
 
+        // جلب البيانات لعرض تفاصيل الحركة
+        [HttpGet]
         public ActionResult getDetailData(int Id)
         {
-            List<TransactionViewMode> data = new List<TransactionViewMode>();
-            foreach (var item in db.TransactionDetails.Where(x => x.TransactionId == Id).ToList())
-            {
-                TransactionViewMode obj = new TransactionViewMode();
-
-                obj.id = item.Id;
-                obj.accTrreId = item.AccTreeId;
-                obj.balanceId = item.BalanceId?? item.BalanceId;
-                obj.balanceAccName = item.BalanceId != null?item.Balance.AccountTree.AccName : "";
-                obj.accName = item.AccountTree.AccName;
-                obj.credit = item.Credit;
-                obj.debit = item.Debit;
-                obj.transDate = item.Transaction.TransactionDate != null ? item.Transaction.TransactionDate.Value.ToShortDateString() : "غير مدخل";
-                obj.note = item.Transaction.Note != null ? item.Transaction.Note : "غير مدخل";
-
-                data.Add(obj);
-            }
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-        
-        public ActionResult Detail(int Id)
-        {
-            if (db.TransactionDetails.Any(x => x.AccTreeId == Id))
-            {
-                var data = new List<TransactionViewMode>();
-                var trans = db.TransactionDetails.Where(x => x.AccTreeId == Id).ToList();
-                var accTree = db.AccountTrees.Find(Id);
-
-                var dList = db.TransactionDetails.Where(x => x.AccTreeId == Id).Select(x => x.TransactionId).ToList();
-
-                var lastFivetrans = db.Transactions.Where(x => dList.Contains(x.Id)).OrderByDescending(s => s.Id).Take(5)
-                    .Select(x => new TransVM()
-                    {
-                        transactionId = x.Id,
-                        CurrencyType = x.CurrencyType.Name,
-                        Amount = x.Amount,
-                        DocumentType = x.DocumentType.Name,
-                        ExchangeRate = x.ExchangeRate,
-                        TransactionDate = x.TransactionDate
-                    })
-                    .ToList();
-
-                foreach (var item1 in dList)
-                {
-                    foreach (var item in db.TransactionDetails.Where(x => x.TransactionId == item1))
-                    {
-                        TransactionViewMode obj = new TransactionViewMode();
-
-                        obj.transactionId = Convert.ToInt32(item.TransactionId);
-                        obj.accName = item.AccountTree.AccName;
-                        obj.credit = item.Credit;
-                        obj.debit = item.Debit;
-                        obj.transDate = item.Transaction.TransactionDate != null ? item.Transaction.TransactionDate.Value.ToShortDateString() : "";
-                        obj.note = item.Transaction.Note != null ? item.Transaction.Note : "غير مدخل";
-
-                        data.Add(obj);
-                    }
-                }
-
-                var myObj = new AllViewMode()
-                {
-                    accTreeId = Id,
-                    accName = accTree.AccName,
-                    accLevel = "المستوي " + accTree.TheLevel.Value,
-                    accParent = accTree.AccParent > 0 ? db.AccountTrees.Find(accTree.AccParent).AccName : "هو حساب رئيسي",
-                    accCode = accTree.AccCode,
-                    accType = accTree.AccountType.Name,
-                    accNature = accTree.AccountNature.Name,
-                    accFinal = accTree.AccountFinal.Name,
-
-                    countOfCridet = trans.Where(x => x.Credit > 0).Count(),
-                    countOfDebit = trans.Where(x => x.Debit > 0).Count(),
-                    sumOfCridet = trans.Sum(x => x.Credit),
-                    sumOfDebit = trans.Sum(x => x.Debit),
-                    balance = trans.Sum(x => x.Credit) - trans.Sum(x => x.Debit),
-                    rowsCount = trans.Count(),
-
-                    transDetails = data,
-                    lastFivetrans = lastFivetrans,
-                };
-                return View(myObj);
-            }
-            else
-            {
-                var accTree = db.AccountTrees.Find(Id);
-                
-                AllViewMode myObj = new AllViewMode();
-
-                myObj.accTreeId = Id;
-                myObj.accName = accTree.AccName;
-                myObj.accLevel = "المستوي " + accTree.TheLevel.Value;
-                myObj.accParent = accTree.AccParent > 0 ? db.AccountTrees.Find(accTree.AccParent).AccName : "هو حساب رئيسي";
-                myObj.accCode = accTree.AccCode;
-                myObj.accType = accTree.AccountType.Name;
-                myObj.accNature = accTree.AccountNature.Name;
-                myObj.accFinal = accTree.AccountFinal.Name;
-
-                return View(myObj);
-            }
-        }
-        
-        public ActionResult getTransDetailsData(int Id)
-        {
-            List<TransactionViewMode> data = new List<TransactionViewMode>();
-            foreach (var item in db.TransactionDetails.Where(x => x.TransactionId == Id))
-            {
-                TransactionViewMode obj = new TransactionViewMode();
-
-                obj.id = Convert.ToInt32(item.Id);
-                obj.transactionId = Convert.ToInt32(item.TransactionId);
-                obj.accName = item.AccountTree.AccName;
-                obj.credit = item.Credit;
-                obj.debit = item.Debit;
-                obj.transDate = item.Transaction.TransactionDate != null ? item.Transaction.TransactionDate.Value.ToShortDateString() : "غير مدخل";
-                obj.note = item.Transaction.Note != null ? item.Transaction.Note : "غير مدخل";
-
-                data.Add(obj);
-            }
-
+            var data = obj.GetDetailsData(Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        // دي تقريبا لمن اضغط علي ايقونة الاستعلام بجيب بيانات تفاصيل الحركة من هنا ... مفترض نوحد الدالة تكون نفس الفوق دي
+        public ActionResult getTransDetailsData_NotUsed(int Id)
+        {
+            var data = obj.GetDetailsData(Id);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        // تعديل الحركة
         [HttpPost]
-        public ActionResult Update(List<TransactionViewMode> data)
+        public ActionResult Update(List<TransactionVM> data)
         {
-            try
+            var userid = User.Identity.GetUserId();
+            SharedClass sh = new SharedClass();
+            var first = data.FirstOrDefault();
+            var currentTransactionYear = first.transactionDate.Value.Year.ToString();
+            // var financialCycleId = sh.GetCurrentFinancialCycleId();// اذا السنة المالية مقفولة ما يعمل اي حاجه
+            //int FinancialCycleId = sh.GetFinancialCycleIdForSpecificDate(currentTransactionYear); // هنا دي مفترض تتحول حسب العام المالي للمستخدم
+            int FinancialCycleId = sh.GetUserCurrentFinancialCycleId(userid); // جلب العام المالي للمستخدم الحالي
+
+            int res = obj.UpdateData(data, userid, FinancialCycleId);
+
+            if (res == -1000)
             {
-                var userid = User.Identity.GetUserId();
-
-                if (data.Sum(x => x.credit) == data.Sum(x => x.debit))
-                {
-                    //Firstly update Transaction data 
-                    var transactionId = data.FirstOrDefault().transactionId;
-                    var currencyId = data.FirstOrDefault().currencyId;
-                    var transactionDate1 = data.FirstOrDefault().transactionDate;
-                    DateTime transactionDate = Convert.ToDateTime(transactionDate1);
-                    //var ExchangeRate = db.CurrencyDetails.FirstOrDefault(x => x.CurrencyTypeId == currencyId & x.Month == transactionDate.Month & x.Year == transactionDate.Year).ExchangeRate;
-                    var transObj = db.Transactions.Find(transactionId);
-                    var ExchangeRate = 1;
-
-                    transObj.DocumentTypeId = 1;
-                    transObj.CurrencyId = data.FirstOrDefault().currencyId;
-                    transObj.Amount = data.Sum(x => x.credit);
-                    transObj.TransactionDate = transactionDate;
-                    transObj.ExchangeRate = ExchangeRate;
-                    transObj.Note = data.FirstOrDefault().note;
-                    transObj.IsPosted = false;
-                    transObj.CreatedDate = DateTime.Today;
-                    transObj.UpdatingDate = DateTime.Today;
-                    transObj.UpdatedBy = userid;
-
-                    db.Entry(transObj).State = EntityState.Modified;
-                    db.SaveChanges();
-                    
-                    //update Transaction Details data 
-                    foreach (var item in db.TransactionDetails.Where(x => x.TransactionId == transactionId).ToList())
-                    {
-                        if (data.Any(x => x.accTrreId == item.AccTreeId))//update
-                        {
-                            var obj = data.FirstOrDefault(x => x.accTrreId == item.AccTreeId);
-                            item.AccTreeId = Convert.ToInt32(item.AccTreeId);
-                            item.BalanceId = obj.balanceId;
-                            item.Credit = obj.credit;
-                            item.Debit = obj.debit;
-                            item.TransactionId = Convert.ToInt32(transactionId);
-                            item.Note = obj.note;
-                            item.UpdatedBy = userid;
-                            item.UpdatingDate = DateTime.Today;
-
-                            decimal oldAmount = Convert.ToDecimal(item.Debit + item.Credit);
-                            int oldBalanceId = Convert.ToInt32(item.BalanceId);
-                            myExtention.UpdateActualExchange(oldBalanceId, oldAmount, 0, userid);
-
-                            decimal newAmount = Convert.ToDecimal(obj.debit + obj.credit);
-                            int newBalanceId = Convert.ToInt32(obj.balanceId);
-                            myExtention.UpdateActualExchange(newBalanceId, 0, newAmount, userid);
-
-                            db.Entry(item).State = EntityState.Modified;
-                            db.SaveChanges();
-                        }
-                        //اذا البند ده موجود في قاعدة البيانات و ما موجود في البيانات المدخلة يبقى المستخدم عمل ليهو حذف في الشاشة لكن فعليا ما اتحذف من قاعدة البيانات
-                        else if (!data.Any(x => x.accTrreId == item.AccTreeId)) //Delete
-                        {
-                            decimal oldAmount = Convert.ToDecimal(item.Debit + item.Credit);
-                            int oldBalanceId = Convert.ToInt32(item.BalanceId);
-                            myExtention.UpdateActualExchange(oldBalanceId, oldAmount, 0, userid);
-
-                            db.TransactionDetails.Remove(item);
-                            db.SaveChanges();
-                        }
-                    }
-
-                    //ده لو البند تم ادخاله في عملية التعديل ولم يكن موجود مسبقا
-                    foreach(var item in data)
-                    {
-                        if(!db.TransactionDetails.Any(x=>x.TransactionId == transactionId & x.AccTreeId == item.accTrreId))
-                        {
-                            TransactionDetail transDet = new TransactionDetail();
-                            transDet.AccTreeId = Convert.ToInt32(item.accTrreId);
-                            transDet.BalanceId = item.balanceId;
-                            transDet.Credit = item.credit;
-                            transDet.Debit = item.debit;
-                            transDet.TransactionId = Convert.ToInt32(transactionId);
-                            transDet.Note = item.note;
-                            transDet.CreatedBy = userid;
-                            transDet.CreationDate = DateTime.Today;
-
-                            decimal Amount = Convert.ToDecimal(item.debit + item.credit);
-                            int BalanceId = Convert.ToInt32(item.balanceId);
-                            myExtention.UpdateActualExchange(BalanceId, 0, Amount, userid);
-                            
-                            db.TransactionDetails.Add(transDet);
-                            db.SaveChanges();
-                        }
-                    }
-
-                    return Json(new { Message = "تمت عملية التعديل  بنجاح", Title = "نجاح", Status = "success" });
-                }
-                else
-                {
-                    return Json(new { Message = "يجب أن يتساوي الجانب المدين مع الجانب الدائن", Title = "خطأ", Status = "error" });
-                }
+                return Json(new { Message = "العام المالي مقفول او غير موجود‘ لا يمكن اجراء اي اعملية", Title = "خطأ", Status = "error" });
             }
-            catch (Exception e)
+
+            if (res > 0)
+            {
+                return Json(new { Message = "تمت عملية التعديل  بنجاح", Title = "نجاح", Status = "success" });
+            }
+            else if (res == 0)
+            {
+                return Json(new { Message = "يجب أن يتساوي الجانب المدين مع الجانب الدائن", Title = "خطأ", Status = "error" });
+            }
+            else // -1 means transaction NotFound
             {
                 return Json(new { Message = "حدث خطأ أثناء عملية التعديل", Title = "خطأ", Status = "error" });
             }
         }
-        
-        public ActionResult PrintCheck()
-        {
-            return View();
-        }
 
+        // حذف صف واحد في تفاصيل الحركة
+        // مستخدمة في سندات القيد - تقريبا في عملية التعديل قد احتاج احذف
         [HttpPost]
         public ActionResult DeleteTransactionDetails(int Id)
         {
-            try
-            {
-                var userid = User.Identity.GetUserId();
-
-                var transDetObj = db.TransactionDetails.Find(Id);
-                var balanceId = Convert.ToInt32(transDetObj.BalanceId);
-                var Credit = transDetObj.Credit;
-                var Debit = transDetObj.Debit;
-
-                int type = transDetObj.Credit > 0 ? 1 : 0;
-
-                var oldAmount = Convert.ToDecimal(Credit + Debit);
-                myExtention.UpdateActualExchange(balanceId, oldAmount, 0, type, userid);
-
-                db.TransactionDetails.Remove(transDetObj);
-                db.SaveChanges();
-
-                return Json(1, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception)
-            {
-                return Json(-1, JsonRequestBehavior.AllowGet);
-            }
-        }
-        
-        /*------------------------------------------------------------------------------------*/
-
-        public ActionResult printAllData()
-        {
-            List<TransactionViewMode> data = new List<TransactionViewMode>();
-            foreach (var item in db.TransactionDetails.ToList())
-            {
-                TransactionViewMode obj = new TransactionViewMode();
-
-                obj.transactionId = Convert.ToInt32(item.TransactionId);
-                obj.accName = item.AccountTree.AccName;
-                obj.credit = item.Credit;
-                obj.debit = item.Debit;
-                obj.transDate = item.Transaction.TransactionDate != null ? item.Transaction.TransactionDate.Value.ToShortDateString() : "";
-                obj.note = item.Transaction.Note != null ? item.Transaction.Note : "غير مدخل";
-
-                data.Add(obj);
-            }
-            ViewBag.SumOfAmount = data.Sum(x => x.credit);
-            ViewBag.SelectedDate = DateTime.Today.ToShortDateString();
-
-            return View(data);
+            var userid = User.Identity.GetUserId();
+            int res = obj.DeleteDetailsData(Id, userid);
+            return Json(res, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult printData(int Id)
+        // دي ما شغالة متاكد منها بس قد احتاج ارجع ليها
+        public ActionResult printDataByDatesOld(DateTime dateFrom, DateTime dateTo)
         {
-            List<TransactionViewMode> data = new List<TransactionViewMode>();
-            var dList = db.TransactionDetails.Where(x => x.AccTreeId == Id).Select(x=>x.TransactionId).ToList();
-            foreach (var item1 in dList)
-            {
-                foreach(var item in db.TransactionDetails.Where(x=>x.TransactionId == item1))
-                {
-                    TransactionViewMode obj = new TransactionViewMode();
-
-                    obj.transactionId = Convert.ToInt32(item.TransactionId);
-                    obj.accName = item.AccountTree.AccName;
-                    obj.credit = item.Credit;
-                    obj.debit = item.Debit;
-                    obj.transDate = item.Transaction.TransactionDate != null? item.Transaction.TransactionDate.Value.ToShortDateString():"";
-                    obj.note = item.Transaction.Note != null ? item.Transaction.Note : "غير مدخل";
-
-                    data.Add(obj);
-                }
-            }
-            ViewBag.SumOfAmount = data.Sum(x => x.credit);
-            ViewBag.SelectedDate = DateTime.Today.ToShortDateString();
-
-            return View(data);
-        }
-        
-        public ActionResult printTransData(int transId)
-        {
-            List<TransactionViewMode> data = new List<TransactionViewMode>();
-            foreach (var item1 in db.TransactionDetails.Where(x => x.TransactionId == transId).ToList())
-            {
-                foreach (var item in db.TransactionDetails.Where(x => x.TransactionId == item1.TransactionId))
-                {
-                    TransactionViewMode obj = new TransactionViewMode();
-
-                    obj.transactionId = Convert.ToInt32(item.TransactionId);
-                    obj.accName = item.AccountTree.AccName;
-                    obj.credit = item.Credit;
-                    obj.debit = item.Debit;
-                    obj.transDate = item.Transaction.TransactionDate != null ? item.Transaction.TransactionDate.Value.ToShortDateString() : "";
-                    obj.note = item.Transaction.Note != null ? item.Transaction.Note : "غير مدخل";
-
-                    data.Add(obj);
-                }
-            }
-            ViewBag.SumOfAmount = data.Sum(x => x.credit);
-            ViewBag.SelectedDate = DateTime.Today.ToShortDateString();
-
-            return View(data);
-        }
-        
-        public ActionResult printDatas(DateTime myDate)
-        {
-            List<TransactionViewMode> data = new List<TransactionViewMode>();
-            foreach (var item1 in db.Transactions.ToList())
-            {
-                if(Convert.ToDateTime(item1.TransactionDate).Date == myDate.Date)
-                {
-                    foreach (var item in db.TransactionDetails.Where(x => x.TransactionId == item1.Id))
-                    {
-                        TransactionViewMode obj = new TransactionViewMode();
-
-                        obj.transactionId = Convert.ToInt32(item.TransactionId);
-                        obj.accName = item.AccountTree.AccName;
-                        obj.credit = item.Credit;
-                        obj.debit = item.Debit;
-                        obj.transactionDate = item.Transaction.TransactionDate;
-                        obj.note = item.Transaction.Note != null ? item.Transaction.Note : "غير مدخل";
-                        
-                        data.Add(obj);
-                    }
-                }
-            }
-            ViewBag.SumOfAmount = data.Sum(x => x.credit);
-            ViewBag.SelectedDate = myDate.ToShortDateString();
-
-            return View(data);
-        }
-
-        public ActionResult printLedger(int Id)
-        {
-            List<TransactionViewMode> data = new List<TransactionViewMode>();
-            string AccName = db.AccountTrees.Find(Id).AccName;
-            ViewBag.AccName = AccName;
-
-            var dList = db.TransactionDetails.Where(x => x.AccTreeId == Id).Select(x => x.TransactionId).ToList();
-            foreach (var item1 in dList)
-            {
-                foreach (var item in db.TransactionDetails.Where(x => x.TransactionId == item1 & x.AccTreeId != Id))
-                {
-                    TransactionViewMode obj = new TransactionViewMode();
-
-                    obj.transactionId = Convert.ToInt32(item.TransactionId);
-                    obj.accName = item.AccountTree.AccName;
-                    obj.credit = item.Credit;
-                    obj.debit = item.Debit;
-                    obj.transDate = item.Transaction.TransactionDate != null ? item.Transaction.TransactionDate.Value.ToShortDateString() : "";
-                    obj.note = item.Transaction.Note != null ? item.Transaction.Note : "غير مدخل";
-
-                    data.Add(obj);
-                }
-            }
-            ViewBag.SumOfAmount = data.Sum(x => x.credit);
-            ViewBag.SelectedDate = DateTime.Today.ToShortDateString();
-
-            return View(data);
-        }
-
-        public ActionResult printOrnik17()
-        {
-            //List<TransactionViewMode> data = new List<TransactionViewMode>();
-            //string AccName = db.AccountTrees.Find(Id).AccName;
-            //ViewBag.AccName = AccName;
-
-            //var dList = db.TransactionDetails.Where(x => x.AccTreeId == Id).Select(x => x.TransactionId).ToList();
-            //foreach (var item1 in dList)
-            //{
-            //    foreach (var item in db.TransactionDetails.Where(x => x.TransactionId == item1 & x.AccTreeId != Id))
-            //    {
-            //        TransactionViewMode obj = new TransactionViewMode();
-
-            //        obj.transactionId = Convert.ToInt32(item.TransactionId);
-            //        obj.accName = item.AccountTree.AccName;
-            //        obj.credit = item.Credit;
-            //        obj.debit = item.Debit;
-            //        obj.transDate = item.Transaction.TransactionDate != null ? item.Transaction.TransactionDate.Value.ToShortDateString() : "";
-            //        obj.note = item.Transaction.Note != null ? item.Transaction.Note : "غير مدخل";
-
-            //        data.Add(obj);
-            //    }
-            //}
-            //ViewBag.SumOfAmount = data.Sum(x => x.credit);
-            //ViewBag.SelectedDate = DateTime.Today.ToShortDateString();
-
-            return View();
-        }
-
-        public ActionResult printDataByDates(DateTime dateFrom, DateTime dateTo)
-        {
-            List<TransactionViewMode> data = new List<TransactionViewMode>();
+            List<TransactionVM> data = new List<TransactionVM>();
             var dList = db.TransactionDetails.Where(x => DbFunctions.TruncateTime(x.Transaction.TransactionDate) >= dateFrom & DbFunctions.TruncateTime(x.Transaction.TransactionDate) <= dateTo).ToList();
-            foreach (var item in dList)
+
+            foreach (var item in dList.OrderBy(x => x.Transaction.TransactionDate))
             {
-                //if (Convert.ToDateTime(item1.TransactionDate).Date == myDate.Date)
-                //{
-                //    foreach (var item in db.TransactionDetails.Where(x => x.TransactionId == item1.Id))
-                //    {
-                TransactionViewMode obj = new TransactionViewMode();
+                TransactionVM obj = new TransactionVM();
 
                 obj.transactionId = Convert.ToInt32(item.TransactionId);
                 obj.accName = item.AccountTree.AccName;
-                obj.credit = item.Credit;
-                obj.debit = item.Debit;
                 obj.transactionDate = item.Transaction.TransactionDate;
                 obj.note = item.Transaction.Note != null ? item.Transaction.Note : "غير مدخل";
 
+                if (item.Transaction.HasTax == true & item.Transaction.HasAddedTax == true) // ضريبة 1% + ضريبة 17% معا
+                {
+                    /*
+                    TransactionId = 22
+                    amount = 2400000
+                    tax = 24000
+                    addTax = 408000
+                    itemAmount = amount - tax + addtax
+                    itemAmount = 2400000 - 24000 + 408000
+                    */
+                    if (item.BalanceId == null)
+                    {
+                        obj.credit = item.Credit;
+                        obj.debit = item.Debit + (item.Debit * (decimal)0.17);
+                    }
+                    else
+                    {
+                        obj.debit = item.Debit + (item.Debit * (decimal)0.17);
+                        obj.credit = item.Credit + (item.Credit * (decimal)0.17) - (item.Credit * (decimal)0.01);
+                    }
+                }
+                else if (item.Transaction.HasTax == true & item.Transaction.HasAddedTax != true) // ضريبة 1% فقط
+                {
+                    /*
+                    TransactionId = 22
+                    amount = 2400000
+                    tax = 24000
+                    addTax = 0
+                    itemAmount = amount - tax + addtax
+                    itemAmount = 2400000 - 24000 + 0
+                    */
+                    if (item.BalanceId == null)
+                    {
+                        obj.credit = item.Credit;
+                        obj.debit = item.Debit;
+                    }
+                    else
+                    {
+                        obj.credit = item.Credit - (item.Credit * (decimal)0.01);
+                        obj.debit = item.Debit;
+                    }
+                }
+                else if (item.Transaction.HasTax != true & item.Transaction.HasAddedTax == true) // ضريبة 17% فقط
+                {
+                    /*
+                    TransactionId = 22
+                    amount = 2400000
+                    tax = 0
+                    addTax = 408000
+                    itemAmount = amount - tax + addtax
+                    itemAmount = 2400000 - 0 + 408000
+                    */
+                    if (item.BalanceId == null)
+                    {
+                        obj.credit = item.Credit + (item.Credit * (decimal)0.17);
+                        obj.debit = item.Debit;
+                    }
+                    else
+                    {
+                        obj.credit = item.Credit + (item.Credit * (decimal)0.17);
+                        obj.debit = item.Debit + (item.Debit * (decimal)0.17);
+                    }
+                }
+                else
+                {
+                    //obj.credit = item.Credit;
+                    //obj.debit = item.Debit;
+
+                    if (item.BalanceId == null)
+                    {
+                        obj.credit = item.Credit;
+                        obj.debit = item.Debit;
+                    }
+                    else
+                    {
+                        obj.credit = item.Credit;
+                        obj.debit = item.Debit - item.Credit;
+                    }
+
+                }
+
                 data.Add(obj);
-                //}
-                // }
             }
+
             ViewBag.SumOfAmount = data.Sum(x => x.credit);
             ViewBag.dateFrom = dateFrom.ToShortDateString();
             ViewBag.dateTo = dateTo.ToShortDateString();
 
             return View(data);
         }
-        
-        public ActionResult printLedgerByDates(int Id, DateTime dateFrom, DateTime dateTo)
+
+        public ActionResult getTransactionBanks(int id)
         {
-            List<TransactionViewMode> data = new List<TransactionViewMode>();
-            string AccName = db.AccountTrees.Find(Id).AccName;
-            ViewBag.AccName = AccName;
-
-            var dList = db.TransactionDetails.Where(x => x.AccTreeId == Id & DbFunctions.TruncateTime(x.Transaction.TransactionDate) >= dateFrom & DbFunctions.TruncateTime(x.Transaction.TransactionDate) <= dateTo)
-                .Select(x => x.TransactionId).ToList();
-            foreach (var item1 in dList)
+            if (id <= 0)
             {
-                foreach (var item in db.TransactionDetails.Where(x => x.TransactionId == item1 & x.AccTreeId != Id))
+                return Json(new { Message = "حدث خطأ أثناء عملية التعديل", Title = "خطأ", Status = "error" });
+            }
+
+            SharedClass sh = new SharedClass();
+            var result = sh.GetTransactionBankAccounts(id);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult getTransactionRecipients(int Id)
+        {
+            if (Id <= 0)
+            {
+                return Json(new { Message = "حدث خطأ أثناء عملية التعديل", Title = "خطأ", Status = "error" }, JsonRequestBehavior.AllowGet);
+            }
+
+            SharedClass sh = new SharedClass();
+            var transactionObj = db.Transactions.Find(Id);
+
+            // قائمة المستلمين الأصلية
+            var transactionRecipients = db.TransactionRecipients
+                .Where(q => q.TransactionId == Id)
+                .Select(p => new
                 {
-                    TransactionViewMode obj = new TransactionViewMode();
+                    TransactionId = Id,
+                    Id = p.Id,
+                    RecipientName = p.RecipientName,
+                    BankName = p.BankName,
+                    BranchName = p.BranchName,
+                    AccountNumber = p.AccountNumber,
+                    BankAccountId = p.BankAccountId ?? 0,
+                    Amount = (decimal)p.Amount
+                })
+                .ToList();
 
-                    obj.transactionId = Convert.ToInt32(item.TransactionId);
-                    obj.accName = item.AccountTree.AccName;
-                    obj.credit = item.Credit;
-                    obj.debit = item.Debit;
-                    obj.transDate = item.Transaction.TransactionDate != null ? item.Transaction.TransactionDate.Value.ToShortDateString() : "";
-                    obj.note = item.Transaction.Note != null ? item.Transaction.Note : "غير مدخل";
+            var data = db.TransactionDetails.Where(q => q.TransactionId == Id && q.Credit > 0).ToList();
 
-                    data.Add(obj);
+            foreach (var item in data)
+            {
+                int bankId = sh.IsItBankAccount(Id, item.Credit);
+                if (bankId > 0)
+                {
+                    var bankAccountObj = db.BankAccounts.Find(bankId);
+                    if (transactionRecipients.Any(q => q.BankAccountId == bankId))
+                    {
+                       var Aomunt = transactionRecipients.Where(q => q.BankAccountId == bankId).Sum(q=>q.Amount);
+
+                        transactionRecipients.Add(
+                            new
+                            {
+                                TransactionId = Id,
+                                Id = 0,
+                                RecipientName = "الكشف المرفق",
+                                BankName = bankAccountObj.BankLabel,
+                                BranchName = "",
+                                AccountNumber = "",
+                                BankAccountId = bankId,
+                                Amount = item.Credit - Aomunt?? 0
+                            });
+                    }
+                    else
+                    {
+                        transactionRecipients.Add(
+                            new
+                            {
+                                TransactionId = Id,
+                                Id = 0,
+                                RecipientName = "الكشف المرفق",
+                                BankName = bankAccountObj.BankLabel,
+                                BranchName = "",
+                                AccountNumber = "",
+                                BankAccountId = bankId,
+                                Amount = item.Credit ?? 0
+                            });
+                    }
                 }
             }
-            ViewBag.SumOfAmount = data.Sum(x => x.credit);
-            ViewBag.SelectedDate = DateTime.Today.ToShortDateString();
-            ViewBag.dateFrom = dateFrom.ToShortDateString();
-            ViewBag.dateTo = dateTo.ToShortDateString();
-            return View(data);
+
+            return Json(transactionRecipients.Where(q=>q.Amount > 0), JsonRequestBehavior.AllowGet);
         }
-        
+
+        // دي لمن يختار المستلم من القائمة ويعمل حفظ
+        [HttpPost]
+        public ActionResult SaveTransactionRecipients(int id, int recipientNameId, int recipientBankId, decimal amount)
+        {
+            try
+            {
+                if (id > 0 && recipientNameId > 0 && recipientBankId > 0 && amount > 0)
+                {
+                    var recipient = db.Recipients.Find(recipientNameId);
+                    var AccountSubId = db.AccountSubs.FirstOrDefault(q => q.AccTreeId == recipientBankId).Id;
+                    var bankAccountId = db.BankAccounts.FirstOrDefault(q => q.AccountSubId == AccountSubId).Id;
+                    var transactionRecipients = db.TransactionRecipients.Where(q => q.TransactionId == id).ToList();
+
+                    if (transactionRecipients.Any(q => q.RecipientName == recipient.RecipientName && q.Amount == amount))
+                    {
+                        return Json(new { Message = "هذا المستلم تم تسجيله مسبقا", Title = "خطأ", Status = "error" });
+                    }
+
+                    TransactionRecipient transactionRecipient = new TransactionRecipient();
+
+                    transactionRecipient.TransactionId = id;
+                    transactionRecipient.BankAccountId = bankAccountId;
+                    transactionRecipient.RecipientName = recipient.RecipientName;
+                    transactionRecipient.BankName = recipient.BankName;
+                    transactionRecipient.BranchName = recipient.BranchName;
+                    transactionRecipient.AccountNumber = recipient.AccountNumber;
+                    transactionRecipient.Amount = amount;
+
+                    db.TransactionRecipients.Add(transactionRecipient);
+                    db.SaveChanges();
+
+                    var redirectToUrl = Url.Action("printRecipientBankLetter", "Reports", new { Id = transactionRecipient.Id });
+
+                    //return RedirectToAction("printRecipientBankLetter", "Reports", new { Id = transactionRecipient.Id });
+                    return Json(new { redirectToUrl });
+                }
+
+                return Json(new { Message = "حدث خطأ أثناء عملية الاضافة, الرجاء مراجعة البيانات", Title = "خطأ", Status = "error" });
+            }
+            catch
+            {
+                return Json(new { Message = "حدث خطأ أثناء عملية الاضافة(Exception)", Title = "خطأ", Status = "error" });
+            }
+        }
+
+
+        // دي لمن يضغط علي ذر طباعة مباشرة
+        [HttpGet]
+        public ActionResult SaveTransactionRecipients(int id, string recipientName, string bankName, decimal amount)
+        {
+            try
+            {
+                if (id > 0 && !string.IsNullOrEmpty(recipientName) && !string.IsNullOrEmpty(bankName) && amount > 0)
+                {
+                    var recipient = db.Recipients.FirstOrDefault(q => q.RecipientName == recipientName && q.BankName == bankName);
+
+
+                    var AccountTreeObj = db.AccountTrees.FirstOrDefault(q => q.AccName == bankName
+                    );
+
+                    var AccountSubId = db.AccountSubs.FirstOrDefault(q => q.AccTreeId == AccountTreeObj.Id).Id;
+                    var bankAccountId = db.BankAccounts.FirstOrDefault(q => q.AccountSubId == AccountSubId).Id;
+                    var transactionRecipients = db.TransactionRecipients.Where(q => q.TransactionId == id).ToList();
+
+                    if (transactionRecipients.Any(q => q.RecipientName == recipient.RecipientName))
+                    {
+                        return Json(new { Message = "هذا المستلم تم تسجيله مسبقا", Title = "خطأ", Status = "error" });
+                    }
+
+                    TransactionRecipient transactionRecipient = new TransactionRecipient();
+
+                    transactionRecipient.TransactionId = id;
+                    transactionRecipient.BankAccountId = bankAccountId;
+                    transactionRecipient.RecipientName = recipientName;
+                    transactionRecipient.BankName = bankName;
+                    transactionRecipient.BranchName = recipient.BranchName;
+                    transactionRecipient.AccountNumber = recipient.AccountNumber;
+                    transactionRecipient.Amount = amount;
+
+                    db.TransactionRecipients.Add(transactionRecipient);
+                    db.SaveChanges();
+
+                    var redirectToUrl = Url.Action("printRecipientBankLetter", "Reports", new { Id = transactionRecipient.Id });
+
+                    //return RedirectToAction("printRecipientBankLetter", "Reports", new { Id = transactionRecipient.Id });
+                    return Json(new { redirectToUrl });
+                }
+
+                return Json(new { Message = "حدث خطأ أثناء عملية الاضافة, الرجاء مراجعة البيانات", Title = "خطأ", Status = "error" });
+            }
+            catch
+            {
+                return Json(new { Message = "حدث خطأ أثناء عملية الاضافة(Exception)", Title = "خطأ", Status = "error" });
+            }
+        }
     }
 }

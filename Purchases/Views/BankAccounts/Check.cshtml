@@ -3,38 +3,13 @@
 }
 
 @section content{
-
-    <style>
-        .success{
-            display: block;
-            background-color: #00a65a;
-            color: white;
-            width: 80px;
-            height: 25px;
-            text-align: center;
-            border-radius: 6px;
-            font-size: 18px;
-        }
-
-        .error{
-            display: block;
-            background-color: #d73925;
-            color: white;
-            width: 80px;
-            height: 25px;
-            text-align: center;
-            border-radius: 6px;
-            font-size: 18px;
-        }
-    </style>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <div class="grad"></div>
-
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                شيكات بنك / 
+                شيكات بنك /
                 <span id="bankName">@ViewBag.bankName</span>
                 <span class="hidden" id="bankId">@ViewBag.bankId</span>
             </h1>
@@ -42,9 +17,7 @@
                 <li><a href="#"><i class="fa fa-home"></i>النظام المحاسبي </a></li>
                 <li class="active"> دليل البنوك</li>
             </ol>
-
         </section>
-
 
         <section class="content">
             <div class="row">
@@ -60,8 +33,6 @@
                 </div><!-- /.col -->
             </div><!-- /.row -->
         </section>
-
-
     </div><!-- /.content-wrapper -->
 
     <div class="example-modal">
@@ -152,13 +123,13 @@
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
     </div>
-    
-    }
+
+}
 
 @section scripts{
 
     <script>
-    var dataTable;
+        var dataTable;
         $(function () {
             function loadData() {
                 var bankId = $('#bankId').text();
@@ -206,7 +177,7 @@
                             "render": function (data) {
                                 return '<div class="btn-opreation">'
                                              + '<button class="btn btn-success openEditModal"><i class="fa fa-edit"></i></button> '
-                                             + '<button class="btn btn-danger btncheck " onClick="Delete('+data+')"><i class="fa fa-trash"></i></button> '
+                                             + '<button class="btn btn-danger btncheck " onClick="Delete(' + data + ')"><i class="fa fa-trash"></i></button> '
                                      + '</div> ';
 
                             }
@@ -217,44 +188,51 @@
             }
             loadData();
 
-            function select2list(selector, url, placeholder) {
-                $(selector).select2({
-                    language: { inputTooShort: function () { return 'enter 1 letter at less'; } },
-                    ajax: {
-                        url: url,
-                        dataType: 'json',
-                        delay: 100,
-                        data: function (params) {
-                            return {
-                                q: params.term,
-                                page: params.page
-                            };
-                        },
-                        processResults: function (data, params) {
-                            params.page = params.page || 1;
-                            return {
-                                results: data,
-                                pagination: {
-                                    more: ((data.total_count) > (params.page * 20))
-                                }
-                            };
-                        },
-                        cache: true
-                    },
-                    placeholder: placeholder,
-                    minimumInputLength: 1,
-                });
+            $('#add-form').bootstrapValidator({
+                onSuccess: function (e) {
+                    save();
+                    e.preventDefault();
 
-            };
-            select2list(".currency", "/BankAccounts/GetCurrencyType", " نوع عملة الحساب البنكي ");
-            select2list(".account-type", "/BankAccounts/GetBankAccountType", " نوع الحساب البنكي  ");
-            //select2list(".name", "/BankAccounts/GetBankName", "  الحساب البنكي  ");
+                },
+                submitButtons: 'button[type="submit"]',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                    invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                    validating: 'fa fa-refresh fa-spin success-feedback-icons'
+                },
+                fields: {
+                    //name: {
+                    //    validators: {
+                    //        notEmpty: {
+                    //            message: 'يجب الا يكون حقل اسم الادراة  فارغ'
+                    //        }
+                    //    }
+                    //}
+
+                }
+            });
+        });//End Document Ready
+
+        //Open Edit Modal
+        $("#tbx").on('click', '.openEditModal', function () {
+            // get the current row
+            var currentRow = $(this).closest("tr");
+            console.clear();
+            console.log();
+
+            $('#CheckId').text(currentRow.find("td:eq(0)").text());
+            $('#BooKNumber').val(currentRow.find("td:eq(1)").text());
+            $('#StartFromNumber').val(currentRow.find("td:eq(2)").text()); // get current row st 2TD value
+            $('#EndToNumber').val(currentRow.find("td:eq(3)").text()); // get current row st 2TD value
+            $('#IsFinished').val(currentRow.find("td:eq(4)").text());
+            $('#add-modal').modal('show');
+        });
 
 
-
-        $('#add-form').bootstrapValidator({
+        //Validation And Save Edit Data
+        $('#edit-form').bootstrapValidator({
             onSuccess: function (e) {
-                save();
+                edit();
                 e.preventDefault();
 
             },
@@ -265,102 +243,54 @@
                 validating: 'fa fa-refresh fa-spin success-feedback-icons'
             },
             fields: {
-                //name: {
-                //    validators: {
-                //        notEmpty: {
-                //            message: 'يجب الا يكون حقل اسم الادراة  فارغ'
-                //        }
-                //    }
-                //}
-
-            }
-        });
-
-
-
-
-
-   });//End Document Ready
-
-    //Open Edit Modal
-        $("#tbx").on('click', '.openEditModal', function () {
-        // get the current row
-        var currentRow = $(this).closest("tr");
-        console.clear();
-        console.log();
-        
-        $('#CheckId').text(currentRow.find("td:eq(0)").text());
-        $('#BooKNumber').val(currentRow.find("td:eq(1)").text());
-        $('#StartFromNumber').val(currentRow.find("td:eq(2)").text()); // get current row st 2TD value
-        $('#EndToNumber').val(currentRow.find("td:eq(3)").text()); // get current row st 2TD value
-        $('#IsFinished').val(currentRow.find("td:eq(4)").text());
-        $('#add-modal').modal('show');
-    });
-
-
-    //Validation And Save Edit Data
-    $('#edit-form').bootstrapValidator({
-        onSuccess: function (e) {
-            edit();
-            e.preventDefault();
-
-        },
-        submitButtons: 'button[type="submit"]',
-        feedbackIcons: {
-            valid: 'glyphicon glyphicon-ok success-feedback-icons',
-            invalid: 'glyphicon glyphicon-remove error-feedback-icons',
-            validating: 'fa fa-refresh fa-spin success-feedback-icons'
-        },
-        fields: {
-            edname: {
-                validators: {
-                    notEmpty: {
-                        message: 'يجب الا يكون حقل اسم الادارة  فارغ'
+                edname: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل اسم الادارة  فارغ'
+                        }
                     }
                 }
-            }
-
-        }
-    });
-
-    function edit() {
-        var IsFinished = false;
-
-        if ($('.IsFinished').is(':checked')) {
-            IsFinished = true;
-        } else {
-            IsFinished = false;
-        }
-
-
-        var ob = {
-            "Id": $('#ed-id').val(),
-            "Name": $('#ed-name').val(),
-            "StructureCount": $('#edstructureCount').val(),
-            "IsFinished": IsFinished
-        };
-
-        $.ajax({
-            url: "@Url.Action("Edit", "Departments")",
-            type: "POST",
-            data: JSON.stringify(ob),
-            contentType: "application/json charset=utf-8",
-            dataType: "json",
-            error: function (response) {
-                //toastr[response.Status](response.Message, response.Title);
-            },
-            success: function (response) {
-                toastr[response.Status](response.Message, response.Title);
-                $('#edit-form').bootstrapValidator('resetForm', true);
-                $('#edit-modal').modal('hide');
-                dataTable.ajax.reload();
-
 
             }
         });
-    };
 
-        
+        function edit() {
+            var IsFinished = false;
+
+            if ($('.IsFinished').is(':checked')) {
+                IsFinished = true;
+            } else {
+                IsFinished = false;
+            }
+
+
+            var ob = {
+                "Id": $('#ed-id').val(),
+                "Name": $('#ed-name').val(),
+                "StructureCount": $('#edstructureCount').val(),
+                "IsFinished": IsFinished
+            };
+
+            $.ajax({
+                url: "@Url.Action("Edit", "Departments")",
+                type: "POST",
+                data: JSON.stringify(ob),
+                contentType: "application/json charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    //toastr[response.Status](response.Message, response.Title);
+                },
+                success: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    $('#edit-form').bootstrapValidator('resetForm', true);
+                    $('#edit-modal').modal('hide');
+                    dataTable.ajax.reload();
+
+
+                }
+            });
+        };
+
         function save() {
             var IsFinished = 0;
 
@@ -378,26 +308,25 @@
                 "EndToNumber": $('.EndToNumber').val(),
                 "IsFinished": IsFinished,
             };
-            console.clear();
-            console.log(ob);
+
             $.ajax({
                 url: "@Url.Action("CreateOrUpdate", "BankAccounts")",
                 type: "POST",
-            data: JSON.stringify(ob),
-            contentType: "application/json charset=utf-8",
-            dataType: "json",
-            error: function (response) {
-                //toastr[response.Status](response.Message, response.Title);
-            },
-            success: function (response) {
-                toastr[response.Status](response.Message, response.Title);
+                data: JSON.stringify(ob),
+                contentType: "application/json charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    //toastr[response.Status](response.Message, response.Title);
+                },
+                success: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
 
-                $('#add-form').bootstrapValidator('resetForm', true);
-                $('#add-modal').modal('hide');
-                //$('select').val(null).trigger('change');
-                dataTable.ajax.reload();
-            }
-        });
+                    $('#add-form').bootstrapValidator('resetForm', true);
+                    $('#add-modal').modal('hide');
+                    //$('select').val(null).trigger('change');
+                    dataTable.ajax.reload();
+                }
+            });
         }
 
         function Delete(Id) {
@@ -417,7 +346,7 @@
                     //$('select').val(null).trigger('change');
                     dataTable.ajax.reload();
                 }
-        });
+            });
         }
     </script>
 

@@ -1,0 +1,193 @@
+﻿@model IEnumerable<Purchases.Models.ViewModel.BalanceVM>
+
+@{
+    ViewBag.Title = "PrintInvoice";
+    Layout = "~/Views/Shared/_LayoutPrint.cshtml";
+
+    decimal sumOfCredit = @Convert.ToDecimal(@Model.Sum(x => x.credit));
+    decimal sumOfDebit = @Convert.ToDecimal(@Model.Sum(x => x.debit));
+    // حساب صافي الحساب بيكون علي حسب طبيعة الحساب ===> اذا كانت طبيعة الحساب دائن (1) يبقي صافي الحساب = اجمالي الدائن - اجمالي المدين
+    decimal clearAmount = ViewBag.AccountNatureId == 1 ? sumOfCredit - sumOfDebit : sumOfDebit - sumOfCredit;
+}
+
+<section class="invoiceCupps">
+    <div class="invoice-Cupps-header">
+        <div class="image-L">
+            <img src="~/Temp/Image/WhiteLogo.png" height="100" />
+        </div>
+
+        <div class="text-center text-word">
+            <h6>شركة مطارات السودان المحدودة</h6>
+            <h6>الادارة العامة للشؤون المالية والمحاسبية</h6>
+            <h6>إدارة الحسابات</h6>
+
+        </div>
+
+        <div class="image-R">
+            <img src="~/Temp/Image/WhiteLogo.png" class="image-L" height="100" />
+        </div>
+
+    </div>
+    @{
+        if (ViewBag.DateFrom != null && ViewBag.DateTo != null)
+        {
+            <div class="row" dir="rtl">
+                <div class="col-md-12">
+                    <label class="h-mr">من تاريخ:  <span class="font-normal"> @ViewBag.DateFrom</span></label>
+                    <label class="h-mr">الى تاريخ:  <span class="font-normal">@ViewBag.DateTo</span></label>
+                </div>
+            </div>
+        }
+    }
+
+    <h2 class="text-center"><u>دفتر الأستاذ</u></h2>
+
+    <div class="invoice-Cupps-Body" dir="rtl">
+        <div class="arline-header">
+            @{
+                if (ViewBag.bankName != "")
+                {
+                    <h2 class="text-center"><u> حـ / @ViewBag.AccName (@ViewBag.bankName)</u></h2>
+                }
+                else
+                {
+                    <h2 class="text-center"><u> حـ / @ViewBag.AccName</u></h2>
+                }
+            }
+        </div>
+    </div>
+
+
+    <div class="invoice-Cupps-Body" dir="rtl">
+        <div class="arline-header">
+            <div class="row m-2">
+                <div class="col-md-12" style="display:flex; justify-content:space-between; padding: 0px 10px;">
+                    <label>تاريخ الطباعة:</label>
+                    <label>@DateTime.Today.ToShortDateString()</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center invoice-Cupps-details" dir="rtl" style="width:100%;margin-bottom:40px;">
+        <table class="cupps-table-header">
+            <thead>
+                <tr>
+                    <th colspan="3">منه</th>
+                    <th colspan="3">له</th>
+                </tr>
+                <tr>
+                    <th>
+                        المبلغ
+                    </th>
+                    <th>
+                        البيان
+                    </th>
+                    <th>
+                        التاريخ
+                    </th>
+                    <th>
+                        المبلغ
+                    </th>
+                    <th>
+                        البيان
+                    </th>
+                    <th>
+                        التاريخ
+                    </th>
+                </tr>
+
+            </thead>
+            <tbody id="myTBodey">
+                @{
+                    foreach (var item in Model.OrderByDescending(q => q.credit > 0).ThenBy(q => q.transactionDate))
+                    {
+                        <tr>
+                            @{
+                                if (Convert.ToDecimal(item.debit) > 0) // credit
+                                {
+                                    <td class="numberFormat">@item.debit</td>
+                                    @*<td class="text-right" style="padding-right:20px;"> حــ/ @item.accName</td>*@
+                                    <td class="text-right" style="padding-right:5px;"> @item.note</td>
+                                    <td style="width: 120px;">@item.transactionDateStr</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                }
+                                else // debit
+                                {
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="numberFormat">@item.credit</td>
+                                    @*<td class="text-right" style="padding-right:60px;"> حــ/ @item.accName</td>*@
+                                    <td class="text-right" style="padding-right:5px;">@item.note</td>
+                                    <td style="width: 120px;">@item.transactionDateStr</td>
+                                }
+                            }
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
+
+
+        <div class="footer">
+
+            <div>
+                <label class="titel">إجمالي المبلغ (مدين)</label>
+                <label class="value numberFormat">@Model.Sum(x => x.debit)</label>
+            </div>
+            <div>
+                <label class="titel">إجمالي المبلغ (دائن)</label>
+                <label class="value numberFormat">@ViewBag.SumOfAmount</label>
+            </div>
+            <div style="border-top: 2px solid black; padding-top: 10px; margin-top: 5px;">
+                <label class="titel">صافي الحساب</label>
+                <label class="value numberFormat">@clearAmount</label>
+            </div>
+            <div style="clear:both;"></div>
+        </div>
+    </div>
+</section>
+
+@section scripts{
+    <script src="~/Temp/plugins/jquery/jquery.min.js"></script>
+
+    <script>
+        window.addEventListener("load", window.print());
+
+        $('.numberFormat').each(function () {
+            var item = $(this).text();
+
+            var num = formatNumber(item.toString());
+
+            $(this).text(num);
+        });
+
+        function round(value, exp) {
+            if (typeof exp === 'undefined' || +exp === 0)
+                return Math.round(value);
+
+            value = +value;
+            exp = +exp;
+
+            if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0))
+                return NaN;
+
+            // Shift
+            value = value.toString().split('e');
+            value = Math.round(+(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp)));
+
+            // Shift back
+            value = value.toString().split('e');
+            return +(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp));
+        }
+
+        $('#myTBodey').on('click', '#posting', function () {
+            console.log('-------------------------------');
+        });
+
+    </script>
+}

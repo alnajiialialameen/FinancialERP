@@ -40,7 +40,12 @@
         padding: 0 10px;
         transform: scale3d(1.2, 1.2, 1.2);
     }
-
+    .float.one{   
+        margin-left: 370px;
+        display: inline-block;
+        background-color: #0094ff;
+        color: #FFF;
+    }
 
 </style>
 
@@ -187,11 +192,11 @@
 
         <div class="buttons">
 
-            @*<div class="justify-content">
-                <a href="#" target="_blank" class="float one" >
-                    <i class="fas fa-file-export my-float" title="طباعة قيد اليومية" style='font-size:20px'></i>
+            <div class="justify-content">
+                <a href="/Transactions/printAccountStatement/@Model.accTreeId" target="_blank" class="float one" >
+                    <i class="fas fa-file-archive my-float" title="طباعة كشف حساب" style='font-size:20px'></i>
                 </a>
-            </div>*@
+            </div>
             <div class="justify-content">
                 <a href="/Transactions/printLedger/@Model.accTreeId" target="_blank" class="float two" >
                     <i class="fas fa-receipt my-float" title="طباعة دفتر الاستاذ" style='font-size:20px'></i>

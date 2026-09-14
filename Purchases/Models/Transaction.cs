@@ -19,6 +19,7 @@ namespace Purchases.Models
         {
             this.PrintChecks = new HashSet<PrintCheck>();
             this.TransactionDetails = new HashSet<TransactionDetail>();
+            this.TransactionRecipients = new HashSet<TransactionRecipient>();
         }
     
         public int Id { get; set; }
@@ -29,9 +30,12 @@ namespace Purchases.Models
         public Nullable<decimal> ExchangeRate { get; set; }
         public string Note { get; set; }
         public Nullable<bool> IsPosted { get; set; }
+        public Nullable<int> RecipientId { get; set; }
+        public Nullable<int> FinancialCycleId { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public string Recipient { get; set; }
         public Nullable<bool> HasAddedTax { get; set; }
+        public Nullable<decimal> AddedTaxPercent { get; set; }
         public Nullable<bool> HasTax { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreationDate { get; set; }
@@ -41,10 +45,14 @@ namespace Purchases.Models
         public virtual AspNetUser AspNetUser { get; set; }
         public virtual AspNetUser AspNetUser1 { get; set; }
         public virtual DocumentType DocumentType { get; set; }
+        public virtual FinancialCycle FinancialCycle { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PrintCheck> PrintChecks { get; set; }
+        public virtual Recipient Recipient1 { get; set; }
         public virtual CurrencyType CurrencyType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TransactionDetail> TransactionDetails { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TransactionRecipient> TransactionRecipients { get; set; }
     }
 }

@@ -43,6 +43,9 @@
                                         <div class="input-group">
                                             <span class="input-group-addon "><i class="fa fa-key"></i></span>
                                             <input type="password" class="form-control login-input password" id="password" name="Password" placeholder="  كلمة االمرور " autocomplete="off">
+                                            <span class="input-group-addon toggle-password" style="cursor: pointer;">
+                                                <i class="fa fa-eye" id="toggleIcon"></i>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -84,7 +87,19 @@
 
         });
 
+
+        // عند الضغط على الأيقونة، يتم التبديل بين نوع الحقل
+        document.querySelector('.toggle-password').addEventListener('click', function () {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            const isPassword = passwordInput.type === 'password';
+
+            passwordInput.type = isPassword ? 'text' : 'password';
+            toggleIcon.classList.toggle('fa-eye');
+            toggleIcon.classList.toggle('fa-eye-slash');
+        });
     </script>
+
 </body>
 </html>
 

@@ -1,0 +1,77 @@
+﻿@{
+    //ViewBag.Title = "PrintInvoice";
+    Layout = "";
+}
+
+    <style >
+
+    .print-dueDate {
+        position: absolute;
+        top: 85px;
+        right: 70px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .print-payNo {
+        display: none;
+    }
+
+    .print-amount {
+        position: absolute;
+        top: 245px;
+        right: 110px;
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .print-textAmount {
+        position: absolute;
+        top: 155px;
+        right: 90px;
+        font-size: 18px;
+        font-weight: bold;
+        line-height: 1.7;
+    }
+
+    .print-recipient {
+        position: absolute;
+        top: 115px;
+        right: 90px;
+        font-size: 20px;
+        font-weight: bold;
+        line-height: 1.7;
+    }
+</style>
+
+
+
+
+
+<div class="row" style="position:relative; margin-top: 200px;">
+    <div class="checs-info" style="position:relative">
+        <span class="print-dueDate print-span">@ViewBag.dueDate</span>
+        <span class="print-payNo print-span">@ViewBag.payNo</span>
+        <span class="print-amount print-span">@ViewBag.amount</span>
+        <span class="print-textAmount print-span">@ViewBag.textAmount</span>
+        <span class="print-recipient print-span">@ViewBag.recipient</span>
+    </div>
+    @*<img src="~/Content/img/checs.jpg" style="max-width:100%" />*@
+</div>
+
+
+<script src="~/Temp/plugins/jquery/jquery.min.js"></script>
+
+
+
+    <script>
+
+        
+        window.addEventListener("load", window.print());
+
+    </script>
+    
+    
+
+
+

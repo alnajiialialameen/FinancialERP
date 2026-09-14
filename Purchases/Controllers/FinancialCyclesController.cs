@@ -12,6 +12,7 @@ namespace Purchases.Controllers
     public class FinancialCyclesController : Controller
     {
         private Entities db = new Entities();
+        
         // GET: FinancialCycles
         public ActionResult Index()
         {
@@ -31,14 +32,10 @@ namespace Purchases.Controllers
                 ActualExchange = b.ActualExchange,
                 IsClosed = b.IsClosed,
             });
-
-           
-
             
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-
+        
         public ActionResult Save(FinancialCycle ob)
         {
             var userid = User.Identity.GetUserId();
@@ -51,7 +48,7 @@ namespace Purchases.Controllers
             f.UpdatedBy = userid;
             f.UpdatingDate = DateTime.Now;
 
-            f.CurrentYear = true;
+            f.CurrentYear = false;
 
             db.FinancialCycles.Add(f);
             db.SaveChanges();
@@ -72,6 +69,7 @@ namespace Purchases.Controllers
                     // TeacherMaterial tm = db.TeacherMaterials.Single(f => f.TeacherId == data.Id && f.IsSpecialtyMaterial == true);
 
                     t.Year = data.Year;
+                    t.CurrentYear = data.CurrentYear;
                     t.UpdatedBy = userid;
                     t.UpdatingDate = DateTime.Now;
 
@@ -84,25 +82,58 @@ namespace Purchases.Controllers
             return Json(new { Message = "حدث خطأ اثناء التعديل", Title = "خطأ", Status = "error" });
         }
         
+        [HttpPost]
+        public ActionResult ChangeCurrentFinancialCycle(int Id)
+        {
+            if (Id > 0)
+            {
+                var userid = User.Identity.GetUserId();
+
+                var obj = db.FinancialCycles.Find(Id);
+                obj.CurrentYear = true;
+                obj.UpdatedBy = userid;
+                obj.UpdatingDate = DateTime.Now;
+
+                db.Entry(obj).State = EntityState.Modified;
+                db.SaveChanges();
+
+                Session["CurrentYear"] = obj.Year; 
+
+                var data = db.FinancialCycles.Where(x => x.Id != Id).ToList();
+                foreach (var item in data)
+                {
+                    item.CurrentYear = false;
+                    item.UpdatedBy = userid;
+                    item.UpdatingDate = DateTime.Now;
+
+                    db.Entry(item).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
+
+                return Json(new { Message = "تمت عملية التعديل بنجاح", Title = "نجاح", Status = "success" });
+            }
+
+            return Json(new { Message = "حدث خطأ اثناء التعديل", Title = "خطأ", Status = "error" });
+        }
+
         public ActionResult StopBalances(FinancialCycle data)
         {
-            if (data.Id != 0)
+            if (data.Id > 0)
             {
                 var userid = User.Identity.GetUserId();
 
                 FinancialCycle O = db.FinancialCycles.Find(data.Id);
-                if (O.IsClosed == true)
+
+                if (O.CurrentYear == true && data.IsClosed == true)
                 {
-                    O.IsClosed = false;
-                }
-                else
-                {
-                    O.IsClosed = true;
+                    return Json(new { Message = "عفوا لا يمكنك قفل العام الحالي", Title = "خطأ", Status = "error" });
                 }
 
+                O.IsClosed = data.IsClosed;
                 O.UpdatedBy = userid;
                 O.UpdatingDate = DateTime.Now;
                 db.Entry(O).State = EntityState.Modified;
+
                 db.SaveChanges();
                 return Json(new { Message = "تمت تكملة الاجراء بنجاح شكرا ", Title = "نجاح", Status = "success" });
 

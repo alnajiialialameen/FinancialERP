@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Purchases.MyLogic
+﻿namespace Purchases.MyLogic
 {
     public class Constant
     {
         public static string BaseAPIURL = "http://localhost:8000/api/";
+        public static string BaseAPIURLServer = "http://172.16.116.3:8000/api/";
+        
     }
 }

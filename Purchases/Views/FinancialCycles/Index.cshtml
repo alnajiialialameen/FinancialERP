@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout2.cshtml";
 }
@@ -11,16 +10,12 @@
     <section class="content-header">
         <h1>
             السنه المالية
-
         </h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-home"></i> النظام المالي </a></li>
             <li class="active"> السنة</li>
         </ol>
-
     </section>
-
-
 
     <section class="content">
         <div class="row">
@@ -158,8 +153,6 @@
     <script>
 
         $(function () {
-
-
             function loadData() {
                 dataTable = $('#tbx').DataTable({
                     "language": {
@@ -195,32 +188,37 @@
                             "title": "نسبة الانحراف النسبي    ",
                             "data": "RelativeRatio"
                         },
-                        //{
-                        //    "title": "العام الحالي    ",
-                        //    "data": "CurrentYear"
-                        //},
-                      
-
+                        {
+                            "title": "الحالة",
+                            "data": null,
+                            "width": "10%",
+                            "orderable": true,
+                            "render": function (data) { 
+                                if(data.CurrentYear == true)
+                                {
+                                    return '<div class="btn-opreation">'
+                                    + '<label class="text-success">العام المالي الحالي</label>'
+                                    + '</div> ';
+                                }else{
+                                    return '<div class="btn-opreation">'
+                                   + '<label class="text-danger">ليس العام المالي الحالي</label>'
+                                   + '</div> ';
+                                }
+                            }
+                        },
                         {
                             "title": " اغلاق ",
                             "data": null,
                             "render": function (data) {
                                 if (data.IsClosed != true) {
                                     return '<div class="btn-opreation">'
-                                                 //+ '<button class="btn btn-success transfer openEditModalHousing">تعديل <i class=" transfer-fa fa  fa-edit"></i></button> '
-                                                                        //+ '<button class="btn btn-danger transfer AdLastLevel"> إيقاف <i class=" transfer-fa fa  fa-edit"></i></button> '
                                         + '<button class="btn btn-danger transfer" onclick="return Stop(' + data.Id + ') "> قفل العام <i class=" fa fa-edit align-middle"></i></button> '
                                        + '</div> ';
-
                                 }
-
                                 else {
                                     return '<div class="btn-opreation">'
-                                                 //+ '<button class="btn btn-success transfer openEditModalHousing">تعديل <i class=" transfer-fa fa  fa-edit"></i></button> '
-                                                                        //+ '<button class="btn btn-danger transfer AdLastLevel"> إيقاف <i class=" transfer-fa fa  fa-edit"></i></button> '
                                         + '<button class="btn btn-success transfer" onclick="return UnStop(' + data.Id + ') ">  فتح العام <i class=" fa fa-edit align-middle"></i></button> '
                                        + '</div> ';
-
                                 }
                             }
                         },
@@ -231,28 +229,25 @@
                             "orderable": false,
                             "render": function (data) {
                                 return '<div class="btn-opreation">'
-                                             + '<button class="btn btn-success transfer openEditModal">تعديل <i class=" transfer-fa fa  fa-edit"></i></button> '
-                                                                              //+ '<button class="btn btn-success transfer openAditModal">  إضافة جهاز جديد <i class=" transfer-fa fa  fa-edit"></i></button> '
-
-                                    + '</div> '
-
-                                ;
-
+                                        + '<button class="btn btn-success transfer openEditModal">تعديل <i class=" transfer-fa fa  fa-edit"></i></button> '
+                                    + '</div> ';
+                            }
+                        },
+                        {
+                            "title": "<i class='fa fa-cog'></i>",
+                            "data": null,
+                            "width": "10%",
+                            "orderable": false,
+                            "render": function (data) {
+                                return '<div class="btn-opreation">'
+                                       + '<button class="btn btn-warning transfer" onclick="isCurrentYear(' + data.Id + ') ">العام الحالي<i class=" fa fa-edit align-middle"></i></button> '
+                                    + '</div> '; 
                             }
                         }
-
-
                     ]
-
                 });
-
             }
             loadData();
-
-
-
-
-
 
             $('#add-form').bootstrapValidator({
                 onSuccess: function (e) {
@@ -278,38 +273,28 @@
                 }
             });
 
-
-            //savee
-            
+            //save
             function save() {
-
-
                 var ob = {
                     "Year": $('#Year').val()
                 };
                 $.ajax({
                     url: "@Url.Action("Save", "FinancialCycles")",
                     type: "POST",
-                data: JSON.stringify(ob),
-                contentType: "application/json charset=utf-8",
-                dataType: "json",
-                error: function (response) {
-                    //toastr[response.Status](response.Message, response.Title);
-                },
-                success: function (response) {
-                    toastr[response.Status](response.Message, response.Title);
-                    //$('.Year').val(null);
-                    $('#add-form').bootstrapValidator('resetForm', true);
-
-                    $('#add-modal').modal('hide');
-                    dataTable.ajax.reload();
-
-
-                }
-            });
-
+                    data: JSON.stringify(ob),
+                    contentType: "application/json charset=utf-8",
+                    dataType: "json",
+                    error: function (response) {
+                        //toastr[response.Status](response.Message, response.Title);
+                    },
+                    success: function (response) {
+                        toastr[response.Status](response.Message, response.Title);
+                        $('#add-form').bootstrapValidator('resetForm', true);
+                        $('#add-modal').modal('hide');
+                        dataTable.ajax.reload();
+                    }
+                });
             }
-
 
             //Open Edit Modal
             $("#tbx").on('click', '.openEditModal', function () {
@@ -347,52 +332,37 @@
                 }
             });
 
-
-
             function edit() {
-
-
                 var ob = {
                     "Id": $('#EdId').val(),
                     "Year": $('#EdYear').val(),
-
                 };
                 $.ajax({
                     url: "@Url.Action("Edit", "FinancialCycles")",
                     type: "POST",
-                data: JSON.stringify(ob),
-                contentType: "application/json charset=utf-8",
-                dataType: "json",
-                error: function (response) {
-                    //toastr[response.Status](response.Message, response.Title);
-                },
-                success: function (response) {
-                    toastr[response.Status](response.Message, response.Title);
-                    $('#edit-modal').modal('hide');
-                    dataTable.ajax.reload();
+                    data: JSON.stringify(ob),
+                    contentType: "application/json charset=utf-8",
+                    dataType: "json",
+                    error: function (response) {
+                        //toastr[response.Status](response.Message, response.Title);
+                    },
+                    success: function (response) {
+                        toastr[response.Status](response.Message, response.Title);
+                        $('#edit-modal').modal('hide');
+                        dataTable.ajax.reload();
 
-                }
-            });
-        };
-
-
-
-
+                    }
+                });
+            };
         });
+
         //stop last level 
         function Stop(id) {
-            console.log(id);
-            //get the current row
             var currentRow = $(this).closest("tr");
 
-            var id = id;
-
-            //var value = currentRow.find("td:eq(7)").text();
             Swal.fire({
                 title: '   إغلاق ',
                 text: " هل تريد اغلاق هذا العام ",
-                // type: "input",
-                //  html: '<input id="swal-input1" class="swal2-input">',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -400,13 +370,8 @@
                 confirmButtonText: 'موافق',
                 cancelButtonText: 'رجوع'
             }).then((result) => {
-                // var notes = $("#swal-input1").val();
-
                 if (result.isConfirmed) {
-                    // var notes = $("#swal-input1").val();
-                    // console.log(notes);
-                    console.log(id);
-                    StopBalances(id);
+                    StopBalances(id, true);
                 }
             })
 
@@ -415,18 +380,11 @@
 
         //stop last level 
         function UnStop(id) {
-            console.log(id);
-            //get the current row
             var currentRow = $(this).closest("tr");
 
-            var id = id;
-
-            //var value = currentRow.find("td:eq(7)").text();
             Swal.fire({
                 title: '   فتح العام ',
                 text: " هل تريد فتح  هذا العام ",
-                // type: "input",
-                //  html: '<input id="swal-input1" class="swal2-input">',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -434,76 +392,82 @@
                 confirmButtonText: 'موافق',
                 cancelButtonText: 'رجوع'
             }).then((result) => {
-                // var notes = $("#swal-input1").val();
-
                 if (result.isConfirmed) {
-                    // var notes = $("#swal-input1").val();
-                    // console.log(notes);
-                    console.log(id);
-                    UnStopBalances(id);
+                    UnStopBalances(id, false);
                 }
             })
 
         }
 
-
-
-        
         // stop function
-        
-        function StopBalances(id) {
+        function StopBalances(id, isClosed) {
             var ob = {
                 Id: id,
-                // Notes:notes
+                IsClosed: isClosed
             }
             $.ajax({
                 url: "@Url.Action("StopBalances", "FinancialCycles")",
                 type: "POST",
-            data: JSON.stringify(ob),
-            contentType: "application/json charset=utf-8",
-            dataType: "json",
-            error: function (response) {
-                //toastr[response.Status](response.Message, response.Title);
-            },
-            success: function (response) {
-                toastr[response.Status](response.Message, response.Title);
-                //$('#add-form').bootstrapValidator('resetForm', true);
-                //$('#add-modal').modal('hide');
-                // dataTable.ajax.reload();
-                dataTable.ajax.reload();
-
-            }
-        });
+                data: JSON.stringify(ob),
+                contentType: "application/json charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    //toastr[response.Status](response.Message, response.Title);
+                },
+                success: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    dataTable.ajax.reload();
+                }
+            });
         }
         // un stop function
 
         // stop function
-        
         function UnStopBalances(id) {
             var ob = {
                 Id: id,
-                // Notes:notes
             }
             $.ajax({
                 url: "@Url.Action("StopBalances", "FinancialCycles")",
                 type: "POST",
-            data: JSON.stringify(ob),
-            contentType: "application/json charset=utf-8",
-            dataType: "json",
-            error: function (response) {
-                //toastr[response.Status](response.Message, response.Title);
-            },
-            success: function (response) {
-                toastr[response.Status](response.Message, response.Title);
-                //$('#add-form').bootstrapValidator('resetForm', true);
-                //$('#add-modal').modal('hide');
-                // dataTable.ajax.reload();
-                dataTable.ajax.reload();
+                data: JSON.stringify(ob),
+                contentType: "application/json charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    //toastr[response.Status](response.Message, response.Title);
+                },
+                success: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    dataTable.ajax.reload();
 
-            }
-        });
+                }
+            });
         }
 
+        
+        // stop function
+        function isCurrentYear(id) {
+            console.clear();
+            console.log(id);
+            $.ajax({
+                url: "/FinancialCycles/ChangeCurrentFinancialCycle/" + id,
+                type: "POST",
+                data: null,
+                contentType: "application/json charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    //toastr[response.Status](response.Message, response.Title);
+                },
+                success: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    //$('#add-form').bootstrapValidator('resetForm', true);
+                    //$('#add-modal').modal('hide');
+                    // dataTable.ajax.reload();
+                    dataTable.ajax.reload();
+
+                }
+            });
+        }
 
 </script>
 }

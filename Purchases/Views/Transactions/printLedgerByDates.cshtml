@@ -69,10 +69,12 @@
             background-color:#ebefef;
             font-weight:bolder;
             font-size:20px;  
-            max-width:30%;
+            min-width:30%;
             margin-top:3%;
             padding:16px;
             line-height:30px;
+            display: flex;
+            flex-direction: column;
         }
 
         .footer .titel{
@@ -102,12 +104,7 @@
         </div>
 
     </div>
-    <div class="row" dir="rtl">
-        <div class="col-md-12">
-            <label class="h-mr">من تاريخ:  <span class="font-normal"> @ViewBag.DateFrom</span></label>
-            <label class="h-mr">الى تاريخ:  <span class="font-normal">@ViewBag.DateTo</span></label>
-        </div>
-    </div>
+   
     <h2 class="text-center"><u>دفتر الأستاذ</u></h2>
 
 
@@ -118,12 +115,17 @@
         </div>
     </div>
 
-    
-    <div class="invoice-Cupps-Body" dir="ltr">
+    <br />
+
+    <div class="invoice-Cupps-Body">
         <div class="arline-header">
-            <div class="row">
-                <div class="col-md-12">
+            <div class="row m-0" dir="rtl">
+                <div class="col-md-6 pull-left text-left">
                     <label class="h-mr">تاريخ الطباعة: @DateTime.Today.ToShortDateString()</label>
+                </div>
+                <div class="col-md-6">
+                    <label class="h-mr">من تاريخ:  <span class="font-normal"> @ViewBag.DateFrom</span></label>
+                    <label class="h-mr">الى تاريخ:  <span class="font-normal">@ViewBag.DateTo</span></label>
                 </div>
             </div>
         </div>

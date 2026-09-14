@@ -91,7 +91,7 @@ namespace Purchases.MyLogic
             return imagesPathes;
         }
 
-        //upload pdf file
+        //Delete uploaded pdf file
         public static int DeleteUploadedFile(int? Id, string Title)
         {
             try
@@ -147,21 +147,24 @@ namespace Purchases.MyLogic
                 {
                     var balanceObj = db.Balances.Find(BalanceId);
 
-                    if (type > 0)
-                    {
-                        balanceObj.ActualExchange = balanceObj.ActualExchange - oldAmount + newAmount;
-                    }
-                    else
-                    {
-                        balanceObj.ActualExchange = balanceObj.ActualExchange - oldAmount - newAmount;
-                    }
+                    //if (type > 0)
+                    //{
+                    //    // في الايرادات
+                    //    balanceObj.ActualExchange = balanceObj.ActualExchange - oldAmount + newAmount;
+                    //}
+                    //else
+                    //{
+                    //    // في المصروفات
+                    //    balanceObj.ActualExchange = balanceObj.ActualExchange - oldAmount - newAmount;
+                    //}
 
+                    balanceObj.ActualExchange    = balanceObj.ActualExchange - oldAmount + newAmount;
                     balanceObj.RelativeDeviation = balanceObj.Credint - balanceObj.ActualExchange;
-                    balanceObj.DeviationRatio =  balanceObj.ActualExchange > 0? Convert.ToDecimal((balanceObj.RelativeDeviation / balanceObj.Credint)) / 100 : 0;
-                    balanceObj.UpdatedBy = userid;
-                    balanceObj.UpdatingDate = DateTime.Now;
+                    balanceObj.DeviationRatio    =  balanceObj.ActualExchange > 0? Convert.ToDecimal((balanceObj.RelativeDeviation / balanceObj.Credint)) / 100 : 0;
+                    balanceObj.UpdatedBy         = userid;
+                    balanceObj.UpdatingDate      = DateTime.Now;
 
-                    db.Entry(balanceObj).State = EntityState.Modified;
+                    db.Entry(balanceObj).State   = EntityState.Modified;
                     db.SaveChanges();
 
                     return 1;

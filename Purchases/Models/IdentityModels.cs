@@ -19,6 +19,8 @@ namespace Purchases.Models
 
         public bool IsDefualtPassword { get; set; }
         public string FullName { get; set; }
+        public string AirportName { get; set; }
+        public int? FinancialCycleId { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>

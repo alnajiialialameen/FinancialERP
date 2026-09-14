@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     Layout = "~/Views/Shared/_Layout2.cshtml";
 }
 
@@ -12,6 +11,58 @@
             padding: 15px;
             background-color: #ff000021;
             text-align: center;
+        }
+
+        .print-dueDate {
+            position: absolute;
+            top: 90px;
+            right: 110px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .print-payNo {
+            position: absolute;
+            top: 110px;
+            left: 110px;
+            font-size: 20px;
+            font-weight: bold;
+            display: none;
+        }
+        .print-amount {
+            position: absolute;
+            top: 250px;
+	    left: 535px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .print-textAmount {
+            position: absolute;
+            top: 160px;
+            right: 120px;
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 1.7;
+        }
+
+        .print-recipient {
+            position: absolute;
+            top: 120px;
+            right: 120px;
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 1.7;
+        }
+        .print-checkNo{
+            position: absolute;
+            top: 10px;
+            right: 50px;
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 1.7;
+        }
+
+        .print-span {
+            color:red
         }
     </style>
 
@@ -59,7 +110,7 @@
                                                 </div>
                                                 <div class="">
                                                     <label for="amount">المبلغ </label>
-                                                    <input type="text" class="form-control checs-input amount" id="amount" name="amount" placeholder="المبلغ بالارقام" autocomplete="off" />
+                                                    <input type="text" class="form-control checs-input amount" value="@ViewBag.amount" id="amount" name="amount" placeholder="المبلغ بالارقام" autocomplete="off" />
                                                 </div>
                                                 <div class="">
                                                     <label for="checkNo">رقم الشيك </label>
@@ -67,7 +118,8 @@
                                                 </div>
                                                 <div class="">
                                                     <label for="recipient">اسم المستلم</label>
-                                                    <input type="text" class="form-control checs-input recipient" value="@ViewBag.Recipient" id="recipient" name="recipient" placeholder="اسم المستلم" autocomplete="off" />
+                                                    <input type="text" class="form-control checs-input recipientname" value="@ViewBag.Recipient" id="recipientname" name="recipientname" placeholder="اسم المستلم" autocomplete="off" />
+                                                    @*<select class="form-control list recipient" name="recipient" id="recipient" style="width:100%"></select>*@
                                                 </div>
                                                 <a class="btn btn-info btn-block" style="margin-top:20px" onclick="print()">طباعة</a>
                                             </div>
@@ -83,9 +135,9 @@
                                         <span class="print-dueDate print-span"></span>
                                         <span class="print-payNo print-span">@ViewBag.TransactionId</span>
                                         <span class="print-amount print-span"></span>
-                                        <span class="print-textAmount print-span"></span>
+                                        <span class="print-textAmount print-span">@ViewBag.textAmount</span>
                                         <span class="print-recipient print-span">@ViewBag.Recipient</span>
-                                        <span class="print-checkNo print-span"></span>
+                                        <span class="print-checkNo print-span">@ViewBag.CheckNo</span>
                                     </div>
                                     <img src="~/Content/img/checs.jpg" style="max-width:100%"/>
                                 </div>
@@ -99,54 +151,6 @@
 
     </div><!-- /.content-wrapper -->
 
-
-    <style>
-        .print-dueDate {
-            position: absolute;
-            top: 81px;
-            right: 160px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .print-payNo {
-            position: absolute;
-            top: 160px;
-            left: 284px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-        .print-amount {
-            position: absolute;
-            top: 210px;
-            left: 155px;
-            font-size: 22px;
-            font-weight: bold;
-        }
-        .print-textAmount {
-            position: absolute;
-            top: 260px;
-            right: 285px;
-            font-size: 18px;
-            font-weight: bold;
-            line-height: 1.7;
-        }
-
-        .print-recipient {
-            position: absolute;
-            top: 330px;
-            right: 220px;
-            font-size: 20px;
-            font-weight: bold;
-            line-height: 1.7;
-        }
-
-        .print-span {
-            color:red
-        }
-        
-
-
-    </style>
 }
 
 
@@ -157,7 +161,7 @@
         var dataTable;
 
         $(function () {
-
+            //select2listNew("#recipient", "/Shared/getAllRecipient", "اسم المستلم");
             $('.calendar').datepicker({
                 todayBtn: "linked",
                 language: "it",
@@ -173,6 +177,8 @@
             $(".amount").val(@ViewBag.amount);
             $(".print-amount").text(@ViewBag.amount);
             $(".print-payNo").text(@ViewBag.TransactionId);
+            $("#checkNo").val(@ViewBag.CheckNo);
+            // $(".print-checkNo").text() == "" ||$("#checkNo").text() == undefined? $("#checkNo").prop('disabled', false) : $("#checkNo").prop('disabled', true);
 
             $.ajax({
                 url: "/Home/ConvertToText?amount=" + @ViewBag.amount,
@@ -196,7 +202,7 @@
                 $('.print-payNo').html($(this).val());
             });
 
-            $('.recipient').on("keyup", function () {
+            $('.recipientname').on("keyup", function () {
                 $('.print-recipient').html($(this).val());
             });
 
@@ -218,22 +224,29 @@
                 });
             });
 
+            
+            $('.checkNo').on("keyup", function () {
+                $('.print-checkNo').html($(this).val());
+            });
 
 
         });//End Document Ready
 
+        
         function print() {
             var TransactionId = $('.TransactionId').text();
-            var dueDate = moment($(".dueDate").val(), "DD/MM/YYYY").format("DD/MM/YYYY");
-
-            if ($('.dueDate').val() != null & $('.payNo').val() != null & $('.amount').val() != null & $('.checkNo').val() != null & $('.recipient').val() != null) {
+            // var dueDate = moment($(".dueDate").val(), "DD/MM/YYYY").format("MM/DD/YYYY");
+            var dueDate = $(".dueDate").val();
+            // var dueDate = $(".dueDate").val();
+            if ($('.dueDate').val() == null ||$('.dueDate').val() == '' || $('.payNo').val() == null | $('.amount').val() == null || $('.checkNo').val() == null || $('.recipientname').val() == null) {
+                toastr["error"]("يجب ملئ جميع الحقول", "خطأ");
+            } else {
                 window.location.href = "/PrintChecs/PrintChecs?Id=" + TransactionId + "&duedate=" + dueDate + "&payNo=" + $('.payNo').val() + "&amount="
                     + $('.amount').val() + "&textAmount=" + $('.print-textAmount').text() + "&checkNo=" + $('.checkNo').val() + "&recipient=" + $('.print-recipient').text();
-            } else {
-                toastr["warrning"]("يجب ملأ كل الحقول", "تنبيه");
 
             }
         }
+
     </script>
 }
 

@@ -1,0 +1,130 @@
+﻿@model  IEnumerable<Purchases.Models.ViewModal.BalanceDTO>
+@{
+    ViewBag.Title = "PrintInvoice";
+    Layout = "~/Views/Shared/_LayoutPrint.cshtml";
+}
+
+<style>
+    .p-r{
+        padding-right: 40px !important;
+    }
+</style>
+<section class="invoiceCupps">
+    <div class="invoice-Cupps-header">
+        <div class="image-L">
+            <img src="~/Temp/Image/WhiteLogo.png" height="100" />
+        </div>
+
+        <div class="text-center text-word">
+            <h6>شركة مطارات السودان المحدودة</h6>
+            <h6>الادارة العامة للشؤون المالية والمحاسبية</h6>
+            <h6>إدارة الحسابات</h6>
+
+        </div>
+
+        <div class="image-R">
+            <img src="~/Temp/Image/WhiteLogo.png" class="image-L" height="100" />
+        </div>
+    </div>
+
+    <br />
+    <div class="invoice-Body">
+
+        <div class="wrapper">
+            <div class="row">
+                <div class="col-md-12 justify-content-center text-center">
+                    <h2><u>@ViewBag.CurrentFinancialCycle  مراقبة الصرف العام المالي</u></h2>
+                    <h2><u>@ViewBag.AccName</u></h2>
+                </div>
+
+                @{
+                    if (@ViewBag.DateFrom != null && @ViewBag.DateTo != null)
+                    {
+                        <div class="text-center">
+                            <h3>في الفترة من @ViewBag.DateFrom و حتي @ViewBag.DateTo</h3>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <div style="display:flex; justify-content:space-between; padding: 5px;">
+            <span>@DateTime.Now</span>تاريخ الطباعة
+        </div>
+
+        <table class="table table-bordered table-striped">
+            <thead class="bg-dark">
+                <tr class="text-center">
+                    <td>الصرف الفعلي</td>
+                    <td>الاعتماد النسبي</td>
+                    <td>الاعتماد الكلي</td>
+                    <td colspan="3">البند</td>
+                    <td>#</td>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int counter = 1;
+                    foreach (var item1 in Model)
+                    {
+                        int counter1 = 1;
+                        <tr class="text-center">
+                            <td colspan="6" class="text-right font-weight-bold">@item1.accTreeName</td>
+                            <td class="text-center">@counter</td>
+                        </tr>
+                        if (item1.details.Any())
+                        {
+                            foreach (var item in item1.details)
+                            {
+                                <tr>
+                                    <td class="text-right amount">@item.actualExchange</td>
+                                    <td class="text-right amount">@item.credintPercent</td>
+                                    <td class="text-right amount">@item.credint</td>
+                                    <td colspan="3" class="p-r text-right">@item.accTreeName</td>
+                                    <td class="text-center">@counter1 . @counter</td>
+                                </tr>
+                                counter1++;
+                            }
+                        }
+
+                        counter = counter + 1;
+                        <tr class="text-center" >
+                            <td class="font-weight-bold amount">@item1.actualExchange</td>
+                            @*<td class="numberFormat">@Model.Where(q => q.Id == item1.Id).Sum(s => s.credint)</td>*@
+                            <td class="font-weight-bold amount"> @Model.Sum(s => s.details.Where(x=> x.parentId==item1.Id).Sum(x => x.credintPercent))</td>
+                            <td class="font-weight-bold amount"> @item1.sumOfCredint</td>
+                            <td class="font-weight-bold" colspan="4"> جملة البند /  @item1.accTreeName</td>
+                        </tr>
+                    }
+
+                    <tr class="text-center" style="background-color:#d3caca">
+                        <td class="amount">@Model.Sum(s => s.details.Sum(a=> a.actualExchange))</td>
+                        @*<td class="numberFormat">@Model.Where(q => q.Id == item1.Id).Sum(s => s.credint)</td>*@
+                        <td class="amount"> @Model.Sum(s => s.credintPercent)</td>
+                        <td class="amount"> @Model.Sum(s => s.sumOfCredint)</td>
+                        <td colspan="4">الاجمالي</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="number-Word invoice-footer">
+        <div class="number-Word"> @ViewBag.txtSumOfBous </div>
+
+        <div class="chief ">
+            @*<div class="Dept">
+                    <span>  رئيس القسـم </span><br /><br />
+                    <span>-------------------------------</span>
+                </div>*@
+
+            <div class="Manager">
+                <span>        التوقيع</span><br /><br />
+                <span>-------------------------------</span>
+            </div>
+        </div>
+    </div>
+
+</section>

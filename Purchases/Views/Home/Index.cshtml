@@ -1,25 +1,16 @@
-﻿
-@{
-    //ViewBag.Title = "Index";
+﻿@{
+    ViewBag.Title = "Home";
     Layout = "~/Views/Shared/_Layout2.cshtml";
 }
-
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
 @section content{
-    <style>
-    
-    </style>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-        <div class="grad"></div>
-
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
-                اللوحة الرئيسية
-            </h1>
+            <h1>اللوحة الرئيسية</h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-home"></i> اللوحة الرئيسية  </a></li>
                 <li class="active">DashBoard </li>
@@ -28,11 +19,9 @@
         </section>
 
 
-        <section class="content">
+        @*<section class="content1">*@
             <!-- Info boxes -->
-            <div class="row">
-                <div class="col-lg-12">
-
+            <div class="row" style="margin:5px;">
                     <div class=" col-md-3 col-sm-6 col-xs-12  ">
                         <div class="info-box">
                             <span class="info-box-icon bg-red"><i class="fa fa-chart-bar"></i></span>
@@ -53,7 +42,6 @@
                         </div><!-- /.info-box -->
                     </div>
 
-
                     <div class=" col-md-3 col-sm-6 col-xs-12  ">
                         <div class="info-box">
                             <span class="info-box-icon bg-aqua"><i class="fa fa-building"></i></span>
@@ -63,6 +51,7 @@
                             </div><!-- /.info-box-content -->
                         </div><!-- /.info-box -->
                     </div>
+                    
                     <div class=" col-md-3 col-sm-6 col-xs-12  ">
                         <div class="info-box">
                             <span class="info-box-icon bg-yellow"><i class="fa fa-building"></i></span>
@@ -72,38 +61,31 @@
                             </div><!-- /.info-box-content -->
                         </div><!-- /.info-box -->
                     </div>
-
-
-
-
-                    
-
-
-
-                </div>
-
-                
-                    
-
-
-
-                </div>
+              
             </div><!-- /.row -->
-          
+        @*</section>*@
 
-        </section>
+    <section class="content">
+        <div class="box">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="border">
+                            <canvas id="myChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="border">
+                            <canvas id="myChart1"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+</section>
 
     </div><!-- /.content-wrapper -->
-
-
-
-
-
-
-
-
-
 }
 
 
@@ -111,9 +93,116 @@
 
 
 @section scripts{
-    <script src="~/Scripts/Chart.min.js"></script>
-    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.3.0/chart.min.js"></script>*@
 
     
+    <script>
 
+            $(document).ready(function () {
+                getLinePointChartData();
+                getDoctTypeChartData();
+            });
+
+            function getLinePointChartData() {
+                $.get("/Account/GetChartData", { type: "dashboard" }, function (response) {
+                    //console.clear();
+                    //console.log(response); // Log the response to check its structure
+
+                    const ctx = document.getElementById('myChart').getContext('2d');
+
+                    const config = {
+                        type: 'line', // Line chart
+                        data: {
+                            labels: response.labels, // The labels from your server (e.g., months)
+                            datasets: response.datasets // The datasets (transaction counts)
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'العمليات المحاسبية حسب الشهر' // Chart title
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    display: true,
+                                    title: {
+                                        display: true,
+                                        text: 'الشهور' // X-axis label
+                                    }
+                                },
+                                y: {
+                                    display: true,
+                                    title: {
+                                        display: true,
+                                        text: 'العمليات' // Y-axis label
+                                    }
+                                }
+                            }
+                        }
+                    };
+
+                    // Create and render the chart
+                    new Chart(ctx, config);
+                });
+            }
+
+            // Function to generate random colors
+            function getRandomColor() {
+                const letters = '0123456789ABCDEF';
+                let color = '#';
+                for (let i = 0; i < 10; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+
+            function getDoctTypeChartData() {
+                $.get("/Account/GetDoctTypeChartData", { type: "dashboard" }, function (response) {
+                    //console.clear();
+                    //console.log(response); // Log the response to check its structure
+
+                    const backgroundColors = response.datasets[0].data.map(() => getRandomColor());
+
+                    const ctx = document.getElementById('myChart1').getContext('2d');
+
+                    const config = {
+                        type: 'pie', // Line chart
+                        data:response,
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'العمليات المحاسبية حسب نوع العملية' // Chart title
+                                },
+                                legend: {
+                                    position: 'top',
+                                },
+                            },
+                            //scales: {
+                            //    x: {
+                            //        display: true,
+                            //        title: {
+                            //            display: true,
+                            //            text: 'الشهور' // X-axis label
+                            //        }
+                            //    },
+                            //    y: {
+                            //        display: true,
+                            //        title: {
+                            //            display: true,
+                            //            text: 'العمليات' // Y-axis label
+                            //        }
+                            //    }
+                            //}
+                        }
+                    };
+
+                    // Create and render the chart
+                    new Chart(ctx, config);
+                });
+            }
+
+    </script>
 }

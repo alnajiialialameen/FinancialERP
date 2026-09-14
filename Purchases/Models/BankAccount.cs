@@ -19,6 +19,7 @@ namespace Purchases.Models
         {
             this.Checks = new HashSet<Check>();
             this.PrintChecks = new HashSet<PrintCheck>();
+            this.TransactionRecipients = new HashSet<TransactionRecipient>();
         }
     
         public int Id { get; set; }
@@ -27,7 +28,10 @@ namespace Purchases.Models
         public Nullable<int> CurrencyTypeId { get; set; }
         public Nullable<int> AccountSubId { get; set; }
         public Nullable<System.DateTime> OpenDate { get; set; }
+        public string BankLabel { get; set; }
         public string IBan { get; set; }
+        public string FirstSignature { get; set; }
+        public string SecondSignature { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreationDate { get; set; }
         public string UpdatedBy { get; set; }
@@ -42,5 +46,7 @@ namespace Purchases.Models
         public virtual ICollection<Check> Checks { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PrintCheck> PrintChecks { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TransactionRecipient> TransactionRecipients { get; set; }
     }
 }

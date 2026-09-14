@@ -26,6 +26,7 @@ namespace Purchases.Models
         public Nullable<int> StartFromNumber { get; set; }
         public Nullable<int> EndToNumber { get; set; }
         public Nullable<bool> IsFinished { get; set; }
+        public Nullable<int> LastUsedCheckNo { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreationDate { get; set; }
         public string UpdatedBy { get; set; }

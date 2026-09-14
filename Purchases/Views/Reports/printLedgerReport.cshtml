@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "TaxReport";
     Layout = "~/Views/Shared/_Layout2.cshtml";
 }
@@ -23,7 +22,7 @@
 
         <section class="content">
             <div class="row">
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <div class="form-group">
                         <label for="transactionDate"> من تاريخ</label>
                         <div class="input-group">
@@ -34,7 +33,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <div class="form-group">
                         <label for="transactionDate"> الي تاريخ</label>
                         <div class="input-group">
@@ -45,7 +44,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <div class="form-group">
                         <label for="name">اسم الحساب</label>
                         <div class="input-group">
@@ -56,92 +55,200 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label for="name">اسم البنك</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-book"></i>
+                            </div>
+                            <select class="form-control list accBankId" name="accBankId" id="accBankId" style="width:100%"></select>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class=" col-md-3">
                     <button id="btnsearch" onclick="Search()" class="btn btn-primary btn-sm form-control">بحث</button>
-
-
                 </div>
 
                 <div class=" col-md-3">
                     <button id="btnall" onclick="PrintData()" class="btn form-control btn-info btn-sm">طباعة التقرير </button>
-
                 </div>
+            </div>
+
+            <div class="row" style="margin: 30px;">
+                <table id="tbx" class="dataTable table table-striped table-hover" style="width:100%">
+                    <tbody id="tbod"></tbody>
+                </table>
             </div>
         </section>
     </div>
 }
 
-
-
 @section scripts{
 
     <script>
-    var myId = 0;
-    var dataTable;
+        var myId = 0;
 
-    $(document).ready(function () {
-        function select2list(selector, url, placeholder) {
-            $(selector).select2({
-                language: { inputTooShort: function () { return 'ادخل حرف واحد علي الاقل'; } },
-                ajax: {
-                    url: url,
-                    dataType: 'json',
-                    delay: 100,
-                    data: function (params) {
-                        return {
-                            q: params.term,
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data,
-                            pagination: {
-                                more: ((data.total_count) > (params.page * 20))
-                            }
-                        };
-                    },
-                    cache: true
+        $(document).ready(function () {
+            select2list("#addAccName", "/Shared/getAccTreesAll", "اسم الحساب");
+            select2list("#accBankId", "/Shared/getAllBanks", "اسم البنك");
+        });
+
+        function PrintData() {
+            var Id = $('.addAccName').val();
+            var bankId = $('.accBankId').val();
+            var DateFrom = $('#DateFrom').val();
+            var DateTo = $('#DateTo').val();
+
+            if (Id === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "خطاء",
+                    text: "الرجاء اختيار اسم الحساب",
+                });
+                return;
+            }
+
+            var url = "/Reports/printLedgerByDates?Id=" + Id + "&bankId=" + bankId
+               + "&dateFrom=" + DateFrom + "&dateTo=" + DateTo;
+            window.open(url, '_blank').focus();
+        }
+    
+        function Search() {
+            var DateFrom = $('#DateFrom').val();
+            var DateTo = $('#DateTo').val();
+            var Id = $('.addAccName').val();
+            var bankId = $('.accBankId').val();
+
+            if (Id === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "خطاء",
+                    text: "الرجاء اختيار اسم الحساب",
+                });
+                return;
+            }
+            var isParentGlobal = false;
+            var dataTable = $('#tbx').DataTable({
+                destroy: true,
+                "language": {
+                    "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                    "search": "بحث"
                 },
-                placeholder: placeholder,
-                minimumInputLength: 1,
+                ajax: {
+                    url: "/Reports/printLedgerByDatesForSearch?Id=" + Id + "&bankId=" + bankId + "&dateFrom=" + DateFrom + "&dateTo=" + DateTo,
+                    "dataSrc": function (json) {
+                        isParentGlobal = json.IsParent; // ← نخزن القيمة هنا
+                        return json.data;               // ← نرجع الداتا فقط للجدول
+                    }
+                },
+                columns: [
+                    {
+                        "title": "",
+                        "data": "transactionId",
+                        "orderable": false,
+                        "render": function (data) {
+                            if (isParentGlobal) {
+                                return '<a class="btn btn-info btnDetails" data-toggle="modal" data-target="#details-modal"><i class="fa fa-info"></i></a>';
+                            }
+                            else {
+                                return '<a class="btn btn-info btnPrintRep" ><i class="fa fa-print"></i></a>';
+                            }
+                        }
+                    },
+                    {
+                        "title": "# ",
+                        "data": null,
+                        "render": function (data) {
+                            return isParentGlobal ? data.transactionId : data.accTreeId;
+                        }
+                    },
+                    {
+                        "title": "البيان",
+                        "data": "note"
+                    },
+                    {
+                        "title": "اجمالي المبلغ",
+                        "data": null,
+                        "render": function (data, type, row) {
+
+                            console.log("isParentGlobal:", isParentGlobal);
+                            // استخدم المتغير العمومي
+                            if (isParentGlobal === false) {
+                                var Diff = parseFloat(row.Diff) || 0;
+                                return Diff.toLocaleString();
+                            } else {
+                                var debit = parseFloat(row.debit)||0;
+                                var credit = parseFloat(row.credit)||0;
+                                console.log("debit:", row.debit, "credit:", row.credit);
+
+                                return (debit + credit).toLocaleString();
+                            }
+                        }
+                    },
+                    {
+                        "title": "تاريخ العملية",
+                        "data": "transactionDateStr"
+                    },
+                ]
             });
-
-        };
-        select2list("#addAccName", "/Transactions/getAccTrees", "اسم الحساب");
-    });
-
-    function PrintData() {
-        var Id = $('.addAccName').val();
-        var DateFrom = $('#DateFrom').val();
-        var DateTo = $('#DateTo').val();
-
-        if (DateFrom === "" || DateTo === "") {
-            Swal.fire({
-                icon: "error",
-                title: "خطاء",
-                text: "الرجاء اختيار التاريخين  بشكل صحيح",
-            });
-            return;
         }
-        if (Id === "") {
-            Swal.fire({
-                icon: "error",
-                title: "خطاء",
-                text: "الرجاء اختيار اسم الحساب",
+
+        $('#tbx').on('click', '.btnDetails', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var TransactionId = data['transactionId'];
+            var TransactionDate = data['transDate'];
+            var Note = data['note'];
+
+            $('.tarnsDate').text(TransactionDate);
+            $('.tarnsStatement').text(Note);
+
+            $.get('/Transactions/getDetailData', { "Id": TransactionId }, function (response) {
+                $('.detailsTBody').empty();
+                var sumOfDebit = 0;
+                var sumOfCredit = 0;
+                $.each(response, function (key, value) {
+                    var rows = "<tr id='row' style='font-size: 16px;text-align:center;'>"
+                        + "<td class='id'>" + value.id + "</td>"
+                        + "<td class='accName'>" + value.accName + "</td>"
+                        + "<td class='accName'>" + formatNumber(value.debit.toString()) + "</td>"
+                        + "<td class='credit'>" + formatNumber(value.credit.toString()) + "</td>"
+                        + "</tr>";
+                    $('.detailsTBody').append(rows);
+
+                    sumOfCredit = sumOfCredit + value.credit;
+                    sumOfDebit = sumOfDebit + value.debit;
+
+                });
+                var balance = sumOfDebit - sumOfCredit;
+
+                $('#tdDebitAmount').text(formatNumber(sumOfDebit.toString()));
+                $('#tdCreditAmount').text(formatNumber(sumOfCredit.toString()));
+                $('#tdBalance').text(formatNumber(balance.toString()));
+
             });
-            return;
-        }
+        });
 
-        DateFrom = moment(DateFrom, "DD/MM/YYYY").format("MM/DD/yyyy");
-        DateTo = moment(DateTo, "DD/MM/YYYY").format("MM/DD/yyyy");
 
-        var url = "/Transactions/printLedgerByDates?Id=" + Id
-           + "&dateFrom=" + DateFrom + "&dateTo=" + DateTo;
-        window.open(url, '_blank').focus();
-    }
+        $('#tbx').on('click', '.btnPrintRep', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var accTreeId = data['accTreeId'];
+            var debit = data['debit'];
+            var credit = data['credit'];
+            var Diff = data['Diff'];
+            var note = data['note'];
+
+            //$.get('/Reports/PrintCovenantLetter', { debit: debit, credit: credit, accTreeId: accTreeId, diff: Diff, note: note }, function () {
+
+            //});
+            var url = `/Reports/PrintCovenantLetter?debit=${debit}&credit=${credit}&accTreeId=${accTreeId}&diff=${Diff}&note=${note}`;
+            window.open(url, '_blank');
+        });
+
+
     </script>
 }

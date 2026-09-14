@@ -9,9 +9,8 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Purchases.Class;
-using System.Security;
 using Microsoft.AspNet.Identity;
+using Purchases.Models.ViewModel;
 
 namespace Purchases.Controllers
 {
@@ -28,11 +27,11 @@ namespace Purchases.Controllers
 
         public ActionResult getAllCompanies()
         {
-            List<CompetingCompanyViewModel> employeeList = new List<CompetingCompanyViewModel>();
+            List<CompetingCompanyVM> employeeList = new List<CompetingCompanyVM>();
             foreach (var item in db.AccountTrees.Where(x=>x.AccParent == 46 & !db.CompanyRegisterations.Any(c=>c.AccountTreeId == x.Id)).ToList())
             {
                 employeeList.Add(
-                    new CompetingCompanyViewModel()
+                    new CompetingCompanyVM()
                     {
                         Id = item.Id,
                         Name = item.AccName,
@@ -48,7 +47,7 @@ namespace Purchases.Controllers
             foreach(var item in db.CompanyRegisterations.ToList())
             {
                 employeeList.Add(
-                    new CompetingCompanyViewModel()
+                    new CompetingCompanyVM()
                     {
                         Id = item.Id,
                         Name = item.Name,
@@ -68,11 +67,11 @@ namespace Purchases.Controllers
 
         public ActionResult getAllCompaniesOld()
         {
-            List<CompetingCompanyViewModel> employeeList = new List<CompetingCompanyViewModel>();
+            List<CompetingCompanyVM> employeeList = new List<CompetingCompanyVM>();
             foreach (var item in db.CompanyRegisterations.ToList())
             {
                 employeeList.Add(
-                    new CompetingCompanyViewModel()
+                    new CompetingCompanyVM()
                     {
                         Id = item.Id,
                         Name = item.Name,
@@ -92,11 +91,11 @@ namespace Purchases.Controllers
         //دي متعلقة 
         public ActionResult getAllCompaniesInOrder(int Id)
         {
-            List<CompetingCompanyViewModel> employeeList = new List<CompetingCompanyViewModel>();
+            List<CompetingCompanyVM> employeeList = new List<CompetingCompanyVM>();
             foreach (var item in db.CompetingCompanies.Where(x=>x.OrderId == Id).ToList())
             {
                 employeeList.Add(
-                    new CompetingCompanyViewModel()
+                    new CompetingCompanyVM()
                     {
                         Id = item.Id,
                         CompanyId = item.CompanyRegisteration.Id,
@@ -116,7 +115,7 @@ namespace Purchases.Controllers
 
         public ActionResult getCompanyById(int Id)
         {
-            CompetingCompanyViewModel obj = new CompetingCompanyViewModel();
+            CompetingCompanyVM obj = new CompetingCompanyVM();
 
             if (db.CompanyRegisterations.Any(x=>x.Id==Id))
             {
@@ -136,7 +135,7 @@ namespace Purchases.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(CompetingCompanyViewModel model)
+        public ActionResult Add(CompetingCompanyVM model)
         {
             var userid = User.Identity.GetUserId();
 
@@ -192,7 +191,7 @@ namespace Purchases.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddOld(CompetingCompanyViewModel model)
+        public ActionResult AddOld(CompetingCompanyVM model)
         {
             var userid = User.Identity.GetUserId();
 
@@ -233,7 +232,7 @@ namespace Purchases.Controllers
 
         [ActionName("UpdateCompany")]
         [HttpPost]
-        public ActionResult UpdateCompetingCompany(CompetingCompanyViewModel model)
+        public ActionResult UpdateCompetingCompany(CompetingCompanyVM model)
         {
             try
             {
@@ -316,11 +315,11 @@ namespace Purchases.Controllers
             ViewBag.Status = obj.Status == 1 ? "الشركة / المؤسسة ما زالت موجودة في سوق العمل وتعمل حاليا يرجي مراجعة بياناتها بالتواصل المباشر او عن طريق المناديب" :
                 "الشركة / المؤسسة غير موجودة في سوق العمل وبالتالي هي خارج اطار المنافسة في جميع المناقصات والعطاءات المطروحة حاليا او التي ستطرح مستقبلا";
             
-            List<CompanyDocumentViewModel> data = new List<CompanyDocumentViewModel>();
+            List<CompanyDocumentVM> data = new List<CompanyDocumentVM>();
             if (db.CompanyDocuments.Any(x => x.CompanyRegisterationId == Id))
             {
                 data = db.CompanyDocuments.Where(x => x.CompanyRegisterationId == Id)
-                            .Select(p => new CompanyDocumentViewModel()
+                            .Select(p => new CompanyDocumentVM()
                             {
                                 Id = p.Id,
                                 ImagePath = p.ImagePath,
@@ -347,11 +346,11 @@ namespace Purchases.Controllers
         //    @ViewBag.Status = obj.Status == 1? "الشركة / المؤسسة ما زالت موجودة في سوق العمل وتعمل حاليا يرجي مراجعة بياناتها بالتواصل المباشر او عن طريق المناديب" :
         //        "الشركة / المؤسسة غير موجودة في سوق العمل وبالتالي هي خارج اطار المنافسة في جميع المناقصات والعطاءات المطروحة حاليا او التي ستطرح مستقبلا";
 
-        //    List<CompanyDocumentViewModel> data = new List<CompanyDocumentViewModel>();
+        //    List<CompanyDocumentVM> data = new List<CompanyDocumentVM>();
         //    if (db.CompanyDocuments.Any(x => x.CompetingCompanyId == Id))
         //    {
         //        data = db.CompanyDocuments.Where(x => x.CompetingCompanyId == Id)
-        //                    .Select(p => new CompanyDocumentViewModel()
+        //                    .Select(p => new CompanyDocumentVM()
         //                    {
         //                        Id = p.Id,
         //                        ImagePath = p.ImagePath,
@@ -368,11 +367,11 @@ namespace Purchases.Controllers
 
         //public ActionResult GetCompanyDocument(int? page, int? Get, int? Search, int? Count, int? Id)
         //{
-        //    List<CompanyDocumentViewModel> data = new List<CompanyDocumentViewModel>();
+        //    List<CompanyDocumentVM> data = new List<CompanyDocumentVM>();
         //    if (db.CompanyDocuments.Any(x => x.CompetingCompanyId == Id))
         //    {
         //        data = db.CompanyDocuments.Where(x => x.CompetingCompanyId == Id)
-        //                    .Select(p => new CompanyDocumentViewModel()
+        //                    .Select(p => new CompanyDocumentVM()
         //                    {
         //                        Id = p.Id,
         //                        ImagePath = p.ImagePath,
@@ -421,7 +420,7 @@ namespace Purchases.Controllers
 
         [HttpPost]
         [ActionName("AddDocument")]
-        public ActionResult AddCompanyDocument(CompanyDocumentViewModel model)
+        public ActionResult AddCompanyDocument(CompanyDocumentVM model)
         {
             try
             {
@@ -456,7 +455,7 @@ namespace Purchases.Controllers
 
         [HttpPost]
         [ActionName("UpdateDocument")]
-        public ActionResult UpdateCompanyDocument(CompanyDocumentViewModel model)
+        public ActionResult UpdateCompanyDocument(CompanyDocumentVM model)
         {
             try
             {
@@ -504,7 +503,7 @@ namespace Purchases.Controllers
                 if (db.CompanyDocuments.Any(x => x.Id == Id))
                 {
                     CompanyDocument obj = db.CompanyDocuments.Find(Id);
-                    CompanyDocumentViewModel dto = new CompanyDocumentViewModel();
+                    CompanyDocumentVM dto = new CompanyDocumentVM();
                     dto.Id = Id;
                     dto.ImagePath = obj.ImagePath;
                     dto.Title = obj.Title;

@@ -133,7 +133,7 @@
                @{
                    foreach (var item1 in Model.Select(x => new { x.transactionId, x.note }).Distinct().ToList())
                    {
-                       foreach (var item in Model.Where(x=>x.transactionId == item1.transactionId).OrderBy(x=>x.debit))
+                       foreach (var item in Model.Where(x=>x.transactionId == item1.transactionId).OrderBy(x=>x.credit))
                        {
                         <tr >
                             @{
@@ -141,17 +141,16 @@
                                 {
                                     <td>0</td>
                                     <td>@item.credit</td>
-                                    <td class="text-right" style="padding-right:20px;">من حــ/ @item.accName</td>
-                                    <td>@item.transDate</td>
+                                    <td class="text-right" style="padding-right:60px;">إلي حــ/ @item.accName</td>
+                                    <td>@item.transactionDate.Value.ToShortDateString()</td>
 
                                 }
                                 else // debit
                                 {
                                     <td>@item.debit</td>
                                     <td>0</td>
-                                    <td class="text-right"  style="padding-right:60px;">الي حــ/ @item.accName</td>
-                                    <td>@item.transDate</td>
-
+                                    <td class="text-right"  style="padding-right:20px;">من حــ/ @item.accName</td>
+                                    <td>@item.transactionDate.Value.ToShortDateString()</td>
                                 }
                             }
                             

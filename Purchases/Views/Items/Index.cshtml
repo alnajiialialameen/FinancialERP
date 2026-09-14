@@ -1,14 +1,9 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout2.cshtml";
 }
 
-
 @section content{
-
-
-
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <div class="grad"></div>
@@ -22,9 +17,7 @@
                 <li><a href="#"><i class="fa fa-home"></i> النظام المالي </a></li>
                 <li class="active"> الاصنــاف</li>
             </ol>
-
         </section>
-
 
         <section class="content">
             <div class="row">
@@ -40,12 +33,7 @@
                 </div><!-- /.col -->
             </div><!-- /.row -->
         </section>
-
-
     </div><!-- /.content-wrapper -->
-
-
-
 
     <div class="example-modal">
         <div class="modal fade in" id="add-modal">
@@ -79,26 +67,17 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </div>
                                         <!-- /.box-body -->
                                     </div>
-
                                 </form>
                             </div>
                         </div><!-- /.row (main row) -->
-
                     </div>
-                    @*<div class="modal-footer">
-
-                        </div>*@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
     </div>
-
-
-
 
     <!-- Edit Modal -->
     <div class="example-modal">
@@ -142,19 +121,11 @@
                                 </form>
                             </div>
                         </div><!-- /.row (main row) -->
-
                     </div>
-                    @*<div class="modal-footer">
-
-                        </div>*@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
     </div>
-
-
-
-
 
     <!-- Add Modal housing -->
     <div class="example-modal-item-detail">
@@ -190,25 +161,16 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </div>
-                                        <!-- /.box-body -->
                                     </div>
-
                                 </form>
                             </div>
                         </div><!-- /.row (main row) -->
-
                     </div>
-                    @*<div class="modal-footer">
-
-                        </div>*@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
     </div>
-
-
 
     <!-- show Modal housing -->
     <div class="example-modal-housing">
@@ -229,27 +191,16 @@
                                         <!-- Input addon -->
                                         <h4 id="ad-name2" class="ad-name2"></h4>
                                         <input id="ad-id2" class="ed-id2 hidden" name="ad-id2" />
-
                                         <table id="tbx2" class="table table-bordered table-hover"></table>
-
                                     </div>
-                                    <!-- /.box-body -->
                                 </div>
-
-
                             </div>
-                        </div><!-- /.row (main row) -->
-
+                        </div>
                     </div>
-                    @*<div class="modal-footer">
-
-                        </div>*@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
     </div>
-
-
 
     <!-- edit Modal housing -->
     <div class="example-modal-housing">
@@ -285,19 +236,13 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </div>
                                         <!-- /.box-body -->
                                     </div>
-
                                 </form>
                             </div>
                         </div><!-- /.row (main row) -->
-
                     </div>
-                    @*<div class="modal-footer">
-
-                        </div>*@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
@@ -311,425 +256,320 @@
 
     <script>
 
-     $(function () {
-
-
-         function loadData() {
-             dataTable = $('#tbx').DataTable({
-                 "language": {
-                     "lengthMenu": "عرض _MENU_ سجل في الصفحة",
-                     "search": "بحث"
-                 },
-                 ajax: {
-                     url: '/Items/LoadData',
-                     dataSrc: ''
-                 },
-                 columns: [
-                     {
-                         "title": "# ",
-                         "data": "Id"
-                     },
-                     {
-                         "title": "إسم  الصنف  ",
-                         "data": "Name"
-                     },
-
-                     {
-                         "title": "عدد العناصر  ",
-                         "data": null,
-                         "render": function (data) {
-                             return '<input readonly class="btn btn-info transfer btn-number-in openHousingModal" value=" ' + data.Count + ' "/>'
-                         }
-                     },
-                     {
-                         "title": "<i class='fa fa-cog'></i>",
-                         "data": null,
-                         "width": "30%",
-                         "orderable": false,
-                         "render": function (data) {
-                             return  '<div class="btn-opreation">'
-                                          + '<button class="btn btn-success transfer openEditModal">تعديل <i class=" transfer-fa fa  fa-edit"></i></button> '
-                                                                           + '<button class="btn btn-success transfer openAditModal">  إضافة عنصر جديد <i class=" transfer-fa fa  fa-edit"></i></button> '
-                                 + '</div> '
-
-                             ;
-
-                         }
-                     }
-
-
-                 ]
-
-             });
-
-         }
-         loadData();
-
-
-
-
-
-         $('#add-form').bootstrapValidator({
-             onSuccess: function (e) {
-                 save();
-                 e.preventDefault();
-
-             },
-             submitButtons: 'button[type="submit"]',
-             feedbackIcons: {
-                 valid: 'glyphicon glyphicon-ok success-feedback-icons',
-                 invalid: 'glyphicon glyphicon-remove error-feedback-icons',
-                 validating: 'fa fa-refresh fa-spin success-feedback-icons'
-             },
-             fields: {
-                 name: {
-                     validators: {
-                         notEmpty: {
-                             message: 'يجب الا يكون حقل الصنف  فارغ'
-                         }
-                     }
-                 }
-
-             }
-         });
-         //$('#adit-form-housing').bootstrapValidator({
-         //    onSuccess: function (e) {
-         //        saveHousing();
-         //        e.preventDefault();
-
-         //    },
-         //    submitButtons: 'button[type="submit"]',
-         //    feedbackIcons: {
-         //        valid: 'glyphicon glyphicon-ok success-feedback-icons',
-         //        invalid: 'glyphicon glyphicon-remove error-feedback-icons',
-         //        validating: 'fa fa-refresh fa-spin success-feedback-icons'
-         //    },
-         //    fields: {
-         //        name: {
-         //            validators: {
-         //                notEmpty: {
-         //                    message: 'يجب الا يكون حقل المحلية  فارغ'
-         //                }
-         //            }
-         //        }
-
-         //    }
-         //});
-     });
-
-
-
-
-     function save() {
-
-
-         var ob = {
-             "Name": $('#name').val()
-         };
-         $.ajax({
-             url: "@Url.Action("Save", "Items")",
-             type: "POST",
-             data: JSON.stringify(ob),
-             contentType: "application/json charset=utf-8",
-             dataType: "json",
-             error: function (response) {
-                 //toastr[response.Status](response.Message, response.Title);
-             },
-             success: function (response) {
-                 toastr[response.Status](response.Message, response.Title);
-                 $('.name').val(null);
-                 $('#add-modal').modal('hide');
-                 dataTable.ajax.reload();
-
-             }
-         });
-
-     }
-
-     function saveItemDetails() {
-
-
-         var ob = {
-             "Name": $('#ad-name').val(),
-             "Id": $('#ad-id').val()
-         };
-         $.ajax({
-             url: "@Url.Action("SaveItemDetails", "Items")",
-             type: "POST",
-         data: JSON.stringify(ob),
-         contentType: "application/json charset=utf-8",
-         dataType: "json",
-         error: function (response) {
-             //toastr[response.Status](response.Message, response.Title);
-         },
-         success: function (response) {
-             toastr[response.Status](response.Message, response.Title);
-             $('.name').val(null);
-             $('#add-modal-item-detail').modal('hide');
-             dataTable.ajax.reload();
-
-         }
-     });
-
-     }
-
-
-         //End Document Ready
-
-
-         ///////////////////////////////////////////////////////////////////////
-
-         //Open Edit Modal
-         $("#tbx").on('click', '.openEditModal', function () {
-             // get the current row
-             var currentRow = $(this).closest("tr");
-
-             $('#ed-id').val(currentRow.find("td:eq(0)").text());
-             $('#edname').val(currentRow.find("td:eq(1)").text()); // get current row 1st TD value
-             $('#edit-modal').modal('show');
-
-         });
-
-
-
-
-         //Open Edit Modal Housing
-         $("#tbx2").on('click', '.openEditModalHousing', function () {
-             // get the current row
-             var currentRow = $(this).closest("tr");
-
-             $('#ed-id-h').val(currentRow.find("td:eq(0)").text());
-             $('#adname-detail').val(currentRow.find("td:eq(1)").text()); // get current row 1st TD value
-             $('#edit-modal-housing').modal('show');
-
-         });
-
-
-
-         $("#close").on('click',  function () {
-
-             window.location.reload();
-
-         });
-
-         //Open Adit Modal item detail
-         $("#tbx").on('click', '.openAditModal', function () {
-             // get the current row
-             $('#ad-name').val(null);
-             var currentRow = $(this).closest("tr");
-
-             $('#ad-id').val(currentRow.find("td:eq(0)").text());
-            // $('#ad-name').val(currentRow.find("td:eq(1)").text()); // get current row 1st TD value
-             $('#add-modal-item-detail').modal('show');
-
-         });
-
-     //Open show  Modal HOUSING
-         $("#tbx").on('click', '.openHousingModal', function () {
-             // get the current row
-
-             var currentRow = $(this).closest("tr");
-
-             $('#ad-id2').val(currentRow.find("td:eq(0)").text());
-             $('#ad-name2').text(currentRow.find("td:eq(1)").text()); // get current row 1st TD value
-             var x=currentRow.find("td:eq(0)").text();
-             $('#show-modal-housing').modal('show');
-             console.log(x);
-
-
-             loadDataItemDetail(x);
-             // dataTable2.clear().draw();
-
-         });
-
-         //Validation And Save Edit Data
-         $('#add-form-item-detail').bootstrapValidator({
-             onSuccess: function (e) {
-                 saveItemDetails();
-                 e.preventDefault();
-
-             },
-             submitButtons: 'button[type="submit"]',
-             feedbackIcons: {
-                 valid: 'glyphicon glyphicon-ok success-feedback-icons',
-                 invalid: 'glyphicon glyphicon-remove error-feedback-icons',
-                 validating: 'fa fa-refresh fa-spin success-feedback-icons'
-             },
-             fields: {
-                 adname: {
-                     validators: {
-                         notEmpty: {
-                             message: 'يجب الا يكون حقل اسم العنصر فارغ'
-                         }
-                     }
-                 },
-
-
-             }
-         });
-
-
-         //Validation And Save Edit Data
-         $('#edit-form').bootstrapValidator({
-             onSuccess: function (e) {
-                 edit();
-                 e.preventDefault();
-
-             },
-             submitButtons: 'button[type="submit"]',
-             feedbackIcons: {
-                 valid: 'glyphicon glyphicon-ok success-feedback-icons',
-                 invalid: 'glyphicon glyphicon-remove error-feedback-icons',
-                 validating: 'fa fa-refresh fa-spin success-feedback-icons'
-             },
-             fields: {
-                 edname: {
-                     validators: {
-                         notEmpty: {
-                             message: 'يجب الا يكون حقل اسم الصنف فارغ'
-                         }
-                     }
-                 }
-             }
-         });
-
-
-
-
-
-         //Validation And Save Edit Housing Data
-         $('#edit-form-housing').bootstrapValidator({
-             onSuccess: function (e) {
-                 editItemDetail();
-                 e.preventDefault();
-
-             },
-             submitButtons: 'button[type="submit"]',
-             feedbackIcons: {
-                 valid: 'glyphicon glyphicon-ok success-feedback-icons',
-                 invalid: 'glyphicon glyphicon-remove error-feedback-icons',
-                 validating: 'fa fa-refresh fa-spin success-feedback-icons'
-             },
-             fields: {
+        $(function () {
+            function loadData() {
+                dataTable = $('#tbx').DataTable({
+                    "language": {
+                        "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                        "search": "بحث"
+                    },
+                    ajax: {
+                        url: '/Items/LoadData',
+                        dataSrc: ''
+                    },
+                    columns: [
+                        {
+                            "title": "# ",
+                            "data": "Id"
+                        },
+                        {
+                            "title": "إسم  الصنف  ",
+                            "data": "Name"
+                        },
+                        {
+                            "title": "عدد العناصر  ",
+                            "data": null,
+                            "render": function (data) {
+                                return '<input readonly class="btn btn-info transfer btn-number-in openHousingModal" value=" ' + data.Count + ' "/>'
+                            }
+                        },
+                        {
+                            "title": "<i class='fa fa-cog'></i>",
+                            "data": null,
+                            "width": "30%",
+                            "orderable": false,
+                            "render": function (data) {
+                                return '<div class="btn-opreation">'
+                                             + '<button class="btn btn-success transfer openEditModal">تعديل <i class=" transfer-fa fa  fa-edit"></i></button> '
+                                                                              + '<button class="btn btn-success transfer openAditModal">  إضافة عنصر جديد <i class=" transfer-fa fa  fa-edit"></i></button> '
+                                    + '</div> '
+
+                                ;
+
+                            }
+                        }
+                    ]
+
+                });
+            }
+            loadData();
+
+            $('#add-form').bootstrapValidator({
+                onSuccess: function (e) {
+                    save();
+                    e.preventDefault();
+                },
+
+                submitButtons: 'button[type="submit"]',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                    invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                    validating: 'fa fa-refresh fa-spin success-feedback-icons'
+                },
+                fields: {
+                    name: {
+                        validators: {
+                            notEmpty: {
+                                message: 'يجب الا يكون حقل الصنف  فارغ'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        function save() {
+            var ob = {
+                "Name": $('#name').val()
+            };
+
+            $.ajax({
+                url: "@Url.Action("Save", "Items")",
+                type: "POST",
+                data: JSON.stringify(ob),
+                contentType: "application/json charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    //toastr[response.Status](response.Message, response.Title);
+                },
+                success: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    $('.name').val(null);
+                    $('#add-modal').modal('hide');
+                    dataTable.ajax.reload();
+                }
+            });
+        }
+
+        function saveItemDetails() {
+            var ob = {
+                "Name": $('#ad-name').val(),
+                "Id": $('#ad-id').val()
+            };
+            $.ajax({
+                url: "@Url.Action("SaveItemDetails", "Items")",
+                type: "POST",
+                data: JSON.stringify(ob),
+                contentType: "application/json charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    //toastr[response.Status](response.Message, response.Title);
+                },
+                success: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    $('.name').val(null);
+                    $('#add-modal-item-detail').modal('hide');
+                    dataTable.ajax.reload();
+                }
+            });
+        }
+
+        //Open Edit Modal
+        $("#tbx").on('click', '.openEditModal', function () {
+            var currentRow = $(this).closest("tr");
+
+            $('#ed-id').val(currentRow.find("td:eq(0)").text());
+            $('#edname').val(currentRow.find("td:eq(1)").text()); // get current row 1st TD value
+            $('#edit-modal').modal('show');
+        });
+
+        //Open Edit Modal Housing
+        $("#tbx2").on('click', '.openEditModalHousing', function () {
+            var currentRow = $(this).closest("tr");
+
+            $('#ed-id-h').val(currentRow.find("td:eq(0)").text());
+            $('#adname-detail').val(currentRow.find("td:eq(1)").text()); // get current row 1st TD value
+            $('#edit-modal-housing').modal('show');
+        });
+
+        $("#close").on('click', function () {
+            window.location.reload();
+        });
+
+        //Open Adit Modal item detail
+        $("#tbx").on('click', '.openAditModal', function () {
+            $('#ad-name').val(null);
+            var currentRow = $(this).closest("tr");
+
+            $('#ad-id').val(currentRow.find("td:eq(0)").text());
+            $('#add-modal-item-detail').modal('show');
+        });
+
+        //Open show  Modal HOUSING
+        $("#tbx").on('click', '.openHousingModal', function () {
+            var currentRow = $(this).closest("tr");
+
+            $('#ad-id2').val(currentRow.find("td:eq(0)").text());
+            $('#ad-name2').text(currentRow.find("td:eq(1)").text()); // get current row 1st TD value
+            var x = currentRow.find("td:eq(0)").text();
+            $('#show-modal-housing').modal('show');
+
+            loadDataItemDetail(x);
+        });
+
+        //Validation And Save Edit Data
+        $('#add-form-item-detail').bootstrapValidator({
+            onSuccess: function (e) {
+                saveItemDetails();
+                e.preventDefault();
+
+            },
+            submitButtons: 'button[type="submit"]',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                validating: 'fa fa-refresh fa-spin success-feedback-icons'
+            },
+            fields: {
+                adname: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل اسم العنصر فارغ'
+                        }
+                    }
+                },
+
+
+            }
+        });
+
+
+        //Validation And Save Edit Data
+        $('#edit-form').bootstrapValidator({
+            onSuccess: function (e) {
+                edit();
+                e.preventDefault();
+            },
+            submitButtons: 'button[type="submit"]',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                validating: 'fa fa-refresh fa-spin success-feedback-icons'
+            },
+            fields: {
+                edname: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل اسم الصنف فارغ'
+                        }
+                    }
+                }
+            }
+        });
+
+        //Validation And Save Edit Housing Data
+        $('#edit-form-housing').bootstrapValidator({
+            onSuccess: function (e) {
+                editItemDetail();
+                e.preventDefault();
+
+            },
+            submitButtons: 'button[type="submit"]',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                validating: 'fa fa-refresh fa-spin success-feedback-icons'
+            },
+            fields: {
                 adnamedetail: {
-                     validators: {
-                         notEmpty: {
-                             message: 'يجب الا يكون حقل اسم العنصر فارغ'
-                         }
-                     }
-                 },
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل اسم العنصر فارغ'
+                        }
+                    }
+                },
+            }
+        });
 
+        function edit() {
+            var ob = {
+                "Id": $('#ed-id').val(),
+                "Name": $('#edname').val(),
+            };
 
+            $.ajax({
+                url: "@Url.Action("Edit", "Items")",
+                type: "POST",
+                data: JSON.stringify(ob),
+                contentType: "application/json charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    //toastr[response.Status](response.Message, response.Title);
+                },
+                success: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    $('#edit-modal').modal('hide');
+                    dataTable.ajax.reload();
+                }
+            });
+        };
 
-             }
-         });
+        function editItemDetail() {
+            var ob = {
+                "Id": $('#ed-id-h').val(),
+                "Name": $('#adname-detail').val(),
+            };
 
-         function edit() {
+            $.ajax({
+                url: "@Url.Action("EditItemDetails", "Items")",
+                type: "POST",
+                data: JSON.stringify(ob),
+                contentType: "application/json charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    //toastr[response.Status](response.Message, response.Title);
+                },
+                success: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    $('#edit-modal-housing').modal('hide');
+                    dataTable2.ajax.reload();
+                    window.location.reload
+                }
+            });
+        };
 
-
-             var ob = {
-                 "Id": $('#ed-id').val(),
-                 "Name": $('#edname').val(),
-
-             };
-             $.ajax({
-                 url: "@Url.Action("Edit", "Items")",
-                 type: "POST",
-             data: JSON.stringify(ob),
-             contentType: "application/json charset=utf-8",
-             dataType: "json",
-             error: function (response) {
-                 //toastr[response.Status](response.Message, response.Title);
-             },
-             success: function (response) {
-                 toastr[response.Status](response.Message, response.Title);
-                 $('#edit-modal').modal('hide');
-                 dataTable.ajax.reload();
-
-             }
-         });
-         };
-
-
-
-     function editItemDetail() {
-
-
-         var ob = {
-             "Id": $('#ed-id-h').val(),
-             "Name": $('#adname-detail').val(),
-
-         };
-         $.ajax({
-             url: "@Url.Action("EditItemDetails", "Items")",
-             type: "POST",
-         data: JSON.stringify(ob),
-         contentType: "application/json charset=utf-8",
-         dataType: "json",
-         error: function (response) {
-             //toastr[response.Status](response.Message, response.Title);
-         },
-         success: function (response) {
-             toastr[response.Status](response.Message, response.Title);
-             $('#edit-modal-housing').modal('hide');
-             dataTable2.ajax.reload();
-             window.location.reload
-
-         }
-     });
-     };
-
-     function loadDataItemDetail(id) {
-         console.log(id);
-
-         dataTable2 = $('#tbx2').DataTable({
-             "language": {
-                 "lengthMenu": "عرض _MENU_ سجل في الصفحة",
-                 "search": "بحث"
-             },
-             ajax: {
-                 url: '/Items/LoadDataItemDetail/' + id,
-                 dataSrc: ''
-
-             },
-             columns: [
-                 {
-                     "title": "# ",
-                     "data": "Id"
-                 },
-                 {
-                     "title": "إسم  العنصر  ",
-                     "data": "Name"
-                 },
-
-
-                 {
-                     "title": "<i class='fa fa-cog'></i>",
-                     "data": null,
-                     "width": "30%",
-                     "orderable": false,
-                     "render": function (data) {
-                         return '<div class="btn-opreation">'
-                                      + '<button class="btn btn-success transfer openEditModalHousing">تعديل <i class=" transfer-fa fa  fa-edit"></i></button> '
-
-                             + '</div> '
-
-                         ;
-
-                     }
-                 }
-
-
-             ]
-
-         });
-
-
-
-     }
+        function loadDataItemDetail(id) {
+            dataTable2 = $('#tbx2').DataTable({
+                "language": {
+                    "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                    "search": "بحث"
+                },
+                ajax: {
+                    url: '/Items/LoadDataItemDetail/' + id,
+                    dataSrc: ''
+                },
+                columns: [
+                    {
+                        "title": "# ",
+                        "data": "Id"
+                    },
+                    {
+                        "title": "إسم  العنصر  ",
+                        "data": "Name"
+                    },
+                    {
+                        "title": "<i class='fa fa-cog'></i>",
+                        "data": null,
+                        "width": "30%",
+                        "orderable": false,
+                        "render": function (data) {
+                            return '<div class="btn-opreation">'
+                                         + '<button class="btn btn-success transfer openEditModalHousing">تعديل <i class=" transfer-fa fa  fa-edit"></i></button> '
+                                         + '</div> ';
+                        }
+                    }
+                ]
+            });
+        }
     </script>
 }
-
-
-
-

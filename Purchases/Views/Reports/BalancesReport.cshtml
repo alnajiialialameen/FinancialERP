@@ -1,0 +1,199 @@
+﻿@{
+    ViewBag.Title = "TaxReport";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<h2>TaxReport</h2>
+
+@section content
+{
+<div class="content-wrapper">
+    <div class="grad"></div>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            تقرير مراقبة الصرف
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
+            <li class="active">مراقبة الصرف </li>
+        </ol>
+    </section>
+
+    <section class="content">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label for="transactionDate"> من تاريخ</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="fa fa-calendar-alt"></i>
+                        </span>
+                        <input type="text" class="form-control  calendar DateFrom" id="DateFrom" name="DateFrom" placeholder="من تاريخ " autocomplete="off">
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label for="transactionDate"> الي تاريخ</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="fa fa-calendar-alt"></i>
+                        </span>
+                        <input type="text" class="form-control  calendar DateTo" id="DateTo" name="DateTo" placeholder=" الى تاريخ " autocomplete="off">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label for="btnSummary">.</label>
+                    <div class="input-group">
+                        <button id="btnSummary" onclick="Summary()" class="btn btn-primary">الملخص</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class=" col-md-1">
+                <button id="btnsearch" onclick="Search()" class="btn btn-primary btn-sm form-control">بحث</button>
+            </div>
+            <div class=" col-md-2">
+                <button id="btnall" onclick="PrintData(245)" class="btn form-control btn-info btn-sm">الفصل الاول</button>
+            </div>
+            <div class=" col-md-2">
+                <button id="btnall" onclick="PrintData(12)" class="btn form-control btn-success btn-sm">المصروفات التشغيليلة</button>
+            </div>
+            <div class=" col-md-2">
+                <button id="btnall" onclick="PrintData(13)" class="btn form-control btn-warning btn-sm"> المصروفات الادارية</button>
+            </div>
+            <div class=" col-md-2">
+                <button id="btnall" onclick="PrintData(172)" class="btn form-control btn-danger btn-sm"> المصروفات الراسمالية</button>
+            </div>
+            <div class=" col-md-2">
+                <button id="btnall" onclick="PrintDataRevenueOnly(235)" class="btn form-control btn-info btn-sm"> مصروفات التنمية</button>
+            </div>
+            <div class=" col-md-1">
+                <button id="btnall" onclick="PrintDataRevenueOnly(3)" class="btn form-control btn-primary btn-sm">  الايرادات</button>
+            </div>
+            <br />
+            <div class="row" style="margin: 30px;">
+                <table id="tbl" class="dataTable table table-striped table-hover" style="width:100%">
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+}
+
+@section scripts{
+
+    <script>
+        var myId = 0;
+
+        // طباعة الكل
+        function PrintData() {
+            var DateFrom = $('#DateFrom').val();
+            var DateTo = $('#DateTo').val();
+
+            var url = "/Reports/printBalancesReport?dateFrom=" + DateFrom + "&dateTo=" + DateTo + "&AccountTopType=" + 0;
+            window.open(url, '_blank').focus();
+        }
+
+        // طباعة المصروفات فقط
+        function PrintDataExpenseOnly() {
+            var DateFrom = $('#DateFrom').val();
+            var DateTo = $('#DateTo').val();
+
+            var url = "/Reports/printBalancesReport?dateFrom=" + DateFrom + "&dateTo=" + DateTo + "&AccountTopType=" + 4;
+            window.open(url, '_blank').focus();
+        }
+
+        // طباعة الايرادات فقط
+        function PrintDataRevenueOnlyOld(id) {
+            var DateFrom = $('#DateFrom').val();
+            var DateTo = $('#DateTo').val();
+
+            var url = "/Reports/printBalancesReport?dateFrom=" + DateFrom + "&dateTo=" + DateTo + "&AccountTopType=" + id;
+            window.open(url, '_blank').focus();
+        }
+
+        function Search() {
+            var DateFrom = $('#DateFrom').val();
+            var DateTo = $('#DateTo').val();
+            var url = "/Reports/GetBalancesDateRangeForSearch?DateFrom=" + DateFrom + "&DateTo=" + DateTo + "&AccountTopType=" + 0;
+
+            $('#tbl').DataTable({
+                destroy: true,
+                "language": {
+                    "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                    "search": "بحث"
+                },
+                ajax: {
+                    url: url,
+                    dataSrc: ''
+                },
+                columns: [
+                    {
+                        "title": "# ",
+                        "data": "balanceId"
+                    },
+                    {
+                        "title": "البند",
+                        "data": "accTreeName"
+                    },
+                    {
+                        "title": "الاعتماد",
+                        "data": "credint",
+                        "render": function (data) {
+                            return formatNumber(data.toString());
+                        }
+                    },
+                    {
+                        "title": "الصرف الفعلي",
+                        "data": "actualExchange",
+                        "render": function (data) {
+                            return formatNumber(data.toString());
+                        }
+                    },
+                    //{
+                    //    "title": "الانحراف النسبي",
+                    //    "data": "Amount"
+                    //},
+                    //{
+                    //    "title": "نسبة الانحراف",
+                    //    "data": "Note"
+                    //},
+                ]
+            });
+        }
+
+
+
+
+        // المصروفات الفصل الاول
+        function PrintData(id) {
+            var DateFrom = $('#DateFrom').val();
+            var DateTo = $('#DateTo').val();
+
+            var url = "/Reports/printBalancesReport?dateFrom=" + DateFrom + "&dateTo=" + DateTo + "&ParentId=" + id;
+            window.open(url, '_blank').focus();
+        }
+
+        // طباعة الايرادات فقط
+        function PrintDataRevenueOnly(id) {
+            var DateFrom = $('#DateFrom').val();
+            var DateTo = $('#DateTo').val();
+
+            var url = "/Reports/printBalancesReportRevenue?dateFrom=" + DateFrom + "&dateTo=" + DateTo + "&ParentId=" + id;
+            window.open(url, '_blank').focus();
+        }
+
+        function Summary() {
+            var DateFrom = $('#DateFrom').val();
+            var DateTo = $('#DateTo').val();
+            var url = "/Reports/printBalancesReportSummary?dateFrom=" + DateFrom + "&dateTo=" + DateTo;
+            window.open(url, '_blank').focus();
+        }
+    </script>   
+}

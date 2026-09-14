@@ -1,0 +1,125 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<style>
+    .displaying{
+        display:none;
+    }
+</style>
+
+@section content{
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <div class="grad"></div>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            القيود المحاسبية
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
+            <li class="active">  البحث باسم المستلم</li>
+        </ol>
+    </section>
+
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                            <div class="container" style="margin-top:30px;">
+                                <table id="tbx" class="table table-bordered table-sm table-hover" style="width:100%">
+                                </table>
+                            </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+         </div>
+    </section>
+
+</div><!-- /.content-wrapper -->
+}
+
+@section scripts{
+    
+<script>
+    var myId = 0;
+    var dataTable;
+
+    $(document).ready(function () {
+
+        function loadData() {
+            dataTable = $('#tbx').DataTable({
+                "language": {
+                    "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                    "search": "بحث"
+                },
+                "columnDefs": [
+                      {
+                          "targets": 0,
+                          "className": "text-center",
+                      },
+                ],
+                ajax: {
+                    url: '/Transactions/LoadDataForSearchByRecipient',
+                    dataSrc: ''
+                },
+                columns: [
+                    {
+                        "title": "",
+                        "data": "transactionId",
+                        "orderable": false,
+                        "render": function (data) {
+                            return '<a class="btn btn-info btnDetails" data-toggle="modal" data-target="#details-modal"><i class="fa fa-info"></i></a>';
+                        }
+                    },
+                    {
+                        "title": "# ",
+                        "data": "transactionId"
+                    },
+                    {
+                        "title": "البيان",
+                        "data": "note"
+                    },
+                    {
+                        "title": "نوع السند",
+                        "data": "documentType"
+                    },
+                    {
+                        "title": "اسم المستلم",
+                        "data": "recipient"
+                    },
+                    {
+                        "title": "اجمالي المبلغ",
+                        "data": "total",
+                        "render": function (data, type, row) {
+                            return formatNumber(data.toString());
+                        }
+                    },
+                    {
+                        "title": "العملة",
+                        "data": "currency"
+                    },
+                    {
+                        "title": "سعر الصرف",
+                        "data": "exchangeRate",
+                        "render": function (data, type, row) {
+                            return formatNumber(data.toString());
+                        }
+                    },
+                    {
+                        "title": "  التاريخ  ",
+                        "data": "transactionDateStr"
+                    },
+                ]
+            });
+
+        }
+        loadData();
+    });
+
+</script>
+}

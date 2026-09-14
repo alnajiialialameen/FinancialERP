@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     Layout = "~/Views/Shared/_Layout2.cshtml";
 }
 
@@ -21,7 +20,6 @@
 
         </section>
 
-
         <section class="content">
             <div class="row">
                 <div class="col-xs-12">
@@ -36,8 +34,6 @@
                 </div><!-- /.col -->
             </div><!-- /.row -->
         </section>
-
-
     </div><!-- /.content-wrapper -->
 
 
@@ -58,89 +54,75 @@
                                         <div class="box-body">
                                             <!-- Input addon -->
                                             <div class="row">
+
                                                 <div class="col-lg-12">
-                                                    <div class="box .no-border">
-                                                        <!-- /.box-header -->
-                                                        <div class="box-body">
-                                                            <!-- Input addon -->
-                                                            <div class="row">
-
-                                                                <div class="col-lg-12">
-                                                                    <div class="col-lg-6">
-                                                                        <div class="form-group">
-                                                                            <label for="fromAccTreeId">   من الحساب</label>
-                                                                            <div class="input-group">
-                                                                                <div class="input-group-addon">
-                                                                                    <i class="fa  fa-user"></i>
-                                                                                </div>
-                                                                                <select class="form-control fromAccTreeId" name="fromAccTreeId" id="fromAccTreeId" style="width:100%"></select>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-lg-6">
-                                                                        <div class="form-group">
-                                                                            <label for="toAccTreeId"> الي  الحساب</label>
-                                                                            <div class="input-group">
-                                                                                <div class="input-group-addon">
-                                                                                    <i class="fa  fa-user"></i>
-                                                                                </div>
-                                                                                <select class="form-control toAccTreeId" name="toAccTreeId" id="toAccTreeId" style="width:100%"></select>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                 </div>
-
-                                                                <div class="col-lg-12">
-                                                                    <div class="col-lg-4">
-                                                                        <div class="form-group">
-                                                                            <label for="amount"> المبلغ  </label>
-                                                                            <div class="input-group">
-                                                                                <div class="input-group-addon">
-                                                                                    <i class="fa  fa-user"></i>
-                                                                                </div>
-                                                                                <input type="number" class="form-control amount" name="amount" id="amount" autocomplete="off" placeholder="المبلغ" />
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    
-                                                                    <div class="col-lg-4">
-                                                                        <div class="form-group">
-                                                                            <label for="transactionDate"> تاريخ التحويل</label>
-                                                                            <div class="input-group">
-                                                                                <span class="input-group-addon">
-                                                                                    <i class="fa fa-calendar-alt"></i>
-                                                                                </span>
-                                                                                <input type="text" class="form-control  calendar transactionDate" id="transactionDate" name="transactionDate" placeholder="تاريخ التحويل" autocomplete="off">
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="col-lg-4">
-                                                                        <div class="form-group">
-                                                                            <label for="note"> محلوظات</label>
-                                                                            <div class="input-group">
-                                                                                <div class="input-group-addon">
-                                                                                    <i class="fa  fa-user"></i>
-                                                                                </div>
-                                                                                <input class="form-control note" name="note" id="note" autocomplete="off" placeholder="ملحوظات" />
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="fromAccTreeId">   من الحساب</label>
+                                                            <div class="input-group">
+                                                                <div class="input-group-addon">
+                                                                    <i class="fa  fa-user"></i>
                                                                 </div>
-
-                                                                    <div class="col-lg-12 ">
-                                                                        <div>
-                                                                            <button type="button" class="btn btn-default " data-dismiss="modal">رجوع</button>
-                                                                            <button type="submit" class="btn btn-primary  pull-left save">حفظ</button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
+                                                                <select class="form-control fromAccTreeId" name="fromAccTreeId" id="fromAccTreeId" style="width:100%"></select>
+                                                            </div>
                                                         </div>
-                                                        <!-- /.box-body -->
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="toAccTreeId"> الي  الحساب</label>
+                                                            <div class="input-group">
+                                                                <div class="input-group-addon">
+                                                                    <i class="fa  fa-user"></i>
+                                                                </div>
+                                                                <select class="form-control toAccTreeId" name="toAccTreeId" id="toAccTreeId" style="width:100%"></select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <div class="flex"><label for="debitAmount">المبلغ</label><strong id="AmountCurrencyDecimalText" class="AmountCurrencyDecimalText"></strong></div>
+                                                            <div class="input-group">
+                                                                <div class="input-group-addon">
+                                                                    <i class="fa  fa-user"></i>
+                                                                </div>
+                                                                <input type="text" class="form-control amount" name="amount" id="amount" autocomplete="off" placeholder="المبلغ" />
+                                                            </div>
+                                                        </div>
                                                     </div>
 
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <label for="transactionDate"> تاريخ التحويل</label>
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon">
+                                                                    <i class="fa fa-calendar-alt"></i>
+                                                                </span>
+                                                                <input type="text" class="form-control  calendar transactionDate" id="transactionDate" name="transactionDate" placeholder="تاريخ التحويل" autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <label for="note"> محلوظات</label>
+                                                            <div class="input-group">
+                                                                <div class="input-group-addon">
+                                                                    <i class="fa  fa-user"></i>
+                                                                </div>
+                                                                <input class="form-control note" name="note" id="note" autocomplete="off" placeholder="ملحوظات" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12 ">
+                                                    <div>
+                                                        <button type="button" class="btn btn-default " data-dismiss="modal">رجوع</button>
+                                                        <button type="submit" class="btn btn-primary  pull-left save">حفظ</button>
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -151,149 +133,124 @@
                                 </form>
                             </div>
                         </div><!-- /.row (main row) -->
-
                     </div>
-                    @*<div class="modal-footer">
-
-                        </div>*@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
     </div>
 
 
+    <div class="example-modal">
+        <div class="modal fade in" data-backdrop="static" id="edit-modal">
+            <div class="modal-dialog" style="width:80% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">تعديل تحويل مصرفي </h4>
+                        <h4 class="TransactionId hidden">TransactionId</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <form method="post" id="edit-form">
+                                    <div class="box .no-border">
+                                        <!-- /.box-header -->
+                                        <div class="box-body">
+                                            <!-- Input addon -->
+                                            <div class="row">
 
-<div class="example-modal">
-    <div class="modal fade in" data-backdrop="static" id="edit-modal">
-        <div class="modal-dialog" style="width:80% !important">
-            <div class="modal-content">
-                <div class="modal-header .no-border">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">تعديل تحويل مصرفي </h4>
-                    <h4 class="TransactionId hidden">TransactionId</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <form method="post" id="edit-form">
-                                <div class="box .no-border">
-                                    <!-- /.box-header -->
-                                    <div class="box-body">
-                                        <!-- Input addon -->
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <div class="box .no-border">
-                                                    <!-- /.box-header -->
-                                                    <div class="box-body">
-                                                        <!-- Input addon -->
-                                                        <div class="row">
-
-                                                            <div class="col-lg-12">
-                                                                <div class="col-lg-6">
-                                                                    <div class="form-group">
-                                                                        <label for="ed-fromAccTreeId">   من الحساب</label>
-                                                                        <div class="input-group">
-                                                                            <div class="input-group-addon">
-                                                                                <i class="fa  fa-user"></i>
-                                                                            </div>
-                                                                            <select class="form-control ed-fromAccTreeId" name="edfromAccTreeId" id="ed-fromAccTreeId" style="width:100%"></select>
-                                                                        </div>
-                                                                    </div>
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="ed-fromAccTreeId">   من الحساب</label>
+                                                            <div class="input-group">
+                                                                <div class="input-group-addon">
+                                                                    <i class="fa  fa-user"></i>
                                                                 </div>
-                                                                <div class="col-lg-6">
-                                                                    <div class="form-group">
-                                                                        <label for="ed-toAccTreeId"> الي  الحساب</label>
-                                                                        <div class="input-group">
-                                                                            <div class="input-group-addon">
-                                                                                <i class="fa  fa-user"></i>
-                                                                            </div>
-                                                                            <select class="form-control ed-toAccTreeId" name="edtoAccTreeId" id="ed-toAccTreeId" style="width:100%"></select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-lg-12">
-                                                                <div class="col-lg-4">
-                                                                    <div class="form-group">
-                                                                        <label for="ed-amount"> المبلغ  </label>
-                                                                        <div class="input-group">
-                                                                            <div class="input-group-addon">
-                                                                                <i class="fa  fa-user"></i>
-                                                                            </div>
-                                                                            <input type="number" class="form-control ed-amount" name="edamount" id="ed-amount" autocomplete="off" placeholder="المبلغ" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-lg-4">
-                                                                    <div class="form-group">
-                                                                        <label for="ed-transactionDate"> تاريخ التحويل</label>
-                                                                        <div class="input-group">
-                                                                            <span class="input-group-addon">
-                                                                                <i class="fa fa-calendar-alt"></i>
-                                                                            </span>
-                                                                            <input type="text" class="form-control  calendar ed-transactionDate" id="ed-transactionDate" name="edtransactionDate" placeholder="تاريخ التحويل" autocomplete="off">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-lg-4">
-                                                                    <div class="form-group">
-                                                                        <label for="ed-note"> محلوظات</label>
-                                                                        <div class="input-group">
-                                                                            <div class="input-group-addon">
-                                                                                <i class="fa  fa-user"></i>
-                                                                            </div>
-                                                                            <input class="form-control ed-note" name="ednote" id="ed-note" autocomplete="off" placeholder="ملحوظات" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-lg-12 ">
-                                                                <div>
-                                                                    <button type="button" class="btn btn-default " data-dismiss="modal">رجوع</button>
-                                                                    <button type="submit" class="btn btn-warning  pull-left update">تعديل</button>
-                                                                </div>
+                                                                <select class="form-control ed-fromAccTreeId" name="edfromAccTreeId" id="ed-fromAccTreeId" style="width:100%"></select>
                                                             </div>
                                                         </div>
-
                                                     </div>
-                                                    <!-- /.box-body -->
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="ed-toAccTreeId"> الي  الحساب</label>
+                                                            <div class="input-group">
+                                                                <div class="input-group-addon">
+                                                                    <i class="fa  fa-user"></i>
+                                                                </div>
+                                                                <select class="form-control ed-toAccTreeId" name="edtoAccTreeId" id="ed-toAccTreeId" style="width:100%"></select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
 
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <div class="flex"><label for="eddebitAmount">المبلغ</label><strong id="edAmountCurrencyDecimalText" class="edAmountCurrencyDecimalText"></strong></div>
+                                                            <div class="input-group">
+                                                                <div class="input-group-addon">
+                                                                    <i class="fa  fa-user"></i>
+                                                                </div>
+                                                                <input type="text" class="form-control ed-amount" name="edamount" id="ed-amount" autocomplete="off" placeholder="المبلغ" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <label for="ed-transactionDate"> تاريخ التحويل</label>
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon">
+                                                                    <i class="fa fa-calendar-alt"></i>
+                                                                </span>
+                                                                <input type="text" class="form-control  calendar ed-transactionDate" id="ed-transactionDate" name="edtransactionDate" placeholder="تاريخ التحويل" autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <label for="ed-note"> محلوظات</label>
+                                                            <div class="input-group">
+                                                                <div class="input-group-addon">
+                                                                    <i class="fa  fa-user"></i>
+                                                                </div>
+                                                                <input class="form-control ed-note" name="ednote" id="ed-note" autocomplete="off" placeholder="ملحوظات" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12 ">
+                                                    <div>
+                                                        <button type="button" class="btn btn-default " data-dismiss="modal">رجوع</button>
+                                                        <button type="submit" class="btn btn-warning  pull-left update">تعديل</button>
+                                                    </div>
+                                                </div>
                                             </div>
+
                                         </div>
-
+                                        <!-- /.box-body -->
                                     </div>
-                                    <!-- /.box-body -->
-                                </div>
-
-                            </form>
-                        </div>
-                    </div><!-- /.row (main row) -->
-
-                </div>
-                @*<div class="modal-footer">
-
-                    </div>*@
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-</div>
-
-  }
-
-
+                                </form>
+                            </div>
+                        </div><!-- /.row (main row) -->
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div>
+}
 
 @section scripts{
 
     <script>
-    var dataTable;
-        $(function () {
+        var dataTable;
+        var AmountObj;
+        var EditAmountObj;
 
+        $(function () {
             function loadData() {
                 dataTable = $('#tbx').DataTable({
                     "language": {
@@ -304,22 +261,27 @@
                         url: '/BankTransfers/LoadData',
                         dataSrc: ''
                     },
+                    order: [[5, 'desc']], 
                     columns: [
                         {
                             "title": "# ",
-                            "data": "Id"
+                            "data": "Id",
+                            "orderable": false,
                         },
                         {
-                            "title": " من   ",
+                            "title": "من (البنك المرسل)",
                             "data": "FromAccTree"
                         },
                         {
-                            "title": " الي ",
+                            "title": "الي (البنك المستلم)",
                             "data": "ToAccTree"
                         },
                         {
                             "title": " المبلغ ",
-                            "data": "Amount"
+                            "data": "Amount",
+                            "render": function (data, type, row) {
+                                return formatNumber(data.toString());
+                            }
                         },
                         {
                             "title": " ملحوظات ",
@@ -327,7 +289,8 @@
                         },
                         {
                             "title": " التاريخ ",
-                            "data": "Date"
+                            "data": "Date",
+                            "orderable": true,
                         },
                         {
                             "title": "<i class='fa fa-cog'></i>",
@@ -336,7 +299,7 @@
                             "orderable": false,
                             "render": function (data) {
                                 return '<div class="btn-group">'
-                                            + '<button type="button" class="btn btn-default" data-toggle="dropdown">  <i class="fa fa-ellipsis-v"></i> </button> <div class="dropdown-menu btn-threePoint">' 
+                                            + '<button type="button" class="btn btn-default" data-toggle="dropdown">  <i class="fa fa-ellipsis-v"></i> </button> <div class="dropdown-menu btn-threePoint">'
                                             + '<a href="#" class="btnEdit"> تعديل</a>  <br />'
                                             + '<a href="#" class="btnPost">ترحيل</a>  <br />'
                                             + '<a href="#" class="btnPrint" href="#"  onclick="printSanad(' + data.Id + ')">طباعة</a> <br />'
@@ -351,19 +314,19 @@
             }
             loadData();
 
+            AmountObj = CustomAutoNumeric('#amount');
+            EditAmountObj = CustomAutoNumeric('#ed-amount');
+            
             function save() {
 
-
+                //var transactionDate = moment($('#transactionDate').val(), "DD/MM/YYYY").format("DD-MM-YYYY");
                 var ob = {
                     "FromAccTreeId": $('#fromAccTreeId').val(),
                     "ToAccTreeId": $('#toAccTreeId').val(),
-                    "Amount": $('#amount').val(),
+                    "Amount": AmountObj.getNumber(),
                     "TransactionDate": $('#transactionDate').val(),
                     "Note": $('#note').val()
                 }
-
-                console.clear();
-                console.log(ob);
 
                 $.ajax({
                     url: "/BankTransfers/Create",
@@ -372,18 +335,16 @@
                     contentType: "application/json charset=utf-8",
                     dataType: "json",
                     error: function (response) {
-                        //toastr[response.Status](response.Message, response.Title);
+                        toastr[response.Status](response.Message, response.Title);
                     },
                     success: function (response) {
                         toastr[response.Status](response.Message, response.Title);
-
                         $('#add-form').bootstrapValidator('resetForm', true);
                         $('#add-modal').modal('hide');
                         dataTable.ajax.reload();
                     }
                 });
-        };
-
+            };
 
             function update() {
 
@@ -391,13 +352,10 @@
                     "Id": $('.TransactionId').text(),
                     "FromAccTreeId": $('#ed-fromAccTreeId').val(),
                     "ToAccTreeId": $('#ed-toAccTreeId').val(),
-                    "Amount": $('#ed-amount').val(),
+                    "Amount": EditAmountObj.getNumber(),
                     "TransactionDate": $('#ed-transactionDate').val(),
                     "Note": $('#ed-note').val()
                 }
-
-                console.clear();
-                console.log(ob);
 
                 $.ajax({
                     url: "/BankTransfers/Update",
@@ -406,62 +364,67 @@
                     contentType: "application/json charset=utf-8",
                     dataType: "json",
                     error: function (response) {
-                        //toastr[response.Status](response.Message, response.Title);
+                        toastr[response.Status](response.Message, response.Title);
                     },
                     success: function (response) {
                         toastr[response.Status](response.Message, response.Title);
-
-                        $('#add-form').bootstrapValidator('resetForm', true);
-                        $('#add-modal').modal('hide');
+                        $('#edit-form').bootstrapValidator('resetForm', true);
+                        $('#edit-modal').modal('hide');
                         dataTable.ajax.reload();
                     }
                 });
             };
 
-
             $('#add-form').bootstrapValidator({
-            onSuccess: function (e) {
-                save();
-                e.preventDefault();
+                onSuccess: function (e) {
+                    save();
+                    e.preventDefault();
 
-            },
-            submitButtons: 'button[type="submit"]',
-            feedbackIcons: {
-                valid: 'glyphicon glyphicon-ok success-feedback-icons',
-                invalid: 'glyphicon glyphicon-remove error-feedback-icons',
-                validating: 'fa fa-refresh fa-spin success-feedback-icons'
-            },
-            fields: {
-                fromAccTreeId: {
-                    validators: {
-                        notEmpty: {
-                            message: 'يجب الا يكون حقل  الحساب  فارغ'
-                        }
-                    }
                 },
-                toAccTreeId: {
-                    validators: {
-                        notEmpty: {
-                            message: 'يجب الا يكون حقل  الحساب  فارغ'
-                        }
-                    }
+                submitButtons: 'button[type="submit"]',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                    invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                    validating: 'fa fa-refresh fa-spin success-feedback-icons'
                 },
-                transactionDate: {
-                    validators: {
-                        notEmpty: {
-                            message: 'يجب الا يكون حقل  التاريخ  فارغ'
+                fields: {
+                    fromAccTreeId: {
+                        validators: {
+                            notEmpty: {
+                                message: 'يجب الا يكون حقل  الحساب  فارغ'
+                            }
                         }
-                    }
-                },
-                amount: {
-                    validators: {
-                        notEmpty: {
-                            message: 'يجب الا يكون حقل  المبلغ  فارغ'
+                    },
+                    toAccTreeId: {
+                        validators: {
+                            notEmpty: {
+                                message: 'يجب الا يكون حقل  الحساب  فارغ'
+                            }
                         }
-                    }
-                },
-            }
-        });
+                    },
+                    transactionDate: {
+                        validators: {
+                            notEmpty: {
+                                message: 'يجب الا يكون حقل  التاريخ  فارغ'
+                            }
+                        }
+                    },
+                    amount: {
+                        validators: {
+                            callback: {
+                                message: 'ادخل رقم بحيث لا يحتوي على اكثر من خانتين عشريتين',
+                                callback: function (value, validator) {
+                                    // إزالة الفواصل بين الآلاف
+                                    let sanitizedValue = value.replace(/,/g, '');
+                                    // regexp: /^[0-9]*\.?[0-9]*$/;
+                                    return /^\d+(\.\d{1,2})?$/.test(sanitizedValue);
+                                }
+                            }
+                        }
+                    },
+                }
+            });
+
             $('#edit-form').bootstrapValidator({
                 onSuccess: function (e) {
                     update();
@@ -498,62 +461,33 @@
                     },
                     edamount: {
                         validators: {
-                            notEmpty: {
-                                message: 'يجب الا يكون حقل  المبلغ  فارغ'
+                            callback: {
+                                message: 'ادخل رقم بحيث لا يحتوي على اكثر من خانتين عشريتين',
+                                callback: function (value, validator) {
+                                    // إزالة الفواصل بين الآلاف
+                                    let sanitizedValue = value.replace(/,/g, '');
+                                    // regexp: /^[0-9]*\.?[0-9]*$/;
+                                    return /^\d+(\.\d{1,2})?$/.test(sanitizedValue);
+                                }
                             }
                         }
                     },
                 }
             });
 
+            select2list(".fromAccTreeId", "/Shared/getAllBanks", "  اسم الحساب ");
+            select2list(".toAccTreeId", "/Shared/getAllBanks", "  اسم الحساب ");
+            select2list(".currency", "/Shared/getCurrency", "  العملة  ");
 
-            function select2list(selector, url, placeholder) {
-                $(selector).select2({
-                    language: { inputTooShort: function () { return 'enter 1 letter at less'; } },
-                    ajax: {
-                        url: url,
-                        dataType: 'json',
-                        delay: 100,
-                        data: function (params) {
-                            return {
-                                q: params.term,
-                                page: params.page
-                            };
-                        },
-                        processResults: function (data, params) {
-                            params.page = params.page || 1;
-                            return {
-                                results: data,
-                                pagination: {
-                                    more: ((data.total_count) > (params.page * 20))
-                                }
-                            };
-                        },
-                        cache: true
-                    },
-                    placeholder: placeholder,
-                    minimumInputLength: 1,
-                });
-
-            };
-            select2list(".fromAccTreeId", "/BankTransfers/GetAccTreeId", "  اسم الحساب ");
-            select2list(".toAccTreeId", "/BankTransfers/GetAccTreeId", "  اسم الحساب ");
-            select2list(".currency", "/CurrencyTypes/GetCurrencyType", "  العملة  ");
-
-            select2list(".ed-fromAccTreeId", "/BankTransfers/GetAccTreeId", "  اسم الحساب ");
-            select2list(".ed-toAccTreeId", "/BankTransfers/GetAccTreeId", "  اسم الحساب ");
-
-
-   });//End Document Ready
-
+            select2list(".ed-fromAccTreeId", "/Shared/getAllBanks", "  اسم الحساب ");
+            select2list(".ed-toAccTreeId", "/Shared/getAllBanks", "  اسم الحساب ");
+        });
+  
         //posting الترحيل
         $('#tbx').on('click', '.btnPost', function () {
             var currentRow = $(this).closest("tr");
             var data = $('#tbx').DataTable().row(currentRow).data();
             var TransactionId = data['Id'];
-
-            console.clear();
-            console.log(TransactionId);
 
             $.post('/Transactions/Posting', { "Id": TransactionId }, function (response) {
                 toastr[response.Status](response.Message, response.Title);
@@ -576,23 +510,20 @@
             $('.TransactionId').text(Id);
             $('#ed-fromAccTree').val(FromAccTree);
             $('#ed-toAccTree').val(ToAccTree);
-            $('#ed-amount').val(Amount);
-            $('#ed-transactionDate').val(Date);
+
+            EditAmountObj.set(Amount);
+
+            const formattedDate = moment(Date, 'YYYY/M/D').format('MM/DD/YYYY');
+            $('#ed-transactionDate').val(formattedDate);
+
             $('#ed-note').val(Note);
 
             $('#edit-modal').modal('show');
-            console.clear();
         });
-
 
         //هنا مفترض نطبع سند التحويل
         function printSanad(Id) {
             window.open('/BankTransfers/PrintData/' + Id, '_blank');
         }
     </script>
-
-
-
 }
-
-

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -13,29 +11,154 @@ using System.Collections.Generic;
 using Purchases.Functions;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Data.Entity;
-
-using System.Security.Cryptography;
-using Purchases;
+using Purchases.MyLogic;
 
 namespace Purchases.Controllers
 {
-    //[Authorize]
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-        ApplicationDbContext dbContext = new ApplicationDbContext();
-        Entities db = new Entities();
-        RoleController RoleController = new RoleController();
-   
+        private Entities db = new Entities();
+        private SharedClass shared = new SharedClass();
+        private RoleController RoleController = new RoleController();
+
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+        }
 
         public AccountController()
         {
         }
         
+        public ActionResult MyProfile()
+        {
+            RoleController role = new RoleController();
+            string userid = User.Identity.GetUserId();
+            var curreny = db.CurrencyTypes.FirstOrDefault(x => x.IsLocalCurrency == true);
+            var userObj = db.AspNetUsers.Find(userid);
+          
+            ViewBag.FullName = userObj.FullName;
+            ViewBag.Role = RoleController.GetRole(userid);
+            ViewBag.UserName = userObj.UserName;
+            ViewBag.PhoneNumber = "0"+userObj.PhoneNumber;
+            ViewBag.Email = userObj.Email;
+            ViewBag.LocalCurrency = curreny.Name;
+
+            ViewBag.LocalCurrencyId = curreny.Id;
+
+            ViewBag.CurrentYear = shared.GetCurrentFinancialCycleYear();
+            ViewBag.UserCurrentYear = shared.GetUserCurrentFinancialCycleYear(userid);
+
+
+
+            return View("Profile");
+        }
+
+
+        public string GetRole(string id)
+        {
+            ApplicationUser user = _userManager.FindById(id);
+            string rolename = _userManager.GetRoles(user.Id).FirstOrDefault();
+            if (string.IsNullOrEmpty(id))
+            {
+                rolename = " ";
+
+            }
+
+            return rolename;
+        }
+
+
+        // دي بجيب بيها البيانات عشان اعرضها في المخطط الخاص بكل موظف
+        public ActionResult GetChartData(string type)
+        {
+            var userid = User.Identity.GetUserId();
+            int CurrentFinancialCycleId = shared.GetUserCurrentFinancialCycleId(userid);
+            string CurrentFinancialCycleYear = shared.GetUserCurrentFinancialCycleYear(userid);
+            int currentYear = Convert.ToInt32(CurrentFinancialCycleYear);
+            var transactions = db.Transactions.Where(t => t.FinancialCycleId == CurrentFinancialCycleId).ToList();
+
+            if(type != "dashboard")
+            {
+                transactions = transactions.Where(t => t.CreatedBy == userid || t.UpdatedBy == userid).ToList();
+            }
+
+            var transactionCountsPerMonth = transactions.Where(q=> q.TransactionDate.Value.Year == currentYear)
+                    .GroupBy(t => new { t.TransactionDate.Value.Year, t.TransactionDate.Value.Month })
+                    .Select(g => new
+                    {
+                        Year = g.Key.Year,
+                        Month = g.Key.Month,
+                        Count = g.Count()
+                    })
+                    .OrderBy(g => g.Year).ThenBy(g => g.Month)
+                    .ToList();
+            
+            var labels = transactionCountsPerMonth.Select(t => $"{t.Month.ToString("D2")}").ToList();
+            var values = transactionCountsPerMonth.Select(t => t.Count).ToList();
+
+            // Return the data in a format suitable for Chart.js
+            return Json(new
+            {
+                labels = labels,
+                datasets = new[]
+                {
+            new {
+                label = "عدد العمليات",
+                data = values,
+                borderColor = "#e09d0d",
+                fill = false
+            }
+        }
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetDoctTypeChartData(string type)
+        {
+            var userId = User.Identity.GetUserId();
+            int CurrentFinancialCycleId = shared.GetUserCurrentFinancialCycleId(userId);
+
+            var transactions = db.Transactions.Where(t => t.FinancialCycleId == CurrentFinancialCycleId).ToList();
+
+            if (type != "dashboard")
+            {
+                var userid = User.Identity.GetUserId();
+                transactions = transactions.Where(t => t.CreatedBy == userid || t.UpdatedBy == userid).ToList();
+            }
+
+            var transactionCountsPerMonth = transactions
+                    .GroupBy(t => new { DocType = t.DocumentType.Name })
+                    .Select(g => new
+                    {
+                        DocType = g.Key.DocType,
+                        Count = g.Count()
+                    })
+                    .ToList();
+
+            var labels = transactionCountsPerMonth.Select(t => t.DocType).ToList();
+            var values = transactionCountsPerMonth.Select(t => t.Count).ToList();
+
+            // Return the data in a format suitable for Chart.js
+            return Json(new
+            {
+                labels = labels,
+                datasets = new[]
+                {
+            new {
+                label = "عدد العمليات",
+                data = values,
+                //borderColor = "#e09d0d",
+                fill = false
+            }
+        }
+            }, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult Index()
         {
-
             return View();
         }
         
@@ -72,8 +195,7 @@ namespace Purchases.Controllers
             // {
             //     userManager.AddToRole(user.Id, data.Role);
 
-            //     return Json(new { Message = " تم الحفظ بنجاح", Status = "success", Title = "نجاح" }, JsonRequestBehavior.AllowGet);
-
+            return Json("", JsonRequestBehavior.AllowGet);
             // }
 
             var user = new ApplicationUser { UserName = data.Phone, Email = "A@A.A"};
@@ -95,6 +217,8 @@ namespace Purchases.Controllers
         {
             if (ModelState.IsValid)
             {
+                var userId = User.Identity.GetUserId();
+                int CurrentFinancialCycleId = shared.GetUserCurrentFinancialCycleId(userId);
                 try
                 {
                     // string name = db.AspNetUsers.Single(x => x.UserName == RegisterViewModel.UserName).UserName;
@@ -106,7 +230,9 @@ namespace Purchases.Controllers
                             PhoneNumber = RegisterViewModel.Phone,
                             UserName = RegisterViewModel.Phone,
                             FullName = RegisterViewModel.UserName,
-                            IsDefualtPassword = true
+                            IsDefualtPassword = true,
+                            AirportName = RegisterViewModel.AirportName,
+                            FinancialCycleId = CurrentFinancialCycleId,
                         };
 
                         var creationReasult = await UserManager.CreateAsync(identityUser, "123456");
@@ -133,15 +259,21 @@ namespace Purchases.Controllers
         [HttpPost]
         public ActionResult Edit(UserVM data)
         {
+            int CurrentFinancialCycleId = shared.GetUserCurrentFinancialCycleId(data.Id);
             if (ModelState.IsValid)
             {
                 AspNetUser AspNetUser = db.AspNetUsers.Find(data.Id);
                 AspNetUser.Email = data.Phone + "@" + data.Phone + ".com";
                 AspNetUser.PhoneNumber = data.Phone;
                 AspNetUser.UserName = data.Phone;
+                AspNetUser.AirportName = data.AirportName;
                 AspNetUser.FullName = data.UserName;
+                AspNetUser.FinancialCycleId = CurrentFinancialCycleId;
 
                 var oldRole = RoleController.GetRole(data.Id);
+
+                ApplicationDbContext dbContext = new ApplicationDbContext();
+
                 var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(dbContext));
                 if (data.Id != "" && data.Role != "")
                 {
@@ -159,15 +291,43 @@ namespace Purchases.Controllers
 
         }
 
+        [HttpPost]
+        public ActionResult UpdateUserYear(int? Id)
+        {
+            string userId = User.Identity.GetUserId();
+
+            if(Id == null || Id <= 0)
+            {
+                return Json(new { Message = "يجب اختيار العام المالي", Status = "error", Title = "خطأ" }, JsonRequestBehavior.AllowGet);            
+            }
+
+            if(db.AspNetUsers.Any(q=> q.Id == userId))
+            {
+                var User = db.AspNetUsers.Find(userId);
+
+                User.FinancialCycleId = Id;
+                db.Entry(User).State = EntityState.Modified;
+                db.SaveChanges();
+
+                return Json(new { Message = " تم التعديل بنجاح", Status = "success", Title = "نجاح" }, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(new { Message = "بيانات المستخدم غير صحيحة حاول تسجيل الدخول مجددا", Status = "error", Title = "خطأ" }, JsonRequestBehavior.AllowGet);
+        }
 
         [HttpPost]
         public ActionResult ResetPassword(UserVM data)
         {
+            ApplicationDbContext dbContext = new ApplicationDbContext();
+
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(dbContext));
             var userid = data.Id;
+            int CurrentFinancialCycleId = shared.GetUserCurrentFinancialCycleId(userid);
             ApplicationUser user = userManager.FindById(userid);
             user.PasswordHash = userManager.PasswordHasher.HashPassword("123456");
             user.IsDefualtPassword = true;
+            user.FinancialCycleId = CurrentFinancialCycleId;
+
             var result = userManager.Update(user);
 
             if (result.Succeeded)
@@ -180,7 +340,6 @@ namespace Purchases.Controllers
 
         }
 
-
         [HttpGet]
         public ActionResult ChangePassword()
         {
@@ -190,8 +349,13 @@ namespace Purchases.Controllers
         [HttpPost]
         public ActionResult ChangePassword(UserVM data)
         {
+            ApplicationDbContext dbContext = new ApplicationDbContext();
+
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(dbContext));
             var userid = User.Identity.GetUserId();
+
+            int CurrentFinancialCycleId = shared.GetUserCurrentFinancialCycleId(userid);
+
             //var hashedpassword = db.AspNetUsers.Find(userid).PasswordHash;
 
 
@@ -202,6 +366,7 @@ namespace Purchases.Controllers
                 {
                     user.PasswordHash = userManager.PasswordHasher.HashPassword(data.NewPassword);
                     user.IsDefualtPassword = false;
+                    user.FinancialCycleId = CurrentFinancialCycleId;
                     var result = userManager.Update(user);
 
                     if (result.Succeeded)
@@ -223,8 +388,6 @@ namespace Purchases.Controllers
 
             return Json(new { Message = " عذرا حدث خطأ أثناء عملية التعديل", Status = "error", Title = "خطأ" });
         }
-
-
 
         //public ActionResult Create(RegisterViewModel data)
         //{
@@ -249,15 +412,6 @@ namespace Purchases.Controllers
         //    return Json(new { Message = " تم الحفظ بنجاح", Status = "success", Title = "نجاح" });
         //}
 
-
-
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
-        {
-            UserManager = userManager;
-            SignInManager = signInManager;
-        }
-
-
         public ActionResult getAllRoles(string q)
         {
             var data = db.AspNetRoles.Select(p => new
@@ -265,6 +419,16 @@ namespace Purchases.Controllers
                 id = p.Id,
                 text = p.Name
             }).Where(f => f.text.Contains(q));
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult getAirports(string q)
+        {
+            var data = db.AspNetUsers.Select(p => new
+            {
+                id = p.AirportName.Trim(),
+                text = p.AirportName.Trim()
+            }).Where(f => f.text.Contains(q)).Distinct().ToList();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -322,14 +486,19 @@ namespace Purchases.Controllers
 
             switch (result)
             {
-
                 case SignInStatus.Success:
-                    ApplicationDbContext db = new ApplicationDbContext();
-                    //var users = db.Users.Single(x => x.UserName == model.UserName);
-                    //Session["FullName"] = users.FullName;
+                    ApplicationDbContext dbContext = new ApplicationDbContext();
 
+                    var user = UserManager.FindByName(model.UserName);
+                    var userid = user.Id;
 
-                    //Session["Role"] = db.Roles.Single(x => x.Id == "44" ).Name;
+                    Session["FullName"] = user.FullName;
+                    Session["Role"] = RoleController.GetRole(userid);
+                    Session["UserId"] = userid;
+                    Session["AirportName"] = user.AirportName;
+
+                    Session["CurrentYear"] = db.FinancialCycles.FirstOrDefault(x=> x.CurrentYear == true).Year;
+                    
                     return RedirectToAction("Index", "Home");
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -341,6 +510,7 @@ namespace Purchases.Controllers
                     return View(model);
             }
         }
+        
         //
         // GET: /Account/VerifyCode
         [AllowAnonymous]

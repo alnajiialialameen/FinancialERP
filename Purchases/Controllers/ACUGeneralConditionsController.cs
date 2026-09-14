@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using Purchases.Models;
-using Purchases.Models.ViewModal;
+using Purchases.Models.ViewModel;
 using Microsoft.AspNet.Identity;
 
 namespace Purchases.Controllers
@@ -24,11 +22,11 @@ namespace Purchases.Controllers
 
         public ActionResult getAllConditions()
         {
-            List<GeneralConditionsViewModel> conditionList = new List<GeneralConditionsViewModel>();
+            List<GeneralConditionsVM> conditionList = new List<GeneralConditionsVM>();
             foreach (var item in db.GeneralConditions.Where(x=>x.IsActive == true).ToList())
             {
                 conditionList.Add(
-                    new GeneralConditionsViewModel()
+                    new GeneralConditionsVM()
                     {
                         Id = item.Id,
                         Name = item.Name,
@@ -42,7 +40,7 @@ namespace Purchases.Controllers
 
         public ActionResult getConditionById(int Id)
         {
-            GeneralConditionsViewModel obj = new GeneralConditionsViewModel();
+            GeneralConditionsVM obj = new GeneralConditionsVM();
 
             if (db.GeneralConditions.Any(x => x.Id == Id))
             {
@@ -62,7 +60,7 @@ namespace Purchases.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ActionName("Add")]
-        public ActionResult AddNewCondition(GeneralConditionsViewModel model)
+        public ActionResult AddNewCondition(GeneralConditionsVM model)
         {
             try
             {
@@ -98,7 +96,7 @@ namespace Purchases.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost, ActionName("Update")]
         //[ValidateAntiForgeryToken]
-        public ActionResult Update(GeneralConditionsViewModel model)
+        public ActionResult Update(GeneralConditionsVM model)
         {
             try
             {

@@ -18,6 +18,7 @@ namespace Purchases.Models
         public int TransactionId { get; set; }
         public Nullable<int> BankAccountId { get; set; }
         public Nullable<int> CheckId { get; set; }
+        public Nullable<int> CheckType { get; set; }
         public Nullable<int> PayNo { get; set; }
         public Nullable<int> CheckNo { get; set; }
         public Nullable<decimal> Amount { get; set; }

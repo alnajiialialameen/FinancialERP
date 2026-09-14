@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     Layout = "~/Views/Shared/_Layout2.cshtml";
 }
 
@@ -27,7 +26,7 @@
                         <div class="box-header">
                             <button type="button" class="btn btn-primary pull-left btnChange"><i class="fa fa-plus-square">  </i> طلبيات مسركة </button>
                         </div>
-                    <!-- /.box-header -->
+                        <!-- /.box-header -->
                         <div class="box-body">
                             <table id="tbx" class="table table-bordered table-hover"></table>
                         </div><!-- /.box-body -->
@@ -87,11 +86,7 @@
                                                             </div>
                                                         </div>
 
-
-
-
                                                         <div class="col-lg-12">
-
                                                             <div class="col-lg-6">
                                                                 <div class="form-group">
                                                                     <label for="orderdate"> تاريخ الطلب</label>
@@ -115,7 +110,6 @@
                                                                 </div>
                                                             </div>
 
-
                                                             <div class="col-lg-6">
                                                                 <div class="form-group">
                                                                     <label for="suggestprice"> صورة  الطلب </label>
@@ -127,10 +121,6 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-
-
-
-
                                                         </div>
 
                                                     </div><!-- /.box -->
@@ -159,11 +149,6 @@
 
                                                         </div><!-- /.box-body -->
                                                     </div><!-- /.box -->
-
-
-
-
-
 
                                                     <div class="col-lg-12 ">
                                                         <div class="pull-left">
@@ -209,7 +194,6 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-lg-12">
-                                @*<form method="post" id="invoice-form">*@
                                 <div class="box .no-border">
                                     <!-- /.box-header -->
                                     <div class="box-body">
@@ -234,10 +218,7 @@
                                                             </thead>
                                                             <tbody id="tbody-order-invoice"></tbody>
                                                         </table>
-
-
                                                     </div>
-
                                                 </div><!-- /.box -->
 
                                                 <div class="col-lg-12 ">
@@ -246,29 +227,18 @@
                                                         <button type="submit" class="btn btn-primary save " value="add">حفظ</button>
                                                     </div>
                                                 </div>
-
                                             </div>
                                             <!-- /.box-body -->
                                         </div>
-
-                                        @*</form>*@
                                     </div>
-                                </div><!-- /.row (main row) -->
-
+                                </div>
                             </div>
-                            @*<div class="modal-footer">
-
-                                </div>*@
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
             </div>
-
-
         </div>
     </div>
-
-
 
     <!---------         إضافة فاتورة جديدة للطلب   ------------->
     <div class="example-modal">
@@ -282,17 +252,9 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-lg-12">
-
                                 <div class="box .no-border">
                                     <!-- /.box-header -->
                                     <div class="box-body">
-                                        <!-- Start Box Of Basic Data -->
-
-
-
-
-
-
                                         <form method="post" id="addNewInvoice-form" enctype="multipart/form-data">
                                             <div class="box box-info">
                                                 <div class="box-header ">
@@ -316,7 +278,6 @@
 
                                                             </div>
                                                         </div>
-
                                                     </div><!-- /.box -->
 
                                                     <div class="col-lg-12 ">
@@ -325,32 +286,19 @@
                                                             <button type="submit" id="but_upload" class="btn btn-primary save " value="add">حفظ</button>
                                                         </div>
                                                     </div>
-
                                                 </div>
                                                 <!-- /.box-body -->
                                             </div>
-
                                         </form>
-
-
-
                                     </div>
                                 </div><!-- /.row (main row) -->
-
                             </div>
-                            @*<div class="modal-footer">
-
-                                </div>*@
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
             </div>
-
-
         </div>
     </div>
-
-
 
     <!--------------  تكملة بيانات الفاتورة المختارة  ------------------->
     <div class="example-modal">
@@ -372,9 +320,6 @@
                                         <div class="box-body">
                                             <div class="box-body">
                                                 <input class="hidden" id="invoicechoosed-supplier" />
-
-
-
                                                 <div class="col-lg-6">
                                                     <div class="form-group">
                                                         <label for="jobtitle"> العملة </label>
@@ -399,7 +344,6 @@
                                                     </div>
                                                 </div>
 
-
                                                 <table class="table table-bordered invoicechoosed-tbl" id="invoicechoosed-tbl">
                                                     <thead>
                                                         <tr>
@@ -409,14 +353,11 @@
                                                             <th> الاجمالي </th>
                                                             <th>  الضريبة</th>
                                                             <th> الاجمالي بعد الضريبة </th>
-
                                                         </tr>
                                                     </thead>
                                                     <tbody class="invoicechoosed-tbl-body" id="invoicechoosed-tbl-body"></tbody>
-
                                                 </table>
                                             </div>
-
 
                                             <div class="col-lg-12 ">
                                                 <div class="pull-left">
@@ -426,105 +367,95 @@
                                             </div>
 
                                         </div><!-- /.box-body -->
-
                                     </div>
-
                                 </form>
                             </div>
                         </div><!-- /.row (main row) -->
-
                     </div>
-                    @*<div class="modal-footer">
 
-                        </div>*@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
     </div>
 
+    <div class="modal fade in" id="CircuModal" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:50% !important">
+            <div class="modal-content">
+                <div class="modal-header .no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"> تسجيل الطلبيات في السيرك</h4>
+                    <label class="hidden" id="Id"></label>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <form method="post" id="add-form">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="DepartmentRecipientName"> اسم الادارة المرسلة </label>
+                                            <input class="form-control" id="DepartmentRecipientName" onkeyup="return validateText(this.value, 'DepartmentRecipientName');" name="DepartmentRecipientName" placeholder="اسم الادارة المستلمة" />
+                                            <label id="DepartmentSenderId" class="hidden">DepartmentSenderId</label>
+                                        </div>
+                                    </div>
 
-
-
-
-
-<div class="modal fade in" id="CircuModal" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog" style="width:50% !important">
-        <div class="modal-content">
-            <div class="modal-header .no-border">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title"> تسجيل الطلبيات في السيرك</h4>
-                <label class="hidden" id="Id"></label>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <form method="post" id="add-form">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label for="DepartmentRecipientName"> اسم الادارة المرسلة </label>
-                                        <input class="form-control" id="DepartmentRecipientName" onkeyup="return validateText(this.value, 'DepartmentRecipientName');" name="DepartmentRecipientName" placeholder="اسم الادارة المستلمة" />
-                                        <label id="DepartmentSenderId" class="hidden">DepartmentSenderId</label>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="name">الايميل</label>
+                                            <input class="form-control" id="DepartmentSenderName" onkeyup="return validateText(this.value, 'DepartmentSenderName');" name="DepartmentSenderName" placeholder="اسم الادارة المرسلة" />
+                                            <label id="DepartmentRecipientId" class="hidden">DepartmentRecipientId</label>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label for="name">الايميل</label>
-                                        <input class="form-control" id="DepartmentSenderName" onkeyup="return validateText(this.value, 'DepartmentSenderName');" name="DepartmentSenderName" placeholder="اسم الادارة المرسلة" />
-                                        <label id="DepartmentRecipientId" class="hidden">DepartmentRecipientId</label>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="name">الموضوع</label>
+                                            <input class="form-control" type="text" disabled id="Subject" name="Subject" placeholder="الموضوع" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="name"> رقم الهاتف - 2 </label>
+                                            <input class="form-control" type="number" id="Phone2" onkeyup="return validatePhone(this.value, 'Phone2');" name="Phone2" placeholder="رقم الهاتف - 2" />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label for="name">الموضوع</label>
-                                        <input class="form-control" type="text" disabled id="Subject" name="Subject" placeholder="الموضوع" />
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label for="name"> العنوان </label>
+                                            <textarea class="form-control" id="Address" name="Address" placeholder="العنوان" cols="4"></textarea>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label for="name"> رقم الهاتف - 2 </label>
-                                        <input class="form-control" type="number" id="Phone2" onkeyup="return validatePhone(this.value, 'Phone2');" name="Phone2" placeholder="رقم الهاتف - 2" />
+                                <div class="row">
+                                    <div class="col-3">
+                                        <input type="checkbox" id="status" value="1" />
+                                        <label>مفعلة</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" id="LicenseNumber" class="form-control" onkeyup="return validateText(this.value, 'LicenseNumber');" placeholder="رقم الرخصة التجارية" />
+
                                     </div>
                                 </div>
-                            </div>
+                            </form>
+                        </div>
+                    </div><!-- /.row (main row) -->
+                </div>
 
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label for="name"> العنوان </label>
-                                        <textarea class="form-control" id="Address" name="Address" placeholder="العنوان" cols="4"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-3">
-                                    <input type="checkbox" id="status" value="1" />
-                                    <label>مفعلة</label>
-                                </div>
-                                <div class="col-6">
-                                    <input type="text" id="LicenseNumber" class="form-control" onkeyup="return validateText(this.value, 'LicenseNumber');" placeholder="رقم الرخصة التجارية" />
-
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div><!-- /.row (main row) -->
-
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary btnSave pull-right" onclick="SaveAndUpdate()">حفظ</button>
-                <button class="btn btn-danger btnCancel" data-dismiss="modal">إلغاء</button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
+                <div class="modal-footer">
+                    <button class="btn btn-primary btnSave pull-right" onclick="SaveAndUpdate()">حفظ</button>
+                    <button class="btn btn-danger btnCancel" data-dismiss="modal">إلغاء</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
 }
 
 @section scripts{
@@ -574,77 +505,62 @@
                 ]
             });
         }
-    $(function () {
-        $('.calendar').datepicker({
-            todayBtn: "linked",
-            language: "it",
-            autoclose: true,
-            todayHighlight: true,
-            dateFormat: 'dd/mm/yy'
+        $(function () {
+            loadData('/ACUCircus/Orders');
+
+            $('.passenger-tbl').on('click', '.btn-remove', function () {
+                $(this).closest('tr').remove();
+            });
         });
 
-        
-        loadData('/ACUCircus/Orders');
+        //Open Edit Modal
+        $("#tbx").on('click', '.openEditModal', function () {
+            var currentRow = $(this).closest("tr");
 
-        $('.passenger-tbl').on('click', '.btn-remove', function () {
-            $(this).closest('tr').remove();
+            $('#ed-id').val(currentRow.find("td:eq(0)").text());
+            $('#edname').val(currentRow.find("td:eq(1)").text()); // get current row st 2TD value
+            $('#edphone').val(currentRow.find("td:eq(2)").text()); // get current row st 2TD value
+            $('#edit-modal').modal('show');
+        });
 
-        })
-    });
+        $('.btnChange').on('click', function () {
+            console.clear();
+            loadData('/ACUCircus/LoadCircuedData');
+        });
 
-    //Open Edit Modal
-    $("#tbx").on('click', '.openEditModal', function () {
-        // get the current row
-        var currentRow = $(this).closest("tr");
-
-        $('#ed-id').val(currentRow.find("td:eq(0)").text());
-        $('#edname').val(currentRow.find("td:eq(1)").text()); // get current row st 2TD value
-        $('#edphone').val(currentRow.find("td:eq(2)").text()); // get current row st 2TD value
-        $('#edit-modal').modal('show');
-
-    });
-
-
-    $('.btnChange').on('click', function () {
-        console.clear();
-        loadData('/ACUCircus/LoadCircuedData');
-
-    });
-
-    function registerToCircus(Id) {
-        window.open('Create?id=' + Id, target = "_blank");
-    }
-
-    //Validation And Save Edit Data
-    $('#edit-form').bootstrapValidator({
-        onSuccess: function (e) {
-            edit();
-            e.preventDefault();
-
-        },
-        submitButtons: 'button[type="submit"]',
-        feedbackIcons: {
-            valid: 'glyphicon glyphicon-ok success-feedback-icons',
-            invalid: 'glyphicon glyphicon-remove error-feedback-icons',
-            validating: 'fa fa-refresh fa-spin success-feedback-icons'
-        },
-        fields: {
-            edname: {
-                validators: {
-                    notEmpty: {
-                        message: 'يجب الا يكون حقل اسم المورد  فارغ'
-                    }
-                }
-            },
-            edphone: {
-                validators: {
-                    notEmpty: {
-                        message: 'يجب الا يكون حقل رقم الهاتف   فارغ'
-                    }
-                }
-            }
-
+        function registerToCircus(Id) {
+            window.open('Create?id=' + Id, target = "_blank");
         }
-    });
+
+        //Validation And Save Edit Data
+        $('#edit-form').bootstrapValidator({
+            onSuccess: function (e) {
+                edit();
+                e.preventDefault();
+            },
+            submitButtons: 'button[type="submit"]',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                validating: 'fa fa-refresh fa-spin success-feedback-icons'
+            },
+            fields: {
+                edname: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل اسم المورد  فارغ'
+                        }
+                    }
+                },
+                edphone: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل رقم الهاتف   فارغ'
+                        }
+                    }
+                }
+
+            }
+        });
     </script>
 }

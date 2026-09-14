@@ -1,0 +1,101 @@
+﻿@model  IEnumerable<Purchases.Models.ViewModel.TransactionVM>
+@{
+    ViewBag.Title = "PrintInvoice";
+    Layout = "~/Views/Shared/_LayoutPrint.cshtml";
+}
+
+<section class="invoiceCupps">
+    <div class="invoice-Cupps-header">
+        <div class="image-L">
+            <img src="~/Temp/Image/WhiteLogo.png" height="100" />
+        </div>
+
+        <div class="text-center text-word">
+            <h6>شركة مطارات السودان المحدودة</h6>
+            <h6>الادارة العامة للشؤون المالية والمحاسبية</h6>
+            <h6>إدارة الحسابات</h6>
+
+        </div>
+
+        <div class="image-R">
+            <img src="~/Temp/Image/WhiteLogo.png" class="image-L" height="100" />
+        </div>
+
+    </div>
+
+    <div class="row" dir="rtl">
+        <div class="col-md-12">
+            <label class="h-mr">من تاريخ:  <span class="font-normal"> @ViewBag.DateFrom</span></label>
+            <label class="h-mr">الى تاريخ:  <span class="font-normal">@ViewBag.DateTo</span></label>
+        </div>
+    </div>
+
+    <div class="invoice-Body">
+        
+        <div class="wrapper">
+            <div class="row">
+                <div class="col-md-12 justify-content-center text-center">
+                    <h2><u>%كشف ضريبة ال 1</u></h2>
+                    @*@if (@ViewBag.BankName != "")
+                    {
+                        <h4>(@ViewBag.BankName )</h4>
+                    }*@
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <div style="display:flex; justify-content:space-between; padding: 5px;">
+            <span>@DateTime.Now</span>تاريخ الطباعة
+        </div>
+       
+        <table class="table table-bordered">
+            <thead style="background-color: black; color: white;">
+                <tr class="text-center">
+                    <td> التاريخ</td>
+                    <td>رقم الشيك</td>
+                    <td> ضريبة ال 1% </td>
+                    <td> اجمالي المبلغ  </td>
+                    <td colspan="2">البيان</td>
+                    <td>#</td>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int counter = 1;
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-center">@item.transactionDateStr</td>
+                            <td class="text-center">@(@item.CheckNo <= 0 ? "بدون" : @item.CheckNo.ToString())</td>
+                            <td class="amount">@item.tax</td>
+                            <td class="amount">@item.amount</td>
+                            <td colspan="2">@item.note</td>
+                            <td class="text-center">@counter</td>
+                        </tr>
+                        counter = counter + 1;
+                    }
+                }
+                <tr class="text-center" style="background-color: black; color: white;">
+                    <td class="amount" colspan="4"> @ViewBag.sumOfTax </td>
+                    <td colspan="3"> : المجموع </td>
+                </tr>
+            </tbody>
+        </table>        
+    </div>
+    
+    <div class="number-Word invoice-footer">
+        <div class="number-Word"> @ViewBag.txtSumOfBous </div>
+
+        <div class="chief ">
+            <div class="Manager">
+                <span>        التوقيع</span><br /><br />
+                <span>-------------------------------</span>
+            </div>
+        </div>        
+    </div>
+
+</section>
+

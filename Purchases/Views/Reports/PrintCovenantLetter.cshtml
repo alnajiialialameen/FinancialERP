@@ -1,0 +1,96 @@
+﻿@{
+    ViewBag.Title = "Bank Letter";
+    Layout = "~/Views/Shared/_LayoutPrint.cshtml";
+}
+
+<style>
+    *, .h3, h4 {
+        font-family: ui-serif;
+    }
+
+    .p-r {
+        padding-right: 40px !important;
+    }
+</style>
+
+<section class="invoiceCupps">
+
+    <div class="invoice-Cupps-header">
+        <div class="text-left text-word">
+            <p>Sudan Airports Company Ltd.</p>
+            <p>Administration of Financial & Accounting</p>
+        </div>
+
+        <div class="text-center">
+            <img src="~/Temp/Image/WhiteLogo.png" height="150" />
+        </div>
+
+        <div class="text-right text-word">
+            <p>شركة مطارات السودان المحدودة</p>
+            <p>الادارة العامة للشؤون المالية والمحاسبية</p>
+        </div>
+    </div>
+
+    <div class="invoice-Body" dir="rtl">
+
+        <div class="wrapper">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <p style="font-size: 24px;">بسم الله الرحمن الرحيم</p>
+                </div>
+                <br />
+                <div class="col-md-12 text-right">
+                    <p style="font-size: 24px; direction:rtl;"> التاريخ : @DateTime.Now.ToString("yyyy/MM/dd") م</p>
+                </div>
+                <div class="col-md-12 text-right">
+                    <p style="font-size: 24px;"> السيد / @ViewBag.AccName  </p>
+                </div>
+                <div class="col-md-12 text-right">
+                    <p style="font-size: 24px;"> السلام عليكم ورحمة الله وبركاته</p>
+                </div>
+                <br /><br />
+                <div class="col-md-12 justify-content-center text-center">
+                    <p style="font-size: 24px;"><u>الموضوع/ إزالة النثريات</u></p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 justify-content-center text-right">
+                    <p style="font-size: 20px; line-height: 3rem;">
+                        بالاشارة للموضوع أعلاه نفيدكم بأنه قد تم صرف نثريات لكم سابقًا بمبلغ جملته  <span class="amount">@ViewBag.diff</span>   (@ViewBag.TotalAmountTxt)، ونرجو منكم التكرم بإزالة ما عليكم من نثرية وتسوية المبلغ المذكور خلال مدة لا تتجاوز خمسة (5) أيام من تاريخ هذا الخطاب.
+                    </p>
+                    <p style="font-size: 20px;">
+                        يرجى اتخاذ اللازم وإفادتنا بما تم في أقرب وقت ممكن.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="number-Word invoice-footer">
+        <br />
+        <div class="row">
+            <div class="col-md-12 justify-content-center text-center">
+                <h3> ... ولكم خالص الشكر و التقدير </h3>
+            </div>
+        </div>
+        <br /><br /><br /><br />
+        <div style="display: flex; justify-content: space-between">
+            <div class="text-right">
+                <h3>الاســـــم: بلقيس محجوب احمد حمدالله</h3>
+                <h3>مدير الادارة العامة للشؤون المالية والمحاسبية</h3>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+@section scripts{
+    <script>
+        var amount = $('.amount').text();
+        $('.amount').text(formatNumber(amount));
+    </script>
+}

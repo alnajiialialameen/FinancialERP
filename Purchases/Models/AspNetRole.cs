@@ -23,6 +23,8 @@ namespace Purchases.Models
         public string Id { get; set; }
         public string Name { get; set; }
         public string CreatedBy { get; set; }
+        public string NormalizedName { get; set; }
+        public string ConcurrencyStamp { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

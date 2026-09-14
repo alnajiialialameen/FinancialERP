@@ -2,73 +2,146 @@
     //ViewBag.Title = "PrintInvoice";
     Layout = "";
 }
+
 <style>
-    .print-dueDate {
-            position: absolute;
-            top: 70px;
-            right: 160px;
-            font-size: 18px;
-            font-weight: bold;
-        }
+        .print-dueDate {
+   	 	    position: absolute;
+    		top: 60px;
+   		    right: 33px;
+        	font-size: 18px;
+   	 	    font-weight: bold;
+	    }
         .print-payNo {
-            position: absolute;
-            top: 145px;
-            left: 284px;
-            font-size: 20px;
-            font-weight: bold;
+         
+            display: none;
         }
+
         .print-amount {
             position: absolute;
-            top: 190px;
-            left: 145px;
-            font-size: 22px;
+            top: 195px;
+	        right: 60px;
+            font-size: 18px;
             font-weight: bold;
         }
         .print-textAmount {
             position: absolute;
-            top: 233px;
-            right: 285px;
+            top: 115px;
+            right: 70px;
             font-size: 18px;
             font-weight: bold;
             line-height: 1.7;
+            text-align:right;
+
+            /* تحديد عرض أقصى للنص لمنعه من الامتداد */
+            max-width: 400px; /* غيّر هذا الرقم حسب الحاجة */
+
+            /* السماح بكسر النص ونقله لسطر جديد */
+            word-wrap: break-word;
+            white-space: normal;
         }
 
         .print-recipient {
             position: absolute;
-            top: 300px;
-            right: 220px;
-            font-size: 20px;
+            top: 85px;
+            right: 70px;
+            font-size: 18px;
             font-weight: bold;
             line-height: 1.7;
         }
-
 </style>
 
 
-<div class="row" style="position:relative">
+@{
+    DateTime dueDate;
+    if (!DateTime.TryParse(ViewBag.dueDate?.ToString(), out dueDate))
+    {
+        dueDate = DateTime.MinValue; // or any default value you prefer
+    }
+}
+
+<div class="row" style="position:relative; margin-top: 200px;">
     <div class="checs-info" style="position:relative">
-        <span class="print-dueDate print-span">@ViewBag.dueDate</span>
+        <span class="print-dueDate print-span">@($"{dueDate.Year} / {dueDate.Month} / {dueDate.Day}")</span>
         <span class="print-payNo print-span">@ViewBag.payNo</span>
-        <span class="print-amount print-span">@ViewBag.amount</span>
+        <span class="print-amount print-span" id="amount">@ViewBag.amount</span>
         <span class="print-textAmount print-span">@ViewBag.textAmount</span>
         <span class="print-recipient print-span">@ViewBag.recipient</span>
     </div>
-    @*<img src="~/Content/img/checs.jpg" style="max-width:100%" />*@
 </div>
 
 
-<script src="~/Temp/plugins/jquery/jquery.min.js"></script>
-
-
-
+<script src="/Temp/plugins/jquery/jquery.min.js"></script>
     <script>
 
-        
+
+        function formatNumber(num) {
+            if (num === null) {
+                return 0;
+            }
+            // معالجة الجزء الصحيح والجزء العشري
+            var parts = num.split('.');
+            var integerPart = parts[0];
+            var decimalPart = parts[1] || '';
+
+            // إذا كان هناك جزء صحيح، أضف له الفواصل
+            integerPart = integerPart.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+            // إذا كان هناك جزء عشري، أضف له الفواصل
+            if (decimalPart) {
+                // var roundedDecimal = parseFloat(decimalPart).toFixed(2); // تقريب إلى خانتين عشريتين
+                var roundedDecimal = (parseFloat('0.' + decimalPart).toFixed(2)).split('.')[1];
+                console.log(roundedDecimal);
+                // roundedDecimal = roundedDecimal.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                roundedDecimal = roundedDecimal.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return integerPart + '.' + roundedDecimal;
+            }
+
+            return integerPart;
+        }
+        //var amount = document.getElementById("amount").innerText;
+        //document.getElementById("amount").innerText = formatNumber(amount);
         //window.addEventListener("load", window.print());
 
-    </script>
-    
-    
+        //document.addEventListener("DOMContentLoaded", function () {
+        //    var amount = document.getElementById("amount").innerText;
+        //    document.getElementById("amount").innerText = formatNumber(amount);
 
+        //    setTimeout(function () {
+        //        window.print();
+        //    }, 500);
+        //});
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var amount = document.getElementById("amount").innerText;
+            document.getElementById("amount").innerText = formatNumber(amount);
+
+            // ضبط الطباعة بوضعية Landscape عند الضغط على زر الطباعة
+            function printWithLandscape() {
+                let originalStyle = document.body.style.transform;
+                let originalWidth = document.body.style.width;
+                let originalHeight = document.body.style.height;
+
+                // محاكاة وضع الطباعة كـ Landscape
+                document.body.style.transform = "rotate(-90deg) scale(0.8)";
+                document.body.style.transformOrigin = "top left";
+                document.body.style.width = "297mm";
+                document.body.style.height = "210mm";
+
+                setTimeout(function () {
+                    // بعد الطباعة، نرجع الصفحة لوضعها الطبيعي
+                    document.body.style.transform = originalStyle;
+                    document.body.style.width = originalWidth;
+                    document.body.style.height = originalHeight;
+
+
+                    window.print();
+                }, 500);
+            }
+
+            // استدعاء الدالة عند تحميل الصفحة للطباعة مباشرة
+            printWithLandscape();
+        });
+
+    </script>
 
 

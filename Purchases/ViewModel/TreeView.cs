@@ -13,15 +13,16 @@ namespace Purchases.ViewModel
         public decimal AccParent { get; set; }
         public int AccParentId { get; set; }
     }
-
-
+    
     public class TreeViewModelItem
     {
         public int Id { get; set; }
+        public int? AccParent { get; set; }
         public string AccName { get; set; }
 
         public string AccParentName { get; set; }
-
+        public bool IsActive { get; set; }
+        
         public string GetParentNameList { get; set; }
     }
 

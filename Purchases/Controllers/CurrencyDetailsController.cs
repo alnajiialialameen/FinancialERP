@@ -1,144 +1,140 @@
-﻿using System;
+﻿using Purchases.Models;
+using Purchases.MyLogic;
+using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
 using System.Linq;
-using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Purchases.Models;
+using System.Data.Entity;
 
 namespace Purchases.Controllers
 {
     public class CurrencyDetailsController : Controller
     {
         private Entities db = new Entities();
+        private TreeClass trcls = new TreeClass();
 
         // GET: CurrencyDetails
         public ActionResult Index()
         {
-            var currencyDetails = db.CurrencyDetails.Include(c => c.AspNetUser).Include(c => c.AspNetUser1).Include(c => c.AspNetUser2).Include(c => c.CurrencyType);
-            return View(currencyDetails.ToList());
-        }
-
-        // GET: CurrencyDetails/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            CurrencyDetail currencyDetail = db.CurrencyDetails.Find(id);
-            if (currencyDetail == null)
-            {
-                return HttpNotFound();
-            }
-            return View(currencyDetail);
-        }
-
-        // GET: CurrencyDetails/Create
-        public ActionResult Create()
-        {
-            ViewBag.UpdatedBy = new SelectList(db.AspNetUsers, "Id", "Email");
-            ViewBag.UpdatedBy = new SelectList(db.AspNetUsers, "Id", "Email");
-            ViewBag.CreatedBy = new SelectList(db.AspNetUsers, "Id", "Email");
-            ViewBag.CurrencyTypeId = new SelectList(db.CurrencyTypes, "Id", "Name");
             return View();
         }
+        
+        public ActionResult LoadData()
+        {
+            List<object> data = new List<object>();
+            foreach (var c in db.CurrencyDetails.ToList())
+            {
+                var item = new
+                {
+                    Id = c.Id,
+                    Year = c.Year,
+                    Month = c.Month,
+                    ExchangeRate = c.ExchangeRate,
+                    CurrencyTypeId = c.CurrencyTypeId,
+                    CurrencyType = c.CurrencyType.Name,
+                };
 
-        // POST: CurrencyDetails/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+                data.Add(item);
+            }
+            
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,CurrencyTypeId,Month,Year,ExchangeRate,IsActive,CreatedBy,CreationDate,UpdatedBy,UpdatingDate")] CurrencyDetail currencyDetail)
+        public ActionResult Create(int CurrencyTypeId, decimal ExchangeRate, DateTime ExchangeDate)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.CurrencyDetails.Add(currencyDetail);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+                if (!db.CurrencyTypes.Any(x => x.Id == CurrencyTypeId && x.IsLocalCurrency == true))
+                {
+                    if (!db.CurrencyDetails.Any(x => x.CurrencyTypeId == CurrencyTypeId && x.Month == ExchangeDate.Month && x.Year == ExchangeDate.Year))
+                    {
+                        CurrencyDetail obj = new CurrencyDetail();
 
-            ViewBag.UpdatedBy = new SelectList(db.AspNetUsers, "Id", "Email", currencyDetail.UpdatedBy);
-            ViewBag.UpdatedBy = new SelectList(db.AspNetUsers, "Id", "Email", currencyDetail.UpdatedBy);
-            ViewBag.CreatedBy = new SelectList(db.AspNetUsers, "Id", "Email", currencyDetail.CreatedBy);
-            ViewBag.CurrencyTypeId = new SelectList(db.CurrencyTypes, "Id", "Name", currencyDetail.CurrencyTypeId);
-            return View(currencyDetail);
+                        obj.CurrencyTypeId = CurrencyTypeId;
+                        obj.ExchangeRate = ExchangeRate;
+                        obj.Month = ExchangeDate.Month;
+                        obj.Year = ExchangeDate.Year;
+                        obj.IsActive = true;
+
+                        db.CurrencyDetails.Add(obj);
+                        db.SaveChanges();
+
+                        return Json(new { Message = " تمت عملية الحفظ بنجاح ", Title = "نجاح", Status = "success" }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { Message = "يوجد سعر صرف لهذه العملة في هذا الشهر...يمكنك التعديل فقط", Title = "خطأ", Status = "warning" }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                else
+                {
+                    return Json(new { Message = "لا يمكن تحديد سعر الصرف للعملة المحلية", Title = "خطأ", Status = "error" }, JsonRequestBehavior.AllowGet);
+                }
+            }catch(Exception e)
+            {
+                return Json(new { Message = " عفوا حدث خطأ اثناء العملية (Exception)", Title = "خطأ", Status = "error" }, JsonRequestBehavior.AllowGet);
+            }
         }
 
-        // GET: CurrencyDetails/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Update(int Id, int CurrencyTypeId, decimal ExchangeRate, DateTime ExchangeDate)
         {
-            if (id == null)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            CurrencyDetail currencyDetail = db.CurrencyDetails.Find(id);
-            if (currencyDetail == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.UpdatedBy = new SelectList(db.AspNetUsers, "Id", "Email", currencyDetail.UpdatedBy);
-            ViewBag.UpdatedBy = new SelectList(db.AspNetUsers, "Id", "Email", currencyDetail.UpdatedBy);
-            ViewBag.CreatedBy = new SelectList(db.AspNetUsers, "Id", "Email", currencyDetail.CreatedBy);
-            ViewBag.CurrencyTypeId = new SelectList(db.CurrencyTypes, "Id", "Name", currencyDetail.CurrencyTypeId);
-            return View(currencyDetail);
-        }
+                if (!db.CurrencyTypes.Any(x => x.Id == CurrencyTypeId && x.IsLocalCurrency == true))
+                {
+                    if (db.CurrencyDetails.Any(x => x.Id == Id))
+                    {
+                        CurrencyDetail obj = db.CurrencyDetails.Find(Id);
 
-        // POST: CurrencyDetails/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,CurrencyTypeId,Month,Year,ExchangeRate,IsActive,CreatedBy,CreationDate,UpdatedBy,UpdatingDate")] CurrencyDetail currencyDetail)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(currencyDetail).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.UpdatedBy = new SelectList(db.AspNetUsers, "Id", "Email", currencyDetail.UpdatedBy);
-            ViewBag.UpdatedBy = new SelectList(db.AspNetUsers, "Id", "Email", currencyDetail.UpdatedBy);
-            ViewBag.CreatedBy = new SelectList(db.AspNetUsers, "Id", "Email", currencyDetail.CreatedBy);
-            ViewBag.CurrencyTypeId = new SelectList(db.CurrencyTypes, "Id", "Name", currencyDetail.CurrencyTypeId);
-            return View(currencyDetail);
-        }
+                        obj.CurrencyTypeId = CurrencyTypeId;
+                        obj.ExchangeRate = ExchangeRate;
+                        obj.Month = ExchangeDate.Month;
+                        obj.Year = ExchangeDate.Year;
+                        obj.IsActive = true;
 
-        // GET: CurrencyDetails/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            CurrencyDetail currencyDetail = db.CurrencyDetails.Find(id);
-            if (currencyDetail == null)
-            {
-                return HttpNotFound();
-            }
-            return View(currencyDetail);
-        }
+                        db.Entry(obj).State = EntityState.Modified;
+                        db.SaveChanges();
 
-        // POST: CurrencyDetails/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            CurrencyDetail currencyDetail = db.CurrencyDetails.Find(id);
-            db.CurrencyDetails.Remove(currencyDetail);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
+                        return Json(new { Message = " تمت عملية الحفظ بنجاح ", Title = "نجاح", Status = "success" }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { Message = "حدث خطا اثناء عملية التعديل", Title = "خطأ", Status = "warning" }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                else
+                {
+                    return Json(new { Message = "لا يمكن تحديد سعر الصرف للعملة المحلية", Title = "خطأ", Status = "error" }, JsonRequestBehavior.AllowGet);
+                }
             }
-            base.Dispose(disposing);
+            catch (Exception e)
+            {
+                return Json(new { Message = " عفوا حدث خطأ اثناء العملية (Exception)", Title = "خطأ", Status = "error" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        
+        public ActionResult Delete(int Id)
+        {
+            try
+            {
+                if(db.CurrencyDetails.Any(x=>x.Id == Id))
+                {
+                    CurrencyDetail Obj =  db.CurrencyDetails.Find(Id);
+
+                    db.CurrencyDetails.Remove(Obj);
+                    db.SaveChanges();
+
+                    return Json(new { Message = " تمت عملية الحذف بنجاح ", Title = "نجاح", Status = "success" }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new { Message = "لا يمكن حذف بيانات غير موجودة", Title = "خطأ", Status = "error" }, JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception e)
+            {
+                return Json(new { Message = " عفوا حدث خطأ اثناء العملية (Exception) ", Title = "خطأ", Status = "error" }, JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }

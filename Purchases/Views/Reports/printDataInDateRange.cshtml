@@ -1,0 +1,119 @@
+﻿@model IEnumerable<Purchases.Models.ViewModel.TransactionVM>
+
+@{
+    ViewBag.Title = "PrintInvoice";
+    Layout = "~/Views/Shared/_LayoutPrint.cshtml";
+}
+
+<section class="invoiceCupps">
+    <div class="invoice-Cupps-header">
+        <div class="image-L">
+            <img src="~/Temp/Image/WhiteLogo.png" height="100" />
+        </div>
+
+        <div class="text-center text-word">
+            <h6>شركة مطارات السودان المحدودة</h6>
+            <h6>الادارة العامة للشؤون المالية والمحاسبية</h6>
+            <h6>إدارة الحسابات</h6>
+        </div>
+
+        <div>
+            <img src="~/Temp/Image/WhiteLogo.png" class="image-R" height="100" />
+        </div>
+    </div>
+
+
+    <div class="row" dir="rtl">
+        <div class="col-md-12">
+            <label class="">من تاريخ:  <span class="font-normal"> @ViewBag.DateFrom</span></label>
+            <label class="">الى تاريخ:  <span class="font-normal">@ViewBag.DateTo</span></label>
+        </div>
+    </div>
+
+    <div class="invoice-Cupps-Body" dir="ltr">
+        <h2 class="text-center"><u> حركة الحسابات في الفترة أعلاه</u></h2>
+        <div class="arline-header">
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="h-mr">تاريخ الطباعة: @DateTime.Today.ToShortDateString()</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center invoice-Cupps-details" dir="rtl" style="width:100%;margin-bottom:40px;">
+        <table class="cupps-table-header" >
+           <thead>
+               <tr>
+                   <th>
+                       المدين
+                   </th>
+
+                   <th>
+                       الدائن
+                   </th>
+
+                   <th>
+                       البيان
+                   </th>
+
+                   <th>
+                       التاريخ
+                   </th>
+                   <th>
+                       رقم القيد
+                   </th>
+               </tr>
+
+           </thead>
+            <tbody id="myTBodey">
+    @{
+        foreach (var item in Model.Select(x=>x.transactionId).Distinct())
+        {
+            foreach (var item2 in Model.Where(x => x.transactionId == item))
+            {
+                <tr>
+                    <td class="amount">@item2.debit</td>
+                    <td class="amount">@item2.credit</td>
+                    
+                    @if (item2.credit > 0)
+                    {
+                        <td class="text-right" style="padding-right:20px;">الي حــ/ @item2.accName</td>}
+                    else
+                    {
+                        <td class="text-right" style="padding-right:20px;">من حــ/ @item2.accName</td>
+                    }
+
+                    <td>@item2.transactionDateStr</td>
+                    <td>@item2.transactionId</td>
+                </tr>
+            }
+            <tr style="background: #808080">
+                <td class="amount" style="color:brown; font-size:large; font-weight:bold;">
+                    @Model.Where(x => x.transactionId == item).Sum(x => x.credit)
+                </td>
+                <td class="amount" style="color:brown; font-size:large; font-weight:bold;">
+                    @Model.Where(x => x.transactionId == item).Sum(x => x.debit)
+                </td>
+                <td colspan="3" rowspan="2" style="color:brown; font-size:large; font-weight:bold;">
+                    @Model.FirstOrDefault(x=> x.transactionId == item).note
+                </td>
+            </tr>
+            <tr style="background: #808080">
+                <td class="amount" colspan="2" style="color:brown; font-size:large; font-weight:bold;">
+                    0
+                </td>
+            </tr>
+        }
+    }
+
+                <tr class="footer">
+                    <th colspan="2">  صافي الحساب :</th>
+                    <th colspan="2" class="amount">@ViewBag.SumOfAmount</th>
+                    <th>#</th>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</section>

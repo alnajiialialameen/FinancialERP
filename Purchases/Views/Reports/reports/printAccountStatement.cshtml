@@ -1,0 +1,82 @@
+﻿@model IEnumerable<Purchases.Models.ViewModal.TransactionViewMode>
+
+@{
+    ViewBag.Title = "PrintInvoice";
+    Layout = "~/Views/Shared/_LayoutPrint.cshtml";
+
+    decimal sumOfCredit = @Convert.ToDecimal(@Model.Sum(x => x.credit));
+    decimal sumOfDebit = @Convert.ToDecimal(@Model.Sum(x => x.debit));
+    decimal clearAmount = sumOfCredit - sumOfDebit;
+}
+
+<section class="invoiceCupps">
+    <div class="invoice-Cupps-header">
+        <div class="image-L">
+            <img src="~/Temp/Image/WhiteLogo.png" height="100" />
+        </div>
+
+        <div class="text-center text-word">
+            <h6>شركة مطارات السودان المحدودة</h6>
+            <h6>الادارة العامة للشؤون المالية والمحاسبية</h6>
+            <h6>إدارة الحسابات</h6>
+
+        </div>
+
+        <div class="image-R">
+            <img src="~/Temp/Image/WhiteLogo.png" class="image-L" height="100" />
+        </div>
+
+    </div>
+
+    <div class="invoice-Cupps-Body" dir="rtl">
+        <div class="arline-header">
+            <h2 class="text-center"><u>كشف حساب (@ViewBag.AccName)</u></h2>
+        </div>
+    </div>
+
+    <div class="text-center invoice-Cupps-details" dir="rtl" style="width:100%;margin-bottom:40px;">
+        <table class="cupps-table-header" >
+           <thead>
+               <tr>
+                   <th>منه</th>
+                   <th>له</th>
+                   <th colspan="3">الحساب</th>
+                   <th>التاريخ</th>
+               </tr>
+           </thead>
+            <tbody id="myTBodey">
+               @{
+                   foreach (var item in Model.OrderBy(x => x.debit))
+                   {
+                    <tr>
+                        @{
+                            if (Convert.ToDecimal(item.credit) > 0) // credit
+                            {
+                                <td class="numberFormat">@item.credit</td>
+                                <td>0</td>
+                                <td colspan="3" class="text-right" style="padding-right:20px;"> حــ/ @item.accName</td>
+                                <td>@item.transDate</td>
+                            }
+                            else // debit
+                            {
+                                <td>0</td>
+                                <td class="numberFormat">@item.debit</td>
+                                <td colspan="3" class="text-right" style="padding-right:60px;"> حــ/ @item.accName</td>
+                                <td>@item.transDate</td>
+                            }
+                        }
+                    </tr>
+                    }
+            }
+
+            </tbody>
+        </table>
+
+        <div class="footer">
+            <div>
+                <label class="titel">إجمالي المبلغ</label>
+                <label class="value">@Model.Sum(x => x.debit)</label>
+            </div>
+        </div>
+    </div>
+</section>

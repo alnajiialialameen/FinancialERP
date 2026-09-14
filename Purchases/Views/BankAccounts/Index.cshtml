@@ -2,17 +2,6 @@
     Layout = "~/Views/Shared/_Layout2.cshtml";
 }
 
-<style>
-    .content-wrapper .content{
-        display: flex;
-        min-height: 250px;
-        padding: 15px;
-        margin-right: auto;
-        margin-left: auto;
-        padding-left: 15px;
-        padding-right: 15px;
-    }
-</style>
 @section content{
 
     <!-- Content Wrapper. Contains page content -->
@@ -32,13 +21,6 @@
         <div class="content" style="display: flex; margin-right: 10px;">
             <div class="col-lg-3">
                 <table id="tbx" class="table-bordered table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>اسم البنك</th>
-                            <th>الشيكات</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbxBody" style="font-size:18px;"></tbody>
                 </table>
             </div>
 
@@ -111,6 +93,34 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="bankLabel">اسم البنك(البنك/الفرع)</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-cash-register"></i></span>
+                                                        <input type="text" class="form-control bankLabel" id="bankLabel" name="bankLabel" placeholder="اسم البنك-الفرع" autocomplete="off">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="firstSignature">اسم الموظف(توقع اول)</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-cash-register"></i></span>
+                                                        <input type="text" class="form-control firstSignature" id="firstSignature" name="firstSignature" placeholder="اسم الموظف(توقع اول)" autocomplete="off">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="secondSignature">اسم الموظف(توقع ثاني)</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-cash-register"></i></span>
+                                                        <input type="text" class="form-control secondSignature" id="secondSignature" name="secondSignature" placeholder="اسم الموظف(توقع ثاني)" autocomplete="off">
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div class="col-lg-12 ">
@@ -119,7 +129,8 @@
                                                 <label class="hidden" id="AccId"></label>
                                                 <label class="hidden" id="Id"></label>
                                                 <button type="reset" class="btn btn-default " data-dismiss="modal">الغاء</button>
-                                                <button type="submit" class="btn btn-primary save">حفظ</button>
+                                                <button type="submit" class="btn btn-primary btnSave hide">حفظ</button>
+                                                <a href="#" target="_blank" class="btn btn-warning btnGetBankTransactions hide">كل العمليات</a>
                                             </div>
                                         </div>
                                     </div>
@@ -129,55 +140,216 @@
                         </div>
                     </div>
                 </form>
+
+
+                <div class="row">
+                    <table id="bankTransTbl"></table>
+                </div>
             </div>
         </div>
 
-       
-    </div>  
-
-
+    </div>
 }
 
 @section scripts{
     <script>
         var dataTable;
+        function loadData() {
+            var accountSubId = 1;
+            dataTable = $('#tbx').DataTable({
+                paging: true,
+                searching: false,
+                "language": {
+                    "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                    "search": "بحث"
+                },
+                ajax: {
+                    url: '/BankAccounts/LoadData',
+                    dataSrc: ''
+                },
+                columns: [
+                    {
+                        "data": null,
+                        "render": function (data) {
+                            return `<i class="hidden getAccountSubId">${data.Id}</i>`;
+                        }
+                    },
+                    {
+                        "title": "الحساب",
+                        "data": null,
+                        "width": "90%",
+                        "render": function (data) {
+                            return `<i class="name">${data.Name}</i>`;                            
+                        }
+                    },
+                    {
+                        "title": "الشيكات",
+                        "data": null,
+                        "width": "10%",
+                        "orderable": false,
+                        "render": function (data) {
+                            var bankId = parseInt(data.BankId);
+                            if (bankId > 0) {
+                                return '<a href="#"><i class="fa fa-money-check check" style="color:green;"></i></a>';
+                            }
+                            else {
+                                return '<a href="#"><i class="fa fa-money-check" style="color:red;"></i></a>';
+                            }
+                        }
+                    },
+                    {
+                        "data": null,
+                        "render": function (data) {
+                            return `<i class="hidden bankId">${data.BankId}</i>`;
+                        }
+                    },
+                    //{
+                    //    "data": null,
+                    //    "render": function (data) {
+                    //        return `<i class="hidden AccTreeId">${data.AccTreeId}</i>`;
+                    //    }
+                    //}
+                ]
+            });
+        }
+
+        function loadTransactionData(accountSubId) {
+            dataTable = $('#bankTransTbl').DataTable({
+                paging: true,
+                "language": {
+                    "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                    "search": "بحث"
+                },
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "className": "text-center",
+                    },
+                ],
+                ajax: {
+                    url: '/BankAccounts/GetAllBankTransactionByBankId?accountSubId=' + accountSubId,
+                    dataSrc: ''
+                },
+                columns: [
+                    {
+                        "title": "",
+                        "data": "transactionId",
+                        "orderable": false,
+                        "render": function (data) {
+                            return '<a class="btn btn-info btnDetails" data-toggle="modal" data-target="#details-modal"><i class="fa fa-info"></i></a>';
+                        }
+                    },
+                    {
+                        "title": "# ",
+                        "data": "transactionId"
+                    },
+                    {
+                        "title": "البيان",
+                        "data": "Note"
+                    },
+                    {
+                        "title": "نوع القيد",
+                        "data": "DocumentType"
+                    },
+                    {
+                        "title": "اجمالي المبلغ",
+                        "data": "Amount",
+                        "render": function (data, type, row) {
+                            return formatNumber(data);
+                        }
+                    },
+                    {
+                        "title": "العملة",
+                        "data": "Currency"
+                    },
+                    {
+                        "title": "سعر الصرف",
+                        "data": "ExchangeRate",
+                        "render": function (data, type, row) {
+                            return formatNumber(data);
+                        }
+                    },
+                    {
+                        "title": "الحالة",
+                        "data": "IsDeleted",
+                        "render": function (data, type, row) {
+                            if (!data)
+                                return `<h5 class="text-success fs-3">غير ملغي</h5>`;
+                            else
+                                return `<h5 class="text-danger">ملغي</h5>`;
+                        }
+                    },
+                    {
+                        "title": "تاريخ القيد",
+                        "data": "TransactionDate"
+                    },
+                    //{
+                    //    "title": "<i class='fa fa-cog'></i>",
+                    //    "data": null,
+                    //    "width": "10%",
+                    //    "orderable": false,
+                    //    "render": function (data) {
+                    //        return `
+                    //                <div class="btn-group">
+                    //                    <button type="button" class="btn btn-default" data-toggle="dropdown">
+                    //                        <i class="fa fa-ellipsis-v"></i>
+                    //                    </button>
+                    //                    <div class="dropdown-menu btn-threePoint">
+                    //                        <a href="#" class="btnBankLetter" onclick="printBankLetter(${data.transactionId})">خطاب البنك</a><br />
+                    //                        <!-- <a href="#" class="addedTax" onclick="AddIncomeTax(${data.transactionId})">إضافة ضريبة الدخل</a><br /> -->
+                    //                        <!-- <a href="#" class="addedTax" onclick="AddStamp(${data.transactionId})">إضافة دمغة</a><br /> -->
+                    //                        ${data.documentType == 'سند دفع'
+                    //        ? `<a href="#" class="btnPrintCheck" onclick="printchecs(${data.transactionId})">طباعة الشيك</a><br />`
+                    //        : ''}
+                    //                        <a href="#" class="btnEdit">تعديل</a><br />
+                    //                        <a href="#" class="printSanad" onclick="printSanad(${data.transactionId})">طباعة أورنيك 17</a><br />
+                    //                        <a href="#" class="printSanad" onclick="DeleteTransaction(${data.transactionId})">الغاء الحركة</a><br />
+                    //                        <a href="#" class="btnPost">ترحيل</a><br />
+                    //                    </div>
+                    //                </div>
+                    //            `;
+                    //    }
+                    //},
+                ]
+            });
+
+        }
 
         $(function () {
-            function loadData() {
-                $.ajax({
-                    url: '/BankAccounts/LoadData',
-                    type: "POST",
-                    data: null,
-                    contentType: "application/json charset=utf-8",
-                    dataType: "json",
-                    error: function (response) {
-                        toastr[response.Status](response.Message, response.Title);
-                    },
-                    success: function (data) {
-                        var row = '';
-                        $.each(data, function (key, value) {
-                            var bankId = parseInt(value.BankId);
-                            if(bankId > 0)
-                            {
-                                row += '<tr>'
-                                    + '<td class="hidden getAccountSubId">' + value.Id + '</td>'
-                                    + '<td  class="name">' + value.Name + '</td>'
-                                    + '<td  class="check"><a href=""><i class="fa fa-money-check" style="color:green;"></a></i></td>'
-                                    + '<td  class="hidden bankId">' + bankId + '</td>'
-                                  + '</tr>';
-                            } else {
-                                row += '<tr>'
-                                    + '<td class="hidden getAccountSubId">' + value.Id + '</td>'
-                                    + '<td  class="name">' + value.Name + '</td>'
-                                    + '<td  class="check"><a href="#"><i class="fa fa-money-check" style="color:red;"></a></i></td>'
-                                    + '<td  class="hidden bankId">' + bankId + '</td>'
-                                  + '</tr>';
-                            }
-                        });
-                        $('#tbxBody').append(row);
-                    }
-                });
-            }
+            //function loadData() {
+            //    $.ajax({
+            //        url: '/BankAccounts/LoadData',
+            //        type: "POST",
+            //        data: null,
+            //        contentType: "application/json charset=utf-8",
+            //        dataType: "json",
+            //        error: function (response) {
+            //            toastr[response.Status](response.Message, response.Title);
+            //        },
+            //        success: function (data) {
+            //            var row = '';
+            //            $.each(data, function (key, value) {
+            //                var bankId = parseInt(value.BankId);
+            //                if (bankId > 0) {
+            //                    row += '<tr>'
+            //                        + '<td class="hidden getAccountSubId">' + value.Id + '</td>'
+            //                        + '<td  class="name">' + value.Name + '</td>'
+            //                        + '<td  class="check"><a href=""><i class="fa fa-money-check" style="color:green;"></a></i></td>'
+            //                        + '<td  class="hidden bankId">' + bankId + '</td>'
+            //                      + '</tr>';
+            //                } else {
+            //                    row += '<tr>'
+            //                        + '<td class="hidden getAccountSubId">' + value.Id + '</td>'
+            //                        + '<td  class="name">' + value.Name + '</td>'
+            //                        + '<td  class="check"><a href="#"><i class="fa fa-money-check" style="color:red;"></a></i></td>'
+            //                        + '<td  class="hidden bankId">' + bankId + '</td>'
+            //                      + '</tr>';
+            //                }
+            //            });
+            //            $('#tbxBody').append(row);
+            //        }
+            //    });
+            //}
 
             loadData();
 
@@ -213,68 +385,66 @@
             select2list(".currency", "/BankAccounts/GetCurrencyType", "عملة الحساب البنكي");
             select2list(".account-type", "/BankAccounts/GetBankAccountType", "نوع الحساب البنكي");
 
+            $('#addForm').bootstrapValidator({
+                onSuccess: function (e) {
+                    save();
+                    e.preventDefault();
 
-        $('#addForm').bootstrapValidator({
-            onSuccess: function (e) {
-                save();
-                e.preventDefault();
-
-            },
-            submitButtons: 'button[type="submit"]',
-            excluded: [':disabled'],
-            feedbackIcons: {
-                valid: 'glyphicon glyphicon-ok success-feedback-icons',
-                invalid: 'glyphicon glyphicon-remove error-feedback-icons',
-                validating: 'fa fa-refresh fa-spin success-feedback-icons'
-            },
-            fields: {
-                name: {
-                    validators: {
-                        notEmpty: {
-                            message: 'يجب الا يكون حقل اسم الحساب  فارغ'
-                        }
-                    }
                 },
-                number: {
-                    validators: {
-                        notEmpty: {
-                            message: 'يجب ادخال رقم الحساب'
-                        }
-                    }
+                submitButtons: 'button[type="submit"]',
+                excluded: [':disabled'],
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                    invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                    validating: 'fa fa-refresh fa-spin success-feedback-icons'
                 },
-                'account-type': {
-                    validators: {
-                        notEmpty: {
-                            message: 'يجب ادخال نوع الحساب'
+                fields: {
+                    name: {
+                        validators: {
+                            notEmpty: {
+                                message: 'يجب الا يكون حقل اسم الحساب  فارغ'
+                            }
                         }
-                    }
-                },
-                currency: {
-                    validators: {
-                        notEmpty: {
-                            message: 'يجب تحديد نوع العملة لهذا الحساب'
+                    },
+                    number: {
+                        validators: {
+                            notEmpty: {
+                                message: 'يجب ادخال رقم الحساب'
+                            }
                         }
-                    }
-                },
-                'open-date': {
-                    validators: {
-                        notEmpty: {
-                            message: 'يجب تحديد تاريخ فتح الحساب'
+                    },
+                    'account-type': {
+                        validators: {
+                            notEmpty: {
+                                message: 'يجب ادخال نوع الحساب'
+                            }
                         }
-                    }
-                },
-                //iban: {
-                //    validators: {
-                //        notEmpty: {
-                //            message: 'يجب تحديد الرقم الدولي IBAN '
-                //        }
-                //    }
-                //},
-            }
-        });
+                    },
+                    currency: {
+                        validators: {
+                            notEmpty: {
+                                message: 'يجب تحديد نوع العملة لهذا الحساب'
+                            }
+                        }
+                    },
+                    'open-date': {
+                        validators: {
+                            notEmpty: {
+                                message: 'يجب تحديد تاريخ فتح الحساب'
+                            }
+                        }
+                    },
+                    //iban: {
+                    //    validators: {
+                    //        notEmpty: {
+                    //            message: 'يجب تحديد الرقم الدولي IBAN '
+                    //        }
+                    //    }
+                    //},
+                }
+            });
         });
         //End Document Ready
-        
 
         function save() {
             console.log($(".open-date").val());
@@ -285,16 +455,19 @@
                 "CurrencyTypeId": $("select[name='currency']").val(),
                 "IBan": $('#iban').val(),
                 "AccName": $('#name').val(),
+                "BankLabel": $('#bankLabel').val(),                
                 "accParentName": "البنوك",
                 "AccId": $('#AccId').text(),
                 "Id": $('#Id').text(),
+                "FirstSignature": $('#firstSignature').val(),
+                "SecondSignature": $('#secondSignature').val(),
                 "AccountSubId": $('#AccountSubId').text(),
                 "AccCategoryId": "1",//Category Id for Banks = 1
             };
             console.clear();
             console.log(ob);
             var url = '';
-            if ($('.save').text() == 'حفظ') {
+            if ($('.btnSave').text() == 'حفظ') {
                 url = '/BankAccounts/Create';
             } else {
                 url = '/BankAccounts/Update';
@@ -321,16 +494,19 @@
             //get AccountSubId which is hidden value
             var AccountSubId = currentRow.find("td:eq(0)").text();
             var name = currentRow.find("td:eq(1)").text();
+            var AccTreeId = currentRow.find("td:eq(1)").text();
 
-            $('#AccountSubId').text(AccountSubId);          
+            $('#AccountSubId').text(AccountSubId);
             $('#name').val(name);
             $('#Id').text('');
+            $('#AccId').text(AccTreeId);
             $('#open-date').val(null);
-
+            console.clear();
+            console.log(AccountSubId);
 
             $.ajax({
                 url: '/BankAccounts/getBankData?accountSubId=' + AccountSubId,
-                type: "POST",
+                type: "GET",
                 data: null,
                 contentType: "application/json charset=utf-8",
                 dataType: "json",
@@ -338,19 +514,35 @@
                     toastr[response.Status](response.Message, response.Title);
                 },
                 success: function (data) {
+                    $('.btnSave').removeClass('hide');
+                    $('.btnGetBankTransactions').removeClass('hide');
                     $('#Id').text(data['Id']);
                     $('#name').val(name);
                     $('#number').val(data['Number']);
-                    $('#currencyTypeId').val(data['CurrencyTypeId']);
+                    $('#bankLabel').val(data['BankLabel']);
+                    $('#firstSignature').val(data['FirstSignature']);
+                    $('#secondSignature').val(data['SecondSignature']);
+                    $('#AccId').text(data['AccTreeId']);
+
+                    // أنشئ خيار جديد واضفه
+                    var option = new Option(data['BankAccountType'], data['BankAccountTypeId'], true, true);
+                    $('#account-type').append(option).trigger('change');
+
+                    // أنشئ خيار جديد واضفه
+                    var option = new Option(data['CurrencyType'], data['CurrencyTypeId'], true, true);
+                    $('#currency').append(option).trigger('change');
+
+                    //$('#currency').val(data['CurrencyTypeId']);
                     $('#account-type').val(data['BankAccountTypeId']);
-                    var openDate = moment(data['OpenDate']).format("DD/MM/YYYY");
+                    //var openDate = moment(data['OpenDate']).format("DD/MM/YYYY");
+                    var openDate = data['OpenDate'];
                     $('#open-date').val(openDate);
                     $('#iban').val(data['IBan']);
                 }
             });
 
+            //loadTransactionData(AccountSubId);
         });
-
 
         $("#tbx").on('click', '.check', function () {
             // get the current row
@@ -362,14 +554,13 @@
             } else {
                 toastr['error']('يجب إدخال بيانات البنك أولا', 'خطأ');
             }
-
         });
 
         //Open Edd-Edit Modal
         $("#tbx").on('click', '.openEditModal', function () {
             // get the current row
             var currentRow = $(this).closest("tr");
-        
+
             var data = $('#tbx').DataTable().row(currentRow).data();
 
             console.log(currentRow.find("td:eq(0)").text());
@@ -381,7 +572,9 @@
             $('#currency').val(data['CurrencyTypeId']);
             $('#account-type').val(data['BankAccountTypeId']);
             $('#iban').val(data['IBan']);
-            $('#AccountSubId'). text(data['AccountSubId']);
+            $('#AccountSubId').text(data['AccountSubId']);
+            $('#firstSignature').val(data['FirstSignature']);
+            $('#secondSignature').val(data['SecondSignature']);
             $('#AccId').text(data['AccId']);
 
             $('.modal-title').html('تعديل بيانات البنك');
@@ -390,12 +583,10 @@
             $('.save').addClass('btn-warning');
 
             $('#add-modal').modal('show');
-        
-        }); 
+
+        });
 
         $('.btn-add').on('click', function () {
-            //$('#addForm').bootstrapValidator({ "resetForm": true });
-
             $('#name').val(null);
             $('#number').val(null);
             $('#account-type').val(null);
@@ -410,9 +601,13 @@
             $('#add-modal').modal('show');
         });
 
-        function goToCheck(Id) {
-                window.open('/BankAccounts/Check/' + Id, '_blank');
-            }
-    </script>
+        $('.btnGetBankTransactions').on('click', function () {
+            var Id = $('#AccountSubId').text();
+            window.open('/BankAccounts/BankTransactions/' + Id, '_blank');
+        });
 
+        function goToCheck(Id) {
+            window.open('/BankAccounts/Check/' + Id, '_blank');
+        }
+    </script>
 }

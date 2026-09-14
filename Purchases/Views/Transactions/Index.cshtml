@@ -43,6 +43,7 @@
 
 </div><!-- /.content-wrapper -->
 
+
 <div class="example-modal">
     <div class="modal fade in" id="add-modal" data-backdrop="static">
         <div class="modal-dialog" style="width:80% !important">
@@ -74,66 +75,55 @@
 
                                                 <div class="col-lg-4">
                                                     <div class="form-group">
-                                                        <label for="debitAmount">المبلغ مدين</label>
+                                                        <div class="flex"><label for="debitAmount">المبلغ المدين</label>
+                                                        <strong id="AmountCurrencyDecimalText" class="AmountCurrencyDecimalText"></strong></div>
                                                         <div class="input-group">
                                                             <div class="input-group-addon">
                                                                 <i class="fa  fa-book"></i>
                                                             </div>
-                                                            <input class="form-control debitAmount" type="number" name="debitAmount" id="debitAmount" placeholder="المبلغ مدين" autocomplete="off" />
+                                                            <input class="form-control debitAmount" type="text" name="debitAmount" id="debitAmount" placeholder="المبلغ مدين" autocomplete="off" />
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-lg-4">
                                                     <div class="form-group">
-                                                        <label for="creditAmount">المبلغ دائن</label>
+                                                        <div class="flex"><label for="creditAmount">المبلغ الدائن</label><strong id="AmountCurrencyDecimalTextCr" class="AmountCurrencyDecimalTextCr"></strong></div>
                                                         <div class="input-group">
                                                             <div class="input-group-addon">
                                                                 <i class="fa  fa-book"></i>
                                                             </div>
-                                                            <input class="form-control creditAmount" type="number" name="creditAmount" id="creditAmount" placeholder="المبلغ" autocomplete="off" />
+                                                            <input class="form-control creditAmount" type="text" name="creditAmount" id="creditAmount" placeholder="المبلغ" autocomplete="off" />
                                                         </div>
                                                     </div>
                                                 </div>
-                                            
-                                                @*<div class="col-lg-3">
-                                                    <div class="form-group">
-                                                        <label for="addBalanceId">بند الخصم</label>
-                                                        <div class="input-group">
-                                                            <div class="input-group-addon">
-                                                                <i class="fa fa-book"></i>
-                                                            </div>
-                                                            <select class="form-control list addBalanceId" name="addBalanceId" id="addBalanceId" style="width:100%"></select>
-                                                        </div>
-                                                    </div>
-                                                </div>*@
-
                                             </div>
 
                                             <div class="col-lg-12">
-                                                <button class="btn btn-info btn-block m-4" onclick="addToTable()">ترحيل</button>
+                                                <button type="submit" class="btn btn-info btn-block m-4" onclick="addToTable()">ترحيل</button>
                                             </div>
                                         </form>
                                     </div>
-                                    
+
                                     <br />
 
                                     <div class="row">
-                                      <div class="col-lg-12">
-                                          <table id="example1" class="table table-bordered table-striped virtualTable">
-                                              <thead>
-                                                  <tr>
-                                                      <th style="text-align:center ;width:150px;">#</th>
-                                                      <th style="text-align:center ;width:750px;">اسم الحساب</th>
-                                                      <th style="text-align:center ;width:750px;">مدين</th>
-                                                      <th style="text-align:center ;width:750px;">دائن</th>
-                                                      @*<th style="text-align:center ;width:750px;">بند الخصم</th>*@
-                                                      <th style="text-align:center;"><i class="fa fa-cogs"></i></th>
-                                                  </tr>
-                                              </thead>
-                                              <tbody class="myTbody"></tbody>
-                                          </table>
-                                      </div>
+                                        <div class="col-lg-12">
+                                            <table id="example1" class="table table-bordered table-striped virtualTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="text-align:center ;width:150px;">#</th>
+                                                        <th style="text-align:center ;width:750px;">اسم الحساب</th>
+                                                        <th style="text-align:center ;width:750px;">مدين</th>
+                                                        <th style="text-align:center ;width:750px;">دائن</th>
+                                                        @*<th style="text-align:center ;width:750px;">بند الخصم</th>*@
+                                                        <th style="text-align:center;"><i class="fa fa-cogs"></i></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="myTbody"></tbody>
+                                                <tfoot class="myTFoot" style="background-color: #000000; color: #ffffff; text-align: center;"></tfoot>
+                                            </table>
+                                        </div>
                                     </div>
 
                                     <div class="row">
@@ -161,7 +151,7 @@
             <div class="modal-content">
                 <div class="modal-header .no-border">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title"> إضافة قيد جديد</h4>
+                    <h4 class="modal-title"> إضافة تسوية جديدة</h4>
                 </div>
                 <div class="modal-body">
                     <form id="add-statement-form">
@@ -186,7 +176,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label for="addCurrencyType">العملة</label>
@@ -198,61 +187,45 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="checkNo">رقم الشيك</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-book"></i>
+                                            </div>
+                                            <input type="text" class="form-control checkNo" name="checkNo" id="checkNo" placeholder="رقم الشيك" style="width:100%" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="recipient">اسم المستلم</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-book"></i>
+                                            </div>
+                                            <input type="text" class="form-control recipient" name="recipient" id="recipient" placeholder="اسم المستلم" style="width:100%" />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
                             <button type="submit" class="btn btn-success btnCreate" style="width: 100%;">حفظ</button>
                         </div>
                     </form>
-                        <hr />
-                        <div class="row">
-                            <table class="table table-bordered table-striped table-hover">
-                                <thead style="background-color:#808080">
-                                    <tr class="text-center">
-                                        <td>مدين</td>
-                                        <td>دائن</td>
-                                        <td>الحساب</td>
-                                    </tr>
-                                </thead>
-                                <tbody class="presntTBody"></tbody>
-                            </table>
-                        </div>
-                        
-            </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
-    </div>
-</div>
-
-<div class="example-modal">
-    <div class="modal fade in" id="details-modal" data-backdrop="static">
-        <div class="modal-dialog" style="width:60% !important">
-            <div class="modal-content">
-                <div class="modal-header .no-border">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title"> عرض تفاصيل القيد</h4>
-                </div>
-                <div class="modal-body">
-                <div class="row" style="margin:0px;">
-                    <div class="col-lg-3 text-right">
-                        <label>التاريخ :</label><label class="tarnsDate"></label>
-                    </div>
-                    <div class="col-lg-9 text-left">             
-                       <label> البيان :</label><label class="tarnsStatement"></label> 
-                    </div>
-                </div>
                     <hr />
                     <div class="row">
                         <table class="table table-bordered table-striped table-hover">
                             <thead style="background-color:#808080">
                                 <tr class="text-center">
-                                    <td>#</td>
-                                    <td>الحساب</td>
                                     <td>مدين</td>
                                     <td>دائن</td>
+                                    <td>الحساب</td>
                                 </tr>
                             </thead>
-                            <tbody class="detailsTBody"></tbody>
+                            <tbody class="presntTBody"></tbody>
                         </table>
                     </div>
 
@@ -289,13 +262,13 @@
                       },
                 ],
                 ajax: {
-                    url: '/Transactions/LoadData',
+                    url: '/Transactions/LoadDataForSettlement',
                     dataSrc: ''
                 },
                 columns: [
                     {
                         "title": "",
-                        "data": "TransactionId",
+                        "data": "transactionId",
                         "orderable": false,
                         "render": function (data) {
                             return '<a class="btn btn-info btnDetails" data-toggle="modal" data-target="#details-modal"><i class="fa fa-info"></i></a>';
@@ -303,31 +276,37 @@
                     },
                     {
                         "title": "# ",
-                        "data": "TransactionId"
+                        "data": "transactionId"
                     },
                     {
                         "title": "البيان",
-                        "data": "Note"
+                        "data": "note"
                     },
                     {
                         "title": "نوع السند",
-                        "data": "DocumentType"
+                        "data": "documentType"
                     },
                     {
                         "title": "العملة",
-                        "data": "Currency"
+                        "data": "currency"
                     },
                     {
-                        "title": "اجمالي المبلغ",
-                        "data": "TotalAmount"
+                        "title": "سعر الصرف",
+                        "data": "total",
+                        "render": function (data, type, row) {
+                            return formatNumber(data.toString());
+                        }
                     },
-                     {
-                         "title": "سعر الصرف",
-                         "data": "ExchangeRate"
-                     },
+                    {
+                        "title": "سعر الصرف",
+                        "data": "exchangeRate",
+                        "render": function (data, type, row) {
+                            return formatNumber(data.toString());
+                        }
+                    },
                     {
                         "title": "  التاريخ  ",
-                        "data": "TransactionDate"
+                        "data": "transactionDateStr"
                     },
                     {
                         "title": "<i class='fa fa-cog'></i>",
@@ -343,8 +322,8 @@
                         }
                     },
                     {
-                        "title": "TransactionId",
-                        "data": "TransactionId"
+                        "title": "transactionId",
+                        "data": "transactionId"
                     },
 
                 ]
@@ -352,39 +331,9 @@
 
         }
         loadData();
-        
-        function select2list(selector, url, placeholder) {
-            $(selector).select2({
-                language: { inputTooShort: function () { return 'ادخل حرف واحد علي الاقل'; } },
-                ajax: {
-                    url: url,
-                    dataType: 'json',
-                    delay: 100,
-                    data: function (params) {
-                        return {
-                            q: params.term,
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data,
-                            pagination: {
-                                more: ((data.total_count) > (params.page * 20))
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                placeholder: placeholder,
-                minimumInputLength: 1,
-            });
 
-        };
-        select2list("#addAccName", "/Transactions/getAccTrees", "اسم الحساب");
-        //select2list("#addBalanceId", "/Transactions/getBalanceIds", "بند الخصم");
-        select2list("#addCurrencyType", "/Transactions/getCurrency", "العملة");
+        select2list("#addAccName", "/Shared/getAccTrees", "اسم الحساب");
+        select2list("#addCurrencyType", "/Shared/getCurrency", "العملة");
 
     });
 
@@ -419,15 +368,23 @@
             },
             creditAmount: {
                 validators: {
-                    notEmpty: {
-                        message: 'يجب الا يكون حقل المبلغ  فارغ'
+                    callback: {
+                        message: 'ادخل رقم بحيث لا يحتوي على اكثر من خانتين عشريتين',
+                        callback: function (value, validator) {
+                            // regexp: /^[0-9]*\.?[0-9]*$/;
+                            return /^\d+(\.\d{1,2})?$/.test(value);
+                        }
                     }
                 }
             },
             debitAmount: {
                 validators: {
-                    notEmpty: {
-                        message: 'يجب الا يكون حقل المبلغ  فارغ'
+                    callback: {
+                        message: 'ادخل رقم بحيث لا يحتوي على اكثر من خانتين عشريتين',
+                        callback: function (value, validator) {
+                            // regexp: /^[0-9]*\.?[0-9]*$/;
+                            return /^\d+(\.\d{1,2})?$/.test(value);
+                        }
                     }
                 }
             },
@@ -438,13 +395,20 @@
             //        }
             //    }
             //}
-    
+
         }
     });
     $('#add-statement-form').bootstrapValidator({
         onSuccess: function (e) {
-            saveNew();
             e.preventDefault();
+            saveNew();
+            // Reset the form after saving the data
+            $('#add-statement-form').bootstrapValidator('resetForm', true); // Reset the form's validation
+            $('#add-statement-form')[0].reset(); // Clear the form fields
+
+            // Reset the form after saving the data
+            $('#add-form').bootstrapValidator('resetForm', true); // Reset the form's validation
+            $('#add-form')[0].reset(); // Clear the form fields
         },
         submitButtons: 'button[type="submit"]',
         feedbackIcons: {
@@ -501,7 +465,7 @@
         var isFound = false;
 
         //if (addAccName.trim() != "" & addAccNameId != null & addBalanceId != null & creditAmount >= 0 & debitAmount >= 0) {
-            if (addAccName.trim() != "" & addAccNameId != null & creditAmount >= 0 & debitAmount >= 0) {
+        if (addAccName.trim() != "" & addAccNameId != null & creditAmount >= 0 & debitAmount >= 0) {
             $('.myTbody tr').each(function () {
                 var id = $(this).find('td:eq(0)').text();
                 console.log(id);
@@ -535,36 +499,66 @@
 
                 if (creditAmount > 0) {
                     rptList.push({
-                        //"balanceId": addBalanceId,
                         "addAccName": addAccName,
                         "accTrreId": addAccNameId,
                         "amount": 0,
-                        "credit": creditAmount,
+                        "credit": parseFloat(parseFloat(creditAmount).toFixed(2)),
                         "debit": 0,
                         "isCredit": "true",
+                        "documentTypeId": 8,
                     });
                 } else {
                     rptList.push({
-                        //"balanceId": addBalanceId,
                         "addAccName": addAccName,
                         "accTrreId": addAccNameId,
                         "Amount": 0,
                         "credit": 0,
-                        "debit": debitAmount,
+                        "debit": parseFloat(parseFloat(debitAmount).toFixed(2)),
                         "IsCredit": "false",
+                        "documentTypeId": 8,
                     });
                 }
+
+                var totalCreditAmount = 0;
+                var totalDebitAmount = 0;
+
+                $.each(rptList, function (index, value) {
+                    totalDebitAmount += value.debit;
+                    totalCreditAmount += value.credit;
+
+                    console.clear();
+                    console.log("---------------from btnSave------------");
+                    console.log(totalDebitAmount);
+                    console.log(totalCreditAmount);
+                });
+
+                var balance = parseFloat(parseFloat(totalCreditAmount).toFixed(2)) - parseFloat(parseFloat(totalDebitAmount).toFixed(2));
+                var tblFooter = '<tr>' +
+                                    '<td colspan="1">الاجمالي</td>' +
+                                    '<td colspan="2">' + parseFloat(parseFloat(totalDebitAmount).toFixed(2)) + '</td>' +
+                                    '<td colspan="2">' + parseFloat(parseFloat(totalCreditAmount).toFixed(2)) + '</td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                    '<td colspan="2">الصافي</td>' +
+                                    '<td colspan="3">' + balance + '</td>' +
+                                '</tr>';
+
+                $('.myTFoot').empty();
+                $('.myTFoot').append(tblFooter);
             }
             else {
                 toastr["error"]("هذاالحساب موجود في القائمة", "خطأ");
             }
+
+            $(".AmountCurrencyDecimalText").text('');
+            $(".AmountCurrencyDecimalTextCr").text('');
         } else {
             toastr["error"]("الرجاء ادخال جميع البيانات", "خطأ");
         }
     }
 
     $('#btnSave').click(function () {
-        
+
         var transactionId = $('#TransactionId').text();
         var statement = $('#Note').val();
         var currencyId = $('#addCurrencyType').val();
@@ -581,12 +575,17 @@
         var totalCreditAmount = 0;
 
         $.each(rptList, function (index, value) {
-            totalDebitAmount += parseInt(value.debit);
-            totalCreditAmount += parseInt(value.credit);
+            totalDebitAmount = totalDebitAmount + parseFloat(parseFloat(value.debit).toFixed(2));
+            totalCreditAmount = totalCreditAmount + parseFloat(parseFloat(value.credit).toFixed(2));
 
+            console.clear();
+            console.log("---------------from btnSave------------");
             console.log(totalDebitAmount);
             console.log(totalCreditAmount);
         });
+
+        totalDebitAmount = parseFloat(parseFloat(totalDebitAmount).toFixed(2));
+        totalCreditAmount = parseFloat(parseFloat(totalCreditAmount).toFixed(2));
 
         if (totalDebitAmount == totalCreditAmount) {
             rptList.forEach(function (row) {
@@ -652,22 +651,18 @@
     });
 
     function saveNew() {
-        //var transactionId = $('#TransactionId').text();
         var statement = $('#statement').val();
         var currencyId = $('#addCurrencyType').val();
-        //var transactionDate = moment($('#transDate').val(), "DD/MM/YYYY").format("MM/DD/yyyy");
-
+        var checkNo = $('#checkNo').val();
+        var recipient = $('#recipient').val();
         var transactionDate = $('#transactionDate').val();
-
-        console.clear();
-        //console.log(transactionId);
-        console.log(statement);
-        console.log(currencyId);
-        console.log(transactionDate);
 
         if (statement != null & transactionDate != null) {
             //هنا اضفنا حقل البيان والتاريخ لي مصفوفة موجودة مسبقا بها بيانات
-            rptList = rptList.map(v => Object.assign(v, {"note": statement, "transactionDate": transactionDate, "currencyId": currencyId }));
+            rptList = rptList.map(v => Object.assign(v, { "checkNo": checkNo, "recipient": recipient, "note": statement, "transactionDate": transactionDate, "currencyId": currencyId }));
+
+            console.clear();
+            console.log(rptList);
 
             $.ajax({
                 url: "/Transactions/Create",
@@ -687,13 +682,13 @@
                         $('#add-modal').modal("hide");
                         $('#add-statement-modal').modal("hide");
                         $(".presntTBody").empty();
-                        window.location.reload();
+                        $(".myTbody").empty();
+                        $('.myTFoot').empty();
+                        $('#tbx').DataTable().ajax.reload();
                     }
                 }
             });
 
-            console.clear();
-            console.log(rptList);
         } else {
             toastr["error"]("الرجاء ادخال جميع البيانات", "خطأ");
         }
@@ -706,7 +701,7 @@
             $('#debitAmount').val(0);
         }
     });
-    
+
     $('#debitAmount').keyup(function () {
         var debitAmount = $(this).val();
 
@@ -735,14 +730,12 @@
     });
 
     /*----------------------------------------------------------------------------------------*/
+
     $('#tbx').on('click', '.btnPost', function () {
 
         var currentRow = $(this).closest("tr");
         var data = $('#tbx').DataTable().row(currentRow).data();
         var TransactionId = data['TransactionId'];
-
-        console.clear();
-        console.log(TransactionId);
 
         $.post('/Transactions/Posting', { "Id": TransactionId }, function (response) {
             toastr[response.Status](response.Message, response.Title);
@@ -754,38 +747,10 @@
 
         var currentRow = $(this).closest("tr");
         var data = $('#tbx').DataTable().row(currentRow).data();
-        var TransactionId = data['TransactionId'];
-
-        console.clear();
-        console.log(TransactionId);
+        var TransactionId = data['transactionId'];
 
         window.open('/Transactions/Edit/' + TransactionId, "_blank");
     });
-
-    $('#tbx').on('click', '.btnDetails', function () {
-        var currentRow = $(this).closest("tr");
-        var data = $('#tbx').DataTable().row(currentRow).data();
-        var TransactionId = data['TransactionId'];
-        var TransactionDate = data['TransactionDate'];
-        var Note = data['Note'];
-
-        $('.tarnsDate').text(TransactionDate);
-        $('.tarnsStatement').text(Note);
-        
-        $.post('/Transactions/getTransDetailsData', { "Id": TransactionId }, function (response) {
-            $('.detailsTBody').empty();
-            $.each(response, function (key, value) {
-                var rows = "<tr id='row' style='font-size: 16px;text-align:center;'>"
-                                + "<td class='id'>" + value.id + "</td>"
-                                + "<td class='accName'>" + value.accName + "</td>"
-                                + "<td class='accName'>" + value.debit + "</td>"
-                                + "<td class='credit'>" + value.credit + "</td>"
-                            + "</tr>";
-                $('.detailsTBody').append(rows);
-            });
-        });
-    });
-
 
 </script>
 }

@@ -1,0 +1,384 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<style>
+    .displaying {
+        display: none;
+    }
+</style>
+
+@section content{
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <div class="grad"></div>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                سعر الصرف
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
+                <li class="active"> سعر الصرف </li>
+            </ol>
+        </section>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="container" style="margin-top:30px;">
+                                <button class="btn btn-primary" style="float:left" data-toggle="modal" data-target="#add-modal"> إضافة </button>
+                                <table id="tbx" class="table table-bordered table-sm table-hover" style="width:100%"></table>
+                            </div><!-- /.box-body -->
+                        </div><!-- /.box -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div>
+        </section>
+    </div>
+
+    <div class="example-modal">
+        <div class="modal fade in" id="add-modal" data-backdrop="static">
+            <div class="modal-dialog" style="width:50% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"> إضافة</h4>
+                    </div>
+                <form id="add-form">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <h4 class="modal-title">اختار العملة</h4>
+                                <select id="CurrencyTypeId" class="form-control list" name="CurrencyTypeId" style="width: 100%;"></select>
+                            </div>
+                            <div class="col-lg-4">
+                                <h4 class="modal-title">سعر الصرف</h4>
+                                <input type="text" id="ExchangeRate" class="form-control ExchangeRate" name="ExchangeRate" placeholder="سعر الصرف" />
+                            </div>
+                            <div class="col-lg-4">
+                                <h4 class="modal-title">التاريخ</h4>
+                                <input type="date" id="ExchangeDate" class="form-control ExchangeDate" name="ExchangeDate" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-success">حفظ</button>
+                            <button class="btn btn-danger" data-dismiss="modal" aria-label="Close">الغاء</button>
+                        </div>
+                    </div>
+
+                </form>
+                
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<div class="example-modal">
+    <div class="modal fade in" id="edit-modal" data-backdrop="static">
+        <div class="modal-dialog" style="width:50% !important">
+            <div class="modal-content">
+                <div class="modal-header .no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"> تعديل</h4>
+                </div>
+                <form id="edit-form">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <h4 class="modal-title">اختار العملة</h4>
+                                <label class="displaying" name="CurrencyDetailId" id="CurrencyDetailId">CurrencyDetailId</label>
+                                <select id="edCurrencyTypeId" class="form-control list" name="edCurrencyTypeId" style="width: 100%;"></select>
+                            </div>
+                            <div class="col-lg-4">
+                                <h4 class="modal-title">سعر الصرف</h4>
+                                <input type="text" id="edExchangeRate" class="form-control edExchangeRate" name="edExchangeRate" placeholder="سعر الصرف" />
+                            </div>
+                            <div class="col-lg-4">
+                                <h4 class="modal-title">التاريخ</h4>
+                                <input type="text" class="form-control  calendar edExchangeDate" id="edExchangeDate" name="edExchangeDate" placeholder="تاريخ التحويل" autocomplete="off">
+                                @*<input type="date" id="edExchangeDate" class="form-control edExchangeDate" name="edExchangeDate" />*@
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-warning">تعديل</button>
+                            <button class="btn btn-danger" data-dismiss="modal" aria-label="Close">الغاء</button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+}
+
+@section scripts{
+    <script>
+    var myId = 0;
+    var dataTable;
+
+    var addExchangeRateObj;
+    var editExchangeRateObj;
+
+    $(document).ready(function () {
+
+        function loadData() {
+            dataTable = $('#tbx').DataTable({
+                "language": {
+                    "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                    "search": "بحث"
+                },
+                "columnDefs": [
+                      {
+                          "targets": [6],
+                          'visible': false,
+                          'sClass': 'center',
+                      },
+                      {
+                          "targets": 0,
+                          "className": "text-center",
+                      },
+                ],
+                ajax: {
+                    url: '/CurrencyDetails/LoadData',
+                    dataSrc: ''
+                },
+                columns: [
+                    {
+                        "title": "# ",
+                        "data": "Id"
+                    },
+                    {
+                        "title": "العملة",
+                        "data": "CurrencyType"
+                    },
+                    {
+                        "title": "العام",
+                        "data": "Year"
+                    },
+                    {
+                        "title": "الشهر",
+                        "data": "Month"
+                    },
+                    {
+                        "title": "سعر الصرف",
+                        "data": "ExchangeRate",
+                        "render": function (data, type, row) {
+                            return formatNumber(data.toString());
+                        }
+                    },
+                    {
+                        "title": "<i class='fa fa-cog'></i>",
+                        "data": null,
+                        "width": "10%",
+                        "orderable": false,
+                        "render": function (data) {
+                            return '<div class="btn-opreation">'
+                                        + '<a class="btn btn-success btnnEdit"> <i class="fa fa-edit"></i></a> '
+                                        + '<a class="btn btn-danger btnDelete"><i class="fa fa-trash"></i></a> '
+                                     + '</div> ';
+                        }
+                    },
+                    {
+                        "title": "CurrencyTypeId",
+                        "data": "CurrencyTypeId"
+                    },
+                ]
+            });
+        }
+        loadData();
+
+
+        addExchangeRateObj = CustomAutoNumeric('#ExchangeRate');
+        editExchangeRateObj = CustomAutoNumeric('#edExchangeRate');
+
+
+        select2list("#CurrencyTypeId", "/Shared/getCurrency", "العملة");
+        select2list("#edCurrencyTypeId", "/Shared/getCurrency", "العملة");
+    });
+
+    //-------------------------------------------------Start Validator ------------------------------------------------------------------------------------------------------------
+
+    $('#add-form').bootstrapValidator({
+        onSuccess: function (e) {
+            save();
+            e.preventDefault();
+
+        },
+        submitButtons: 'button[type="submit"]',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok success-feedback-icons',
+            invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+            validating: 'fa fa-refresh fa-spin success-feedback-icons'
+        },
+        fields: {
+            CurrencyTypeId: {
+                validators: {
+                    notEmpty: {
+                        message: 'يجب اختيار العملة'
+                    }
+                }
+            },
+            ExchangeRate: {
+                validators: {
+                    callback: {
+                        message: 'ادخل رقم بحيث لا يحتوي على اكثر من خانتين عشريتين',
+                        callback: function (value, validator) {
+                            // إزالة الفواصل بين الآلاف
+                            let sanitizedValue = value.replace(/,/g, '');
+                            // regexp: /^[0-9]*\.?[0-9]*$/;
+                            return /^\d+(\.\d{1,2})?$/.test(sanitizedValue);
+                        }
+                    }
+                }
+            },
+            ExchangeDate: {
+                validators: {
+                    callback: {
+                        message: 'يجب ادخال التاريخ اولا',
+                    }
+                }
+            },
+           
+        }
+    });
+
+    $('#edit-form').bootstrapValidator({
+        onSuccess: function (e) {
+            Edit();
+            e.preventDefault();
+
+        },
+        submitButtons: 'button[type="submit"]',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok success-feedback-icons',
+            invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+            validating: 'fa fa-refresh fa-spin success-feedback-icons'
+        },
+        fields: {
+            edCurrencyTypeId: {
+                validators: {
+                    notEmpty: {
+                        message: 'يجب اختيار العملة'
+                    }
+                }
+            },
+            edExchangeRate: {
+                validators: {
+                    callback: {
+                        message: 'ادخل رقم بحيث لا يحتوي على اكثر من خانتين عشريتين',
+                        callback: function (value, validator) {
+                            // إزالة الفواصل بين الآلاف
+                            let sanitizedValue = value.replace(/,/g, '');
+                            // regexp: /^[0-9]*\.?[0-9]*$/;
+                            return /^\d+(\.\d{1,2})?$/.test(sanitizedValue);
+                        }
+                    }
+                }
+            },
+            edExchangeDate: {
+                validators: {
+                    callback: {
+                        message: 'يجب ادخال التاريخ اولا',
+                    }
+                }
+            },
+
+        }
+    });
+
+    //-------------------------------------------------End Validator ------------------------------------------------------------------------------------------------------------
+
+    var rptList = [];
+
+    function save() {
+        var CurrencyTypeId = $("#CurrencyTypeId").val();
+        var ExchangeDate = $("#ExchangeDate").val();
+        var ExchangeRate = addExchangeRateObj.getNumber();
+        $.post('/CurrencyDetails/Create', { "CurrencyTypeId": CurrencyTypeId, "ExchangeRate": ExchangeRate, "ExchangeDate": ExchangeDate, }, function (response) {
+            toastr[response.Status](response.Message, response.Title);
+            $('#tbx').DataTable().ajax.reload();
+        });
+    }
+
+    /*----------------------------------------------------------------------------------------*/
+
+    $('#tbx').on('click', '.btnDelete', function () {
+
+        var currentRow = $(this).closest("tr");
+        var data = $('#tbx').DataTable().row(currentRow).data();
+        var Id = data['Id'];
+
+        $.get('/CurrencyDetails/Delete', { "Id": Id }, function (response) {
+            toastr[response.Status](response.Message, response.Title);
+            $('#tbx').DataTable().ajax.reload();
+        });
+    });
+
+    $('#tbx').on('click', '.btnnEdit', function () {
+
+        var currentRow = $(this).closest("tr");
+        var data = $('#tbx').DataTable().row(currentRow).data();
+        var CurrencyTypeId = data['CurrencyTypeId'];
+        var CurrencyType = data['CurrencyType'];
+        var ExchangeRate = data['ExchangeRate'];
+        var Month = data['Month'];
+        var Year = data['Year'];
+        var Id = data['Id'];
+
+        // أنشئ خيار جديد واضفه
+        var option = new Option(CurrencyType, CurrencyTypeId, true, true);
+        $('#edCurrencyTypeId').append(option).trigger('change');
+
+        var ExchangeDate = new Date(Month + "/15/" + Year);
+        console.clear();
+        console.log(ExchangeDate);
+        const formattedDate = moment(ExchangeDate).format('MM/DD/YYYY');
+        $('#edCurrencyTypeId').val(CurrencyTypeId);
+
+        editExchangeRateObj.set(ExchangeRate);
+
+        console.log(formattedDate);
+
+        $('#edExchangeDate').val(formattedDate);
+        $('#CurrencyDetailId').text(Id);
+
+        $('#edit-modal').modal('show');
+    });
+
+    function Edit()
+    {
+        var CurrencyTypeId = $('#edCurrencyTypeId').val();
+        var ExchangeDate = $('#edExchangeDate').val();
+        var Id = $('#CurrencyDetailId').text();
+        var ExchangeRate = editExchangeRateObj.getNumber();
+       
+        console.clear();
+        console.log(CurrencyTypeId);
+        console.log(ExchangeRate);
+        console.log(ExchangeDate);
+        console.log(Id);
+
+        $.get('/CurrencyDetails/Update', { "Id": Id, "CurrencyTypeId": CurrencyTypeId, "ExchangeRate": ExchangeRate, "ExchangeDate": ExchangeDate }, function (response) {
+            toastr[response.Status](response.Message, response.Title);
+            $('#tbx').DataTable().ajax.reload();
+        });
+        $('#edit-modal').modal('hide');
+
+    }
+
+
+    </script>
+}

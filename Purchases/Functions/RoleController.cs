@@ -10,7 +10,7 @@ using System.Web.Mvc;
 
 namespace Purchases.Functions
 {
-    public class RoleController : Controller
+    public class RoleController 
     {
         public readonly UserManager<ApplicationUser> userManager;
 
@@ -39,7 +39,7 @@ namespace Purchases.Functions
             }
            
                //Session["Role"] = rolename;
-                ViewBag.Role = rolename;
+                // ViewBag.Role = rolename;
                 return rolename;
             
         }

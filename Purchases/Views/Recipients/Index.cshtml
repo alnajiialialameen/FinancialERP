@@ -1,0 +1,315 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+@section content{
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <div class="grad"></div>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                حسابات الموظفين والعملاء
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i>النظام المحاسبي</a></li>
+                <li class="active">حسابات الموظفين والعملاء</li>
+            </ol>
+        </section>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <button class="btn btn-primary" style="float:left" data-toggle="modal" data-target="#add-modal"> إضافة </button>
+                            <div class="container">
+                                <table id="tbx" class="table table-bordered table-sm table-hover" style="width:100%">
+                                </table>
+                            </div><!-- /.box-body -->
+                        </div><!-- /.box -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div>
+        </section>
+
+    </div><!-- /.content-wrapper -->
+
+
+
+    <div class="example-modal">
+        <div class="modal fade in" id="add-modal" data-backdrop="static">
+            <div class="modal-dialog" style="width:60% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"> إضافة</h4>
+                        <h4 id="Id" class="hidden Id">Id</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="add-form">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="RecipientName"> اسم العميل أو الموظف</label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-user"></i>
+                                            </span>
+                                            <input type="text" class="form-control RecipientName" id="RecipientName" name="RecipientName" placeholder="اسم الموظف" autocomplete="off">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="BankName">البنك</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-home"></i>
+                                            </div>
+                                            <select class="form-control list BankName" name="BankName" id="BankName" style="width:100%"></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="BranchName">الفرع</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-hotel"></i>
+                                            </div>
+                                            <select class="form-control list BranchName" name="BranchName" id="BranchName" style="width:100%"></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="AccountNumber">رقم الحساب</label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-address-card"></i>
+                                            </span>
+                                            <input type="number" class="form-control AccountNumber" id="AccountNumber" name="AccountNumber" placeholder="رقم الحساب" autocomplete="off">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <button type="submit" class="btn btn-success btnCreate pull-left" >حفظ</button>
+                            </div>
+                        </form>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        </div>
+    </div>
+
+}
+
+@section scripts{
+    <script>
+
+        $(document).ready(function () {
+            loadData();
+
+            $('#add-form').bootstrapValidator({
+                onSuccess: function (e) {
+                    save();
+                    e.preventDefault();
+
+                },
+                submitButtons: 'button[type="submit"]',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                    invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                    validating: 'fa fa-refresh fa-spin success-feedback-icons'
+                },
+                fields: {
+                    RecipientName: {
+                        validators: {
+                            notEmpty: {
+                                message: 'هذا الحقل مطلوب'
+                            }
+                        }
+                    },
+                    AccountNumber: {
+                        validators: {
+                            notEmpty: {
+                                message: 'هذا الحقل مطلوب'
+                            }
+                        }
+                    },
+                    BankName: {
+                        validators: {
+                            notEmpty: {
+                                message: 'هذا الحقل مطلوب'
+                            }
+                        }
+                    },
+                    BranchName: {
+                        validators: {
+                            notEmpty: {
+                                message: 'هذا الحقل مطلوب'
+                            }
+                        }
+                    },
+                }
+            });
+
+            select2listNew("#BankName", "/Recipients/GetBanks", "اسم البنك");
+            select2listNew("#BranchName", "/Recipients/GetBranches", "اسم الفرع");
+        });
+
+        function loadData() {
+            dataTable = $('#tbx').DataTable({
+                "language": {
+                    "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                    "search": "بحث"
+                },
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "className": "text-center",
+                    },
+                ],
+                ajax: {
+                    url: '/Recipients/LoadData',
+                    dataSrc: ''
+                },
+                columns: [
+                    {
+                        "title": "# ",
+                        "data": "Id"
+                    },
+                    {
+                        "title": "الاسم",
+                        "data": "RecipientName"
+                    },
+                    {
+                        "title": "رقم الحساب",
+                        "data": "AccountNumber"
+                    },
+                    {
+                        "title": "اسم البنك",
+                        "data": "BankName"
+                    },
+                    {
+                        "title": "اسم الفرع",
+                        "data": "BranchName"
+                    },
+                    {
+                        "title": "<i class='fa fa-cog'></i>",
+                        "data": null,
+                        "width": "10%",
+                        "orderable": false,
+                        "render": function (data) {
+                            return `
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default" data-toggle="dropdown">
+                                                <i class="fa fa-ellipsis-v"></i>
+                                            </button>
+                                            <div class="dropdown-menu btn-threePoint">
+                                                <a href="#" class="btnUpdate" onclick="printBankLetter(${data.Id})">تعديل</a><br />
+                                                <a href="#" class="btnDelete" onclick="AddIncomeTax(${data.Id})">حذف</a><br />
+                                            </div>
+                                        </div>
+                                    `;
+                        }
+                    },
+                ]
+            });
+
+        }
+
+        function save() {
+            var RecipientName = $("#RecipientName").val();
+            var AccountNumber = $("#AccountNumber").val();
+            var BankName = $("#BankName").val();
+            var BranchName = $("#BranchName").val();
+            var Id = $("#Id").text();
+
+            var usl = '';
+            var btnCreateText = $(".btnCreate").text();
+            url = btnCreateText == "تعديل" ? "/Recipients/Update" : "/Recipients/Create";
+            console.log(BranchName);
+            console.log(BankName);
+            console.log(AccountNumber);
+            console.log(RecipientName);
+            debugger;
+
+            if (RecipientName != "" && AccountNumber != "" && BankName != "" && BranchName != "")
+            {
+                $.post(url,
+                    {
+                        Id: "0", RecipientName: RecipientName, AccountNumber: AccountNumber,
+                        BankName: BankName, BranchName: BranchName, Id: Id
+                    },
+                    function (response) {
+                        toastr[response.Status](response.Message, response.Title);
+                        $('#tbx').DataTable().ajax.reload();
+                        $('#add-modal').modal('hide');
+                        // $('#add-form').reset();
+                    }
+                );
+            } else {
+                toastr['error']("يجب التاكد من صحة البيانات", "خطأ");
+            }
+        }
+
+        $('#tbx').on('click', '.btnUpdate', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var Id = data['Id'];
+            var RecipientName = data['RecipientName'];
+            var AccountNumber = data['AccountNumber'];
+            var BankName = data['BankName'];
+            var BranchName = data['BranchName'];
+
+            $("#Id").text(Id);
+            $("#BranchName").val(BranchName);
+            $("#RecipientName").val(RecipientName);
+            $("#AccountNumber").val(AccountNumber);
+            $("#BankName").val(BankName);
+
+
+            // أنشئ خيار جديد واضفه
+            var option = new Option(BankName, BankName, true, true);
+            $('#BankName').append(option).trigger('change');
+
+            // أنشئ خيار جديد واضفه
+            var option = new Option(BranchName, BranchName, true, true);
+            $('#BranchName').append(option).trigger('change');
+
+
+
+            $(".modal-title").text("تعديل");
+            $(".btnCreate").text("تعديل");
+            $(".btnCreate").removeClass("btn-success");
+            $(".btnCreate").addClass("btn-warning");
+
+            $('#add-modal').modal('show');
+        });
+
+        $('#tbx').on('click', '.btnDelete', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var Id = data['Id'];
+
+            $.post("/Recipients/Delete", { Id: Id },
+                function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    $('#tbx').DataTable().ajax.reload();
+                }
+            )
+        });
+
+    </script>
+
+}

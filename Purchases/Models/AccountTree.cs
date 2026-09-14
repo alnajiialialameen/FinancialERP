@@ -21,7 +21,9 @@ namespace Purchases.Models
             this.CompetingCompanies = new HashSet<CompetingCompany>();
             this.AccountSubs = new HashSet<AccountSub>();
             this.Balances = new HashSet<Balance>();
-            this.JournalEnteryDetails = new HashSet<JournalEnteryDetail>();
+            this.DeletedTransactionDetails = new HashSet<DeletedTransactionDetail>();
+            this.FinancialCycleAccountTrees = new HashSet<FinancialCycleAccountTree>();
+            this.FinancialCycleAccountTrees1 = new HashSet<FinancialCycleAccountTree>();
             this.OpeningBalanceDetails = new HashSet<OpeningBalanceDetail>();
             this.Receipts = new HashSet<Receipt>();
             this.ReceiptDetails = new HashSet<ReceiptDetail>();
@@ -56,7 +58,11 @@ namespace Purchases.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Balance> Balances { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<JournalEnteryDetail> JournalEnteryDetails { get; set; }
+        public virtual ICollection<DeletedTransactionDetail> DeletedTransactionDetails { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<FinancialCycleAccountTree> FinancialCycleAccountTrees { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<FinancialCycleAccountTree> FinancialCycleAccountTrees1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OpeningBalanceDetail> OpeningBalanceDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

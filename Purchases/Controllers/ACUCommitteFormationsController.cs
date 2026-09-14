@@ -4,10 +4,10 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using Purchases.Models;
 using Purchases.MyLogic;
+using Purchases.Models.ViewModel;
 using Purchases.Models.ViewModal;
 using Microsoft.AspNet.Identity;
 
@@ -98,7 +98,7 @@ namespace Purchases.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(CommitteFormationsViewModel model)
+        public ActionResult Add(CommitteFormationsVM model)
         {
             try
             {
@@ -134,7 +134,7 @@ namespace Purchases.Controllers
         }
 
         [HttpPost]
-        public ActionResult Update(CommitteFormationsViewModel model)
+        public ActionResult Update(CommitteFormationsVM model)
         {
             try
             {
@@ -192,7 +192,7 @@ namespace Purchases.Controllers
 
         [ActionName("AddMember")]
         [HttpPost]
-        public ActionResult AddCommitteeMembers(CommitteeMemberViewModel model)
+        public ActionResult AddCommitteeMembers(CommitteeMemberVM model)
         {
             try
             {
@@ -225,7 +225,7 @@ namespace Purchases.Controllers
         
         [ActionName("UpdateMember")]
         [HttpPost]
-        public ActionResult UpdateCommitteeMembers(CommitteeMemberViewModel model)
+        public ActionResult UpdateCommitteeMembers(CommitteeMemberVM model)
         {
             try
             {
@@ -257,7 +257,7 @@ namespace Purchases.Controllers
         
         [ActionName("DeleteMember")]
         [HttpPost]
-        public ActionResult DeleteCommitteeMembers(CommitteeMemberViewModel model)
+        public ActionResult DeleteCommitteeMembers(CommitteeMemberVM model)
         {
             try
             {
@@ -284,7 +284,7 @@ namespace Purchases.Controllers
         /*----------------------------------------Companies Related Operations -----------------------------------------*/
         [ActionName("AddCompany")]
         [HttpPost]
-        public ActionResult AddCommitteeCompany(CommitteeMemberViewModel model)
+        public ActionResult AddCommitteeCompany(CommitteeMemberVM model)
         {
             try
             {
@@ -317,7 +317,7 @@ namespace Purchases.Controllers
 
         [ActionName("UpdateCompany")]
         [HttpPost]
-        public ActionResult UpdateCommitteeCompanies(CommitteeMemberViewModel model)
+        public ActionResult UpdateCommitteeCompanies(CommitteeMemberVM model)
         {
             try
             {

@@ -3,221 +3,183 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - Report</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
-
     <style>
-        .invoiceFinal {
-            padding: 10px;
-            font-family: Arial;
-        }
-
-            .invoiceFinal .invoice-header {
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+            }
+        
+            .invoiceCupps {
+                padding: 0px 20px;
+                font-family: Arial;
+                margin: 0px 20px;
+            }
+            .invoiceCupps .invoice-Cupps-header {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: flex-end;
                 border: 2px solid #808080;
                 border-radius: 5px;
-                padding: 15px;
-                /*margin-bottom:10px;*/
+                padding: 16px;
+                margin-bottom: 10px;
+            }
+            .invoiceCupps .invoice-Cupps-header .text-word {
+                float: none;
             }
 
-                .invoiceFinal .invoice-header .text-word {
-                    float: none;
-                }
+            .invoiceCupps .invoice-Cupps-header .text-word h6 {
+                font-size: 21px;
+                font-weight: bolder;
+            }
 
-                    .invoiceFinal .invoice-header .text-word h6 {
-                        font-size: 18px;
-                        font-weight: bolder;
-                    }
+            .invoiceCupps .invoice-Cupps-header .image-R {
+                float: right;
+                margin-right: 30px;
+                margin-top: -100px;
+            }
 
-                    .invoiceFinal .invoice-header .text-word h7 {
-                        font-size: 22px;
-                        font-weight: bolder;
-                    }
+            .invoiceCupps .invoice-Cupps-header .image-L {
+                float: left;
+                margin-left: 30px;
+                margin-top: -100px;
+            }
 
-                .invoiceFinal .invoice-header .image-R {
-                    float: right;
-                    margin-right: 15px;
-                    margin-top: -90px;
-                }
-
-                .invoiceFinal .invoice-header .image-L {
-                    /*float:left;
-              margin-top:-10px;*/
-                    float: left;
-                    margin-right: 15px;
-                    margin-top: 5px;
-                }
-
-            .invoiceFinal .invoice-Body {
+            .invoiceCupps .invoice-Cupps-Body {
                 clear: both;
             }
 
-                .invoiceFinal .invoice-Body .date {
-                    float: right;
-                }
-
-                .invoiceFinal .invoice-Body label {
-                    display: inline;
-                }
-
-                .invoiceFinal .invoice-Body .h-mr {
-                    float: right;
-                    margin-right: 20px;
-                    font-weight: bolder;
-                    font-size: 20px;
-                }
-
-                .invoiceFinal .invoice-Body .InvoiceNo {
-                    font-size: 16px;
-                }
-
-                .invoiceFinal .invoice-Body .arline-header {
-                    /*margin-left: 40px;*/
-                    border: 2px solid #282a2c;
-                    border-radius: 5px;
-                    padding: 10px;
-                    margin-bottom: 10px;
-                    font-weight: 500;
-                    font-size: 25px;
-                }
-
-                    .invoiceFinal .invoice-Body .arline-header .font-normal {
-                        font-weight: normal;
-                    }
-
-            .invoiceFinal .invoice-details {
-                /*margin-left:100px;
-            margin-right:180px;*/
-                color: #282a2c;
-                font-size: 16px;
-                /*font-weight: bold;*/
-                float: right;
+            .invoiceCupps .invoice-Cupps-Body .h-mr {
+                margin-right: 20px;
+                font-size: 21px;
             }
 
-            .invoiceFinal .invoice-Body {
-                padding-left: 20px;
-                padding-right: 20px;
+            .invoiceCupps .invoice-Cupps-details th {
+                background-color: #ebefef;
             }
 
-            .invoiceFinal .myTable {
-                margin-right: -150px;
-                float: left;
-                width: 800px;
-                border: 2px solid #282a2c;
-            }
-
-            .invoiceFinal .invoice-details table {
-                margin-right: 30px;
-                float: right;
-                width: 1000px;
+            .invoiceCupps .invoice-Cupps-details table {
+                min-width: 100%;
                 text-align: right;
-                float: left;
             }
 
-            .invoiceFinal .invoice-details table, th, td {
-                border: 2px solid #282a2c;
+            .invoiceCupps .invoice-Cupps-details table, th, td {
+                border: 1px solid #282a2c;
                 padding: .5rem;
                 font-size: 18px;
+                text-align: center;
             }
 
-            .invoiceFinal .invoice-details .N {
-                width: 40px;
-            }
-
-            .invoiceFinal .invoice-details tfoot {
-                font-weight: 700;
+            .invoiceCupps .invoice-Cupps-details .footer {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
                 background-color: #ebefef;
-                font-size: 16px;
+                font-weight: bolder;
+                font-size: 20px;
+                min-width: 30%;
+                margin-top: 3%;
+                padding: 16px;
+                line-height: 30px;
             }
 
-            .invoiceFinal .invoice-details thead {
-                font-weight: 900;
-                background-color: #ebefef;
-                font-size: 16px;
+            .footer .titel {
+                float: right;
             }
 
-            .invoiceFinal .invoice-footer {
-                margin-top: 300px;
+            .footer .value {
+                float: left;
             }
-
-        .number-Word {
-            margin-left: 200px;
-            font-size: 20px;
-            /*max-width: 200px;*/
-            margin-top: 30px;
-        }
-
-        .invoiceFinal .invoice-footer .conditions {
-            border: 2px solid #282a2c;
-            margin-left: 100px;
-            padding: 10px;
-            margin-top: 10px;
-        }
-
-            .invoiceFinal .invoice-footer .conditions span {
-                display: block;
-                font-weight: bold;
+        
+            .numberFormat {
+                margin: 2px;
+                padding: 2px;
                 font-size: 18px;
             }
-
-        .invoiceFinal .invoice-footer .chief div {
-            float: left;
-        }
-
-        .invoiceFinal .invoice-footer .chief .Thank {
-            text-align: center;
-        }
-
-        .invoiceFinal .invoice-footer .chief .Manager {
-            margin-right: 100px;
-            float: right;
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-            text-align: right;
-        }
-
-        .invoiceFinal .invoice-footer .chief .Manager1 {
-            margin-right: 100px;
-            float: left;
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-            text-align: right;
-        }
-
-        .invoiceFinal .invoice-footer .chief .Dept {
-            margin-left: 100px;
-            float: left;
-            margin-top: 5px;
-            font-size: 18px;
-            font-weight: bold;
-            text-align: right;
-        }
-
-        .invoiceFinal .invoice-footer .Thank {
-            margin-top: 40px;
-        }
-
-        .text-center invoice-details {
-            /*direction:ltr;*/
-            justify-content: flex-end;
-        }
     </style>
-
 
 </head>
 <body>
-    
-    <div class="wrapper">
+    @*<div class="wrapper">*@
         @RenderBody()
-    </div>
+    @*</div>*@
 
     <script src="~/Temp/jquery/jquery.min.js"></script>
+    <script src="~/Temp/AutoNumeric/auto-numeric.js"></script>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        $('.numberFormat').each(function () {
+            var item = $(this).text();
+
+            var N = round(item, 2);
+            var formattedVal = formatNumber(inputVal);
+
+            $(this).text(num);
+        });
+
+        function formatNumber(num) {
+            // تحويل الرقم إلى سلسلة نصية لضمان المعالجة
+            num = num.toString();
+
+            // تقسيم الرقم إلى جزء صحيح وجزء عشري
+            var parts = num.split('.');
+            var integerPart = parts[0];
+            var decimalPart = parts[1] || '';
+
+            // معالجة الجزء الصحيح بإضافة الفواصل
+            integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+            // معالجة الجزء العشري بالتقريب إلى خانتين عشريتين
+            if (decimalPart) {
+                decimalPart = (parseFloat('0.' + decimalPart).toFixed(2)).split('.')[1];
+            }
+
+            // إرجاع الرقم بالصيغة المطلوبة
+            return decimalPart ? integerPart + '.' + decimalPart : integerPart;
+        }
+
+        window.addEventListener("load", window.print());
+
+
+        function CustomAutoNumeric(inputId) {
+            return new AutoNumeric(inputId, {
+                digitGroupSeparator: ',', // الفاصلة بين الآلاف
+                decimalCharacter: '.',    // النقطة كعلامة عشرية
+                decimalPlaces: 2,          // عدد المنازل العشرية
+                defaultValue: "0.00"      // القيمة الافتراضية
+            });
+        }
+
+
+
+        $('.amount').each(function () {
+            var item = $(this).text();
+
+            // var inputVal = round(item, 2);
+            var formattedVal = formatNumber(item);
+
+            $(this).text(formattedVal);
+        });
+
+
+
+        // التحويل الي اكسيل شيت
+        $(function () {
+            $("#btnExport").click(function () {
+                $("#tblCustomers").table2excel({
+                    filename: "Table.xls"
+                });
+            });
+        });
+
+
+    </script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

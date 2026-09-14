@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNet.Identity;
-using Purchases.Class;
+using Purchases.MyLogic;
 using Purchases.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Purchases.Controllers
@@ -14,6 +13,7 @@ namespace Purchases.Controllers
     {
         private Entities db = new Entities();
         private TreeClass trcls = new TreeClass();
+        private SharedClass shared = new SharedClass();
         // GET: Balances
         public ActionResult Index()
         {
@@ -23,7 +23,10 @@ namespace Purchases.Controllers
         public ActionResult LoadData()
         {
             List<object> data = new List<object>();
-            foreach (var b in db.Balances.ToList())
+            var userId = User.Identity.GetUserId();
+
+            int financeCycleId = shared.GetUserCurrentFinancialCycleId(userId);
+            foreach (var b in db.Balances.Where(x=> x.FinanceCycleId == financeCycleId).ToList())
             {
                 var item = new
                 {
@@ -31,7 +34,7 @@ namespace Purchases.Controllers
                     Year = b.FinancialCycle.Year,
                     Name = b.AccountTree.AccName,
                     ActualExchange = b.ActualExchange,
-                    RelativeDeviation = b.RelativeDeviation,
+                    RelativeDeviation = b.RelativeDeviation??0,
                     DeviationRatio = b.DeviationRatio,
                     Credint = b.Credint,
                     Retainer = b.Retainer,
@@ -63,6 +66,9 @@ namespace Purchases.Controllers
 
         public ActionResult getSubaccountForAddUpdate(int type)
         {
+            var userId = User.Identity.GetUserId();
+            int financeCycleId = shared.GetUserCurrentFinancialCycleId(userId);
+
             string AccName = db.AccountTrees.Where(g => g.AccCode.Substring(0, 1) == type.ToString()).FirstOrDefault().AccName;
             List<int> treeid = db.AccountTrees.Where(g => g.AccCode.Substring(0, 1) == type.ToString()).Select(f => f.Id).ToList();
             var accSub = db.AccountSubs.Where(f => treeid.Contains(f.AccTreeId ?? 0)).Select(p => new
@@ -70,9 +76,10 @@ namespace Purchases.Controllers
                 Id = p.AccTreeId,
                 Name = p.AccountTree.AccName,
                 AccParentName = AccName,
-                Credint = db.Balances.FirstOrDefault(x => x.AccountTreeId == p.AccTreeId).Credint ?? 0,
-                ActualExchange = db.Balances.FirstOrDefault(x => x.AccountTreeId == p.AccTreeId).ActualExchange ?? 0,
-                BalanceId = db.Balances.Any(x => x.AccountTreeId == p.AccTreeId) ? db.Balances.FirstOrDefault(x => x.AccountTreeId == p.AccTreeId).Id : 0
+                Credint = db.Balances.FirstOrDefault(x => x.AccountTreeId == p.AccTreeId && x.FinanceCycleId == financeCycleId).Credint ?? 0,
+                ActualExchange = db.Balances.FirstOrDefault(x => x.AccountTreeId == p.AccTreeId && x.FinanceCycleId == financeCycleId).ActualExchange ?? 0,
+                BalanceId = db.Balances.Any(x => x.AccountTreeId == p.AccTreeId && x.FinanceCycleId == financeCycleId) ?
+                db.Balances.FirstOrDefault(x => x.AccountTreeId == p.AccTreeId && x.FinanceCycleId == financeCycleId).Id : 0
             }).OrderBy(h => h.Credint);
             return Json(accSub, JsonRequestBehavior.AllowGet);
         }
@@ -84,26 +91,36 @@ namespace Purchases.Controllers
 
             if (model.Count > 0)
             {
+                var userId = User.Identity.GetUserId();
+                int financeCycleId = shared.GetUserCurrentFinancialCycleId(userId);
+
                 var userid = User.Identity.GetUserId();
 
-                createList = model.Where(d => d.Credint > 0 & !db.Balances.Any(m => m.AccountTreeId == d.AccountTreeId)).ToList();
-                updateList = model.Where(d => db.Balances.Any(m => m.AccountTreeId == d.AccountTreeId)).ToList();
+                createList = model.Where(d => d.Credint > 0 & !db.Balances.Any(m => m.AccountTreeId == d.AccountTreeId && m.FinanceCycleId == financeCycleId)).ToList();
+                updateList = model.Where(d => db.Balances.Any(m => m.AccountTreeId == d.AccountTreeId && m.FinanceCycleId == financeCycleId)).ToList();
 
                 foreach (var item in updateList)
                 {
-                    item.FinanceCycleId = 1;
+                    item.FinanceCycleId = financeCycleId;
                     Balance obj = db.Balances.Find(item.Id);
 
-                    trcls.updateFinancialCycleCredint(1, obj.Credint, item.Credint, userid);
+                    trcls.updateFinancialCycleCredint(financeCycleId, obj.Credint, item.Credint, userid);
 
                     obj.Credint = item.Credint;
+                    obj.FinanceCycleId = financeCycleId;
                     obj.UpdatedBy = userid;
                     obj.CreationDate = DateTime.Now;
 
                     db.Entry<Balance>(obj).State = EntityState.Modified;
+                    db.SaveChanges();
                 }
 
-                trcls.updateFinancialCycleCredint(1, 0, createList.Sum(x=>x.Credint), userid);
+                trcls.updateFinancialCycleCredint(financeCycleId, 0, createList.Sum(x=>x.Credint), userid);
+
+                createList.ForEach(x => x.FinanceCycleId = financeCycleId);
+                createList.ForEach(x => x.CreatedBy = userid);
+                createList.ForEach(x => x.CreationDate = DateTime.Now);
+
                 db.Balances.AddRange(createList);
                 db.SaveChanges();
 
@@ -113,11 +130,27 @@ namespace Purchases.Controllers
             return Json(new { Message = "خطأ في عملية الاضافة", Title = "خطأ", Status = "error" });
         }
      
-        public ActionResult test()
+        // دي تست لي تقرير موقف الموازنه - برسل ليها رقم السنة المالية المحددة وبترجع لي تقرير عن الموقف المالي للموازنة
+        public ActionResult BalancePosition(int ParentId)
         {
-            var val = trcls.test(1);
+            var val = trcls.BalancePosition(1, ParentId);
 
             return Json(val, JsonRequestBehavior.AllowGet);
         }
+
+        //public ActionResult BalancePosition()
+        //{
+        //    var val = trcls.BalancePositionFi(1);
+
+        //    return Json(val, JsonRequestBehavior.AllowGet);
+        //}
+
+        // دي تست لي تقرير موقف الموازنه - برسل ليها رقم السنة المالية المحددة وبترجع لي تقرير عن الموقف المالي للموازنة
+        public ActionResult BalancePositionByDate()
+        {
+            var val = trcls.BalancePositionByDate(1, DateTime.Now);
+
+            return Json(val, JsonRequestBehavior.AllowGet);
+        }       
     }
 }

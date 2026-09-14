@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Purchases.CurencyOperation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 
-namespace SACLERP.CurencyOperation
+namespace Purchases.CurencyOperation
 {
     public class BaseClass
     {
@@ -12,7 +13,7 @@ namespace SACLERP.CurencyOperation
 
         public BaseClass()
         {
-            currencies.Add(new CurrencyInfo(CurrencyInfo.Currencies.Syria));
+            currencies.Add(new CurrencyInfo(CurrencyInfo.Currencies.Sudan));
             currencies.Add(new CurrencyInfo(CurrencyInfo.Currencies.UAE));
             currencies.Add(new CurrencyInfo(CurrencyInfo.Currencies.SaudiArabia));
             currencies.Add(new CurrencyInfo(CurrencyInfo.Currencies.Tunisia));

@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="FinancialERPModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="FinancialERP1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Circus">
           <Key>
             <PropertyRef Name="Id" />
@@ -272,6 +272,8 @@
           <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="NormalizedName" Type="nvarchar" MaxLength="256" />
+          <Property Name="ConcurrencyStamp" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="AspNetUserClaims">
           <Key>
@@ -320,8 +322,16 @@
           <Property Name="AccessFailedCount" Type="int" Nullable="false" />
           <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
           <Property Name="IsDefualtPassword" Type="bit" Nullable="false" />
+          <Property Name="AirportName" Type="nvarchar" MaxLength="256" />
           <Property Name="FullName" Type="nvarchar" MaxLength="256" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="FinancialCycleId" Type="int" />
+          <Property Name="NormalizedUserName" Type="nvarchar" MaxLength="256" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" />
+          <Property Name="NormalizedEmail" Type="nvarchar" MaxLength="256" />
+          <Property Name="LockoutEnd" Type="datetime" />
+          <Property Name="ConcurrencyStamp" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Balance">
           <Key>
@@ -352,7 +362,10 @@
           <Property Name="CurrencyTypeId" Type="int" />
           <Property Name="AccountSubId" Type="int" />
           <Property Name="OpenDate" Type="datetime" />
+          <Property Name="BankLabel" Type="nvarchar" MaxLength="150" />
           <Property Name="IBan" Type="nvarchar" MaxLength="50" />
+          <Property Name="FirstSignature" Type="nvarchar" MaxLength="150" />
+          <Property Name="SecondSignature" Type="nvarchar" MaxLength="150" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
           <Property Name="CreationDate" Type="datetime" />
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="128" />
@@ -384,6 +397,44 @@
           <Property Name="CreationDate" Type="datetime" />
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="128" />
           <Property Name="UpdatingDate" Type="datetime" />
+          <Property Name="LastUsedCheckNo" Type="int" />
+        </EntityType>
+        <EntityType Name="DeletedTransaction">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocumentTypeId" Type="int" Nullable="false" />
+          <Property Name="CurrencyId" Type="int" />
+          <Property Name="FinancialCycleId" Type="int" />
+          <Property Name="Amount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="TransactionDate" Type="datetime" />
+          <Property Name="ExchangeRate" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Note" Type="nvarchar" MaxLength="150" />
+          <Property Name="IsPosted" Type="bit" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="Recipient" Type="nvarchar" MaxLength="100" />
+          <Property Name="HasAddedTax" Type="bit" />
+          <Property Name="HasTax" Type="bit" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="CreationDate" Type="datetime" />
+          <Property Name="TransactionId" Type="int" />
+          <Property Name="CheckNo" Type="nchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="DeletedTransactionDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DeletedTransactionId" Type="int" Nullable="false" />
+          <Property Name="AccTreeId" Type="int" Nullable="false" />
+          <Property Name="BalanceId" Type="int" />
+          <Property Name="Debit" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Credit" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Note" Type="nvarchar" MaxLength="150" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="CreationDate" Type="datetime" />
+          <Property Name="TransactionDetailId" Type="int" />
         </EntityType>
         <EntityType Name="Department">
           <Key>
@@ -424,31 +475,14 @@
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="128" />
           <Property Name="UpdatingDate" Type="datetime" />
         </EntityType>
-        <EntityType Name="JournalEntery">
+        <EntityType Name="FinancialCycleAccountTree">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Statement" Type="nvarchar" MaxLength="250" />
-          <Property Name="JournalDate" Type="datetime" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
-          <Property Name="CreationDate" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="128" />
-          <Property Name="UpdatingDate" Type="datetime" />
-        </EntityType>
-        <EntityType Name="JournalEnteryDetail">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="JournalEnteryId" Type="int" />
-          <Property Name="AccTrreId" Type="int" />
-          <Property Name="Amount" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="IsCredit" Type="bit" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
-          <Property Name="CreationDate" Type="datetime" />
-          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="128" />
-          <Property Name="UpdatingDate" Type="datetime" />
+          <Property Name="AccTreeId" Type="int" />
+          <Property Name="ParentId" Type="int" />
+          <Property Name="FinancialCycleId" Type="int" />
         </EntityType>
         <EntityType Name="OpeningBalance">
           <Key>
@@ -488,6 +522,7 @@
           <Property Name="TransactionId" Type="int" Nullable="false" />
           <Property Name="BankAccountId" Type="int" />
           <Property Name="CheckId" Type="int" />
+          <Property Name="CheckType" Type="int" />
           <Property Name="PayNo" Type="int" />
           <Property Name="CheckNo" Type="int" />
           <Property Name="Amount" Type="decimal" Precision="18" Scale="2" />
@@ -551,6 +586,27 @@
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="128" />
           <Property Name="UpdatingDate" Type="datetime" />
         </EntityType>
+        <EntityType Name="Recipient">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RecipientName" Type="nvarchar" MaxLength="150" />
+          <Property Name="AccountNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="BankName" Type="nvarchar" MaxLength="50" />
+          <Property Name="BranchName" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
+        </EntityType>
         <EntityType Name="Transaction">
           <Key>
             <PropertyRef Name="Id" />
@@ -563,9 +619,12 @@
           <Property Name="ExchangeRate" Type="decimal" Precision="18" Scale="4" />
           <Property Name="Note" Type="nvarchar" MaxLength="150" />
           <Property Name="IsPosted" Type="bit" />
+          <Property Name="RecipientId" Type="int" />
+          <Property Name="FinancialCycleId" Type="int" />
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="Recipient" Type="nvarchar" MaxLength="100" />
           <Property Name="HasAddedTax" Type="bit" />
+          <Property Name="AddedTaxPercent" Type="decimal" Precision="18" Scale="4" />
           <Property Name="HasTax" Type="bit" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
           <Property Name="CreationDate" Type="datetime" />
@@ -587,6 +646,19 @@
           <Property Name="CreationDate" Type="datetime" />
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="128" />
           <Property Name="UpdatingDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="TransactionRecipient">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RecipientName" Type="nvarchar" MaxLength="150" />
+          <Property Name="BankName" Type="nvarchar" MaxLength="50" />
+          <Property Name="BranchName" Type="nvarchar" MaxLength="50" />
+          <Property Name="AccountNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="Amount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="TransactionId" Type="int" />
+          <Property Name="BankAccountId" Type="int" />
         </EntityType>
         <EntityType Name="Vat">
           <Key>
@@ -621,6 +693,7 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsLocalCurrency" Type="bit" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
           <Property Name="CreationDate" Type="datetime" />
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="128" />
@@ -1027,6 +1100,18 @@
             </Principal>
             <Dependent Role="AspNetUsers1">
               <PropertyRef Name="CreatedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AspNetUsers_FinancialCycle">
+          <End Role="FinancialCycle" Type="Self.FinancialCycle" Multiplicity="0..1" />
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FinancialCycle">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUsers">
+              <PropertyRef Name="FinancialCycleId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1662,6 +1747,90 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_DeletedTransaction_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
+          <End Role="DeletedTransaction" Type="Self.DeletedTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeletedTransaction">
+              <PropertyRef Name="CreatedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeletedTransaction_CurrencyType">
+          <End Role="CurrencyType" Type="Self.CurrencyType" Multiplicity="0..1" />
+          <End Role="DeletedTransaction" Type="Self.DeletedTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CurrencyType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeletedTransaction">
+              <PropertyRef Name="CurrencyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeletedTransaction_DocumentType">
+          <End Role="DocumentType" Type="Self.DocumentType" Multiplicity="1" />
+          <End Role="DeletedTransaction" Type="Self.DeletedTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DocumentType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeletedTransaction">
+              <PropertyRef Name="DocumentTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeletedTransaction_FinancialCycle">
+          <End Role="FinancialCycle" Type="Self.FinancialCycle" Multiplicity="0..1" />
+          <End Role="DeletedTransaction" Type="Self.DeletedTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FinancialCycle">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeletedTransaction">
+              <PropertyRef Name="FinancialCycleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeletedTransactionDetail_AccountTree">
+          <End Role="AccountTree" Type="Self.AccountTree" Multiplicity="1" />
+          <End Role="DeletedTransactionDetail" Type="Self.DeletedTransactionDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AccountTree">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeletedTransactionDetail">
+              <PropertyRef Name="AccTreeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeletedTransactionDetail_Balance">
+          <End Role="Balance" Type="Self.Balance" Multiplicity="0..1" />
+          <End Role="DeletedTransactionDetail" Type="Self.DeletedTransactionDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Balance">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeletedTransactionDetail">
+              <PropertyRef Name="BalanceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeletedTransactionDetail_DeletedTransaction">
+          <End Role="DeletedTransaction" Type="Self.DeletedTransaction" Multiplicity="1" />
+          <End Role="DeletedTransactionDetail" Type="Self.DeletedTransactionDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DeletedTransaction">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeletedTransactionDetail">
+              <PropertyRef Name="DeletedTransactionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Department_AspNetUsers">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
           <End Role="Department" Type="Self.Department" Multiplicity="*" />
@@ -1731,6 +1900,42 @@
             </Principal>
             <Dependent Role="FinancialCycle">
               <PropertyRef Name="UpdatedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FinancialCycleAccountTree_AccountTree">
+          <End Role="AccountTree" Type="Self.AccountTree" Multiplicity="0..1" />
+          <End Role="FinancialCycleAccountTree" Type="Self.FinancialCycleAccountTree" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AccountTree">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FinancialCycleAccountTree">
+              <PropertyRef Name="AccTreeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FinancialCycleAccountTree_AccountTree1">
+          <End Role="AccountTree" Type="Self.AccountTree" Multiplicity="0..1" />
+          <End Role="FinancialCycleAccountTree" Type="Self.FinancialCycleAccountTree" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AccountTree">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FinancialCycleAccountTree">
+              <PropertyRef Name="ParentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FinancialCycleAccountTree_FinancialCycle">
+          <End Role="FinancialCycle" Type="Self.FinancialCycle" Multiplicity="0..1" />
+          <End Role="FinancialCycleAccountTree" Type="Self.FinancialCycleAccountTree" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FinancialCycle">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FinancialCycleAccountTree">
+              <PropertyRef Name="FinancialCycleId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1959,78 +2164,6 @@
             </Principal>
             <Dependent Role="ItemDetailUnit">
               <PropertyRef Name="UnitId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_JournalEntery_AspNetUsers">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
-          <End Role="JournalEntery" Type="Self.JournalEntery" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="JournalEntery">
-              <PropertyRef Name="CreatedBy" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_JournalEntery_AspNetUsers1">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
-          <End Role="JournalEntery" Type="Self.JournalEntery" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="JournalEntery">
-              <PropertyRef Name="UpdatedBy" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_JournalEnteryDetail_AccountTree">
-          <End Role="AccountTree" Type="Self.AccountTree" Multiplicity="0..1" />
-          <End Role="JournalEnteryDetail" Type="Self.JournalEnteryDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AccountTree">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="JournalEnteryDetail">
-              <PropertyRef Name="AccTrreId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_JournalEnteryDetail_AspNetUsers">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
-          <End Role="JournalEnteryDetail" Type="Self.JournalEnteryDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="JournalEnteryDetail">
-              <PropertyRef Name="CreatedBy" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_JournalEnteryDetail_AspNetUsers1">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
-          <End Role="JournalEnteryDetail" Type="Self.JournalEnteryDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="JournalEnteryDetail">
-              <PropertyRef Name="UpdatedBy" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_JournalEnteryDetail_JournalEntery">
-          <End Role="JournalEntery" Type="Self.JournalEntery" Multiplicity="0..1" />
-          <End Role="JournalEnteryDetail" Type="Self.JournalEnteryDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="JournalEntery">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="JournalEnteryDetail">
-              <PropertyRef Name="JournalEnteryId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2538,6 +2671,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_sysdiagrams_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
+          <End Role="sysdiagrams" Type="Self.sysdiagrams" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="sysdiagrams">
+              <PropertyRef Name="CreatedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_TechnicalCondition_AspNetUsers">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
           <End Role="TechnicalCondition" Type="Self.TechnicalCondition" Multiplicity="*" />
@@ -2694,6 +2839,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Transaction_FinancialCycle">
+          <End Role="FinancialCycle" Type="Self.FinancialCycle" Multiplicity="0..1" />
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FinancialCycle">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="FinancialCycleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Transaction_Recipient">
+          <End Role="Recipient" Type="Self.Recipient" Multiplicity="0..1" />
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Recipient">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="RecipientId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Transaction_Transaction">
           <End Role="DocumentType" Type="Self.DocumentType" Multiplicity="1" />
           <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
@@ -2766,6 +2935,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_TransactionRecipient_BankAccount">
+          <End Role="BankAccount" Type="Self.BankAccount" Multiplicity="0..1" />
+          <End Role="TransactionRecipient" Type="Self.TransactionRecipient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BankAccount">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TransactionRecipient">
+              <PropertyRef Name="BankAccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TransactionRecipient_Transaction">
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="0..1" />
+          <End Role="TransactionRecipient" Type="Self.TransactionRecipient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Transaction">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TransactionRecipient">
+              <PropertyRef Name="TransactionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Unit_AspNetUsers">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
           <End Role="Unit" Type="Self.Unit" Multiplicity="*" />
@@ -2814,7 +3007,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
         <Function Name="GetLastAccNumber" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="AccParentId" Type="int" Mode="In" />
         </Function>
@@ -2822,7 +3014,7 @@
           <Parameter Name="AccCode" Type="nvarchar" Mode="In" />
         </Function>
         <Function Name="SpLastTreeAccountId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
-        <EntityContainer Name="FinancialERPModelStoreContainer">
+        <EntityContainer Name="FinancialERP1ModelStoreContainer">
           <EntitySet Name="Circus" EntityType="Self.Circus" Schema="Auction" store:Type="Tables" />
           <EntitySet Name="CommitteeJob" EntityType="Self.CommitteeJob" Schema="Auction" store:Type="Tables" />
           <EntitySet Name="CommitteeMember" EntityType="Self.CommitteeMember" Schema="Auction" store:Type="Tables" />
@@ -2851,19 +3043,23 @@
           <EntitySet Name="BankAccount" EntityType="Self.BankAccount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BankAccountType" EntityType="Self.BankAccountType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Check" EntityType="Self.Check" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DeletedTransaction" EntityType="Self.DeletedTransaction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DeletedTransactionDetail" EntityType="Self.DeletedTransactionDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DocumentType" EntityType="Self.DocumentType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FinancialCycle" EntityType="Self.FinancialCycle" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="JournalEntery" EntityType="Self.JournalEntery" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="JournalEnteryDetail" EntityType="Self.JournalEnteryDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FinancialCycleAccountTree" EntityType="Self.FinancialCycleAccountTree" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OpeningBalance" EntityType="Self.OpeningBalance" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OpeningBalanceDetail" EntityType="Self.OpeningBalanceDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PrintCheck" EntityType="Self.PrintCheck" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Receipt" EntityType="Self.Receipt" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ReceiptDetail" EntityType="Self.ReceiptDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ReceiptType" EntityType="Self.ReceiptType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Recipient" EntityType="Self.Recipient" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TransactionDetail" EntityType="Self.TransactionDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TransactionRecipient" EntityType="Self.TransactionRecipient" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Vat" EntityType="Self.Vat" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CurrencyDetail" EntityType="Self.CurrencyDetail" Schema="Purchases" store:Type="Tables" />
           <EntitySet Name="CurrencyType" EntityType="Self.CurrencyType" Schema="Purchases" store:Type="Tables" />
@@ -2964,6 +3160,10 @@
           <AssociationSet Name="FK_AspNetUsers_AspNetUsers" Association="Self.FK_AspNetUsers_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUsers1" EntitySet="AspNetUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AspNetUsers_FinancialCycle" Association="Self.FK_AspNetUsers_FinancialCycle">
+            <End Role="FinancialCycle" EntitySet="FinancialCycle" />
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
           </AssociationSet>
           <AssociationSet Name="FK_Balance_AccountTree" Association="Self.FK_Balance_AccountTree">
             <End Role="AccountTree" EntitySet="AccountTree" />
@@ -3173,6 +3373,34 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
           </AssociationSet>
+          <AssociationSet Name="FK_DeletedTransaction_AspNetUsers" Association="Self.FK_DeletedTransaction_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="DeletedTransaction" EntitySet="DeletedTransaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeletedTransaction_CurrencyType" Association="Self.FK_DeletedTransaction_CurrencyType">
+            <End Role="CurrencyType" EntitySet="CurrencyType" />
+            <End Role="DeletedTransaction" EntitySet="DeletedTransaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeletedTransaction_DocumentType" Association="Self.FK_DeletedTransaction_DocumentType">
+            <End Role="DocumentType" EntitySet="DocumentType" />
+            <End Role="DeletedTransaction" EntitySet="DeletedTransaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeletedTransaction_FinancialCycle" Association="Self.FK_DeletedTransaction_FinancialCycle">
+            <End Role="FinancialCycle" EntitySet="FinancialCycle" />
+            <End Role="DeletedTransaction" EntitySet="DeletedTransaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeletedTransactionDetail_AccountTree" Association="Self.FK_DeletedTransactionDetail_AccountTree">
+            <End Role="AccountTree" EntitySet="AccountTree" />
+            <End Role="DeletedTransactionDetail" EntitySet="DeletedTransactionDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeletedTransactionDetail_Balance" Association="Self.FK_DeletedTransactionDetail_Balance">
+            <End Role="Balance" EntitySet="Balance" />
+            <End Role="DeletedTransactionDetail" EntitySet="DeletedTransactionDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeletedTransactionDetail_DeletedTransaction" Association="Self.FK_DeletedTransactionDetail_DeletedTransaction">
+            <End Role="DeletedTransaction" EntitySet="DeletedTransaction" />
+            <End Role="DeletedTransactionDetail" EntitySet="DeletedTransactionDetail" />
+          </AssociationSet>
           <AssociationSet Name="FK_Department_AspNetUsers" Association="Self.FK_Department_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Department" EntitySet="Department" />
@@ -3196,6 +3424,18 @@
           <AssociationSet Name="FK_FinancialCycle_AspNetUsers1" Association="Self.FK_FinancialCycle_AspNetUsers1">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="FinancialCycle" EntitySet="FinancialCycle" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FinancialCycleAccountTree_AccountTree" Association="Self.FK_FinancialCycleAccountTree_AccountTree">
+            <End Role="AccountTree" EntitySet="AccountTree" />
+            <End Role="FinancialCycleAccountTree" EntitySet="FinancialCycleAccountTree" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FinancialCycleAccountTree_AccountTree1" Association="Self.FK_FinancialCycleAccountTree_AccountTree1">
+            <End Role="AccountTree" EntitySet="AccountTree" />
+            <End Role="FinancialCycleAccountTree" EntitySet="FinancialCycleAccountTree" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FinancialCycleAccountTree_FinancialCycle" Association="Self.FK_FinancialCycleAccountTree_FinancialCycle">
+            <End Role="FinancialCycle" EntitySet="FinancialCycle" />
+            <End Role="FinancialCycleAccountTree" EntitySet="FinancialCycleAccountTree" />
           </AssociationSet>
           <AssociationSet Name="FK_GeneralCondition_AspNetUsers" Association="Self.FK_GeneralCondition_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -3272,30 +3512,6 @@
           <AssociationSet Name="FK_ItemDetailUnit_Unit" Association="Self.FK_ItemDetailUnit_Unit">
             <End Role="Unit" EntitySet="Unit" />
             <End Role="ItemDetailUnit" EntitySet="ItemDetailUnit" />
-          </AssociationSet>
-          <AssociationSet Name="FK_JournalEntery_AspNetUsers" Association="Self.FK_JournalEntery_AspNetUsers">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="JournalEntery" EntitySet="JournalEntery" />
-          </AssociationSet>
-          <AssociationSet Name="FK_JournalEntery_AspNetUsers1" Association="Self.FK_JournalEntery_AspNetUsers1">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="JournalEntery" EntitySet="JournalEntery" />
-          </AssociationSet>
-          <AssociationSet Name="FK_JournalEnteryDetail_AccountTree" Association="Self.FK_JournalEnteryDetail_AccountTree">
-            <End Role="AccountTree" EntitySet="AccountTree" />
-            <End Role="JournalEnteryDetail" EntitySet="JournalEnteryDetail" />
-          </AssociationSet>
-          <AssociationSet Name="FK_JournalEnteryDetail_AspNetUsers" Association="Self.FK_JournalEnteryDetail_AspNetUsers">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="JournalEnteryDetail" EntitySet="JournalEnteryDetail" />
-          </AssociationSet>
-          <AssociationSet Name="FK_JournalEnteryDetail_AspNetUsers1" Association="Self.FK_JournalEnteryDetail_AspNetUsers1">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="JournalEnteryDetail" EntitySet="JournalEnteryDetail" />
-          </AssociationSet>
-          <AssociationSet Name="FK_JournalEnteryDetail_JournalEntery" Association="Self.FK_JournalEnteryDetail_JournalEntery">
-            <End Role="JournalEntery" EntitySet="JournalEntery" />
-            <End Role="JournalEnteryDetail" EntitySet="JournalEnteryDetail" />
           </AssociationSet>
           <AssociationSet Name="FK_OpeningBalance_AspNetUsers" Association="Self.FK_OpeningBalance_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -3465,6 +3681,10 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Supplier" EntitySet="Supplier" />
           </AssociationSet>
+          <AssociationSet Name="FK_sysdiagrams_AspNetUsers" Association="Self.FK_sysdiagrams_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="sysdiagrams" EntitySet="sysdiagrams" />
+          </AssociationSet>
           <AssociationSet Name="FK_TechnicalCondition_AspNetUsers" Association="Self.FK_TechnicalCondition_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="TechnicalCondition" EntitySet="TechnicalCondition" />
@@ -3517,6 +3737,14 @@
             <End Role="CurrencyType" EntitySet="CurrencyType" />
             <End Role="Transaction" EntitySet="Transaction" />
           </AssociationSet>
+          <AssociationSet Name="FK_Transaction_FinancialCycle" Association="Self.FK_Transaction_FinancialCycle">
+            <End Role="FinancialCycle" EntitySet="FinancialCycle" />
+            <End Role="Transaction" EntitySet="Transaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Transaction_Recipient" Association="Self.FK_Transaction_Recipient">
+            <End Role="Recipient" EntitySet="Recipient" />
+            <End Role="Transaction" EntitySet="Transaction" />
+          </AssociationSet>
           <AssociationSet Name="FK_Transaction_Transaction" Association="Self.FK_Transaction_Transaction">
             <End Role="DocumentType" EntitySet="DocumentType" />
             <End Role="Transaction" EntitySet="Transaction" />
@@ -3541,6 +3769,14 @@
             <End Role="Transaction" EntitySet="Transaction" />
             <End Role="TransactionDetail" EntitySet="TransactionDetail" />
           </AssociationSet>
+          <AssociationSet Name="FK_TransactionRecipient_BankAccount" Association="Self.FK_TransactionRecipient_BankAccount">
+            <End Role="BankAccount" EntitySet="BankAccount" />
+            <End Role="TransactionRecipient" EntitySet="TransactionRecipient" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TransactionRecipient_Transaction" Association="Self.FK_TransactionRecipient_Transaction">
+            <End Role="Transaction" EntitySet="Transaction" />
+            <End Role="TransactionRecipient" EntitySet="TransactionRecipient" />
+          </AssociationSet>
           <AssociationSet Name="FK_Unit_AspNetUsers" Association="Self.FK_Unit_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Unit" EntitySet="Unit" />
@@ -3561,7 +3797,7 @@
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="FinancialERPModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="FinancialERP1Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="Circu">
           <Key>
             <PropertyRef Name="Id" />
@@ -3887,7 +4123,9 @@
           <NavigationProperty Name="AspNetUser" Relationship="Self.FK_AccountTree_AspNetUsers" FromRole="AccountTree" ToRole="AspNetUsers" />
           <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_AccountTree_AspNetUsers1" FromRole="AccountTree" ToRole="AspNetUsers" />
           <NavigationProperty Name="Balances" Relationship="Self.FK_Balance_AccountTree" FromRole="AccountTree" ToRole="Balance" />
-          <NavigationProperty Name="JournalEnteryDetails" Relationship="Self.FK_JournalEnteryDetail_AccountTree" FromRole="AccountTree" ToRole="JournalEnteryDetail" />
+          <NavigationProperty Name="DeletedTransactionDetails" Relationship="Self.FK_DeletedTransactionDetail_AccountTree" FromRole="AccountTree" ToRole="DeletedTransactionDetail" />
+          <NavigationProperty Name="FinancialCycleAccountTrees" Relationship="Self.FK_FinancialCycleAccountTree_AccountTree" FromRole="AccountTree" ToRole="FinancialCycleAccountTree" />
+          <NavigationProperty Name="FinancialCycleAccountTrees1" Relationship="Self.FK_FinancialCycleAccountTree_AccountTree1" FromRole="AccountTree" ToRole="FinancialCycleAccountTree" />
           <NavigationProperty Name="OpeningBalanceDetails" Relationship="Self.FK_OpeningBalanceDetail_AccountTree" FromRole="AccountTree" ToRole="OpeningBalanceDetail" />
           <NavigationProperty Name="Receipts" Relationship="Self.FK_Receipt_AccountTree" FromRole="AccountTree" ToRole="Receipt" />
           <NavigationProperty Name="ReceiptDetails" Relationship="Self.FK_ReceiptDetail_AccountTree" FromRole="AccountTree" ToRole="ReceiptDetail" />
@@ -3906,16 +4144,6 @@
           <NavigationProperty Name="AccountTrees" Relationship="Self.FK_AccountTree_AccountType" FromRole="AccountType" ToRole="AccountTree" />
           <NavigationProperty Name="AspNetUser" Relationship="Self.FK_AccountType_AspNetUsers" FromRole="AccountType" ToRole="AspNetUsers" />
           <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_AccountType_AspNetUsers1" FromRole="AccountType" ToRole="AspNetUsers" />
-        </EntityType>
-        <EntityType Name="AspNetRole">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="AspNetUser" Relationship="Self.FK_AspNetRoles_AspNetUsers" FromRole="AspNetRoles" ToRole="AspNetUsers" />
-          <NavigationProperty Name="AspNetUserRoles" Relationship="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" FromRole="AspNetRoles" ToRole="AspNetUserRoles" />
         </EntityType>
         <EntityType Name="AspNetUserClaim">
           <Key>
@@ -3950,9 +4178,9 @@
           <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="RoleId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="AspNetRole" Relationship="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" FromRole="AspNetUserRoles" ToRole="AspNetRoles" />
           <NavigationProperty Name="AspNetUser" Relationship="Self.FK_AspNetUserRoles_AspNetUsers" FromRole="AspNetUserRoles" ToRole="AspNetUsers" />
           <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" FromRole="AspNetUserRoles" ToRole="AspNetUsers" />
+          <NavigationProperty Name="AspNetRole" Relationship="FinancialERP1Model.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" FromRole="AspNetUserRole" ToRole="AspNetRole" />
         </EntityType>
         <EntityType Name="AspNetUser">
           <Key>
@@ -3973,6 +4201,13 @@
           <Property Name="IsDefualtPassword" Type="Boolean" Nullable="false" />
           <Property Name="FullName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="FinancialCycleId" Type="Int32" />
+          <Property Name="NormalizedUserName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NormalizedEmail" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="LockoutEnd" Type="DateTime" Precision="3" />
+          <Property Name="ConcurrencyStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Circus" Relationship="Self.FK_Circus_AspNetUsers" FromRole="AspNetUsers" ToRole="Circus" />
           <NavigationProperty Name="Circus1" Relationship="Self.FK_Circus_AspNetUsers1" FromRole="AspNetUsers" ToRole="Circus" />
           <NavigationProperty Name="CommitteeJobs" Relationship="Self.FK_CommitteeJob_AspNetUsers" FromRole="AspNetUsers" ToRole="CommitteeJob" />
@@ -4011,7 +4246,6 @@
           <NavigationProperty Name="AccountTrees1" Relationship="Self.FK_AccountTree_AspNetUsers1" FromRole="AspNetUsers" ToRole="AccountTree" />
           <NavigationProperty Name="AccountTypes" Relationship="Self.FK_AccountType_AspNetUsers" FromRole="AspNetUsers" ToRole="AccountType" />
           <NavigationProperty Name="AccountTypes1" Relationship="Self.FK_AccountType_AspNetUsers1" FromRole="AspNetUsers" ToRole="AccountType" />
-          <NavigationProperty Name="AspNetRoles" Relationship="Self.FK_AspNetRoles_AspNetUsers" FromRole="AspNetUsers" ToRole="AspNetRoles" />
           <NavigationProperty Name="AspNetUserClaims" Relationship="Self.FK_AspNetUserClaims_AspNetUsers" FromRole="AspNetUsers" ToRole="AspNetUserClaims" />
           <NavigationProperty Name="AspNetUserClaims1" Relationship="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserClaims" />
           <NavigationProperty Name="AspNetUserLogins" Relationship="Self.FK_AspNetUserLogins_AspNetUsers" FromRole="AspNetUsers" ToRole="AspNetUserLogins" />
@@ -4020,6 +4254,7 @@
           <NavigationProperty Name="AspNetUserRoles1" Relationship="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserRoles" />
           <NavigationProperty Name="AspNetUsers1" Relationship="Self.FK_AspNetUsers_AspNetUsers" FromRole="AspNetUsers" ToRole="AspNetUsers1" />
           <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_AspNetUsers_AspNetUsers" FromRole="AspNetUsers1" ToRole="AspNetUsers" />
+          <NavigationProperty Name="FinancialCycle" Relationship="Self.FK_AspNetUsers_FinancialCycle" FromRole="AspNetUsers" ToRole="FinancialCycle" />
           <NavigationProperty Name="Balances" Relationship="Self.FK_Balance_AspNetUsers" FromRole="AspNetUsers" ToRole="Balance" />
           <NavigationProperty Name="Balances1" Relationship="Self.FK_Balance_AspNetUsers1" FromRole="AspNetUsers" ToRole="Balance" />
           <NavigationProperty Name="BankAccounts" Relationship="Self.FK_BankAccount_AspNetUsers" FromRole="AspNetUsers" ToRole="BankAccount" />
@@ -4033,6 +4268,7 @@
           <NavigationProperty Name="CurrencyDetails2" Relationship="Self.FK_CurrencyDetail_CurrencyDetail" FromRole="AspNetUsers" ToRole="CurrencyDetail" />
           <NavigationProperty Name="CurrencyTypes" Relationship="Self.FK_CurrencyType_AspNetUsers" FromRole="AspNetUsers" ToRole="CurrencyType" />
           <NavigationProperty Name="CurrencyTypes1" Relationship="Self.FK_CurrencyType_AspNetUsers1" FromRole="AspNetUsers" ToRole="CurrencyType" />
+          <NavigationProperty Name="DeletedTransactions" Relationship="Self.FK_DeletedTransaction_AspNetUsers" FromRole="AspNetUsers" ToRole="DeletedTransaction" />
           <NavigationProperty Name="Departments" Relationship="Self.FK_Department_AspNetUsers" FromRole="AspNetUsers" ToRole="Department" />
           <NavigationProperty Name="Departments1" Relationship="Self.FK_Department_AspNetUsers1" FromRole="AspNetUsers" ToRole="Department" />
           <NavigationProperty Name="DocumentTypes" Relationship="Self.FK_DocumentType_AspNetUsers" FromRole="AspNetUsers" ToRole="DocumentType" />
@@ -4047,10 +4283,6 @@
           <NavigationProperty Name="ItemDetails1" Relationship="Self.FK_ItemDetail_AspNetUsers1" FromRole="AspNetUsers" ToRole="ItemDetail" />
           <NavigationProperty Name="ItemDetailUnits" Relationship="Self.FK_ItemDetailUnit_AspNetUsers" FromRole="AspNetUsers" ToRole="ItemDetailUnit" />
           <NavigationProperty Name="ItemDetailUnits1" Relationship="Self.FK_ItemDetailUnit_AspNetUsers1" FromRole="AspNetUsers" ToRole="ItemDetailUnit" />
-          <NavigationProperty Name="JournalEnteries" Relationship="Self.FK_JournalEntery_AspNetUsers" FromRole="AspNetUsers" ToRole="JournalEntery" />
-          <NavigationProperty Name="JournalEnteries1" Relationship="Self.FK_JournalEntery_AspNetUsers1" FromRole="AspNetUsers" ToRole="JournalEntery" />
-          <NavigationProperty Name="JournalEnteryDetails" Relationship="Self.FK_JournalEnteryDetail_AspNetUsers" FromRole="AspNetUsers" ToRole="JournalEnteryDetail" />
-          <NavigationProperty Name="JournalEnteryDetails1" Relationship="Self.FK_JournalEnteryDetail_AspNetUsers1" FromRole="AspNetUsers" ToRole="JournalEnteryDetail" />
           <NavigationProperty Name="OpeningBalances" Relationship="Self.FK_OpeningBalance_AspNetUsers" FromRole="AspNetUsers" ToRole="OpeningBalance" />
           <NavigationProperty Name="OpeningBalances1" Relationship="Self.FK_OpeningBalance_AspNetUsers1" FromRole="AspNetUsers" ToRole="OpeningBalance" />
           <NavigationProperty Name="OpeningBalanceDetails" Relationship="Self.FK_OpeningBalanceDetail_AspNetUsers" FromRole="AspNetUsers" ToRole="OpeningBalanceDetail" />
@@ -4073,6 +4305,7 @@
           <NavigationProperty Name="ReceiptTypes1" Relationship="Self.FK_ReceiptType_AspNetUsers1" FromRole="AspNetUsers" ToRole="ReceiptType" />
           <NavigationProperty Name="Suppliers" Relationship="Self.FK_Supplier_AspNetUsers" FromRole="AspNetUsers" ToRole="Supplier" />
           <NavigationProperty Name="Suppliers1" Relationship="Self.FK_Supplier_AspNetUsers1" FromRole="AspNetUsers" ToRole="Supplier" />
+          <NavigationProperty Name="sysdiagrams" Relationship="Self.FK_sysdiagrams_AspNetUsers" FromRole="AspNetUsers" ToRole="sysdiagrams" />
           <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_AspNetUsers" FromRole="AspNetUsers" ToRole="Transaction" />
           <NavigationProperty Name="Transactions1" Relationship="Self.FK_Transaction_AspNetUsers1" FromRole="AspNetUsers" ToRole="Transaction" />
           <NavigationProperty Name="TransactionDetails" Relationship="Self.FK_TransactionDetail_AspNetUsers" FromRole="AspNetUsers" ToRole="TransactionDetail" />
@@ -4081,6 +4314,8 @@
           <NavigationProperty Name="Units1" Relationship="Self.FK_Unit_AspNetUsers1" FromRole="AspNetUsers" ToRole="Unit" />
           <NavigationProperty Name="Vats" Relationship="Self.FK_Vat_AspNetUsers" FromRole="AspNetUsers" ToRole="Vat" />
           <NavigationProperty Name="Vats1" Relationship="Self.FK_Vat_AspNetUsers1" FromRole="AspNetUsers" ToRole="Vat" />
+          <Property Name="AirportName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetRoles" Relationship="FinancialERP1Model.FK_AspNetRoles_AspNetUsers" FromRole="AspNetUser" ToRole="AspNetRole" />
         </EntityType>
         <EntityType Name="Balance">
           <Key>
@@ -4106,6 +4341,7 @@
           <NavigationProperty Name="Balance1" Relationship="Self.FK_Balance_Balance" FromRole="Balance" ToRole="Balance1" />
           <NavigationProperty Name="Balance2" Relationship="Self.FK_Balance_Balance" FromRole="Balance1" ToRole="Balance" />
           <NavigationProperty Name="FinancialCycle" Relationship="Self.FK_Balance_FinancialCycle" FromRole="Balance" ToRole="FinancialCycle" />
+          <NavigationProperty Name="DeletedTransactionDetails" Relationship="Self.FK_DeletedTransactionDetail_Balance" FromRole="Balance" ToRole="DeletedTransactionDetail" />
           <NavigationProperty Name="TransactionDetails" Relationship="Self.FK_TransactionDetail_Balance" FromRole="Balance" ToRole="TransactionDetail" />
         </EntityType>
         <EntityType Name="BankAccount">
@@ -4118,7 +4354,10 @@
           <Property Name="CurrencyTypeId" Type="Int32" />
           <Property Name="AccountSubId" Type="Int32" />
           <Property Name="OpenDate" Type="DateTime" Precision="3" />
+          <Property Name="BankLabel" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="IBan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FirstSignature" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="SecondSignature" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreationDate" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
@@ -4130,6 +4369,7 @@
           <NavigationProperty Name="CurrencyType" Relationship="Self.FK_BankAccount_CurrencyType" FromRole="BankAccount" ToRole="CurrencyType" />
           <NavigationProperty Name="Checks" Relationship="Self.FK_Check_BankAccount" FromRole="BankAccount" ToRole="Check" />
           <NavigationProperty Name="PrintChecks" Relationship="Self.FK_PrintCheck_BankAccount" FromRole="BankAccount" ToRole="PrintCheck" />
+          <NavigationProperty Name="TransactionRecipients" Relationship="Self.FK_TransactionRecipient_BankAccount" FromRole="BankAccount" ToRole="TransactionRecipient" />
         </EntityType>
         <EntityType Name="BankAccountType">
           <Key>
@@ -4156,6 +4396,7 @@
           <Property Name="StartFromNumber" Type="Int32" />
           <Property Name="EndToNumber" Type="Int32" />
           <Property Name="IsFinished" Type="Boolean" />
+          <Property Name="LastUsedCheckNo" Type="Int32" />
           <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreationDate" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
@@ -4164,6 +4405,51 @@
           <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_Check_AspNetUsers1" FromRole="Check" ToRole="AspNetUsers" />
           <NavigationProperty Name="BankAccount" Relationship="Self.FK_Check_BankAccount" FromRole="Check" ToRole="BankAccount" />
           <NavigationProperty Name="PrintChecks" Relationship="Self.FK_PrintCheck_Check" FromRole="Check" ToRole="PrintCheck" />
+        </EntityType>
+        <EntityType Name="DeletedTransaction">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocumentTypeId" Type="Int32" Nullable="false" />
+          <Property Name="CurrencyId" Type="Int32" />
+          <Property Name="FinancialCycleId" Type="Int32" />
+          <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="TransactionDate" Type="DateTime" Precision="3" />
+          <Property Name="ExchangeRate" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Note" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="IsPosted" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="Recipient" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="HasAddedTax" Type="Boolean" />
+          <Property Name="HasTax" Type="Boolean" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CreationDate" Type="DateTime" Precision="3" />
+          <Property Name="TransactionId" Type="Int32" />
+          <Property Name="CheckNo" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="AspNetUser" Relationship="Self.FK_DeletedTransaction_AspNetUsers" FromRole="DeletedTransaction" ToRole="AspNetUsers" />
+          <NavigationProperty Name="CurrencyType" Relationship="Self.FK_DeletedTransaction_CurrencyType" FromRole="DeletedTransaction" ToRole="CurrencyType" />
+          <NavigationProperty Name="DocumentType" Relationship="Self.FK_DeletedTransaction_DocumentType" FromRole="DeletedTransaction" ToRole="DocumentType" />
+          <NavigationProperty Name="FinancialCycle" Relationship="Self.FK_DeletedTransaction_FinancialCycle" FromRole="DeletedTransaction" ToRole="FinancialCycle" />
+          <NavigationProperty Name="DeletedTransactionDetails" Relationship="Self.FK_DeletedTransactionDetail_DeletedTransaction" FromRole="DeletedTransaction" ToRole="DeletedTransactionDetail" />
+        </EntityType>
+        <EntityType Name="DeletedTransactionDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DeletedTransactionId" Type="Int32" Nullable="false" />
+          <Property Name="AccTreeId" Type="Int32" Nullable="false" />
+          <Property Name="BalanceId" Type="Int32" />
+          <Property Name="Debit" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Credit" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Note" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CreationDate" Type="DateTime" Precision="3" />
+          <Property Name="TransactionDetailId" Type="Int32" />
+          <NavigationProperty Name="AccountTree" Relationship="Self.FK_DeletedTransactionDetail_AccountTree" FromRole="DeletedTransactionDetail" ToRole="AccountTree" />
+          <NavigationProperty Name="Balance" Relationship="Self.FK_DeletedTransactionDetail_Balance" FromRole="DeletedTransactionDetail" ToRole="Balance" />
+          <NavigationProperty Name="DeletedTransaction" Relationship="Self.FK_DeletedTransactionDetail_DeletedTransaction" FromRole="DeletedTransactionDetail" ToRole="DeletedTransaction" />
         </EntityType>
         <EntityType Name="Department">
           <Key>
@@ -4190,6 +4476,7 @@
           <Property Name="UpdatingDate" Type="DateTime" Precision="3" />
           <NavigationProperty Name="AspNetUser" Relationship="Self.FK_DocumentType_AspNetUsers" FromRole="DocumentType" ToRole="AspNetUsers" />
           <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_DocumentType_AspNetUsers1" FromRole="DocumentType" ToRole="AspNetUsers" />
+          <NavigationProperty Name="DeletedTransactions" Relationship="Self.FK_DeletedTransaction_DocumentType" FromRole="DocumentType" ToRole="DeletedTransaction" />
           <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_Transaction" FromRole="DocumentType" ToRole="Transaction" />
         </EntityType>
         <EntityType Name="FinancialCycle">
@@ -4208,43 +4495,26 @@
           <Property Name="CreationDate" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="UpdatingDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="AspNetUsers" Relationship="Self.FK_AspNetUsers_FinancialCycle" FromRole="FinancialCycle" ToRole="AspNetUsers" />
           <NavigationProperty Name="AspNetUser" Relationship="Self.FK_FinancialCycle_AspNetUsers" FromRole="FinancialCycle" ToRole="AspNetUsers" />
           <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_FinancialCycle_AspNetUsers1" FromRole="FinancialCycle" ToRole="AspNetUsers" />
           <NavigationProperty Name="Balances" Relationship="Self.FK_Balance_FinancialCycle" FromRole="FinancialCycle" ToRole="Balance" />
+          <NavigationProperty Name="DeletedTransactions" Relationship="Self.FK_DeletedTransaction_FinancialCycle" FromRole="FinancialCycle" ToRole="DeletedTransaction" />
+          <NavigationProperty Name="FinancialCycleAccountTrees" Relationship="Self.FK_FinancialCycleAccountTree_FinancialCycle" FromRole="FinancialCycle" ToRole="FinancialCycleAccountTree" />
           <NavigationProperty Name="OpeningBalances" Relationship="Self.FK_OpeningBalance_FinancialCycle" FromRole="FinancialCycle" ToRole="OpeningBalance" />
+          <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_FinancialCycle" FromRole="FinancialCycle" ToRole="Transaction" />
         </EntityType>
-        <EntityType Name="JournalEntery">
+        <EntityType Name="FinancialCycleAccountTree">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Statement" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="JournalDate" Type="DateTime" Precision="3" />
-          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="CreationDate" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="UpdatingDate" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="AspNetUser" Relationship="Self.FK_JournalEntery_AspNetUsers" FromRole="JournalEntery" ToRole="AspNetUsers" />
-          <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_JournalEntery_AspNetUsers1" FromRole="JournalEntery" ToRole="AspNetUsers" />
-          <NavigationProperty Name="JournalEnteryDetails" Relationship="Self.FK_JournalEnteryDetail_JournalEntery" FromRole="JournalEntery" ToRole="JournalEnteryDetail" />
-        </EntityType>
-        <EntityType Name="JournalEnteryDetail">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="JournalEnteryId" Type="Int32" />
-          <Property Name="AccTrreId" Type="Int32" />
-          <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="IsCredit" Type="Boolean" />
-          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="CreationDate" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="UpdatingDate" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="AccountTree" Relationship="Self.FK_JournalEnteryDetail_AccountTree" FromRole="JournalEnteryDetail" ToRole="AccountTree" />
-          <NavigationProperty Name="AspNetUser" Relationship="Self.FK_JournalEnteryDetail_AspNetUsers" FromRole="JournalEnteryDetail" ToRole="AspNetUsers" />
-          <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_JournalEnteryDetail_AspNetUsers1" FromRole="JournalEnteryDetail" ToRole="AspNetUsers" />
-          <NavigationProperty Name="JournalEntery" Relationship="Self.FK_JournalEnteryDetail_JournalEntery" FromRole="JournalEnteryDetail" ToRole="JournalEntery" />
+          <Property Name="AccTreeId" Type="Int32" />
+          <Property Name="ParentId" Type="Int32" />
+          <Property Name="FinancialCycleId" Type="Int32" />
+          <NavigationProperty Name="AccountTree" Relationship="Self.FK_FinancialCycleAccountTree_AccountTree" FromRole="FinancialCycleAccountTree" ToRole="AccountTree" />
+          <NavigationProperty Name="AccountTree1" Relationship="Self.FK_FinancialCycleAccountTree_AccountTree1" FromRole="FinancialCycleAccountTree" ToRole="AccountTree" />
+          <NavigationProperty Name="FinancialCycle" Relationship="Self.FK_FinancialCycleAccountTree_FinancialCycle" FromRole="FinancialCycleAccountTree" ToRole="FinancialCycle" />
         </EntityType>
         <EntityType Name="OpeningBalance">
           <Key>
@@ -4292,6 +4562,7 @@
           <Property Name="TransactionId" Type="Int32" Nullable="false" />
           <Property Name="BankAccountId" Type="Int32" />
           <Property Name="CheckId" Type="Int32" />
+          <Property Name="CheckType" Type="Int32" />
           <Property Name="PayNo" Type="Int32" />
           <Property Name="CheckNo" Type="Int32" />
           <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" />
@@ -4374,6 +4645,29 @@
           <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_ReceiptType_AspNetUsers1" FromRole="ReceiptType" ToRole="AspNetUsers" />
           <NavigationProperty Name="Receipts" Relationship="Self.FK_Receipt_ReceiptType" FromRole="ReceiptType" ToRole="Receipt" />
         </EntityType>
+        <EntityType Name="Recipient">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RecipientName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="AccountNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BankName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BranchName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_Recipient" FromRole="Recipient" ToRole="Transaction" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUser" Relationship="Self.FK_sysdiagrams_AspNetUsers" FromRole="sysdiagrams" ToRole="AspNetUsers" />
+        </EntityType>
         <EntityType Name="Transaction">
           <Key>
             <PropertyRef Name="Id" />
@@ -4386,9 +4680,12 @@
           <Property Name="ExchangeRate" Type="Decimal" Precision="18" Scale="4" />
           <Property Name="Note" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="IsPosted" Type="Boolean" />
+          <Property Name="RecipientId" Type="Int32" />
+          <Property Name="FinancialCycleId" Type="Int32" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="Recipient" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="HasAddedTax" Type="Boolean" />
+          <Property Name="AddedTaxPercent" Type="Decimal" Precision="18" Scale="4" />
           <Property Name="HasTax" Type="Boolean" />
           <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreationDate" Type="DateTime" Precision="3" />
@@ -4397,9 +4694,12 @@
           <NavigationProperty Name="AspNetUser" Relationship="Self.FK_Transaction_AspNetUsers" FromRole="Transaction" ToRole="AspNetUsers" />
           <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_Transaction_AspNetUsers1" FromRole="Transaction" ToRole="AspNetUsers" />
           <NavigationProperty Name="DocumentType" Relationship="Self.FK_Transaction_Transaction" FromRole="Transaction" ToRole="DocumentType" />
+          <NavigationProperty Name="FinancialCycle" Relationship="Self.FK_Transaction_FinancialCycle" FromRole="Transaction" ToRole="FinancialCycle" />
           <NavigationProperty Name="PrintChecks" Relationship="Self.FK_PrintCheck_Transaction" FromRole="Transaction" ToRole="PrintCheck" />
+          <NavigationProperty Name="Recipient1" Relationship="Self.FK_Transaction_Recipient" FromRole="Transaction" ToRole="Recipient" />
           <NavigationProperty Name="CurrencyType" Relationship="Self.FK_Transaction_CurrencyType" FromRole="Transaction" ToRole="CurrencyType" />
           <NavigationProperty Name="TransactionDetails" Relationship="Self.FK_TransactionDetail_Transaction" FromRole="Transaction" ToRole="TransactionDetail" />
+          <NavigationProperty Name="TransactionRecipients" Relationship="Self.FK_TransactionRecipient_Transaction" FromRole="Transaction" ToRole="TransactionRecipient" />
         </EntityType>
         <EntityType Name="TransactionDetail">
           <Key>
@@ -4421,6 +4721,21 @@
           <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_TransactionDetail_AspNetUsers1" FromRole="TransactionDetail" ToRole="AspNetUsers" />
           <NavigationProperty Name="Balance" Relationship="Self.FK_TransactionDetail_Balance" FromRole="TransactionDetail" ToRole="Balance" />
           <NavigationProperty Name="Transaction" Relationship="Self.FK_TransactionDetail_Transaction" FromRole="TransactionDetail" ToRole="Transaction" />
+        </EntityType>
+        <EntityType Name="TransactionRecipient">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RecipientName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="BankName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BranchName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AccountNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="TransactionId" Type="Int32" />
+          <Property Name="BankAccountId" Type="Int32" />
+          <NavigationProperty Name="BankAccount" Relationship="Self.FK_TransactionRecipient_BankAccount" FromRole="TransactionRecipient" ToRole="BankAccount" />
+          <NavigationProperty Name="Transaction" Relationship="Self.FK_TransactionRecipient_Transaction" FromRole="TransactionRecipient" ToRole="Transaction" />
         </EntityType>
         <EntityType Name="Vat">
           <Key>
@@ -4462,6 +4777,7 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsLocalCurrency" Type="Boolean" />
           <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreationDate" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
@@ -4469,6 +4785,7 @@
           <NavigationProperty Name="AspNetUser" Relationship="Self.FK_CurrencyType_AspNetUsers" FromRole="CurrencyType" ToRole="AspNetUsers" />
           <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_CurrencyType_AspNetUsers1" FromRole="CurrencyType" ToRole="AspNetUsers" />
           <NavigationProperty Name="BankAccounts" Relationship="Self.FK_BankAccount_CurrencyType" FromRole="CurrencyType" ToRole="BankAccount" />
+          <NavigationProperty Name="DeletedTransactions" Relationship="Self.FK_DeletedTransaction_CurrencyType" FromRole="CurrencyType" ToRole="DeletedTransaction" />
           <NavigationProperty Name="Receipts" Relationship="Self.FK_Receipt_CurrencyType" FromRole="CurrencyType" ToRole="Receipt" />
           <NavigationProperty Name="ReceiptDetails" Relationship="Self.FK_ReceiptDetail_CurrencyType" FromRole="CurrencyType" ToRole="ReceiptDetail" />
           <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_CurrencyType" FromRole="CurrencyType" ToRole="Transaction" />
@@ -5383,15 +5700,39 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_JournalEnteryDetail_AccountTree">
-          <End Role="AccountTree" Type="Self.AccountTree" Multiplicity="0..1" />
-          <End Role="JournalEnteryDetail" Type="Self.JournalEnteryDetail" Multiplicity="*" />
+        <Association Name="FK_DeletedTransactionDetail_AccountTree">
+          <End Role="AccountTree" Type="Self.AccountTree" Multiplicity="1" />
+          <End Role="DeletedTransactionDetail" Type="Self.DeletedTransactionDetail" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="AccountTree">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="JournalEnteryDetail">
-              <PropertyRef Name="AccTrreId" />
+            <Dependent Role="DeletedTransactionDetail">
+              <PropertyRef Name="AccTreeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FinancialCycleAccountTree_AccountTree">
+          <End Role="AccountTree" Type="Self.AccountTree" Multiplicity="0..1" />
+          <End Role="FinancialCycleAccountTree" Type="Self.FinancialCycleAccountTree" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AccountTree">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FinancialCycleAccountTree">
+              <PropertyRef Name="AccTreeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FinancialCycleAccountTree_AccountTree1">
+          <End Role="AccountTree" Type="Self.AccountTree" Multiplicity="0..1" />
+          <End Role="FinancialCycleAccountTree" Type="Self.FinancialCycleAccountTree" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AccountTree">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FinancialCycleAccountTree">
+              <PropertyRef Name="ParentId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5464,32 +5805,6 @@
             </Principal>
             <Dependent Role="AccountType">
               <PropertyRef Name="UpdatedBy" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_AspNetRoles_AspNetUsers">
-          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="0..1" />
-          <End Role="AspNetRoles" Type="Self.AspNetRole" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="AspNetRoles">
-              <PropertyRef Name="CreatedBy" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
-          <End Role="AspNetRoles" Type="Self.AspNetRole" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="AspNetUserRoles" Type="Self.AspNetUserRole" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetRoles">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="AspNetUserRoles">
-              <PropertyRef Name="RoleId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5580,6 +5895,18 @@
             </Principal>
             <Dependent Role="AspNetUsers1">
               <PropertyRef Name="CreatedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AspNetUsers_FinancialCycle">
+          <End Role="FinancialCycle" Type="Self.FinancialCycle" Multiplicity="0..1" />
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FinancialCycle">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUsers">
+              <PropertyRef Name="FinancialCycleId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5736,6 +6063,18 @@
             </Principal>
             <Dependent Role="CurrencyType">
               <PropertyRef Name="UpdatedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeletedTransaction_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="0..1" />
+          <End Role="DeletedTransaction" Type="Self.DeletedTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeletedTransaction">
+              <PropertyRef Name="CreatedBy" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5903,54 +6242,6 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="ItemDetailUnit">
-              <PropertyRef Name="UpdatedBy" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_JournalEntery_AspNetUsers">
-          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="0..1" />
-          <End Role="JournalEntery" Type="Self.JournalEntery" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="JournalEntery">
-              <PropertyRef Name="CreatedBy" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_JournalEntery_AspNetUsers1">
-          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="0..1" />
-          <End Role="JournalEntery" Type="Self.JournalEntery" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="JournalEntery">
-              <PropertyRef Name="UpdatedBy" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_JournalEnteryDetail_AspNetUsers">
-          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="0..1" />
-          <End Role="JournalEnteryDetail" Type="Self.JournalEnteryDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="JournalEnteryDetail">
-              <PropertyRef Name="CreatedBy" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_JournalEnteryDetail_AspNetUsers1">
-          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="0..1" />
-          <End Role="JournalEnteryDetail" Type="Self.JournalEnteryDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="JournalEnteryDetail">
               <PropertyRef Name="UpdatedBy" />
             </Dependent>
           </ReferentialConstraint>
@@ -6219,6 +6510,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_sysdiagrams_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="0..1" />
+          <End Role="sysdiagrams" Type="Self.sysdiagram" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="sysdiagrams">
+              <PropertyRef Name="CreatedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Transaction_AspNetUsers">
           <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="0..1" />
           <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
@@ -6339,6 +6642,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_DeletedTransactionDetail_Balance">
+          <End Role="Balance" Type="Self.Balance" Multiplicity="0..1" />
+          <End Role="DeletedTransactionDetail" Type="Self.DeletedTransactionDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Balance">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeletedTransactionDetail">
+              <PropertyRef Name="BalanceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_TransactionDetail_Balance">
           <End Role="Balance" Type="Self.Balance" Multiplicity="0..1" />
           <End Role="TransactionDetail" Type="Self.TransactionDetail" Multiplicity="*" />
@@ -6399,6 +6714,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_TransactionRecipient_BankAccount">
+          <End Role="BankAccount" Type="Self.BankAccount" Multiplicity="0..1" />
+          <End Role="TransactionRecipient" Type="Self.TransactionRecipient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BankAccount">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TransactionRecipient">
+              <PropertyRef Name="BankAccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PrintCheck_Check">
           <End Role="Check" Type="Self.Check" Multiplicity="0..1" />
           <End Role="PrintCheck" Type="Self.PrintCheck" Multiplicity="*" />
@@ -6408,6 +6735,54 @@
             </Principal>
             <Dependent Role="PrintCheck">
               <PropertyRef Name="CheckId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeletedTransaction_CurrencyType">
+          <End Role="CurrencyType" Type="Self.CurrencyType" Multiplicity="0..1" />
+          <End Role="DeletedTransaction" Type="Self.DeletedTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CurrencyType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeletedTransaction">
+              <PropertyRef Name="CurrencyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeletedTransaction_DocumentType">
+          <End Role="DocumentType" Type="Self.DocumentType" Multiplicity="1" />
+          <End Role="DeletedTransaction" Type="Self.DeletedTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DocumentType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeletedTransaction">
+              <PropertyRef Name="DocumentTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeletedTransaction_FinancialCycle">
+          <End Role="FinancialCycle" Type="Self.FinancialCycle" Multiplicity="0..1" />
+          <End Role="DeletedTransaction" Type="Self.DeletedTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FinancialCycle">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeletedTransaction">
+              <PropertyRef Name="FinancialCycleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeletedTransactionDetail_DeletedTransaction">
+          <End Role="DeletedTransaction" Type="Self.DeletedTransaction" Multiplicity="1" />
+          <End Role="DeletedTransactionDetail" Type="Self.DeletedTransactionDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DeletedTransaction">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DeletedTransactionDetail">
+              <PropertyRef Name="DeletedTransactionId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -6423,6 +6798,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_FinancialCycleAccountTree_FinancialCycle">
+          <End Role="FinancialCycle" Type="Self.FinancialCycle" Multiplicity="0..1" />
+          <End Role="FinancialCycleAccountTree" Type="Self.FinancialCycleAccountTree" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FinancialCycle">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FinancialCycleAccountTree">
+              <PropertyRef Name="FinancialCycleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_OpeningBalance_FinancialCycle">
           <End Role="FinancialCycle" Type="Self.FinancialCycle" Multiplicity="0..1" />
           <End Role="OpeningBalance" Type="Self.OpeningBalance" Multiplicity="*" />
@@ -6435,15 +6822,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_JournalEnteryDetail_JournalEntery">
-          <End Role="JournalEntery" Type="Self.JournalEntery" Multiplicity="0..1" />
-          <End Role="JournalEnteryDetail" Type="Self.JournalEnteryDetail" Multiplicity="*" />
+        <Association Name="FK_Transaction_FinancialCycle">
+          <End Role="FinancialCycle" Type="Self.FinancialCycle" Multiplicity="0..1" />
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="JournalEntery">
+            <Principal Role="FinancialCycle">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="JournalEnteryDetail">
-              <PropertyRef Name="JournalEnteryId" />
+            <Dependent Role="Transaction">
+              <PropertyRef Name="FinancialCycleId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -6519,6 +6906,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Transaction_Recipient">
+          <End Role="Recipient" Type="Self.Recipient" Multiplicity="0..1" />
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Recipient">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="RecipientId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Transaction_CurrencyType">
           <End Role="CurrencyType" Type="Self.CurrencyType" Multiplicity="0..1" />
           <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
@@ -6539,6 +6938,18 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="TransactionDetail">
+              <PropertyRef Name="TransactionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TransactionRecipient_Transaction">
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="0..1" />
+          <End Role="TransactionRecipient" Type="Self.TransactionRecipient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Transaction">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TransactionRecipient">
               <PropertyRef Name="TransactionId" />
             </Dependent>
           </ReferentialConstraint>
@@ -6731,7 +7142,6 @@
           <EntitySet Name="AccountSubCategories" EntityType="Self.AccountSubCategory" />
           <EntitySet Name="AccountTrees" EntityType="Self.AccountTree" />
           <EntitySet Name="AccountTypes" EntityType="Self.AccountType" />
-          <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRole" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaim" />
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogin" />
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRole" />
@@ -6740,19 +7150,23 @@
           <EntitySet Name="BankAccounts" EntityType="Self.BankAccount" />
           <EntitySet Name="BankAccountTypes" EntityType="Self.BankAccountType" />
           <EntitySet Name="Checks" EntityType="Self.Check" />
+          <EntitySet Name="DeletedTransactions" EntityType="Self.DeletedTransaction" />
+          <EntitySet Name="DeletedTransactionDetails" EntityType="Self.DeletedTransactionDetail" />
           <EntitySet Name="Departments" EntityType="Self.Department" />
           <EntitySet Name="DocumentTypes" EntityType="Self.DocumentType" />
           <EntitySet Name="FinancialCycles" EntityType="Self.FinancialCycle" />
-          <EntitySet Name="JournalEnteries" EntityType="Self.JournalEntery" />
-          <EntitySet Name="JournalEnteryDetails" EntityType="Self.JournalEnteryDetail" />
+          <EntitySet Name="FinancialCycleAccountTrees" EntityType="Self.FinancialCycleAccountTree" />
           <EntitySet Name="OpeningBalances" EntityType="Self.OpeningBalance" />
           <EntitySet Name="OpeningBalanceDetails" EntityType="Self.OpeningBalanceDetail" />
           <EntitySet Name="PrintChecks" EntityType="Self.PrintCheck" />
           <EntitySet Name="Receipts" EntityType="Self.Receipt" />
           <EntitySet Name="ReceiptDetails" EntityType="Self.ReceiptDetail" />
           <EntitySet Name="ReceiptTypes" EntityType="Self.ReceiptType" />
+          <EntitySet Name="Recipients" EntityType="Self.Recipient" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="Transactions" EntityType="Self.Transaction" />
           <EntitySet Name="TransactionDetails" EntityType="Self.TransactionDetail" />
+          <EntitySet Name="TransactionRecipients" EntityType="Self.TransactionRecipient" />
           <EntitySet Name="Vats" EntityType="Self.Vat" />
           <EntitySet Name="CurrencyDetails" EntityType="Self.CurrencyDetail" />
           <EntitySet Name="CurrencyTypes" EntityType="Self.CurrencyType" />
@@ -7006,9 +7420,17 @@
             <End Role="AccountTree" EntitySet="AccountTrees" />
             <End Role="Balance" EntitySet="Balances" />
           </AssociationSet>
-          <AssociationSet Name="FK_JournalEnteryDetail_AccountTree" Association="Self.FK_JournalEnteryDetail_AccountTree">
+          <AssociationSet Name="FK_DeletedTransactionDetail_AccountTree" Association="Self.FK_DeletedTransactionDetail_AccountTree">
             <End Role="AccountTree" EntitySet="AccountTrees" />
-            <End Role="JournalEnteryDetail" EntitySet="JournalEnteryDetails" />
+            <End Role="DeletedTransactionDetail" EntitySet="DeletedTransactionDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FinancialCycleAccountTree_AccountTree" Association="Self.FK_FinancialCycleAccountTree_AccountTree">
+            <End Role="AccountTree" EntitySet="AccountTrees" />
+            <End Role="FinancialCycleAccountTree" EntitySet="FinancialCycleAccountTrees" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FinancialCycleAccountTree_AccountTree1" Association="Self.FK_FinancialCycleAccountTree_AccountTree1">
+            <End Role="AccountTree" EntitySet="AccountTrees" />
+            <End Role="FinancialCycleAccountTree" EntitySet="FinancialCycleAccountTrees" />
           </AssociationSet>
           <AssociationSet Name="FK_OpeningBalanceDetail_AccountTree" Association="Self.FK_OpeningBalanceDetail_AccountTree">
             <End Role="AccountTree" EntitySet="AccountTrees" />
@@ -7033,14 +7455,6 @@
           <AssociationSet Name="FK_AccountType_AspNetUsers1" Association="Self.FK_AccountType_AspNetUsers1">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AccountType" EntitySet="AccountTypes" />
-          </AssociationSet>
-          <AssociationSet Name="FK_AspNetRoles_AspNetUsers" Association="Self.FK_AspNetRoles_AspNetUsers">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="AspNetRoles" EntitySet="AspNetRoles" />
-          </AssociationSet>
-          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
-            <End Role="AspNetRoles" EntitySet="AspNetRoles" />
-            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
           </AssociationSet>
           <AssociationSet Name="FK_AspNetUserClaims_AspNetUsers" Association="Self.FK_AspNetUserClaims_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -7069,6 +7483,10 @@
           <AssociationSet Name="FK_AspNetUsers_AspNetUsers" Association="Self.FK_AspNetUsers_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUsers1" EntitySet="AspNetUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AspNetUsers_FinancialCycle" Association="Self.FK_AspNetUsers_FinancialCycle">
+            <End Role="FinancialCycle" EntitySet="FinancialCycles" />
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
           </AssociationSet>
           <AssociationSet Name="FK_Balance_AspNetUsers" Association="Self.FK_Balance_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -7121,6 +7539,10 @@
           <AssociationSet Name="FK_CurrencyType_AspNetUsers1" Association="Self.FK_CurrencyType_AspNetUsers1">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="CurrencyType" EntitySet="CurrencyTypes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeletedTransaction_AspNetUsers" Association="Self.FK_DeletedTransaction_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="DeletedTransaction" EntitySet="DeletedTransactions" />
           </AssociationSet>
           <AssociationSet Name="FK_Department_AspNetUsers" Association="Self.FK_Department_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -7177,22 +7599,6 @@
           <AssociationSet Name="FK_ItemDetailUnit_AspNetUsers1" Association="Self.FK_ItemDetailUnit_AspNetUsers1">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="ItemDetailUnit" EntitySet="ItemDetailUnits" />
-          </AssociationSet>
-          <AssociationSet Name="FK_JournalEntery_AspNetUsers" Association="Self.FK_JournalEntery_AspNetUsers">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="JournalEntery" EntitySet="JournalEnteries" />
-          </AssociationSet>
-          <AssociationSet Name="FK_JournalEntery_AspNetUsers1" Association="Self.FK_JournalEntery_AspNetUsers1">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="JournalEntery" EntitySet="JournalEnteries" />
-          </AssociationSet>
-          <AssociationSet Name="FK_JournalEnteryDetail_AspNetUsers" Association="Self.FK_JournalEnteryDetail_AspNetUsers">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="JournalEnteryDetail" EntitySet="JournalEnteryDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_JournalEnteryDetail_AspNetUsers1" Association="Self.FK_JournalEnteryDetail_AspNetUsers1">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="JournalEnteryDetail" EntitySet="JournalEnteryDetails" />
           </AssociationSet>
           <AssociationSet Name="FK_OpeningBalance_AspNetUsers" Association="Self.FK_OpeningBalance_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -7282,6 +7688,10 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Supplier" EntitySet="Suppliers" />
           </AssociationSet>
+          <AssociationSet Name="FK_sysdiagrams_AspNetUsers" Association="Self.FK_sysdiagrams_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="sysdiagrams" EntitySet="sysdiagrams" />
+          </AssociationSet>
           <AssociationSet Name="FK_Transaction_AspNetUsers" Association="Self.FK_Transaction_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Transaction" EntitySet="Transactions" />
@@ -7322,6 +7732,10 @@
             <End Role="FinancialCycle" EntitySet="FinancialCycles" />
             <End Role="Balance" EntitySet="Balances" />
           </AssociationSet>
+          <AssociationSet Name="FK_DeletedTransactionDetail_Balance" Association="Self.FK_DeletedTransactionDetail_Balance">
+            <End Role="Balance" EntitySet="Balances" />
+            <End Role="DeletedTransactionDetail" EntitySet="DeletedTransactionDetails" />
+          </AssociationSet>
           <AssociationSet Name="FK_TransactionDetail_Balance" Association="Self.FK_TransactionDetail_Balance">
             <End Role="Balance" EntitySet="Balances" />
             <End Role="TransactionDetail" EntitySet="TransactionDetails" />
@@ -7342,21 +7756,45 @@
             <End Role="BankAccount" EntitySet="BankAccounts" />
             <End Role="PrintCheck" EntitySet="PrintChecks" />
           </AssociationSet>
+          <AssociationSet Name="FK_TransactionRecipient_BankAccount" Association="Self.FK_TransactionRecipient_BankAccount">
+            <End Role="BankAccount" EntitySet="BankAccounts" />
+            <End Role="TransactionRecipient" EntitySet="TransactionRecipients" />
+          </AssociationSet>
           <AssociationSet Name="FK_PrintCheck_Check" Association="Self.FK_PrintCheck_Check">
             <End Role="Check" EntitySet="Checks" />
             <End Role="PrintCheck" EntitySet="PrintChecks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeletedTransaction_CurrencyType" Association="Self.FK_DeletedTransaction_CurrencyType">
+            <End Role="CurrencyType" EntitySet="CurrencyTypes" />
+            <End Role="DeletedTransaction" EntitySet="DeletedTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeletedTransaction_DocumentType" Association="Self.FK_DeletedTransaction_DocumentType">
+            <End Role="DocumentType" EntitySet="DocumentTypes" />
+            <End Role="DeletedTransaction" EntitySet="DeletedTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeletedTransaction_FinancialCycle" Association="Self.FK_DeletedTransaction_FinancialCycle">
+            <End Role="FinancialCycle" EntitySet="FinancialCycles" />
+            <End Role="DeletedTransaction" EntitySet="DeletedTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeletedTransactionDetail_DeletedTransaction" Association="Self.FK_DeletedTransactionDetail_DeletedTransaction">
+            <End Role="DeletedTransaction" EntitySet="DeletedTransactions" />
+            <End Role="DeletedTransactionDetail" EntitySet="DeletedTransactionDetails" />
           </AssociationSet>
           <AssociationSet Name="FK_Transaction_Transaction" Association="Self.FK_Transaction_Transaction">
             <End Role="DocumentType" EntitySet="DocumentTypes" />
             <End Role="Transaction" EntitySet="Transactions" />
           </AssociationSet>
+          <AssociationSet Name="FK_FinancialCycleAccountTree_FinancialCycle" Association="Self.FK_FinancialCycleAccountTree_FinancialCycle">
+            <End Role="FinancialCycle" EntitySet="FinancialCycles" />
+            <End Role="FinancialCycleAccountTree" EntitySet="FinancialCycleAccountTrees" />
+          </AssociationSet>
           <AssociationSet Name="FK_OpeningBalance_FinancialCycle" Association="Self.FK_OpeningBalance_FinancialCycle">
             <End Role="FinancialCycle" EntitySet="FinancialCycles" />
             <End Role="OpeningBalance" EntitySet="OpeningBalances" />
           </AssociationSet>
-          <AssociationSet Name="FK_JournalEnteryDetail_JournalEntery" Association="Self.FK_JournalEnteryDetail_JournalEntery">
-            <End Role="JournalEntery" EntitySet="JournalEnteries" />
-            <End Role="JournalEnteryDetail" EntitySet="JournalEnteryDetails" />
+          <AssociationSet Name="FK_Transaction_FinancialCycle" Association="Self.FK_Transaction_FinancialCycle">
+            <End Role="FinancialCycle" EntitySet="FinancialCycles" />
+            <End Role="Transaction" EntitySet="Transactions" />
           </AssociationSet>
           <AssociationSet Name="FK_OpeningBalanceDetail_OpeningBalance" Association="Self.FK_OpeningBalanceDetail_OpeningBalance">
             <End Role="OpeningBalance" EntitySet="OpeningBalances" />
@@ -7382,6 +7820,10 @@
             <End Role="CurrencyType" EntitySet="CurrencyTypes" />
             <End Role="ReceiptDetail" EntitySet="ReceiptDetails" />
           </AssociationSet>
+          <AssociationSet Name="FK_Transaction_Recipient" Association="Self.FK_Transaction_Recipient">
+            <End Role="Recipient" EntitySet="Recipients" />
+            <End Role="Transaction" EntitySet="Transactions" />
+          </AssociationSet>
           <AssociationSet Name="FK_Transaction_CurrencyType" Association="Self.FK_Transaction_CurrencyType">
             <End Role="CurrencyType" EntitySet="CurrencyTypes" />
             <End Role="Transaction" EntitySet="Transactions" />
@@ -7389,6 +7831,10 @@
           <AssociationSet Name="FK_TransactionDetail_Transaction" Association="Self.FK_TransactionDetail_Transaction">
             <End Role="Transaction" EntitySet="Transactions" />
             <End Role="TransactionDetail" EntitySet="TransactionDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TransactionRecipient_Transaction" Association="Self.FK_TransactionRecipient_Transaction">
+            <End Role="Transaction" EntitySet="Transactions" />
+            <End Role="TransactionRecipient" EntitySet="TransactionRecipients" />
           </AssociationSet>
           <AssociationSet Name="FK_Order_Vat" Association="Self.FK_Order_Vat">
             <End Role="Vat" EntitySet="Vats" />
@@ -7453,15 +7899,62 @@
           <Parameter Name="AccCode" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="SpLastTreeAccountId" ReturnType="Collection(Int32)" />
+          <EntitySet Name="AspNetRoles" EntityType="FinancialERP1Model.AspNetRole" />
+          <AssociationSet Name="FK_AspNetRoles_AspNetUsers" Association="FinancialERP1Model.FK_AspNetRoles_AspNetUsers">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="AspNetRole" EntitySet="AspNetRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="FinancialERP1Model.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+            <End Role="AspNetRole" EntitySet="AspNetRoles" />
+            <End Role="AspNetUserRole" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="AspNetRole">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="NormalizedName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="ConcurrencyStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUser" Relationship="FinancialERP1Model.FK_AspNetRoles_AspNetUsers" FromRole="AspNetRole" ToRole="AspNetUser" />
+          <NavigationProperty Name="AspNetUserRoles" Relationship="FinancialERP1Model.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" FromRole="AspNetRole" ToRole="AspNetUserRole" />
+        </EntityType>
+        <Association Name="FK_AspNetRoles_AspNetUsers">
+          <End Type="FinancialERP1Model.AspNetUser" Role="AspNetUser" Multiplicity="0..1" />
+          <End Type="FinancialERP1Model.AspNetRole" Role="AspNetRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetRole">
+              <PropertyRef Name="CreatedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+          <End Type="FinancialERP1Model.AspNetRole" Role="AspNetRole" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="FinancialERP1Model.AspNetUserRole" Role="AspNetUserRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetRole">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserRole">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="FinancialERPModelStoreContainer" CdmEntityContainer="Entities">
+        <EntityContainerMapping StorageEntityContainer="FinancialERP1ModelStoreContainer" CdmEntityContainer="Entities">
           <EntitySetMapping Name="Circus">
-            <EntityTypeMapping TypeName="FinancialERPModel.Circu">
+            <EntityTypeMapping TypeName="FinancialERP1Model.Circu">
               <MappingFragment StoreEntitySet="Circus">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
@@ -7483,7 +7976,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="CommitteeJobs">
-            <EntityTypeMapping TypeName="FinancialERPModel.CommitteeJob">
+            <EntityTypeMapping TypeName="FinancialERP1Model.CommitteeJob">
               <MappingFragment StoreEntitySet="CommitteeJob">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -7495,7 +7988,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="CommitteeMembers">
-            <EntityTypeMapping TypeName="FinancialERPModel.CommitteeMember">
+            <EntityTypeMapping TypeName="FinancialERP1Model.CommitteeMember">
               <MappingFragment StoreEntitySet="CommitteeMember">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
@@ -7509,7 +8002,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="CommitteeTypes">
-            <EntityTypeMapping TypeName="FinancialERPModel.CommitteeType">
+            <EntityTypeMapping TypeName="FinancialERP1Model.CommitteeType">
               <MappingFragment StoreEntitySet="CommitteeType">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -7522,7 +8015,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="CommitteFormations">
-            <EntityTypeMapping TypeName="FinancialERPModel.CommitteFormation">
+            <EntityTypeMapping TypeName="FinancialERP1Model.CommitteFormation">
               <MappingFragment StoreEntitySet="CommitteFormation">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ResolutionNo" ColumnName="ResolutionNo" />
@@ -7539,7 +8032,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="CompanyDocuments">
-            <EntityTypeMapping TypeName="FinancialERPModel.CompanyDocument">
+            <EntityTypeMapping TypeName="FinancialERP1Model.CompanyDocument">
               <MappingFragment StoreEntitySet="CompanyDocument">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="CompanyRegisterationId" ColumnName="CompanyRegisterationId" />
@@ -7554,7 +8047,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="CompanyRegisterations">
-            <EntityTypeMapping TypeName="FinancialERPModel.CompanyRegisteration">
+            <EntityTypeMapping TypeName="FinancialERP1Model.CompanyRegisteration">
               <MappingFragment StoreEntitySet="CompanyRegisteration">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -7575,7 +8068,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="CompetingCompanies">
-            <EntityTypeMapping TypeName="FinancialERPModel.CompetingCompany">
+            <EntityTypeMapping TypeName="FinancialERP1Model.CompetingCompany">
               <MappingFragment StoreEntitySet="CompetingCompany">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="CompanyRegisterationId" ColumnName="CompanyRegisterationId" />
@@ -7590,7 +8083,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="GeneralConditions">
-            <EntityTypeMapping TypeName="FinancialERPModel.GeneralCondition">
+            <EntityTypeMapping TypeName="FinancialERP1Model.GeneralCondition">
               <MappingFragment StoreEntitySet="GeneralCondition">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -7604,7 +8097,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="GeneralConditionEvaluations">
-            <EntityTypeMapping TypeName="FinancialERPModel.GeneralConditionEvaluation">
+            <EntityTypeMapping TypeName="FinancialERP1Model.GeneralConditionEvaluation">
               <MappingFragment StoreEntitySet="GeneralConditionEvaluation">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="CompetingCompanyId" ColumnName="CompetingCompanyId" />
@@ -7618,7 +8111,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="TechnicalConditions">
-            <EntityTypeMapping TypeName="FinancialERPModel.TechnicalCondition">
+            <EntityTypeMapping TypeName="FinancialERP1Model.TechnicalCondition">
               <MappingFragment StoreEntitySet="TechnicalCondition">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ConditionName" ColumnName="ConditionName" />
@@ -7633,7 +8126,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="TechnicalConditionEvaluations">
-            <EntityTypeMapping TypeName="FinancialERPModel.TechnicalConditionEvaluation">
+            <EntityTypeMapping TypeName="FinancialERP1Model.TechnicalConditionEvaluation">
               <MappingFragment StoreEntitySet="TechnicalConditionEvaluation">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="CompetingCompanyId" ColumnName="CompetingCompanyId" />
@@ -7647,7 +8140,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Tenders">
-            <EntityTypeMapping TypeName="FinancialERPModel.Tender">
+            <EntityTypeMapping TypeName="FinancialERP1Model.Tender">
               <MappingFragment StoreEntitySet="Tender">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
@@ -7660,7 +8153,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AccountFinals">
-            <EntityTypeMapping TypeName="FinancialERPModel.AccountFinal">
+            <EntityTypeMapping TypeName="FinancialERP1Model.AccountFinal">
               <MappingFragment StoreEntitySet="AccountFinal">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -7672,7 +8165,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AccountNatures">
-            <EntityTypeMapping TypeName="FinancialERPModel.AccountNature">
+            <EntityTypeMapping TypeName="FinancialERP1Model.AccountNature">
               <MappingFragment StoreEntitySet="AccountNature">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -7684,7 +8177,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AccountSubs">
-            <EntityTypeMapping TypeName="FinancialERPModel.AccountSub">
+            <EntityTypeMapping TypeName="FinancialERP1Model.AccountSub">
               <MappingFragment StoreEntitySet="AccountSub">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="AccTreeId" ColumnName="AccTreeId" />
@@ -7697,7 +8190,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AccountSubCategories">
-            <EntityTypeMapping TypeName="FinancialERPModel.AccountSubCategory">
+            <EntityTypeMapping TypeName="FinancialERP1Model.AccountSubCategory">
               <MappingFragment StoreEntitySet="AccountSubCategory">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -7709,7 +8202,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AccountTrees">
-            <EntityTypeMapping TypeName="FinancialERPModel.AccountTree">
+            <EntityTypeMapping TypeName="FinancialERP1Model.AccountTree">
               <MappingFragment StoreEntitySet="AccountTree">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="AccName" ColumnName="AccName" />
@@ -7728,7 +8221,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AccountTypes">
-            <EntityTypeMapping TypeName="FinancialERPModel.AccountType">
+            <EntityTypeMapping TypeName="FinancialERP1Model.AccountType">
               <MappingFragment StoreEntitySet="AccountType">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -7739,17 +8232,8 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="AspNetRoles">
-            <EntityTypeMapping TypeName="FinancialERPModel.AspNetRole">
-              <MappingFragment StoreEntitySet="AspNetRoles">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="AspNetUserClaims">
-            <EntityTypeMapping TypeName="FinancialERPModel.AspNetUserClaim">
+            <EntityTypeMapping TypeName="FinancialERP1Model.AspNetUserClaim">
               <MappingFragment StoreEntitySet="AspNetUserClaims">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
@@ -7760,7 +8244,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetUserLogins">
-            <EntityTypeMapping TypeName="FinancialERPModel.AspNetUserLogin">
+            <EntityTypeMapping TypeName="FinancialERP1Model.AspNetUserLogin">
               <MappingFragment StoreEntitySet="AspNetUserLogins">
                 <ScalarProperty Name="LoginProvider" ColumnName="LoginProvider" />
                 <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
@@ -7770,7 +8254,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetUserRoles">
-            <EntityTypeMapping TypeName="FinancialERPModel.AspNetUserRole">
+            <EntityTypeMapping TypeName="FinancialERP1Model.AspNetUserRole">
               <MappingFragment StoreEntitySet="AspNetUserRoles">
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="RoleId" ColumnName="RoleId" />
@@ -7779,8 +8263,9 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetUsers">
-            <EntityTypeMapping TypeName="FinancialERPModel.AspNetUser">
+            <EntityTypeMapping TypeName="FinancialERP1Model.AspNetUser">
               <MappingFragment StoreEntitySet="AspNetUsers">
+                <ScalarProperty Name="AirportName" ColumnName="AirportName" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
@@ -7796,11 +8281,18 @@
                 <ScalarProperty Name="IsDefualtPassword" ColumnName="IsDefualtPassword" />
                 <ScalarProperty Name="FullName" ColumnName="FullName" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="FinancialCycleId" ColumnName="FinancialCycleId" />
+                <ScalarProperty Name="NormalizedUserName" ColumnName="NormalizedUserName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="NormalizedEmail" ColumnName="NormalizedEmail" />
+                <ScalarProperty Name="LockoutEnd" ColumnName="LockoutEnd" />
+                <ScalarProperty Name="ConcurrencyStamp" ColumnName="ConcurrencyStamp" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Balances">
-            <EntityTypeMapping TypeName="FinancialERPModel.Balance">
+            <EntityTypeMapping TypeName="FinancialERP1Model.Balance">
               <MappingFragment StoreEntitySet="Balance">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="FinanceCycleId" ColumnName="FinanceCycleId" />
@@ -7820,7 +8312,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="BankAccounts">
-            <EntityTypeMapping TypeName="FinancialERPModel.BankAccount">
+            <EntityTypeMapping TypeName="FinancialERP1Model.BankAccount">
               <MappingFragment StoreEntitySet="BankAccount">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Number" ColumnName="Number" />
@@ -7828,7 +8320,10 @@
                 <ScalarProperty Name="CurrencyTypeId" ColumnName="CurrencyTypeId" />
                 <ScalarProperty Name="AccountSubId" ColumnName="AccountSubId" />
                 <ScalarProperty Name="OpenDate" ColumnName="OpenDate" />
+                <ScalarProperty Name="BankLabel" ColumnName="BankLabel" />
                 <ScalarProperty Name="IBan" ColumnName="IBan" />
+                <ScalarProperty Name="FirstSignature" ColumnName="FirstSignature" />
+                <ScalarProperty Name="SecondSignature" ColumnName="SecondSignature" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
@@ -7837,7 +8332,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="BankAccountTypes">
-            <EntityTypeMapping TypeName="FinancialERPModel.BankAccountType">
+            <EntityTypeMapping TypeName="FinancialERP1Model.BankAccountType">
               <MappingFragment StoreEntitySet="BankAccountType">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -7850,7 +8345,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Checks">
-            <EntityTypeMapping TypeName="FinancialERPModel.Check">
+            <EntityTypeMapping TypeName="FinancialERP1Model.Check">
               <MappingFragment StoreEntitySet="Check">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="BankAccountId" ColumnName="BankAccountId" />
@@ -7858,6 +8353,7 @@
                 <ScalarProperty Name="StartFromNumber" ColumnName="StartFromNumber" />
                 <ScalarProperty Name="EndToNumber" ColumnName="EndToNumber" />
                 <ScalarProperty Name="IsFinished" ColumnName="IsFinished" />
+                <ScalarProperty Name="LastUsedCheckNo" ColumnName="LastUsedCheckNo" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
@@ -7865,8 +8361,47 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="DeletedTransactions">
+            <EntityTypeMapping TypeName="FinancialERP1Model.DeletedTransaction">
+              <MappingFragment StoreEntitySet="DeletedTransaction">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DocumentTypeId" ColumnName="DocumentTypeId" />
+                <ScalarProperty Name="CurrencyId" ColumnName="CurrencyId" />
+                <ScalarProperty Name="FinancialCycleId" ColumnName="FinancialCycleId" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
+                <ScalarProperty Name="ExchangeRate" ColumnName="ExchangeRate" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="IsPosted" ColumnName="IsPosted" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Recipient" ColumnName="Recipient" />
+                <ScalarProperty Name="HasAddedTax" ColumnName="HasAddedTax" />
+                <ScalarProperty Name="HasTax" ColumnName="HasTax" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
+                <ScalarProperty Name="CheckNo" ColumnName="CheckNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DeletedTransactionDetails">
+            <EntityTypeMapping TypeName="FinancialERP1Model.DeletedTransactionDetail">
+              <MappingFragment StoreEntitySet="DeletedTransactionDetail">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DeletedTransactionId" ColumnName="DeletedTransactionId" />
+                <ScalarProperty Name="AccTreeId" ColumnName="AccTreeId" />
+                <ScalarProperty Name="BalanceId" ColumnName="BalanceId" />
+                <ScalarProperty Name="Debit" ColumnName="Debit" />
+                <ScalarProperty Name="Credit" ColumnName="Credit" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="TransactionDetailId" ColumnName="TransactionDetailId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Departments">
-            <EntityTypeMapping TypeName="FinancialERPModel.Department">
+            <EntityTypeMapping TypeName="FinancialERP1Model.Department">
               <MappingFragment StoreEntitySet="Department">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -7878,7 +8413,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="DocumentTypes">
-            <EntityTypeMapping TypeName="FinancialERPModel.DocumentType">
+            <EntityTypeMapping TypeName="FinancialERP1Model.DocumentType">
               <MappingFragment StoreEntitySet="DocumentType">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -7890,7 +8425,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="FinancialCycles">
-            <EntityTypeMapping TypeName="FinancialERPModel.FinancialCycle">
+            <EntityTypeMapping TypeName="FinancialERP1Model.FinancialCycle">
               <MappingFragment StoreEntitySet="FinancialCycle">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Year" ColumnName="Year" />
@@ -7907,36 +8442,18 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="JournalEnteries">
-            <EntityTypeMapping TypeName="FinancialERPModel.JournalEntery">
-              <MappingFragment StoreEntitySet="JournalEntery">
+          <EntitySetMapping Name="FinancialCycleAccountTrees">
+            <EntityTypeMapping TypeName="FinancialERP1Model.FinancialCycleAccountTree">
+              <MappingFragment StoreEntitySet="FinancialCycleAccountTree">
                 <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Statement" ColumnName="Statement" />
-                <ScalarProperty Name="JournalDate" ColumnName="JournalDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="UpdatingDate" ColumnName="UpdatingDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="JournalEnteryDetails">
-            <EntityTypeMapping TypeName="FinancialERPModel.JournalEnteryDetail">
-              <MappingFragment StoreEntitySet="JournalEnteryDetail">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="JournalEnteryId" ColumnName="JournalEnteryId" />
-                <ScalarProperty Name="AccTrreId" ColumnName="AccTrreId" />
-                <ScalarProperty Name="Amount" ColumnName="Amount" />
-                <ScalarProperty Name="IsCredit" ColumnName="IsCredit" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="UpdatingDate" ColumnName="UpdatingDate" />
+                <ScalarProperty Name="AccTreeId" ColumnName="AccTreeId" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="FinancialCycleId" ColumnName="FinancialCycleId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="OpeningBalances">
-            <EntityTypeMapping TypeName="FinancialERPModel.OpeningBalance">
+            <EntityTypeMapping TypeName="FinancialERP1Model.OpeningBalance">
               <MappingFragment StoreEntitySet="OpeningBalance">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="FinancialCycleId" ColumnName="FinancialCycleId" />
@@ -7952,7 +8469,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="OpeningBalanceDetails">
-            <EntityTypeMapping TypeName="FinancialERPModel.OpeningBalanceDetail">
+            <EntityTypeMapping TypeName="FinancialERP1Model.OpeningBalanceDetail">
               <MappingFragment StoreEntitySet="OpeningBalanceDetail">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="OpeningBalanceId" ColumnName="OpeningBalanceId" />
@@ -7968,12 +8485,13 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="PrintChecks">
-            <EntityTypeMapping TypeName="FinancialERPModel.PrintCheck">
+            <EntityTypeMapping TypeName="FinancialERP1Model.PrintCheck">
               <MappingFragment StoreEntitySet="PrintCheck">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
                 <ScalarProperty Name="BankAccountId" ColumnName="BankAccountId" />
                 <ScalarProperty Name="CheckId" ColumnName="CheckId" />
+                <ScalarProperty Name="CheckType" ColumnName="CheckType" />
                 <ScalarProperty Name="PayNo" ColumnName="PayNo" />
                 <ScalarProperty Name="CheckNo" ColumnName="CheckNo" />
                 <ScalarProperty Name="Amount" ColumnName="Amount" />
@@ -7987,7 +8505,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Receipts">
-            <EntityTypeMapping TypeName="FinancialERPModel.Receipt">
+            <EntityTypeMapping TypeName="FinancialERP1Model.Receipt">
               <MappingFragment StoreEntitySet="Receipt">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="AccTreeId" ColumnName="AccTreeId" />
@@ -8014,7 +8532,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ReceiptDetails">
-            <EntityTypeMapping TypeName="FinancialERPModel.ReceiptDetail">
+            <EntityTypeMapping TypeName="FinancialERP1Model.ReceiptDetail">
               <MappingFragment StoreEntitySet="ReceiptDetail">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ReceiptId" ColumnName="ReceiptId" />
@@ -8031,7 +8549,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ReceiptTypes">
-            <EntityTypeMapping TypeName="FinancialERPModel.ReceiptType">
+            <EntityTypeMapping TypeName="FinancialERP1Model.ReceiptType">
               <MappingFragment StoreEntitySet="ReceiptType">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -8042,8 +8560,31 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Recipients">
+            <EntityTypeMapping TypeName="FinancialERP1Model.Recipient">
+              <MappingFragment StoreEntitySet="Recipient">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="RecipientName" ColumnName="RecipientName" />
+                <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
+                <ScalarProperty Name="BankName" ColumnName="BankName" />
+                <ScalarProperty Name="BranchName" ColumnName="BranchName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="FinancialERP1Model.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Transactions">
-            <EntityTypeMapping TypeName="FinancialERPModel.Transaction">
+            <EntityTypeMapping TypeName="FinancialERP1Model.Transaction">
               <MappingFragment StoreEntitySet="Transaction">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="DocumentTypeId" ColumnName="DocumentTypeId" />
@@ -8053,9 +8594,12 @@
                 <ScalarProperty Name="ExchangeRate" ColumnName="ExchangeRate" />
                 <ScalarProperty Name="Note" ColumnName="Note" />
                 <ScalarProperty Name="IsPosted" ColumnName="IsPosted" />
+                <ScalarProperty Name="RecipientId" ColumnName="RecipientId" />
+                <ScalarProperty Name="FinancialCycleId" ColumnName="FinancialCycleId" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="Recipient" ColumnName="Recipient" />
                 <ScalarProperty Name="HasAddedTax" ColumnName="HasAddedTax" />
+                <ScalarProperty Name="AddedTaxPercent" ColumnName="AddedTaxPercent" />
                 <ScalarProperty Name="HasTax" ColumnName="HasTax" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
@@ -8065,7 +8609,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="TransactionDetails">
-            <EntityTypeMapping TypeName="FinancialERPModel.TransactionDetail">
+            <EntityTypeMapping TypeName="FinancialERP1Model.TransactionDetail">
               <MappingFragment StoreEntitySet="TransactionDetail">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
@@ -8081,8 +8625,22 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="TransactionRecipients">
+            <EntityTypeMapping TypeName="FinancialERP1Model.TransactionRecipient">
+              <MappingFragment StoreEntitySet="TransactionRecipient">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="RecipientName" ColumnName="RecipientName" />
+                <ScalarProperty Name="BankName" ColumnName="BankName" />
+                <ScalarProperty Name="BranchName" ColumnName="BranchName" />
+                <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
+                <ScalarProperty Name="BankAccountId" ColumnName="BankAccountId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Vats">
-            <EntityTypeMapping TypeName="FinancialERPModel.Vat">
+            <EntityTypeMapping TypeName="FinancialERP1Model.Vat">
               <MappingFragment StoreEntitySet="Vat">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -8095,7 +8653,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="CurrencyDetails">
-            <EntityTypeMapping TypeName="FinancialERPModel.CurrencyDetail">
+            <EntityTypeMapping TypeName="FinancialERP1Model.CurrencyDetail">
               <MappingFragment StoreEntitySet="CurrencyDetail">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="CurrencyTypeId" ColumnName="CurrencyTypeId" />
@@ -8111,10 +8669,11 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="CurrencyTypes">
-            <EntityTypeMapping TypeName="FinancialERPModel.CurrencyType">
+            <EntityTypeMapping TypeName="FinancialERP1Model.CurrencyType">
               <MappingFragment StoreEntitySet="CurrencyType">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="IsLocalCurrency" ColumnName="IsLocalCurrency" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
@@ -8123,7 +8682,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="InvoiceImages">
-            <EntityTypeMapping TypeName="FinancialERPModel.InvoiceImage">
+            <EntityTypeMapping TypeName="FinancialERP1Model.InvoiceImage">
               <MappingFragment StoreEntitySet="InvoiceImage">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Path" ColumnName="Path" />
@@ -8139,7 +8698,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Items">
-            <EntityTypeMapping TypeName="FinancialERPModel.Item">
+            <EntityTypeMapping TypeName="FinancialERP1Model.Item">
               <MappingFragment StoreEntitySet="Item">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -8151,7 +8710,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ItemDetails">
-            <EntityTypeMapping TypeName="FinancialERPModel.ItemDetail">
+            <EntityTypeMapping TypeName="FinancialERP1Model.ItemDetail">
               <MappingFragment StoreEntitySet="ItemDetail">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -8164,7 +8723,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ItemDetailUnits">
-            <EntityTypeMapping TypeName="FinancialERPModel.ItemDetailUnit">
+            <EntityTypeMapping TypeName="FinancialERP1Model.ItemDetailUnit">
               <MappingFragment StoreEntitySet="ItemDetailUnit">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ItemDetailId" ColumnName="ItemDetailId" />
@@ -8179,7 +8738,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Orders">
-            <EntityTypeMapping TypeName="FinancialERPModel.Order">
+            <EntityTypeMapping TypeName="FinancialERP1Model.Order">
               <MappingFragment StoreEntitySet="Order">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
@@ -8203,7 +8762,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="OrderDetiails">
-            <EntityTypeMapping TypeName="FinancialERPModel.OrderDetiail">
+            <EntityTypeMapping TypeName="FinancialERP1Model.OrderDetiail">
               <MappingFragment StoreEntitySet="OrderDetiail">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
@@ -8222,7 +8781,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="OrderImages">
-            <EntityTypeMapping TypeName="FinancialERPModel.OrderImage">
+            <EntityTypeMapping TypeName="FinancialERP1Model.OrderImage">
               <MappingFragment StoreEntitySet="OrderImage">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Path" ColumnName="Path" />
@@ -8236,7 +8795,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="OrderTypes">
-            <EntityTypeMapping TypeName="FinancialERPModel.OrderType">
+            <EntityTypeMapping TypeName="FinancialERP1Model.OrderType">
               <MappingFragment StoreEntitySet="OrderType">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -8248,7 +8807,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Suppliers">
-            <EntityTypeMapping TypeName="FinancialERPModel.Supplier">
+            <EntityTypeMapping TypeName="FinancialERP1Model.Supplier">
               <MappingFragment StoreEntitySet="Supplier">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -8261,7 +8820,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Units">
-            <EntityTypeMapping TypeName="FinancialERPModel.Unit">
+            <EntityTypeMapping TypeName="FinancialERP1Model.Unit">
               <MappingFragment StoreEntitySet="Unit">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -8272,9 +8831,20 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="GetLastAccNumber" FunctionName="FinancialERPModel.Store.GetLastAccNumber" />
-          <FunctionImportMapping FunctionImportName="SpLastLevel" FunctionName="FinancialERPModel.Store.SpLastLevel" />
-          <FunctionImportMapping FunctionImportName="SpLastTreeAccountId" FunctionName="FinancialERPModel.Store.SpLastTreeAccountId" />
+          <FunctionImportMapping FunctionImportName="GetLastAccNumber" FunctionName="FinancialERP1Model.Store.GetLastAccNumber" />
+          <FunctionImportMapping FunctionImportName="SpLastLevel" FunctionName="FinancialERP1Model.Store.SpLastLevel" />
+          <FunctionImportMapping FunctionImportName="SpLastTreeAccountId" FunctionName="FinancialERP1Model.Store.SpLastTreeAccountId" />
+          <EntitySetMapping Name="AspNetRoles">
+            <EntityTypeMapping TypeName="FinancialERP1Model.AspNetRole">
+              <MappingFragment StoreEntitySet="AspNetRoles">
+                <ScalarProperty Name="ConcurrencyStamp" ColumnName="ConcurrencyStamp" />
+                <ScalarProperty Name="NormalizedName" ColumnName="NormalizedName" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

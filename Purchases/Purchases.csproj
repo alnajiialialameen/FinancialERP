@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.Net.Compilers.4.2.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.4.2.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="..\packages\EntityFramework.6.5.1\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
-  <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -25,6 +27,8 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TypeScriptToolsVersion>1.5</TypeScriptToolsVersion>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,6 +52,16 @@
     <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="CrystalDecisions.ReportSource, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="FuzzySharp, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FuzzySharp.2.0.0\lib\net45\FuzzySharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
       <Private>True</Private>
@@ -70,6 +84,7 @@
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Speech" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -141,12 +156,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
@@ -194,43 +203,10 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Class\TreeClass.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\AccountTreeController.cs" />
-    <Compile Include="Controllers\ACUCircusController.cs" />
-    <Compile Include="Controllers\ACUCommitteFormationsController.cs" />
-    <Compile Include="Controllers\ACUCompetingCompanyController.cs" />
-    <Compile Include="Controllers\ACUGeneralConditionEvaluationsController.cs" />
-    <Compile Include="Controllers\ACUGeneralConditionsController.cs" />
-    <Compile Include="Controllers\BalancesController.cs" />
-    <Compile Include="Controllers\BankAccountsController.cs" />
-    <Compile Include="Controllers\BankTransfersController.cs" />
-    <Compile Include="Controllers\CatchReceiptsController.cs" />
-    <Compile Include="Controllers\ConsumeHrApiController.cs" />
-    <Compile Include="Controllers\CurrencyDetailsController.cs" />
-    <Compile Include="Controllers\CurrencyTypesController.cs" />
-    <Compile Include="Controllers\FinancialCyclesController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ItemsController.cs" />
-    <Compile Include="Controllers\JournalEnteryController.cs" />
-    <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\OpeningBalancesController.cs" />
-    <Compile Include="Controllers\OrdersController.cs" />
-    <Compile Include="Controllers\PrintChecsController.cs" />
-    <Compile Include="Controllers\RecieptsController.cs" />
-    <Compile Include="Controllers\ReportsController.cs" />
-    <Compile Include="Controllers\SearchOrdersController.cs" />
-    <Compile Include="Controllers\SuppliersController.cs" />
-    <Compile Include="Controllers\TransactionsController.cs" />
-    <Compile Include="Controllers\UnitsController.cs" />
-    <Compile Include="Controllers\VatsController.cs" />
-    <Compile Include="CurencyOperation\BaseClass.cs" />
-    <Compile Include="CurencyOperation\CurrencyInfo.cs" />
-    <Compile Include="CurencyOperation\ToWord.cs" />
-    <Compile Include="Functions\RoleController.cs" />
-    <Compile Include="Global.asax.cs">
-      <DependentUpon>Global.asax</DependentUpon>
-    </Compile>
+    <Compile Include="Controllers\DeleteTransactionsController.cs" />
+    <Compile Include="Controllers\RecipientBankInfoController.cs" />
+    <Compile Include="Controllers\RecipientsController.cs" />
+    <Compile Include="Controllers\SharedController.cs" />
     <Compile Include="Models\AccountFinal.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -249,7 +225,6 @@
     <Compile Include="Models\AccountType.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AspNetRole.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -307,14 +282,22 @@
     <Compile Include="Models\CurrencyType.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DeletedTransaction.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DeletedTransactionDetail.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Department.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\DepartmentVM.cs" />
     <Compile Include="Models\DocumentType.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\FinancialCycle.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\FinancialCycleAccountTree.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GeneralCondition.cs">
@@ -323,7 +306,6 @@
     <Compile Include="Models\GeneralConditionEvaluation.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\InvoiceImage.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -336,13 +318,6 @@
     <Compile Include="Models\ItemDetailUnit.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\JournalEntery.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\JournalEnteryDetail.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Model1.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -388,7 +363,13 @@
     <Compile Include="Models\ReceiptType.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Recipient.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Supplier.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sysdiagram.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TechnicalCondition.cs">
@@ -406,42 +387,95 @@
     <Compile Include="Models\TransactionDetail.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\TransactionRecipient.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Unit.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\UserVM.cs" />
     <Compile Include="Models\Vat.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ViewModal\BankTransferVM.cs" />
-    <Compile Include="Models\ViewModal\BankViewmodel.cs" />
-    <Compile Include="Models\ViewModal\CheckVM.cs" />
-    <Compile Include="Models\ViewModal\CircuViewModel.cs" />
-    <Compile Include="Models\ViewModal\CommitteeMemberViewModel.cs" />
-    <Compile Include="Models\ViewModal\CommitteFormationsViewModel.cs" />
-    <Compile Include="Models\ViewModal\CompanyDocumentViewModel.cs" />
-    <Compile Include="Models\ViewModal\CompetingCompanyViewModel.cs" />
-    <Compile Include="Models\ViewModal\deptVM.cs" />
-    <Compile Include="Models\ViewModal\EmployeeDTO.cs" />
-    <Compile Include="Models\ViewModal\JournalEnteryViewModel.cs" />
-    <Compile Include="Models\ViewModal\GeneralConditionsViewModel.cs" />
-    <Compile Include="Models\ViewModal\GeneralConditionviewmodel.cs" />
-    <Compile Include="Models\ViewModal\OpeningBalanceVM.cs" />
-    <Compile Include="Models\ViewModal\OrderVM.cs" />
-    <Compile Include="Models\ViewModal\AllViewMode.cs" />
-    <Compile Include="Models\ViewModal\RecieptVM.cs" />
-    <Compile Include="Models\ViewModal\TransactionViewMode.cs" />
-    <Compile Include="Models\ViewModal\TreeAccVM.cs" />
+    <Compile Include="Models\ViewModel\BalanceVM.cs" />
+    <Compile Include="Models\ViewModel\BaseVM.cs" />
+    <Compile Include="Models\ViewModel\EmployeeBankInfoDTO.cs" />
+    <Compile Include="Models\ViewModel\RecipientVM.cs" />
+    <Compile Include="Models\ViewModel\SummaryVM.cs" />
+    <Compile Include="MyLogic\DeleteTransactionObj.cs" />
+    <Compile Include="MyLogic\Transact.cs" />
+    <Compile Include="Models\ViewModel\AccTreeListObj.cs" />
+    <Compile Include="MyLogic\PrintCheckObj.cs" />
+    <Compile Include="MyLogic\Reports.cs" />
+    <Compile Include="MyLogic\SharedClass.cs" />
+    <Compile Include="MyLogic\TreeClass.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AccountTreeController.cs" />
+    <Compile Include="Controllers\ACUCircusController.cs" />
+    <Compile Include="Controllers\ACUCommitteFormationsController.cs" />
+    <Compile Include="Controllers\ACUCompetingCompanyController.cs" />
+    <Compile Include="Controllers\ACUGeneralConditionEvaluationsController.cs" />
+    <Compile Include="Controllers\ACUGeneralConditionsController.cs" />
+    <Compile Include="Controllers\BalancesController.cs" />
+    <Compile Include="Controllers\BankAccountsController.cs" />
+    <Compile Include="Controllers\BankTransfersController.cs" />
+    <Compile Include="Controllers\CatchReceiptsController.cs" />
+    <Compile Include="Controllers\CurrencyDetailsController.cs" />
+    <Compile Include="Controllers\CurrencyTypesController.cs" />
+    <Compile Include="Controllers\FinancialCyclesController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ItemsController.cs" />
+    <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\OpeningBalancesController.cs" />
+    <Compile Include="Controllers\OrdersController.cs" />
+    <Compile Include="Controllers\PrintChecsController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Controllers\SearchOrdersController.cs" />
+    <Compile Include="Controllers\SuppliersController.cs" />
+    <Compile Include="Controllers\TransactionsController.cs" />
+    <Compile Include="Controllers\UnitsController.cs" />
+    <Compile Include="Controllers\VatsController.cs" />
+    <Compile Include="CurencyOperation\BaseClass.cs" />
+    <Compile Include="CurencyOperation\CurrencyInfo.cs" />
+    <Compile Include="CurencyOperation\ToWord.cs" />
+    <Compile Include="Functions\RoleController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\UserVM.cs" />
+    <Compile Include="Models\ViewModel\BankTransferVM.cs" />
+    <Compile Include="Models\ViewModel\BankVM.cs" />
+    <Compile Include="Models\ViewModel\CheckVM.cs" />
+    <Compile Include="Models\ViewModel\CircuVM.cs" />
+    <Compile Include="Models\ViewModel\CommitteeMemberVM.cs" />
+    <Compile Include="Models\ViewModel\CommitteFormationsVM.cs" />
+    <Compile Include="Models\ViewModel\CompanyDocumentVM.cs" />
+    <Compile Include="Models\ViewModel\CompetingCompanyVM.cs" />
+    <Compile Include="Models\ViewModel\deptVM.cs" />
+    <Compile Include="Models\ViewModel\EmployeeDTO.cs" />
+    <Compile Include="Models\ViewModel\GeneralConditionsVM.cs" />
+    <Compile Include="Models\ViewModel\GeneralConditionVM.cs" />
+    <Compile Include="Models\ViewModel\OpeningBalanceVM.cs" />
+    <Compile Include="Models\ViewModel\OrderVM.cs" />
+    <Compile Include="Models\ViewModel\AllViewMode.cs" />
+    <Compile Include="Models\ViewModel\RecieptVM.cs" />
+    <Compile Include="Models\ViewModel\TransactionVM.cs" />
+    <Compile Include="Models\ViewModel\AccountTreeVM.cs" />
     <Compile Include="MyLogic\Constant.cs" />
     <Compile Include="MyLogic\ConsumeHRAPI.cs" />
     <Compile Include="MyLogic\myExtention.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Models\ViewModel\ConstValEnum.cs" />
     <Compile Include="ViewModel\TreeView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\AdminLTE.min.css" />
     <Content Include="Content\all.css" />
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.picker.min.css" />
@@ -449,6 +483,7 @@
     <Content Include="Content\bootstrap_rtl.css" />
     <Content Include="Content\datatable.bootstrap.min.css" />
     <Content Include="Content\datepicker3.css" />
+    <Content Include="Content\img\checs-old.jpg" />
     <Content Include="Content\img\checs.jpg" />
     <Content Include="Content\img\Logo.png" />
     <Content Include="Content\img\user1.png" />
@@ -475,12 +510,24 @@
       <DependentUpon>Model1.edmx</DependentUpon>
       <LastGenOutput>Model1.cs</LastGenOutput>
     </Content>
+    <Content Include="My-Layout\Bootstrap\css\bootstrap-icons.css" />
+    <Content Include="My-Layout\Bootstrap\css\bootstrap.min.css" />
+    <Content Include="My-Layout\Bootstrap\css\bootstrap.rtl.min.css" />
+    <Content Include="My-Layout\Bootstrap\js\bootstrap.bundle.min.js" />
+    <Content Include="My-Layout\Bootstrap\js\bootstrap.min.js" />
+    <Content Include="My-Layout\jQuery-v3.7.1\jQuery v3.7.1.min.js" />
+    <Content Include="My-Layout\jQuery-v3.7.1\jQuery.min.js" />
+    <Content Include="My-Layout\navbar.css" />
+    <Content Include="My-Layout\Select2 4.0.13\css\Select2 4.0.13.min.css" />
+    <Content Include="My-Layout\Select2 4.0.13\js\Select2 4.0.13.js" />
+    <Content Include="My-Layout\sidebars.css" />
     <Content Include="Scripts\all.js" />
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\app.min.js" />
     <Content Include="Scripts\bootstrap-datepicker.js" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <EntityDeploy Include="Models\Model1.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Model1.Designer.cs</LastGenOutput>
@@ -489,7 +536,8 @@
       <DependentUpon>Model1.edmx</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\Fin-Puplish.pubxml" />
-    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\bootstrapValidator.min.js" />
     <Content Include="Scripts\buttons.print.min.js" />
     <Content Include="Scripts\Chart.min.js" />
@@ -497,9 +545,22 @@
     <Content Include="Scripts\dataTables.buttons.min.js" />
     <Content Include="Scripts\daterangepicker.js" />
     <Content Include="Scripts\demo.js" />
+    <Content Include="Scripts\esm\popper-utils.js" />
+    <Content Include="Scripts\esm\popper-utils.min.js" />
+    <Content Include="Scripts\esm\popper.js" />
+    <Content Include="Scripts\esm\popper.min.js" />
     <Content Include="Scripts\html2canvas.js" />
-    <Content Include="Scripts\jquery-1.10.2.js" />
-    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <Content Include="Scripts\esm\popper.min.js.map" />
+    <Content Include="Scripts\esm\popper.js.map" />
+    <Content Include="Scripts\esm\popper-utils.min.js.map" />
+    <Content Include="Scripts\esm\popper-utils.js.map" />
+    <None Include="Scripts\jquery-3.2.1.intellisense.js" />
+    <Content Include="Scripts\jquery-3.2.1.js" />
+    <Content Include="Scripts\jquery-3.2.1.min.js" />
+    <Content Include="Scripts\jquery-3.2.1.slim.js" />
+    <Content Include="Scripts\jquery-3.2.1.slim.min.js" />
+    <Content Include="Scripts\jquery-3.2.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.2.1.min.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
     <Content Include="Scripts\jquery-3.5.1.js" />
@@ -514,6 +575,10 @@
     <Content Include="Scripts\main.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\popper-utils.js" />
+    <Content Include="Scripts\popper-utils.min.js" />
+    <Content Include="Scripts\popper.js" />
+    <Content Include="Scripts\popper.min.js" />
     <Content Include="Scripts\printThis.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -521,7 +586,13 @@
     <Content Include="Scripts\Sinnper.js" />
     <Content Include="Scripts\SweetAlert.min.js" />
     <Content Include="Scripts\toastr.min.js" />
+    <Content Include="Scripts\umd\popper-utils.js" />
+    <Content Include="Scripts\umd\popper-utils.min.js" />
+    <Content Include="Scripts\umd\popper.js" />
+    <Content Include="Scripts\umd\popper.min.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Temp\AutoNumeric\auto-numeric.js" />
+    <Content Include="Temp\charts\chart.js" />
     <Content Include="Temp\Image\Arrow.png" />
     <Content Include="Temp\Image\Close.png" />
     <Content Include="Temp\Image\Open.png" />
@@ -606,8 +677,7 @@
     <Content Include="Views\Orders\Index - Copy.cshtml" />
     <Content Include="Views\Units\Index.cshtml" />
     <Content Include="Views\Orders\Index - Copy %282%29.cshtml" />
-    <Content Include="Views\Shared\_Layout2.cshtml" />
-    <Content Include="Views\ACUCircus\Create-old.cshtml" />
+    <Content Include="Views\Shared\_Layout2-New-temp.cshtml" />
     <Content Include="Views\ACUCircus\Index.cshtml" />
     <Content Include="Views\ACUCommitteFormations\AllEmployees.cshtml" />
     <Content Include="Views\ACUCommitteFormations\Index.cshtml" />
@@ -622,15 +692,9 @@
     <Content Include="Views\Shared\_Layout2 - Copy %282%29.cshtml" />
     <Content Include="Views\Shared\_Layout2 - Copy %283%29.cshtml" />
     <Content Include="Views\AccountTree\_Tree - Copy.cshtml" />
-    <Content Include="Views\Reciepts\Index.cshtml" />
-    <Content Include="Views\Balances\Index - Copy.cshtml" />
     <Content Include="Views\BankAccounts\Index.cshtml" />
     <Content Include="Views\OpeningBalances\Index.cshtml" />
     <Content Include="Views\BankAccounts\Check.cshtml" />
-    <Content Include="Views\JournalEntery\Index.cshtml" />
-    <Content Include="Views\BankAccounts\Index - Copy.cshtml" />
-    <Content Include="Views\JournalEntery\report.cshtml" />
-    <Content Include="Views\JournalEntery\printData.cshtml" />
     <Content Include="Views\Transactions\Index.cshtml" />
     <Content Include="Views\Transactions\printData.cshtml" />
     <Content Include="Views\Shared\_LayoutPrint.cshtml" />
@@ -643,43 +707,116 @@
     <Content Include="Views\BankTransfers\Index.cshtml" />
     <Content Include="Views\PrintChecs\Index.cshtml" />
     <Content Include="Views\PrintChecs\PrintChecs.cshtml" />
-    <Content Include="Views\Transactions\PrintCheck.cshtml" />
-    <Content Include="Views\Reciepts\PrintChecs.cshtml" />
-    <Content Include="Views\Reciepts\Index - Copy.cshtml" />
-    <Content Include="Views\Reciepts\IndexOld.cshtml" />
-    <Content Include="Views\Transactions\printOrnik17.cshtml" />
-    <Content Include="Views\Transactions\Edit - Copy.cshtml" />
     <Content Include="Views\Transactions\PostedTransactions.cshtml" />
     <Content Include="Views\Account\Index.cshtml" />
-    <Content Include="Views\Reciepts\printOrnik17.cshtml" />
     <Content Include="Views\Reports\printTaxReport-1.cshtml" />
-    <Content Include="Views\Reports\printTaxReport.cshtml" />
+    <Content Include="Views\Reports\printTaxReportInRange.cshtml" />
     <Content Include="Views\Reports\printFiveTaxReport.cshtml" />
-    <Content Include="Views\Reports\printBudgetReport.cshtml" />
     <Content Include="Views\Reports\printDataReport.cshtml" />
     <Content Include="Views\Reports\printLedgerReport.cshtml" />
     <Content Include="Views\Reports\TaxReport.cshtml" />
     <Content Include="Views\Transactions\printDataByDates.cshtml" />
     <Content Include="Views\Transactions\printLedgerByDates.cshtml" />
     <Content Include="Views\CatchReceipts\Index.cshtml" />
+    <Content Include="Views\Reports\printAccountStatement.cshtml" />
+    <Content Include="Views\Reports\printAllData.cshtml" />
+    <Content Include="Views\Reports\printData.cshtml" />
+    <Content Include="Views\Reports\printDataInDateRange.cshtml" />
+    <Content Include="Views\Reports\printDatas.cshtml" />
+    <Content Include="Views\Reports\printLedger.cshtml" />
+    <Content Include="Views\Reports\printLedgerByDates.cshtml" />
+    <Content Include="Views\Reports\printTransData.cshtml" />
+    <Content Include="Views\Reports\printOrnik17.cshtml" />
+    <Content Include="Views\Reports\TaxAuthorityReport.cshtml" />
+    <Content Include="Views\AccountTree\Detail.cshtml" />
+    <Content Include="Views\Reports\printTaxReport.cshtml" />
+    <Content Include="Views\Transactions\SalariesSettlement.cshtml" />
+    <Content Include="Views\Transactions\SearchByRecipient.cshtml" />
+    <Content Include="Views\Reports\BankTransReport.cshtml" />
+    <Content Include="Views\Reports\printBankTransReport.cshtml" />
+    <Content Include="Views\Reports\printDataInDateRange - Copy.cshtml" />
+    <Content Include="Views\CurrencyDetails\Index.cshtml" />
+    <Content Include="Views\Account\Profile.cshtml" />
+    <Content Include="Views\Reports\BalancesReport.cshtml" />
+    <Content Include="Views\Reports\printBalancesReport.cshtml" />
+    <Content Include="Views\Reports\printBalancesReportRevenue.cshtml" />
+    <Content Include="Views\Reports\BalancesReportForBanks.cshtml" />
+    <Content Include="Views\Reports\printBalancesReportSumm.cshtml" />
+    <Content Include="Views\BankTransfers\CurrencyChange.cshtml" />
+    <Content Include="Views\Transactions\IndexAll.cshtml" />
+    <Content Include="Views\Reports\printTrailBalance.cshtml" />
+    <Content Include="Views\Reports\FinalAccountingReports.cshtml" />
+    <Content Include="Views\Reports\printTrailBalanceSummation.cshtml" />
+    <Content Include="Views\Reports\printTrailBalanceExplanation.cshtml" />
+    <Content Include="Views\Reports\printTrailBalanceIncomeStatement.cshtml" />
+    <Content Include="Views\Reports\printBankLetter.cshtml" />
+    <Content Include="Views\Shared\_Layout2-lastone.cshtml" />
+    <Content Include="Scripts\umd\popper.min.js.map" />
+    <Content Include="Scripts\umd\popper.js.map" />
+    <Content Include="Scripts\umd\popper-utils.min.js.map" />
+    <Content Include="Scripts\umd\popper-utils.js.map" />
+    <Content Include="Scripts\README.md" />
+    <Content Include="Scripts\popper.min.js.map" />
+    <Content Include="Scripts\popper.js.map" />
+    <Content Include="Scripts\popper-utils.min.js.map" />
+    <Content Include="Scripts\popper-utils.js.map" />
+    <Content Include="Views\AccountTree\AccTreeFinancialCycle.cshtml" />
+    <Content Include="Views\AccountTree\_Tree - last.cshtml" />
+    <Content Include="Views\RecipientBankInfo\Index.cshtml" />
+    <Content Include="Views\Recipients\Index.cshtml" />
+    <Content Include="Views\Reports\reports\BalancesReport.cshtml" />
+    <Content Include="Views\Reports\reports\BalancesReportForBanks.cshtml" />
+    <Content Include="Views\Reports\reports\BankTransReport.cshtml" />
+    <Content Include="Views\Reports\reports\FinalAccountingReports.cshtml" />
+    <Content Include="Views\Reports\reports\printAccountStatement.cshtml" />
+    <Content Include="Views\Reports\reports\printAllData.cshtml" />
+    <Content Include="Views\Reports\reports\printBalancesReport.cshtml" />
+    <Content Include="Views\Reports\reports\printBalancesReportRevenue.cshtml" />
+    <Content Include="Views\Reports\reports\printBalancesReportSumm.cshtml" />
+    <Content Include="Views\Reports\reports\printBankLetter.cshtml" />
+    <Content Include="Views\Reports\reports\printBankTransReport.cshtml" />
+    <Content Include="Views\Reports\reports\printData.cshtml" />
+    <Content Include="Views\Reports\reports\printDataInDateRange - Copy.cshtml" />
+    <Content Include="Views\Reports\reports\printDataInDateRange.cshtml" />
+    <Content Include="Views\Reports\reports\printDataReport.cshtml" />
+    <Content Include="Views\Reports\reports\printDatas.cshtml" />
+    <Content Include="Views\Reports\reports\printFiveTaxReport.cshtml" />
+    <Content Include="Views\Reports\reports\printLedger.cshtml" />
+    <Content Include="Views\Reports\reports\printLedgerByDates.cshtml" />
+    <Content Include="Views\Reports\reports\printLedgerReport.cshtml" />
+    <Content Include="Views\Reports\reports\printOrnik17.cshtml" />
+    <Content Include="Views\Reports\reports\printTaxReport-1.cshtml" />
+    <Content Include="Views\Reports\reports\printTaxReport.cshtml" />
+    <Content Include="Views\Reports\reports\printTaxReportInRange.cshtml" />
+    <Content Include="Views\Reports\reports\printTrailBalance.cshtml" />
+    <Content Include="Views\Reports\reports\printTrailBalanceExplanation.cshtml" />
+    <Content Include="Views\Reports\reports\printTrailBalanceIncomeStatement.cshtml" />
+    <Content Include="Views\Reports\reports\printTrailBalanceSummation.cshtml" />
+    <Content Include="Views\Reports\reports\printTransData.cshtml" />
+    <Content Include="Views\Reports\reports\TaxAuthorityReport.cshtml" />
+    <Content Include="Views\Reports\reports\TaxReport.cshtml" />
+    <Content Include="Views\BankAccounts\BankTransactions.cshtml" />
+    <Content Include="Views\Reports\printRecipientBankLetter.cshtml" />
+    <Content Include="Views\Reports\printOrnik17 - Copy.cshtml" />
+    <Content Include="Views\Reports\printBalancesReportSummary.cshtml" />
+    <Content Include="Views\Reports\printLedgerReportForParent.cshtml" />
+    <Content Include="Views\Reports\PrintCovenantLetter.cshtml" />
+    <Content Include="Views\Shared\_Layout2.cshtml" />
+    <Content Include="Views\Reports\IncomeTaxAuthorityReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="InvoiceImage\" />
     <Folder Include="OrderImage\" />
-    <Folder Include="Views\ConsumeHrApi\" />
-    <Folder Include="Views\CurrencyDetails\" />
+    <Folder Include="Views\DeleteTransactions\" />
     <Folder Include="webfonts\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
-    <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
   </ItemGroup>
@@ -688,6 +825,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
@@ -715,9 +853,12 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.5.1\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.5.1\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.4.2.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.4.2.0\build\Microsoft.Net.Compilers.props'))" />
   </Target>
+  <Import Project="..\packages\EntityFramework.6.5.1\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

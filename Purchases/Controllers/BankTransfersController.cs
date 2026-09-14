@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Purchases.Models;
 using Purchases.Models.ViewModal;
+using Purchases.Models.ViewModel;
 using System.Data.Entity;
 using Microsoft.AspNet.Identity;
 
@@ -20,20 +21,46 @@ namespace Purchases.Controllers
             return View();
         }
 
+        // شاشة تبديل العملات
+        public ActionResult CurrencyChange()
+        {
+            return View();
+        }
+
         public ActionResult LoadData()
         {
-            var data = db.Transactions.Where(x=>x.IsPosted != true && x.DocumentTypeId == 5).Select(p => new
+            var data = db.Transactions.Where(x => x.IsPosted != true && x.DocumentTypeId == 5 && !x.Note.Contains("تبديل عمله")).OrderByDescending(x=> x.TransactionDate).Select(p => new
             {
                 Id = p.Id,
-                FromAccTree = db.TransactionDetails.FirstOrDefault(f=>f.TransactionId == p.Id & f.Debit > 0).AccountTree.AccName,
-                ToAccTree = db.TransactionDetails.FirstOrDefault(f=>f.TransactionId == p.Id & f.Credit > 0).AccountTree.AccName,
-                Amount = db.TransactionDetails.FirstOrDefault(f=>f.TransactionId == p.Id & f.Debit > 0).Debit,
-                Date = p.TransactionDate.Value.Day + "/" + p.TransactionDate.Value.Month + "/" + p.TransactionDate.Value.Year,
+                FromAccTree = db.TransactionDetails.FirstOrDefault(f => f.TransactionId == p.Id & f.Debit > 0).AccountTree.AccName,
+                ToAccTree = db.TransactionDetails.FirstOrDefault(f => f.TransactionId == p.Id & f.Credit > 0).AccountTree.AccName,
+                Amount = db.TransactionDetails.FirstOrDefault(f => f.TransactionId == p.Id & f.Debit > 0).Debit,
+                TransactionDate = p.TransactionDate,
+                Date = p.TransactionDate.Value.Year + "/" + p.TransactionDate.Value.Month + "/" + p.TransactionDate.Value.Day,
                 Note = p.Note??"لا يوجد"
-            });
+            }).ToList();
+
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        
+
+        public ActionResult LoadDataCurrencyChange()
+        {
+            var data = db.Transactions.Where(x => x.IsPosted != true && x.DocumentTypeId == 5 && x.Note.Contains("تبديل عمله")).OrderByDescending(x => x.TransactionDate).Select(p => new
+            {
+                transactionId = p.Id,
+                Id = p.Id,
+                FromAccTree = db.TransactionDetails.FirstOrDefault(f => f.TransactionId == p.Id & f.Credit > 0).AccountTree.AccName,
+                ToAccTree = db.TransactionDetails.FirstOrDefault(f => f.TransactionId == p.Id & f.Debit > 0).AccountTree.AccName,
+                Amount = db.TransactionDetails.FirstOrDefault(f => f.TransactionId == p.Id & f.Debit > 0).Debit * p.ExchangeRate,
+                TransactionDate = p.TransactionDate,
+                ExchangeRate = p.ExchangeRate??0,
+                Date = p.TransactionDate.Value.Year + "/" + p.TransactionDate.Value.Month + "/" + p.TransactionDate.Value.Day,
+                Note = p.Note ?? "لا يوجد"
+            }).ToList();
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult Create(BankTransferVM data)
         {
             if(data.FromAccTreeId != data.ToAccTreeId)
@@ -58,8 +85,8 @@ namespace Purchases.Controllers
                         t.CreatedDate = DateTime.Now;
 
                         db.Transactions.Add(t);
-
-
+                        db.SaveChanges();
+                        
                         TransactionDetail tdDebit = new TransactionDetail();
                         TransactionDetail tdCredit = new TransactionDetail();
                         
@@ -67,6 +94,7 @@ namespace Purchases.Controllers
                         tdDebit.Debit = data.Amount;
                         tdDebit.Credit = 0;
                         tdDebit.TransactionId = t.Id;
+                        tdDebit.Note = data.Note;
                         tdDebit.CreatedBy = userid;
                         tdDebit.CreationDate = DateTime.Now;
                         db.TransactionDetails.Add(tdDebit);
@@ -75,6 +103,7 @@ namespace Purchases.Controllers
                         tdCredit.Credit = data.Amount;
                         tdCredit.Debit = 0;
                         tdCredit.TransactionId = t.Id;
+                        tdCredit.Note = data.Note;
                         tdCredit.CreatedBy = userid;
                         tdCredit.CreationDate = DateTime.Now;
                         db.TransactionDetails.Add(tdCredit);
@@ -131,6 +160,7 @@ namespace Purchases.Controllers
                             tdDebit.Debit = data.Amount;
                             tdDebit.Credit = 0;
                             tdDebit.TransactionId = t.Id;
+                            tdDebit.Note = data.Note;
                             tdDebit.CreatedBy = userid;
                             tdDebit.CreationDate = DateTime.Now;
                             db.TransactionDetails.Add(tdDebit);
@@ -139,6 +169,7 @@ namespace Purchases.Controllers
                             tdCredit.Credit = data.Amount;
                             tdCredit.Debit = 0;
                             tdCredit.TransactionId = t.Id;
+                            tdCredit.Note = data.Note;
                             tdCredit.CreatedBy = userid;
                             tdCredit.CreationDate = DateTime.Now;
                             db.TransactionDetails.Add(tdCredit);
@@ -158,7 +189,143 @@ namespace Purchases.Controllers
 
             return Json(new { Message = " عذرا حدث خطأ اثناء عملية التعديل ", Title = "خطأ", Status = "error" }, JsonRequestBehavior.AllowGet);
         }
-        
+
+
+        public ActionResult CreateCurrencyChange(BankTransferVM data)
+        {
+            if (data.FromAccTreeId != data.ToAccTreeId)
+            {
+                var userid = User.Identity.GetUserId();
+
+                if (ModelState.IsValid)
+                {
+                    int currencyFrom = (int)db.BankAccounts.FirstOrDefault(d => d.AccountSub.AccTreeId == data.FromAccTreeId).CurrencyTypeId;
+                    int currencyTo = (int)db.BankAccounts.FirstOrDefault(d => d.AccountSub.AccTreeId == data.ToAccTreeId).CurrencyTypeId;
+
+                    if (currencyFrom != currencyTo)
+                    {
+                        Transaction t = new Transaction();
+
+                        t.Amount = data.Amount;
+                        t.CurrencyId = currencyFrom;
+                        t.DocumentTypeId = 5;
+                        t.ExchangeRate = data.ExchangeRate;
+                        t.TransactionDate = data.TransactionDate;
+                        t.CreatedDate = DateTime.Now;
+                        t.Note = data.Note + " - تبديل عمله";
+                        t.CreatedBy = userid;
+                        t.CreatedDate = DateTime.Now;
+
+                        db.Transactions.Add(t);
+                        db.SaveChanges();
+
+
+                        TransactionDetail tdDebit = new TransactionDetail();
+                        TransactionDetail tdCredit = new TransactionDetail();
+
+                        tdDebit.AccTreeId = data.FromAccTreeId;
+                        tdDebit.Debit = data.Amount * t.ExchangeRate;
+                        tdDebit.Credit = 0;
+                        tdDebit.TransactionId = t.Id;
+                        tdDebit.CreatedBy = userid;
+                        tdDebit.Note = data.Note + " - تبديل عمله";
+                        tdDebit.CreationDate = DateTime.Now;
+                        db.TransactionDetails.Add(tdDebit);
+
+                        tdCredit.AccTreeId = data.ToAccTreeId;
+                        tdCredit.Credit = data.Amount;
+                        tdCredit.Debit = 0;
+                        tdCredit.TransactionId = t.Id;
+                        tdCredit.CreatedBy = userid;
+                        tdCredit.Note = data.Note + " - تبديل عمله";
+                        tdCredit.CreationDate = DateTime.Now;
+                        db.TransactionDetails.Add(tdCredit);
+
+                        db.SaveChanges();
+
+                        return Json(new { Message = " تمت عملية التحويل بنجاح ", Title = "نجاح", Status = "success" }, JsonRequestBehavior.AllowGet);
+                    }
+                    return Json(new { Message = " يجب الا تتطابق عملة الحسابات ", Title = "تنبيه", Status = "warning" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+            {
+                return Json(new { Message = " يجب ان لا تتشابهة ارقام الحسابات   ", Title = "تنبيه", Status = "warning" }, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(new { Message = " عذرا حدث خطأ اثناء عملية الاضافة ", Title = "خطأ", Status = "error" }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult UpdateCurrencyChange(BankTransferVM data)
+        {
+            if (data.FromAccTreeId != data.ToAccTreeId)
+            {
+                var userid = User.Identity.GetUserId();
+
+                if (ModelState.IsValid)
+                {
+                    int currencyFrom = (int)db.BankAccounts.FirstOrDefault(d => d.AccountSub.AccTreeId == data.FromAccTreeId).CurrencyTypeId;
+                    int currencyTo = (int)db.BankAccounts.FirstOrDefault(d => d.AccountSub.AccTreeId == data.ToAccTreeId).CurrencyTypeId;
+
+                    if (currencyFrom != currencyTo)
+                    {
+                        Transaction t = db.Transactions.Find(data.Id);
+
+                        t.Amount = data.Amount * data.ExchangeRate;
+                        t.CurrencyId = currencyFrom;
+                        t.DocumentTypeId = 5;
+                        t.ExchangeRate = data.ExchangeRate;
+                        t.TransactionDate = data.TransactionDate;
+                        t.Note = data.Note + " - تبديل عمله";
+                        t.CreatedDate = DateTime.Now;
+                        t.UpdatedBy = userid;
+                        t.UpdatingDate = DateTime.Now;
+
+                        db.Entry(t).State = EntityState.Modified;
+
+                        if (db.TransactionDetails.Any(x => x.TransactionId == data.Id))
+                        {
+                            var obj = db.TransactionDetails.Where(x => x.TransactionId == data.Id).ToList();
+                            db.TransactionDetails.RemoveRange(obj);
+
+                            TransactionDetail tdDebit = new TransactionDetail();
+                            TransactionDetail tdCredit = new TransactionDetail();
+
+                            tdDebit.AccTreeId = data.FromAccTreeId;
+                            tdDebit.Debit = data.Amount;
+                            tdDebit.Credit = 0;
+                            tdDebit.TransactionId = t.Id;
+                            tdDebit.Note = data.Note + " - تبديل عمله";
+                            tdDebit.CreatedBy = userid;
+                            tdDebit.CreationDate = DateTime.Now;
+                            db.TransactionDetails.Add(tdDebit);
+
+                            tdCredit.AccTreeId = data.ToAccTreeId;
+                            tdCredit.Credit = data.Amount;
+                            tdCredit.Debit = 0;
+                            tdCredit.TransactionId = t.Id;
+                            tdCredit.Note = data.Note + " - تبديل عمله";
+                            tdCredit.CreatedBy = userid;
+                            tdCredit.CreationDate = DateTime.Now;
+                            db.TransactionDetails.Add(tdCredit);
+
+                            db.SaveChanges();
+                        }
+
+                        return Json(new { Message = " تمت عملية التعديل بنجاح ", Title = "نجاح", Status = "success" }, JsonRequestBehavior.AllowGet);
+                    }
+                    return Json(new { Message = " يجب الا تتطابق عملة الحسابات ", Title = "تنبيه", Status = "warning" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+            {
+                return Json(new { Message = " يجب ان لا تتشابهة ارقام الحسابات   ", Title = "تنبيه", Status = "warning" }, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(new { Message = " عذرا حدث خطأ اثناء عملية التعديل ", Title = "خطأ", Status = "error" }, JsonRequestBehavior.AllowGet);
+        }
+
+
         //populat List 
         public ActionResult GetAccTreeId (string q)
         {

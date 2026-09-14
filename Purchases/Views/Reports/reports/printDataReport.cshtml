@@ -1,0 +1,127 @@
+﻿@{
+    ViewBag.Title = "TaxReport";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<h2>TaxReport</h2>
+
+@section content
+{
+    <div class="content-wrapper">
+        <div class="grad"></div>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                قيود اليومية
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
+                <li class="active">  قيود اليومية</li>
+            </ol>
+        </section>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="transactionDate"> من تاريخ</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar-alt"></i>
+                            </span>
+                            <input type="text" class="form-control  calendar DateFrom" id="DateFrom" name="DateFrom" placeholder=" من تاريخ " autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="transactionDate"> الي تاريخ</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar-alt"></i>
+                            </span>
+                            <input type="text" class="form-control  calendar DateTo" id="DateTo" name="DateTo" placeholder="الى تاريخ " autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class=" col-md-3">
+                    <button id="btnsearch" onclick="Search()" class="btn btn-primary btn-sm form-control">بحث</button>
+                </div>
+
+                <div class=" col-md-3">
+                    <button id="btnall" onclick="PrintData()" class="btn form-control btn-info btn-sm">طباعة التقرير </button>
+                </div>
+            </div>
+
+            <div class="row" style="margin: 30px;">
+                <table id="tbl" class="dataTable table table-striped table-hover" style="width:100%">
+                    <tbody id="tbod"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+}
+
+
+
+@section scripts{
+
+    <script>
+        var myId = 0;
+        var dataTable;
+        function PrintData() {
+            var DateFrom = $('#DateFrom').val();
+            var DateTo = $('#DateTo').val();
+
+            //if (DateFrom === "" || DateTo === "") {
+            //    Swal.fire({
+            //        icon: "error",
+            //        title: "خطاء ",
+            //        text: "الرجاء اختيار التاريخين بشكل صحيح",
+            //    });
+            //    return;
+            //}
+
+            var url = "/Reports/printDataInDateRange?dateFrom=" + DateFrom + "&dateTo=" + DateTo;
+            window.open(url, '_blank').focus();
+        }
+
+        function Search() {
+            var DateFrom = $('#DateFrom').val();
+            var DateTo = $('#DateTo').val();
+
+            dataTable = $('#tbl').DataTable({
+                destroy: true,
+                "language": {
+                    "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                    "search": "بحث"
+                },
+                ajax: {
+                    url: "/Reports/GetDataInDateRangeForSearch?dateFrom=" + DateFrom + "&dateTo=" + DateTo,
+                    dataSrc: ''
+                },
+                columns: [
+                    {
+                        "title": "# ",
+                        "data": "transactionId"
+                    },
+                    {
+                        "title": "البيان",
+                        "data": "note"
+                    },
+                    {
+                        "title": "المبلغ",
+                        "data": "amount"
+                    },
+                    {
+                        "title": "تاريخ العملية",
+                        "data": "transDate"
+                    },
+                ]
+            });
+        }
+
+    </script>
+}

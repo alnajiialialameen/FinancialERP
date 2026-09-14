@@ -18,6 +18,7 @@ namespace Purchases.Models
         public Balance()
         {
             this.Balance1 = new HashSet<Balance>();
+            this.DeletedTransactionDetails = new HashSet<DeletedTransactionDetail>();
             this.TransactionDetails = new HashSet<TransactionDetail>();
         }
     
@@ -43,6 +44,8 @@ namespace Purchases.Models
         public virtual ICollection<Balance> Balance1 { get; set; }
         public virtual Balance Balance2 { get; set; }
         public virtual FinancialCycle FinancialCycle { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DeletedTransactionDetail> DeletedTransactionDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TransactionDetail> TransactionDetails { get; set; }
     }

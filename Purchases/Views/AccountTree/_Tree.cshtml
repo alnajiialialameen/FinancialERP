@@ -1,150 +1,123 @@
-﻿
-
-
-
-    @using Purchases.Models;
+﻿@using Purchases.MyLogic;
+@using Purchases.ViewModel;
 @{
-
- Entities db = new Entities();
-
- AccountTree Select = new AccountTree();
-
-//   decimal C;
- List<AccountTree> Model = db.AccountTrees.ToList();
-
-// int TreeLevel = Convert.ToInt32(Model.Max(x => x.AccLevel));
-
-
+    TreeClass tClass = new TreeClass();
+    List<TreeViewModelItem> Model = new List<TreeViewModelItem>();
+    var userId = @ViewBag.UserId.ToString();
+    Model = tClass.LoadDataForAccTreeFinancialCycle(userId);
 }
-
-
-
 
 <link href="~/Temp/Tree/dist/themes/default-dark/style.min.css" rel="stylesheet" />
 
-<div id="html" class="demo tree" style="font-size:16px">
+<div id="htmltree" class="demo tree" style="font-size:16px">
     <ul>
         <li>
             <span> شجرة الحسابات</span>
 
-
-            @foreach (AccountTree T1 in Model.Where(x => x.AccParent == 0))
+            @foreach (var T1 in Model.Where(x => x.AccParent == 0))
             {
-                <ul>
-
-                    <li class="nodeId">
-                        
-                        <span>@T1.AccName.ToString()</span>
-                        @foreach (AccountTree T2 in Model.Where(x => x.AccParent == T1.Id))
+            <ul>
+                <li class="nodeId">
+                    <span class="accName">
+                        @T1.AccName.ToString()
+                    </span>
+                    <span class="add-btn" data-id="@T1.Id"><i class="fa fa-plus text-danger"></i></span>
+                    @foreach (var T2 in Model.Where(x => x.AccParent == T1.Id))
                         {
+                    <ul>
+                        <li class="nodeId">
+                            <span class="accName">
+                                @T2.AccName.ToString()
+                            </span>
+                            <span class="add-btn" data-id="@T2.Id"><i class="fa fa-plus text-danger"></i></span>
+                            @foreach (var T3 in Model.Where(x => x.AccParent == T2.Id))
+                                    {
                             <ul>
                                 <li class="nodeId">
-                                    <span>@T2.AccName.ToString() </span>
-                                    @*<label>(@T2.AccCode)</label>*@
-
-                                    @foreach (AccountTree T3 in Model.Where(x => x.AccParent == T2.Id))
-                                    {
-                                        <ul>
-                                            <li class="nodeId">
-                                                
-                                                <span>@T3.AccName</span>
-                                                @foreach (AccountTree T4 in Model.Where(x => x.AccParent == T3.Id))
+                                    <span class="accName">
+                                        @T3.AccName
+                                    </span>
+                                    <span class="add-btn" data-id="@T3.Id"><i class="fa fa-plus text-danger"></i></span>
+                                    @foreach (var T4 in Model.Where(x => x.AccParent == T3.Id))
                                                 {
+                                    <ul>
+                                        <li>
+                                            <span class="accName">
+                                                @T4.AccName
+                                            </span>
+                                            <span class="add-btn" data-id="@T4.Id"><i class="fa fa-plus text-danger"></i></span>
+
+                                            @foreach (var T5 in Model.Where(x => x.AccParent == T4.Id))
+                                            {
+                                            <ul>
+                                                <li>
+                                                    <span class="accName">
+                                                        @T5.AccName
+                                                    </span>
+                                                    <span class="add-btn" data-id="@T5.Id"><i class="fa fa-plus text-danger"></i></span>
+                                                    @foreach (var T6 in Model.Where(x => x.AccParent == T5.Id))
+                                                                        {
                                                     <ul>
                                                         <li>
-                                                            <span>@T4.AccName</span>
-
-                                                            @foreach (AccountTree T5 in Model.Where(x => x.AccParent == T4.Id))
-                                                            {
-                                                                <ul>
-                                                                    <li>
-                                                                        <span>@T5.AccName</span>
-                                                                        @foreach (AccountTree T6 in Model.Where(x => x.AccParent == T5.Id))
-                                                                        {
+                                                            <span>
+                                                                @T6.AccName
+                                                            </span>
+                                                            <span class="add-btn" data-id="@T6.Id"><i class="fa fa-plus text-danger"></i></span>
+                                                            @foreach (var T7 in Model.Where(x => x.AccParent == T6.Id))
+                                                                                    {
+                                                            <ul>
+                                                                <li>
+                                                                    <span>
+                                                                        @T7.AccName
+                                                                        @*<i class="add-btn" data-id="@T7.Id">+</i>*@
+                                                                    </span>
+                                                                    @foreach (var T8 in Model.Where(x => x.AccParent == T7.Id))
+                                                                                                {
+                                                                    <ul>
+                                                                        <li>
+                                                                            <span>
+                                                                                @T8.AccName
+                                                                                @*<i class="add-btn" data-id="@T8.Id">+</i>*@
+                                                                            </span>
+                                                                            @foreach (var T9 in Model.Where(x => x.AccParent == T8.Id))
+                                                                                                            {
                                                                             <ul>
                                                                                 <li>
-                                                                                    <span>@T6.AccName</span>
-                                                                                    @foreach (AccountTree T7 in Model.Where(x => x.AccParent == T6.Id))
-                                                                                    {
-                                                                                        <ul>
-                                                                                            <li>
-                                                                                                <span>@T7.AccName</span>
-                                                                                                @foreach (AccountTree T8 in Model.Where(x => x.AccParent == T7.Id))
-                                                                                                {
-                                                                                                    <ul>
-                                                                                                        <li>
-                                                                                                            <span>@T8.AccName</span>
-                                                                                                        @foreach (AccountTree T9 in Model.Where(x => x.AccParent == T8.Id))
-                                                                                                        {
-                                                                                                            <ul>
-                                                                                                                <li>
-                                                                                                                <span>@T9.AccName</span>
-                                                                                                                </li>
-                                                                                                            </ul>
-                                                                                                        }
-
-                                                                                                        </li>
-                                                                                                    </ul>
-                                                                                                }
-
-                                                                                            </li>
-                                                                                        </ul>
-                                                                                    }
-
+                                                                                    <span>
+                                                                                        @T9.AccName
+                                                                                        @*<i class="add-btn" data-id="@T9.Id">+</i>*@
+                                                                                    </span>
                                                                                 </li>
                                                                             </ul>
+                                                                                                            }
+
+                                                                        </li>
+                                                                    </ul>
+                                                                                                }
+
+                                                                </li>
+                                                            </ul>
+                                                                                    }
+
+                                                        </li>
+                                                    </ul>
                                                                         }
 
-
-                                                                    </li>
-                                                                </ul>
+                                                </li>
+                                            </ul>
                                                             }
-                                                        </li>
-
-
-
-                                                    </ul>
+                                        </li>
+                                    </ul>
                                                 }
-
-
-                                            </li>
-                                        </ul>
-                                    }
-
-
                                 </li>
                             </ul>
+                                    }
+                        </li>
+                    </ul>
                         }
-
-                    </li>
-
-
-
-                </ul>
+                </li>
+            </ul>
             }
-
-
-            @*<script src="~/Temp/plugins/jquery/jquery.min.js"></script>*@
-
-
-            <script src="~/Temp/Tree/dist/jstree.min.js"></script>
-
-            <script src="~/Scripts/jquery-3.5.1.js"></script>
-          
-
-          <script>
-
-              $('#html').jstree();
-          </script>
-
-
-
-
-
-
         </li>
     </ul>
 </div>
-
-
-

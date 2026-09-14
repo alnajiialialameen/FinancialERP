@@ -1,0 +1,108 @@
+﻿@model IEnumerable<Purchases.Models.ViewModel.TransactionVM>
+
+@{
+    ViewBag.Title = "PrintInvoice";
+    Layout = "~/Views/Shared/_LayoutPrint.cshtml";
+}
+
+<section class="invoiceCupps">
+    <div class="invoice-Cupps-header">
+        <div class="image-L">
+            <img src="~/Temp/Image/WhiteLogo.png" height="100" />
+        </div>
+
+        <div class="text-center text-word">
+            <h6>شركة مطارات السودان المحدودة</h6>
+            <h6>الادارة العامة للشؤون المالية والمحاسبية</h6>
+            <h6>إدارة الحسابات</h6>
+        </div>
+
+        <div>
+            <img src="~/Temp/Image/WhiteLogo.png" class="image-R" height="100" />
+        </div>
+    </div>
+
+    <div class="invoice-Cupps-Body" dir="rtl">
+        <h2 class="text-center"><u> قيود اليومية لحساب (@ViewBag.AccName)</u></h2>
+        <div class="arline-header">
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="h-mr">التاريخ: @ViewBag.SelectedDate</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center invoice-Cupps-details" dir="rtl" style="width:100%;margin-bottom:40px;">
+        <table class="cupps-table-header" >
+           <thead>
+               <tr>
+                   <th>
+                       المدين
+                   </th>
+
+                   <th>
+                       الدائن
+                   </th>
+
+                   <th>
+                       البيان
+                   </th>
+
+                   <th>
+                       التاريخ
+                   </th>
+                   <th>
+                       رقم القيد
+                   </th>
+               </tr>
+
+           </thead>
+            <tbody id="myTBodey">
+               @{
+                   foreach (var item1 in Model.Select(x => new { x.transactionId, x.note }).Distinct().ToList())
+                   {
+                       foreach (var item in Model.Where(x=>x.transactionId == item1.transactionId).OrderBy(x=>x.debit))
+                       {
+                        <tr >
+                            @{
+                                if (Convert.ToDecimal(item.credit) > 0) // credit
+                                {
+                                    <td>0</td>
+                                    <td class="numberFormat">@item.credit</td>
+                                    <td class="text-right" style="padding-right:20px;">من حــ/ @item.accName</td>
+                                    <td>@item.transDate</td>
+
+                                }
+                                else // debit
+                                {
+                                    <td class="numberFormat">@item.debit</td>
+                                    <td>0</td>
+                                    <td class="text-right"  style="padding-right:60px;">الي حــ/ @item.accName</td>
+                                    <td>@item.transDate</td>
+
+                                }
+                            }
+                            
+                            <td>@item.transactionId</td>
+                            
+                        </tr>
+                        }
+                    <tr>
+                        <td colspan="5" style="color:brown; font-size:large; font-weight:bold;">
+                            @item1.note
+                        </td>
+                    </tr>
+                }
+            }
+
+                <tr class="footer">
+                    <th colspan="2">  اجمالي المبلغ :</th>
+                    <th colspan="2" class="numberFormat">@ViewBag.SumOfAmount</th>
+                    <th >#</th>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</section>
