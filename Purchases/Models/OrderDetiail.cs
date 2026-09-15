@@ -28,10 +28,10 @@ namespace Purchases.Models
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatingDate { get; set; }
     
-        public virtual AspNetUser AspNetUser { get; set; }
-        public virtual AspNetUser AspNetUser1 { get; set; }
         public virtual Item Item { get; set; }
         public virtual ItemDetail ItemDetail { get; set; }
         public virtual Order Order { get; set; }
+        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
     }
 }

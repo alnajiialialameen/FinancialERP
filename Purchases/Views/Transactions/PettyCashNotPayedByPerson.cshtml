@@ -1,0 +1,770 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+@section content{
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <div class="grad"></div>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                النثريات حسب الاشخاص
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
+                <li class="active">  سندات القيد</li>
+            </ol>
+        </section>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <a class="btn btn-primary" style="margin-right:15px; margin-bottom: 20px;" href="@Url.Action("PettyCashNotPayed", "Transactions")">النثريات بالعمليات </a>
+                                </div>
+                            </div>
+                            <div class="container">
+                                <table id="tbx" class="table table-bordered table-sm table-hover" style="width:100%">
+                                </table>
+                            </div><!-- /.box-body -->
+                        </div><!-- /.box -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div>
+        </section>
+
+    </div><!-- /.content-wrapper -->
+
+}
+
+
+@section scripts{
+    <script>
+        var myId = 0;
+        var dataTable;
+        var creditAmountObj;
+        var debitAmountObj;
+        var recipientAmountObj;
+
+        $(document).ready(function () {
+            function loadData() {
+                dataTable = $('#tbx').DataTable({
+                    destroy: true,
+                    "language": {
+                        "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                        "search": "بحث"
+                    },
+                    ajax: {
+                        url: "/Reports/printLedgerByDatesForSearch?Id=" + 230 + "&bankId=&dateFrom=&dateTo=",
+                        "dataSrc": function (json) {
+                            isParentGlobal = false; // ← نخزن القيمة هنا
+                            return json.data;               // ← نرجع الداتا فقط للجدول
+                        }
+                    },
+                    columns: [
+                        {
+                            "title": "# ",
+                            "data": null,
+                            "render": function (data) {
+                                return isParentGlobal ? data.transactionId : data.accTreeId;
+                            }
+                        },
+                        {
+                            "title": "البيان",
+                            "data": "note"
+                        },
+                        {
+                            "title": "اجمالي المبلغ",
+                            "data": null,
+                            "render": function (data, type, row) {
+
+                                console.log("isParentGlobal:", isParentGlobal);
+                                // استخدم المتغير العمومي
+                                if (isParentGlobal === false) {
+                                    var Diff = parseFloat(row.Diff) || 0;
+                                    return Diff.toLocaleString();
+                                } else {
+                                    var debit = parseFloat(row.debit) || 0;
+                                    var credit = parseFloat(row.credit) || 0;
+                                    console.log("debit:", row.debit, "credit:", row.credit);
+
+                                    return (debit + credit).toLocaleString();
+                                }
+                            }
+                        },
+                        {
+                            "title": "#",
+                            "data": "transactionId",
+                            "orderable": false,
+                            "render": function (data) {
+                                if (isParentGlobal) {
+                                    return '<a class="btn btn-info btnDetails" data-toggle="modal" data-target="#details-modal"><i class="fa fa-info"></i></a>';
+                                }
+                                else {
+                                    return '<a class="btn btn-info btnPrintRep" ><i class="fa fa-print"></i></a>';
+                                }
+                            }
+                        },
+                    ]
+                });
+            }
+
+            loadData();
+
+            //creditAmountObj = CustomAutoNumeric('#creditAmount');
+            //debitAmountObj = CustomAutoNumeric('#debitAmount');
+            //recipientAmountObj = CustomAutoNumeric('#recipientAmount');
+
+            select2list("#addAccName", "/Shared/getAccTrees", "اسم الحساب");
+            select2listNew("#recipient", "/Shared/getAllRecipient", "اسم المستلم");
+            select2list("#addCurrencyType", "/Shared/getCurrency", "العملة");
+            select2list("#documentType", "/Shared/getDocumentTypes", "نوع السند");
+
+        });
+
+        //-------------------------------------------------Start Validator ------------------------------------------------------------------------------------------------------------
+
+
+
+        $('#tbx').on('click', '.btnPrintRep', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var accTreeId = data['accTreeId'];
+            var debit = data['debit'];
+            var credit = data['credit'];
+            var Diff = data['Diff'];
+            var note = data['note'];
+
+            //$.get('/Reports/PrintCovenantLetter', { debit: debit, credit: credit, accTreeId: accTreeId, diff: Diff, note: note }, function () {
+
+            //});
+            var url = `/Reports/PrintCovenantLetter?debit=${debit}&credit=${credit}&accTreeId=${accTreeId}&diff=${Diff}&note=${note}`;
+            window.open(url, '_blank');
+        });
+
+
+
+        $('#add-form').bootstrapValidator({
+            onSuccess: function (e) {
+                //save();
+                e.preventDefault();
+
+            },
+            submitButtons: 'button[type="submit"]',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                validating: 'fa fa-refresh fa-spin success-feedback-icons'
+            },
+            fields: {
+                addAccName: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل اسم الحساب  فارغ'
+                        }
+                    }
+                },
+                creditAmount: {
+                    validators: {
+                        callback: {
+                            message: 'ادخل رقم بحيث لا يحتوي على اكثر من خانتين عشريتين',
+                            callback: function (value, validator) {
+                                // إزالة الفواصل بين الآلاف
+                                let sanitizedValue = value.replace(/,/g, '');
+                                // regexp: /^[0-9]*\.?[0-9]*$/;
+                                return /^\d+(\.\d{1,2})?$/.test(sanitizedValue);
+                            }
+                        }
+                    }
+                },
+                debitAmount: {
+                    validators: {
+                        callback: {
+                            message: 'ادخل رقم بحيث لا يحتوي على اكثر من خانتين عشريتين',
+                            callback: function (value, validator) {
+                                // إزالة الفواصل بين الآلاف
+                                let sanitizedValue = value.replace(/,/g, '');
+                                // regexp: /^[0-9]*\.?[0-9]*$/;
+                                return /^\d+(\.\d{1,2})?$/.test(sanitizedValue);
+                            }
+                        }
+                    }
+                },
+            }
+        });
+        $('#add-statement-form').bootstrapValidator({
+            onSuccess: function (e) {
+                e.preventDefault();
+                saveNew();
+                // Reset the form after saving the data
+                $('#add-statement-form').bootstrapValidator('resetForm', true); // Reset the form's validation
+                $('#add-statement-form')[0].reset(); // Clear the form fields
+
+                // Reset the form after saving the data
+                $('#add-form').bootstrapValidator('resetForm', true); // Reset the form's validation
+                $('#add-form')[0].reset(); // Clear the form fields
+            },
+            submitButtons: 'button[type="submit"]',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                validating: 'fa fa-refresh fa-spin success-feedback-icons'
+            },
+            fields: {
+                transactionDate: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل اسم تاريخ القيد  فارغ'
+                        }
+                    }
+                },
+                statement: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل البيان  فارغ'
+                        }
+                    }
+                },
+            }
+        });
+
+        //-------------------------------------------------End Validator ------------------------------------------------------------------------------------------------------------
+
+        var rptList = [];
+
+        function addToTable() {
+            //هنا لازم ندخل اسم الحساب
+            var addAccName = $('#select2-addAccName-container').text();
+            var addAccNameId = $('.addAccName').val();
+            var addBalanceAccName = $('#select2-addBalanceId-container').text();
+
+            var creditAmount = creditAmountObj.getNumber();
+            var debitAmount = debitAmountObj.getNumber();
+
+            var IsCreditText = '';
+
+            if (creditAmount > 0) {
+                IsCreditText = "دائن";
+            } else {
+                IsCreditText = "مدين";
+            }
+
+            var isFound = false;
+
+            if (addAccName.trim() != "" & addAccNameId != null & creditAmount >= 0 & debitAmount >= 0) {
+                $('.myTbody tr').each(function () {
+                    var id = $(this).find('td:eq(0)').text();
+                    var creditAmountOld = $(this).find('td:eq(1)').text();
+                    var debitAmountOld = $(this).find('td:eq(2)').text();
+
+                    if (id == addAccNameId && (debitAmount == debitAmountOld || creditAmount == creditAmountOld)) {
+                        //break here if found
+                        isFound = true;
+
+                        return false;
+                    }
+                });
+
+                if (!isFound) {
+                    var rows = "<tr id='row' style='font-size: 16px;text-align:center;'>"
+                        + "<td class='id'>" + addAccNameId + "</td>"
+                        + "<td class='name'>" + addAccName + "</td>"
+                        + "<td class='debitAmount'>" + debitAmount + "</td>"
+                        + "<td class='creditAmount'>" + creditAmount + "</td>"
+                        // + "<td class='creditAmount'>" + addBalanceAccName + "</td>"
+                        + "<td class='transDetailId hidden'>" + 0 + "</td>"
+                        + '<td class="btnDelete"> <button id="delete" class="btn btn-warning transfer delete">حذف<i class=" transfer-fa fa  fa-trash"></i></button>' + "</td>"
+                        + "</tr>";
+
+                    $('.myTbody').append(rows);
+                    $('.addAccName').val('');
+                    $('.amount').val('');
+                    $('.list').text(null).trigger('change');
+                    $('.list').val(null).trigger('change');
+                    $('.debitAmount').val('');
+                    $('.creditAmount').val('');
+                    isFound = false;
+
+                    if (creditAmount > 0) {
+                        rptList.push({
+                            "addAccName": addAccName,
+                            "accTrreId": addAccNameId,
+                            "amount": 0,
+                            "credit": parseFloat(parseFloat(creditAmount).toFixed(2)),
+                            "debit": 0,
+                            "isCredit": "true",
+                            "documentTypeId": 8,
+                        });
+                    } else {
+                        rptList.push({
+                            "addAccName": addAccName,
+                            "accTrreId": addAccNameId,
+                            "Amount": 0,
+                            "credit": 0,
+                            "debit": parseFloat(parseFloat(debitAmount).toFixed(2)),
+                            "IsCredit": "false",
+                            "documentTypeId": 8,
+                        });
+                    }
+
+                    var totalCreditAmount = 0;
+                    var totalDebitAmount = 0;
+
+                    $.each(rptList, function (index, value) {
+                        totalDebitAmount += value.debit;
+                        totalCreditAmount += value.credit;
+
+                    });
+
+                    var balance = parseFloat(parseFloat(totalCreditAmount).toFixed(2)) - parseFloat(parseFloat(totalDebitAmount).toFixed(2));
+                    var tblFooter = '<tr>' +
+                        '<td colspan="1">الاجمالي</td>' +
+                        '<td colspan="2">' + parseFloat(parseFloat(totalDebitAmount).toFixed(2)) + '</td>' +
+                        '<td colspan="2">' + parseFloat(parseFloat(totalCreditAmount).toFixed(2)) + '</td>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td colspan="2">الصافي</td>' +
+                        '<td colspan="3">' + balance + '</td>' +
+                        '</tr>';
+
+                    $('.myTFoot').empty();
+                    $('.myTFoot').append(tblFooter);
+                }
+                else {
+                    toastr["error"]("هذاالحساب موجود في القائمة", "خطأ");
+                }
+
+                $(".AmountCurrencyDecimalText").text('');
+                $(".AmountCurrencyDecimalTextCr").text('');
+            } else {
+                toastr["error"]("الرجاء ادخال جميع البيانات", "خطأ");
+            }
+
+            creditAmountObj.set(0);
+            debitAmountObj.set(0);
+
+        }
+
+        $('#btnSave').click(function () {
+
+            var transactionId = $('#TransactionId').text();
+            var statement = $('#Note').val();
+            var currencyId = $('#addCurrencyType').val();
+            var transactionDate = moment($('#transactionDate').val(), "DD/MM/YYYY").format("MM/DD/yyyy");
+
+            var totalDebitAmount = 0;
+            var totalCreditAmount = 0;
+
+            $.each(rptList, function (index, value) {
+                totalDebitAmount = totalDebitAmount + parseFloat(parseFloat(value.debit).toFixed(2));
+                totalCreditAmount = totalCreditAmount + parseFloat(parseFloat(value.credit).toFixed(2));
+
+            });
+
+            totalDebitAmount = parseFloat(parseFloat(totalDebitAmount).toFixed(2));
+            totalCreditAmount = parseFloat(parseFloat(totalCreditAmount).toFixed(2));
+
+            if (totalDebitAmount == 0 || totalCreditAmount == 0) {
+                toastr["error"]("يجب ادخال القيم اولا", "خطأ");
+            }
+            else if (totalDebitAmount == totalCreditAmount) {
+                $('.presntTBody').empty();
+                rptList.forEach(function (row) {
+                    var rows = "<tr id='row' style='font-size: 16px;text-align:center;'>"
+                        + "<td class='id'>" + row['debit'] + "</td>"
+                        + "<td class='name'>" + row['credit'] + "</td>"
+                        + "<td class='Amount'>" + row['addAccName'] + "</td>"
+                        + '</tr>';
+
+                    $('.presntTBody').append(rows);
+                    $('#add-statement-modal').modal('show');
+                });
+            } else {
+                toastr["error"]("الرجاء مساواة الطرفين ", "خطأ");
+            }
+        });
+
+        $('#btnCreate').click(function () {
+            var transactionId = $('#TransactionId').text();
+            var statement = $('#Note').val();
+            var currencyId = $('#addCurrencyType').val();
+            var transactionDate = moment($('#transactionDate').val(), "DD/MM/YYYY").format("MM/DD/yyyy");
+
+            if (statement != null & transactionDate != null) {
+                //هنا اضفنا حقل البيان والتاريخ لي مصفوفة موجودة مسبقا بها بيانات
+                rptList = rptList.map(v => Object.assign(v, { "transactionId": transactionId, "note": statement, "transactionDate": transactionDate, "currencyId": currencyId }));
+
+                $.ajax({
+                    //url: "/Transactions/Update",
+                    url: "",
+                    type: "POST",
+                    data: JSON.stringify(rptList),
+                    contentType: "application/json charset=utf-8",
+                    dataType: "json",
+                    error: function (response) {
+                        toastr[response.Status](response.Message, response.Title);
+                    },
+                    success: function (response) {
+                        if (response.Status == "warning") {
+                            toastr[response.Status](response.Message, response.Title);
+                        } else {
+                            toastr[response.Status](response.Message, response.Title);
+                            //$('.list').val(null).trigger('change');
+                            $('#add-modal').modal("hide");
+                            $('#add-statement-modal').modal("hide");
+                            $(".presntTBody").empty();
+                            window.location.reload();
+                        }
+                    }
+                });
+
+            } else {
+                toastr["error"]("الرجاء ادخال جميع البيانات", "خطأ");
+            }
+        });
+
+        function saveNew() {
+            var statement = $('#statement').val();
+            var currencyId = $('#addCurrencyType').val();
+            var recipientId = $('#recipient').val();
+            var recipient = $('#recipient option:selected').text();
+
+            if (recipient.includes(" - ")) {
+                recipient = recipient.split(" - ")[0];
+            } else {
+                recipient = recipient; // لو مافي شرطة، نحتفظ بالنص كما هو
+            }
+            var transactionDate = $('#transactionDate').val();
+            // var transactionDate = moment($('#transactionDate').val()).format("MM/DD/YYYY");
+
+            var documentTypeId = $('#documentType').val();
+
+            if (statement != null & transactionDate != null) {
+                //هنا اضفنا حقل البيان والتاريخ لي مصفوفة موجودة مسبقا بها بيانات
+                rptList = rptList.map(v => Object.assign(v, {
+                    'documentTypeId': documentTypeId,
+                    "recipient": recipient,
+                    "note": statement,
+                    "transactionDate": transactionDate,
+                    "currencyId": currencyId,
+                    "recipientId": recipientId
+                }));
+
+                $.ajax({
+                    url: "/Shared/Create",
+                    type: "POST",
+                    data: JSON.stringify(rptList),
+                    contentType: "application/json charset=utf-8",
+                    dataType: "json",
+                    error: function (response) {
+                        toastr[response.Status](response.Message, response.Title);
+                    },
+                    success: function (response) {
+                        if (response.Status == "warning") {
+                            toastr[response.Status](response.Message, response.Title);
+                        } else {
+                            toastr[response.Status](response.Message, response.Title);
+                            //$('.list').val(null).trigger('change');
+                            $('#add-modal').modal("hide");
+                            $('#add-statement-modal').modal("hide");
+                            $(".presntTBody").empty();
+                            $(".myTbody").empty();
+                            $('.myTFoot').empty();
+                            $('#tbx').DataTable().ajax.reload();
+                            rptList = [];
+                        }
+                    }
+                });
+
+            } else {
+                toastr["error"]("الرجاء ادخال جميع البيانات", "خطأ");
+            }
+        }
+
+        $('#creditAmount').keyup(function () {
+            var creditAmount = $(this).val();
+
+            if (creditAmount != null & creditAmount > 0) {
+                debitAmountObj.set(0);
+                // $('#debitAmount').val(0);
+            }
+        });
+
+        $('#debitAmount').keyup(function () {
+            var debitAmount = $(this).val();
+
+            if (debitAmount != null & debitAmount > 0) {
+                creditAmountObj.set(0);
+                // $('#creditAmount').val(0);
+            }
+        });
+
+        $('.myTbody').on('click', '.delete', function () {
+            var currentRow = $(this).closest("tr");
+
+            var accTrreId = currentRow.find('.id').text();
+
+            $.each(rptList, function (index, obj) {
+                if (obj.accTrreId === accTrreId) {
+                    rptList.splice(index, 1); // Remove 1 element at the found index
+                    return false; // Stop the loop
+                }
+            });
+
+            $(this).closest("tr").remove();
+        });
+
+        $('#tbx').on('click', '.btnAddRecipient', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var TransactionId = data['transactionId'];
+            $('#recipientTransactionId').text(TransactionId);
+
+            var Note = data['note'];
+            $('#recipientStatement').val(Note);
+            $('#tblRecipient').addClass('hide');
+
+            select2list("#recipientBank", "/Transactions/getTransactionBanks/" + TransactionId, "اختار البنك");
+            select2list("#recipientName", "/Shared/getAllRecipient", "  اسم المستلم ");
+
+            // Get old data
+            $.get('/Transactions/getTransactionRecipients/' + TransactionId, {}, function (response) {
+                if (response && response.length > 0) {
+                    $('#tblRecipient').removeClass('hide');
+
+                    $('#tblRecipientBody').empty(); // Clear previous rows if needed
+
+                    response.forEach(function (item) {
+                        var obj = JSON.stringify(item).replace(/"/g, '&quot;');
+
+                        var row = `
+                                                                <tr>
+                                                                    <td>${item.Id}</td>
+                                                                    <td>${item.RecipientName}</td>
+                                                                    <td>${item.BankName}</td>
+                                                                    <td>${item.AccountNumber}</td>
+                                                                    <td>${formatNumber(item.Amount)}</td>
+                                                                    <td>
+                                                                        <button class="text-success printBankLetter"
+                                                                        onClick="printBankLetterForRe(
+                                                                            ${item.Id},${item.TransactionId}, ${item.BankAccountId},${item.AccountNumber}
+                                                                        )">
+                                                                        <i class="fa fa-print"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                    <td>
+                                                                        <button class="text-danger deleteTransactionRecipient"
+                                                                        onClick="deleteTransactionRecipient(${item.Id})">
+                                                                        <i class="fa fa-trash"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            `;
+
+                        $('#tblRecipientBody').append(row);
+                    });
+                }
+            });
+
+
+            $('#add-recipients-modal').modal('show');
+        });
+
+        $('.btnSaveRecipient').on('click', function () {
+            debugger;
+            var amount = recipientAmountObj.getNumber();
+            var recipientNameId = $('#recipientName').val();
+            var recipientBankId = $('#recipientBank').val();
+            var TransactionId = $('#recipientTransactionId').text();
+            console.clear();
+            console.log(amount);
+
+            $.post('/Transactions/SaveTransactionRecipients', {
+                id: TransactionId, recipientNameId: recipientNameId,
+                recipientBankId: recipientBankId, amount: amount
+            }, function (response) {
+                //window.location.href = response.redirectToUrl;
+                $('#recipientBank').empty();
+                $('#recipientName').empty();
+                $('#recipientAmount').val('');
+                $('#add-recipients-modal').modal('hide');
+                window.open(response.redirectToUrl, "_blank");
+            })
+        });
+
+        function printBankLetterForRe(Id, transactionId, bankAccountId, AccountNumber) {
+            debugger;
+            if (AccountNumber != null) {
+                window.open('/Reports/printRecipientBankLetter/' + Id, "_blank");
+            } else {
+                window.open(`/Reports/printBankLetterNew/${transactionId}?bankAccountId=${bankAccountId}`, "_blank");
+            }
+        }
+
+        function deleteTransactionRecipient(Id) {
+            $.post('/Transactions/DeleteTransactionRecipient', { id: Id }, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                // Refresh the recipient list after deletion
+                var TransactionId = $('#recipientTransactionId').text();
+                $.get('/Transactions/getTransactionRecipients/' + TransactionId, {}, function (response) {
+                    if (response && response.length > 0) {
+                        $('#tblRecipient').removeClass('hide');
+                        $('#tblRecipientBody').empty(); // Clear previous rows if needed
+                        response.forEach(function (item) {
+                            var obj = JSON.stringify(item).replace(/"/g, '&quot;');
+                            var row = `
+                                                                <tr>
+                                                                    <td>${item.Id}</td>
+                                                                    <td>${item.RecipientName}</td>
+                                                                    <td>${item.BankName}</td>
+                                                                    <td>${item.AccountNumber}</td>
+                                                                    <td>${formatNumber(item.Amount)}</td>
+                                                                    <td>
+                                                                        <button class="text-success printBankLetter"
+                                                                        onClick="printBankLetterForRe(
+                                                                            ${item.Id},${item.TransactionId}, ${item.BankAccountId},${item.AccountNumber}
+                                                                        )">
+                                                                        <i class="fa fa-print"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                    <td>
+                                                                        <button class="text-danger deleteTransactionRecipient"
+                                                                        onClick="deleteTransactionRecipient(${item.Id})">
+                                                                        <i class="fa fa-trash"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            `;
+                            $('#tblRecipientBody').append(row);
+                        });
+                    } else {
+                        $('#tblRecipient').addClass('hide');
+                    }
+                });
+            });
+
+        }
+        /*----------------------------------------------------------------------------------------------------------*/
+
+        $('#addTaxVal').on('input', function () {
+            var addTaxVal = parseFloat($(this).val()) || 0; // نقرأ القيمة كرقم
+            var addTaxValPercent = addTaxVal * 0.01;        // نحسب النسبة
+            $('#addTaxValDisplay').text(addTaxValPercent.toFixed(4)); // نعرضها بخانتين عشريتين
+        });
+
+        function OpenAddTaxModal(Id) {
+            $('#taxConfirmationTransId').text(Id);
+            $('#taxConfirmation-modal').modal('show');
+        }
+        function OpenAdd17TaxModal(Id) {
+            $('#recipientTransactionId').text(Id);
+            $('#addedTax-modal').modal('show');
+            $('#addTaxVal').focus();
+            $('#addTaxVal').val(17);
+            var addTaxValPercent = 17 * 0.01;        // نحسب النسبة
+            $('#addTaxValDisplay').text(addTaxValPercent.toFixed(4)); // نعرضها بخانتين عشريتين
+        }
+        //addedTax الضريبة المضافة
+        function Add17Tax() {
+            var Id = $('#recipientTransactionId').text();
+            var AddedTaxPercent = $('#addTaxValDisplay').text();
+            $.post('/Transactions/Add17Tax', { "Id": Id, "HasAddedTax": true, "AddedTaxPercent": AddedTaxPercent }, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('#tbx').DataTable().ajax.reload();
+                $('#addedTax-modal').modal('hide');
+            });
+        }
+
+        function delete17Tax(Id) {
+            $.post('/Transactions/Add17Tax', { "Id": Id, "HasAddedTax": false, AddedTaxPercent: 0 }, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('#tbx').DataTable().ajax.reload();
+            });
+        }
+
+        //addedTax الضريبة المضافة
+        function AddOneTax() {
+            var Id = $('#taxConfirmationTransId').text();
+            $.post('/Transactions/AddTax', { "Id": Id, "HasTax": true }, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('#tbx').DataTable().ajax.reload();
+            });
+        }
+
+        function deleteOneTax(Id) {
+            $.post('/Transactions/AddTax', { "Id": Id, "HasTax": false }, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('#tbx').DataTable().ajax.reload();
+            });
+        }
+
+        function AddStamp(Id) {
+            $('#transId').text(Id);
+            $('#stampValue-modal').modal('show');
+            $('#stampValue').focus();
+        }
+
+        //AddStamp اضافة الدمغة
+        function SaveStamp() {
+            var Id = $('#transId').text();
+            var stampValue = $('#stampValue').val();
+            $.post('/Transactions/AddStamp', { "Id": Id, "stampValue": stampValue }, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('#tbx').DataTable().ajax.reload();
+                $('#stampValue-modal').modal('hide');
+                $('#stampValue').val('');
+            });
+        }
+
+        function AddIncomeTax(Id) {
+            $('#transId').text(Id);
+            $('#IncomeTax-modal').modal('show');
+        }
+
+        //AddStamp اضافة ضريبة الدخل
+        function SaveIncomeTax() {
+            var Id = $('#transId').text();
+            var IncomeTaxValue = $('#IncomeTaxValue').val();
+            $.post('/Transactions/AddIncomeTax', { "Id": Id, "IncomeTaxValue": IncomeTaxValue }, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('#tbx').DataTable().ajax.reload();
+                $('#IncomeTax-modal').modal('hide');
+                $('#IncomeTaxValue').val('');
+            });
+        }
+
+        // طباعة خطاب البنك
+        function printBankLetter(Id) {
+            window.open('/Reports/printBankLetter/' + Id, '_blank');
+        }
+
+        //Go to Print View
+        function printchecs(id) {
+            event.preventDefault();
+            $.get('/PrintChecs/CheckTheCheck/', { Id: id }, function (response) {
+                if (response.Status == "error") {
+                    toastr[response.Status](response.Message, response.Title);
+                } else {
+                    window.open("/PrintChecs/Index/" + id, "_blank");
+                }
+            });
+
+        }
+
+        // الغاء الحركة بالشيك لو عندها شيك
+        function DeleteTransaction(id) {
+            event.preventDefault();
+            $.get('/DeleteTransactions/Delete/', { Id: id }, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('#tbx').DataTable().ajax.reload();
+            });
+
+        }
+    </script>
+}

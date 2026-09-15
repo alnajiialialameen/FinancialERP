@@ -38,8 +38,6 @@ namespace Purchases.Models
         public Nullable<System.DateTime> UpdatingDate { get; set; }
     
         public virtual AccountTree AccountTree { get; set; }
-        public virtual AspNetUser AspNetUser { get; set; }
-        public virtual AspNetUser AspNetUser1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Balance> Balance1 { get; set; }
         public virtual Balance Balance2 { get; set; }
@@ -48,5 +46,7 @@ namespace Purchases.Models
         public virtual ICollection<DeletedTransactionDetail> DeletedTransactionDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TransactionDetail> TransactionDetails { get; set; }
+        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
     }
 }

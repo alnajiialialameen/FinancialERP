@@ -11,12 +11,15 @@ namespace Purchases.Models.ViewModel
         public string documentType { get; set; }
         public int currencyId { get; set; }
         public int? recipientId { get; set; }
+        public int? companyInfoId { get; set; }
         public string currency { get; set; }
         public Nullable<decimal> exchangeRate { get; set; }
         public Nullable<decimal> amount { get; set; }
         public Nullable<bool> isPosted { get; set; }
         public string transactionDateStr { get; set; }
         public string userId { get; set; }
+        public string createdBy { get; set; }
+        public string updatedBy { get; set; }
 
         public int id { get; set; }// this is TransactionDetail Id
         public Nullable<int> accTrreId { get; set; }

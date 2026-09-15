@@ -22,6 +22,8 @@ namespace Purchases.MyLogic
             try
             {
                 int financialCycleId = GetUserCurrentFinancialCycleId(userId);
+                int companyInfoId = GetUserCurrentCompanyInfoId(userId);
+
                 var data = db.Transactions.Where(x => x.FinancialCycleId == financialCycleId && x.IsPosted != true)
                 .Select(p => new TransactionVM()
                 {
@@ -36,10 +38,24 @@ namespace Purchases.MyLogic
                     hasAddedTaxTxt = p.HasAddedTax == true ? "مضمن 17%" : "غير مضمنة",
                     hasAddedTax = p.HasAddedTax,
                     hasTax = p.HasTax,
-                    recipient = p.Recipient??""
+                    recipient = p.Recipient ?? "",
+                    createdBy = p.CreatedBy,
+                    updatedBy = p.UpdatedBy,
+                    companyInfoId = p.CompanyInfoId,
                 }).OrderByDescending(d => d.transactionId).ToList();
 
-                //data = documentTypeId > 0 ? data.Where(x => x.documentTypeId == documentTypeId).ToList() : data;
+                var userRoles = db.AspNetUserRoles.Where(x => x.UserId == userId).Select(s => s.AspNetRole.Name).ToList();
+
+                if (userRoles.Contains("موظف بالادارة المالية"))
+                {
+                    data = data.Where(x => (x.createdBy == userId || x.updatedBy == userId) && x.companyInfoId == companyInfoId).ToList();
+                }
+
+                if (userRoles.Contains("المدير المالي بالمطار"))
+                {
+                    data = data.Where(x => x.companyInfoId == companyInfoId).ToList();
+                }
+
                 return data;
             }
             catch (Exception e)
@@ -54,7 +70,7 @@ namespace Purchases.MyLogic
             //            .Select(p => new DDListObj() { id = p.Id, text = p.AccName }).Where(f => f.text.Contains(q)).ToList();
 
             // تم التعديل ليعرض IsActive فقط
-            var data = db.AccountTrees.Where(x => db.AccountSubs.Any(s => s.AccTreeId == x.Id) && x.IsActive ==true)
+            var data = db.AccountTrees.Where(x => db.AccountSubs.Any(s => s.AccTreeId == x.Id) && x.IsActive == true)
                         .Select(p => new DDListObj() { id = p.Id, text = p.AccName }).Where(f => f.text.Contains(q)).ToList();
             return data;
         }
@@ -77,6 +93,26 @@ namespace Purchases.MyLogic
 
             return data;
         }
+
+        public List<DDListObj> GetAccTreesInBalanceAndBanks(string q, string userId)
+        {
+            int FinanceCycleId = GetUserCurrentFinancialCycleId(userId);
+            var balanceData = db.Balances.Where(x => x.FinanceCycleId == FinanceCycleId)
+                        .Select(p => new DDListObj { id = p.Id, text = p.AccountTree.AccName })
+                        .ToList()
+                        .Where(f => f.text.Contains(q))
+                        .ToList();
+
+            var banksData = db.AccountTrees.Where(x => x.AccParent == 7)
+                       .Select(p => new DDListObj { id = p.Id, text = p.AccName })
+                       .Where(f => f.text.Contains(q))
+                       .ToList();
+
+            balanceData.AddRange(banksData);
+
+            return balanceData;
+        }
+
         // جلب العمللات
         public List<DDListObj> GetCurrency(string q)
         {
@@ -154,6 +190,7 @@ namespace Purchases.MyLogic
                 return -1;
             }
         }
+
         // اختبار هل الحركة دي فيها حساب من نوع بنك
         public bool IsItBankAccount(int AccTreeId)
         {
@@ -178,7 +215,7 @@ namespace Purchases.MyLogic
             {
                 var dataList = db.TransactionDetails.Where(x => x.TransactionId == TransactionId && x.Credit == CreditVal).ToList();
 
-                var accountsList = db.AccountTrees.Where(x => x.AccParent == 7 &&  x.AccountSubs.Any(s => s.AccTreeId == x.Id));
+                var accountsList = db.AccountTrees.Where(x => x.AccParent == 7 && x.AccountSubs.Any(s => s.AccTreeId == x.Id));
 
                 foreach (var item in dataList)
                 {
@@ -241,13 +278,27 @@ namespace Purchases.MyLogic
                 throw new NullReferenceException(e.Message);
             }
         }
+        // دي بجيب بيها السنة المالية الحالية نفسها
+        public int GetCurrentFinancialCycleId()
+        {
+            try
+            {
+                int FinancialCycleId = 0;
+                FinancialCycleId = db.FinancialCycles.FirstOrDefault(x => x.CurrentYear == true).Id;
 
+                return FinancialCycleId;
+            }
+            catch (Exception e)
+            {
+                throw new NullReferenceException(e.Message);
+            }
+        }
         // دي بجيب بيها السنة المالية الحالية للمستخدم الحالي
         public string GetUserCurrentFinancialCycleYear(string userId)
         {
             try
             {
-                string Year = db.AspNetUsers.Find(userId).FinancialCycle.Year.ToString();
+                string Year = db.UserWorkDetails.FirstOrDefault(q => q.UserId == userId).FinancialCycle.Year.ToString();
 
                 return Year;
             }
@@ -278,9 +329,25 @@ namespace Purchases.MyLogic
             try
             {
                 int? Year = 0;
-                Year = db.AspNetUsers.Find(userId).FinancialCycleId;
+                Year = db.UserWorkDetails.FirstOrDefault(q=> q.UserId == userId).FinancialCycleId;
 
                 return Convert.ToInt32(Year);
+            }
+            catch (Exception e)
+            {
+                throw new NullReferenceException(e.Message);
+            }
+        }
+
+        // دي بجيب بيها رقم الشركة او المطار الحالي للمستخدم الحالي
+        public int GetUserCurrentCompanyInfoId(string userId)
+        {
+            try
+            {
+                int? companyInfoId = 0;
+                companyInfoId = db.UserWorkDetails.FirstOrDefault(q => q.UserId == userId).CompanyInfoId;
+
+                return Convert.ToInt32(companyInfoId);
             }
             catch (Exception e)
             {
@@ -395,7 +462,7 @@ namespace Purchases.MyLogic
                     decimal? totalWithoutbankAmount = 0;
                     foreach (var item in modal)
                     {
-                        if(IsItBankAccount(item.accTrreId??0))
+                        if (IsItBankAccount(item.accTrreId ?? 0))
                         {
                             bankAmount = item.credit;
                             break;
@@ -411,11 +478,11 @@ namespace Purchases.MyLogic
                     t.TransactionDate = Convert.ToDateTime(modal[0].transactionDate);
                     t.CreatedDate = now;
                     t.Note = modal[0].note;
-                    t.DocumentTypeId = modal[0].documentTypeId; 
+                    t.DocumentTypeId = modal[0].documentTypeId;
                     t.Amount = modal.Sum(x => x.debit);
                     // t.Amount = amount;
                     t.Recipient = modal[0].recipient;
-                    t.ExchangeRate =  this.GetCurrentMonthExchangeRate((DateTime)t.TransactionDate, t.CurrencyId);
+                    t.ExchangeRate = this.GetCurrentMonthExchangeRate((DateTime)t.TransactionDate, t.CurrencyId);
                     t.FinancialCycleId = FinancialCycleId;
                     t.CreatedBy = userid;
                     t.CreatedDate = now;
@@ -434,7 +501,7 @@ namespace Purchases.MyLogic
                         td.Note = modal.FirstOrDefault().note;
                         td.CreatedBy = userid;
                         td.CreationDate = now;
-                        
+
                         if (balances.Any(x => x.AccountTreeId == item.accTrreId))
                         {
                             decimal Amount = Convert.ToDecimal(item.debit + item.credit);
@@ -495,7 +562,7 @@ namespace Purchases.MyLogic
 
         public string configDate(DateTime? date)
         {
-            if(date == null)
+            if (date == null)
             {
                 return "";
             }
@@ -555,15 +622,15 @@ namespace Purchases.MyLogic
                     debit = data.Sum(d => d.Debit),
                     credit = data.Sum(d => d.Credit),
                     accTreeId = accTreeId,
-                    financeCycleId = financeCycleId??0,
+                    financeCycleId = financeCycleId ?? 0,
                     note = "رصيد أول المدة",
                     transactionDate = date,
                     transactionDateStr = tarnsactionDateStr,
                 };
 
-                res.Diff = res.debit >= res.credit? res.debit - res.credit : res.credit - res.debit;
-                res.debit = res.debit > res.credit? res.Diff:0;
-                res.credit = res.credit > res.debit? res.Diff:0;
+                res.Diff = res.debit >= res.credit ? res.debit - res.credit : res.credit - res.debit;
+                res.debit = res.debit > res.credit ? res.Diff : 0;
+                res.credit = res.credit > res.debit ? res.Diff : 0;
 
                 return res;
             }
@@ -615,8 +682,8 @@ namespace Purchases.MyLogic
         {
             var date = new DateTime(financeCycleYear, 1, 1);
             string tarnsactionDateStr = this.configDate(date);
-            return db.OpeningBalanceDetails.Where(q=> q.OpeningBalance.FinancialCycleId == financeCycleId && q.AccTreeId ==   accTreeId).Include(q=>q.OpeningBalance)
-                .Select(q=> new BalanceVM
+            return db.OpeningBalanceDetails.Where(q => q.OpeningBalance.FinancialCycleId == financeCycleId && q.AccTreeId == accTreeId).Include(q => q.OpeningBalance)
+                .Select(q => new BalanceVM
                 {
                     accTreeId = accTreeId,
                     credit = q.Credit,
@@ -624,7 +691,7 @@ namespace Purchases.MyLogic
                     transactionDate = date,
                     transactionDateStr = tarnsactionDateStr,
                     accTreeName = q.AccountTree.AccName,
-                    financeCycleId = financeCycleId??0,
+                    financeCycleId = financeCycleId ?? 0,
                     note = "رصيد أول المدة",
                     Id = q.Id
                 })
@@ -641,6 +708,30 @@ namespace Purchases.MyLogic
                 return ((int)val).ToString();
             else
                 return val.ToString("0.##"); // تظهر حتى خانتين عشريتين فقط
+        }
+
+
+        public List<TransactionVM> loadPettyCashNotPayedData(string userId)
+        {
+            int financialCycleId = GetUserCurrentFinancialCycleId(userId);
+            var query = db.Transactions.Where(q => q.FinancialCycleId == financialCycleId && (q.DocumentTypeId == 4 && q.IsPosted != true) || (q.DocumentTypeId != 4 && q.DocumentTypeId != 7 && q.Note.Contains("نثري")))
+                .Select(p => new TransactionVM()
+                {
+                    transactionId = p.Id,
+                    currency = p.CurrencyType.Name,
+                    documentType = p.DocumentType.Name,
+                    total = p.Amount,
+                    documentTypeId = p.DocumentTypeId,
+                    exchangeRate = p.ExchangeRate != null ? p.ExchangeRate : 0,
+                    transactionDateStr = p.TransactionDate.Value.Year + "/" + p.TransactionDate.Value.Month + "/" + p.TransactionDate.Value.Day,
+                    note = p.Note,
+                    hasAddedTaxTxt = p.HasAddedTax == true ? "مضمن 17%" : "غير مضمنة",
+                    hasAddedTax = p.HasAddedTax,
+                    hasTax = p.HasTax,
+                    recipient = p.Recipient ?? ""
+                }).OrderByDescending(d => d.transactionId).ToList();
+
+            return query;
         }
     }
 }

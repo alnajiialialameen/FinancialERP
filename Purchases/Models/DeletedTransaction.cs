@@ -38,11 +38,11 @@ namespace Purchases.Models
         public Nullable<int> TransactionId { get; set; }
         public string CheckNo { get; set; }
     
-        public virtual AspNetUser AspNetUser { get; set; }
         public virtual CurrencyType CurrencyType { get; set; }
         public virtual DocumentType DocumentType { get; set; }
         public virtual FinancialCycle FinancialCycle { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DeletedTransactionDetail> DeletedTransactionDetails { get; set; }
+        public virtual AspNetUser AspNetUser { get; set; }
     }
 }

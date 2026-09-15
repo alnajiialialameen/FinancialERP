@@ -631,5 +631,49 @@ namespace Purchases.Controllers
                 return Json(new { Message = "حدث خطأ أثناء عملية الاضافة(Exception)", Title = "خطأ", Status = "error" });
             }
         }
+
+
+        // النثريات ال غير مزالة بالعمليات
+        public ActionResult PettyCashNotPayed()
+        {
+            return View();
+        }
+
+        // النثريات ال غير مزالة بالاشخاص
+        public ActionResult PettyCashNotPayedByPerson()
+        {
+            return View();
+        }
+
+        // إزالة النثرية 
+        public ActionResult RemovePettyCash(int id)
+        {
+            var data = db.Transactions.Find(id);
+
+            ViewBag.TransactionId = id;
+            ViewBag.TransactionDate = data.TransactionDate.Value.Day + "/"  + data.TransactionDate.Value.Month + "/" + data.TransactionDate.Value.Year;
+            ViewBag.Recipient = data.Recipient;
+            ViewBag.TotalAmount = data.Amount;
+            ViewBag.ExchangeRate = data.ExchangeRate;
+            ViewBag.Note = data.Note;
+            ViewBag.CurrencyType = data.CurrencyType.Name;
+
+            var transactionDetails = data.TransactionDetails.Select(q=> new TransactionVM()
+            {
+                accName = q.AccountTree.AccName,
+                accTrreId = q.AccTreeId,
+                debit = q.Debit,
+                credit = q.Credit,
+                balanceId = q.BalanceId??0,
+            }).ToList();
+
+            ViewBag.DebitAccName = transactionDetails.Where(q => q.debit > 0).Select(q => q.accName).FirstOrDefault();
+            ViewBag.DebitAccId = transactionDetails.Where(q => q.debit > 0).Select(q => q.accTrreId).FirstOrDefault();
+
+            ViewBag.TransactionDetails = transactionDetails;
+
+            return View();
+        }
+
     }
 }

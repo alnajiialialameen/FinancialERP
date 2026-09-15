@@ -24,8 +24,8 @@ namespace Purchases.Models
         public string UpdatedBy { get; set; }
     
         public virtual CommitteeJob CommitteeJob { get; set; }
+        public virtual CommitteFormation CommitteFormation { get; set; }
         public virtual AspNetUser AspNetUser { get; set; }
         public virtual AspNetUser AspNetUser1 { get; set; }
-        public virtual CommitteFormation CommitteFormation { get; set; }
     }
 }

@@ -552,5 +552,21 @@ namespace Purchases.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult loadPettyCashNotPayedData()
+        {
+            var userId = User.Identity.GetUserId();
+            var data = obj.loadPettyCashNotPayedData(userId);
+            return new JsonResult { Data = data, MaxJsonLength = 50000000, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
+
+        public ActionResult GetAccTreesInBalanceAndBanks(string q)
+        {
+            var userId = User.Identity.GetUserId();
+            var data = obj.GetAccTreesInBalanceAndBanks(q, userId);
+
+
+            return new JsonResult { Data = data, MaxJsonLength = 50000000, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
+
     }
 }

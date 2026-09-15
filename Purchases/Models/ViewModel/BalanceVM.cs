@@ -10,6 +10,7 @@ namespace Purchases.Models.ViewModel
         public int transactionId { get; set; }
         public string accTreeName { get; set; }
         public Nullable<int> balanceId { get; set; }
+        public Nullable<int> currencyId { get; set; }
         public string accTreeCode { get; set; }
         public Nullable<decimal> actualExchange { get; set; }
         public Nullable<decimal> credint { get; set; }

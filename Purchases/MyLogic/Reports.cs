@@ -1,4 +1,7 @@
-﻿using Purchases.Models;
+﻿using Microsoft.AspNet.Identity;
+using Purchases.Controllers;
+using Purchases.Functions;
+using Purchases.Models;
 using Purchases.Models.ViewModal;
 using Purchases.Models.ViewModel;
 using System;
@@ -13,6 +16,7 @@ namespace Purchases.MyLogic
         private Entities db = new Entities();
         private TreeClass trc = new TreeClass();
         private SharedClass sh = new SharedClass();
+        private RoleController roleController = new RoleController();
         /*transactions */
 
         // طباعة جميع الحركات
@@ -357,6 +361,8 @@ namespace Purchases.MyLogic
                         t.Id,
                         t.Note,
                         t.TransactionDate,
+                        t.CurrencyId,
+                        t.ExchangeRate,
                         Detail = t.TransactionDetails.FirstOrDefault(td => td.AccTreeId == accountId),
                         AccName = t.TransactionDetails.FirstOrDefault(td => td.AccTreeId == accountId).AccountTree.AccName
                     })
@@ -373,8 +379,8 @@ namespace Purchases.MyLogic
                     accTreeName = t.AccName,
                     transactionDate = t.TransactionDate,
                     transactionDateStr = sh.configDate(t.TransactionDate),
-                    credit = t.Detail.Credit,
-                    debit = t.Detail.Debit
+                    credit = t.CurrencyId == 1? t.Detail.Credit : t.Detail.Credit * t.ExchangeRate,
+                    debit = t.Detail.Debit == 1 ? t.Detail.Debit : t.Detail.Debit * t.ExchangeRate
                 }).ToList();
             }
             catch (Exception ex)
@@ -390,6 +396,7 @@ namespace Purchases.MyLogic
         {
             var finalResult = new List<BalanceVM>();
             int financialCycleId = new SharedClass().GetUserCurrentFinancialCycleId(userId);
+            int companyInfoId = new SharedClass().GetUserCurrentCompanyInfoId(userId);
             try
             {
                 var directChildernList = db.AccountTrees.Where(q => q.AccParent == accountId).ToList();
@@ -403,31 +410,50 @@ namespace Purchases.MyLogic
 
                     var isOk = AllKeysAfterFliter.Count() > 0? true : false;
                     //// old code
-                    var query = isOk?  db.Transactions
-                       .Where(t => t.FinancialCycleId == financialCycleId &&
-                                    t.TransactionDetails.Any(td => AllKeysAfterFliter.Any(c => c == td.AccTreeId))).ToList()
-                                    :
-                                     db.Transactions
-                       .Where(t => t.FinancialCycleId == financialCycleId &&
-                                    t.TransactionDetails.Any(td => td.AccTreeId == directChild.Id)).ToList();
+                    IQueryable<Transaction> query;
+
+                    if (isOk)
+                    {
+                        query = db.Transactions
+                            .Where(t =>
+                                t.FinancialCycleId == financialCycleId && 
+                                t.TransactionDetails.Any(td =>
+                                    AllKeysAfterFliter.Contains(td.AccTreeId)));
+                    }
+                    else
+                    {
+                        query = db.Transactions
+                            .Where(t =>
+                                t.FinancialCycleId == financialCycleId &&
+                                t.TransactionDetails.Any(td =>
+                                    td.AccTreeId == directChild.Id));
+                    }
+
+                    var userRoles = roleController.GetRole(userId);
+
+                    if(userRoles.Equals("موظف بالادارة المالية") || userRoles.Equals("المدير المالي بالمطار"))
+                    {
+                        query = query.Where(q => q.CompanyInfoId == companyInfoId);
+                    }
 
                     // تطبيق الفلاتر حسب التواريخ
                     if (dateFrom.HasValue && dateTo.HasValue)
                     {
-                        var fromDate = dateFrom.Value.Date;
-                        var toDate = dateTo.Value.Date;
+                        var fromDate = dateFrom.Value;
+                        var toDate = dateTo.Value;
                         query = query.Where(t =>
-                            DbFunctions.TruncateTime(t.TransactionDate) >= fromDate &&
-                            DbFunctions.TruncateTime(t.TransactionDate) <= toDate).ToList();
+                            t.TransactionDate.HasValue &&
+                            t.TransactionDate.Value >= fromDate &&
+                            t.TransactionDate.Value <= toDate);
                     }
 
                     // فلترة حسب البنك إذا موجود
                     if (bankId.HasValue)
                     {
-                        query = query.Where(t => t.TransactionDetails.Any(td => td.AccTreeId == bankId)).ToList();
+                        query = query.Where(t => t.TransactionDetails.Any(td => td.AccTreeId == bankId));
                     }
-
-                    var transactionDetails = isOk ? query
+                    var transactionList = query.ToList();
+                    var transactionDetails = isOk ? transactionList
                         .SelectMany(t => t.TransactionDetails
                         .Where(td => AllKeysAfterFliter.Contains(td.AccTreeId)),
                             (t, td) => new BalanceVM
@@ -435,13 +461,15 @@ namespace Purchases.MyLogic
                                 Id = td.Id,
                                 transactionId = t.Id,
                                 note = t.Note,
+                                actualExchange = t.ExchangeRate,
+                                currencyId = t.CurrencyId,
                                 accTreeName = td.AccountTree != null ? td.AccountTree.AccName : "",
                                 transactionDate = t.TransactionDate,
-                                transactionDateStr = sh.configDate(t.TransactionDate),
+                                transactionDateStr = "",
                                 accTreeId = td.AccTreeId,
                                 parentId = td.AccountTree != null ? td.AccountTree.AccParent : (int?)null,
-                                credit = td.Credit,
-                                debit = td.Debit
+                                credit = t.CurrencyId == 1? td.Credit : td.Credit * t.ExchangeRate,
+                                debit = t.CurrencyId == 1 ? td.Debit : td.Debit * t.ExchangeRate,
                             })
                         .OrderBy(x => x.transactionDate)
                         .ToList()
@@ -456,14 +484,21 @@ namespace Purchases.MyLogic
                                 note = t.Note,
                                 accTreeName = td.AccountTree != null ? td.AccountTree.AccName : "",
                                 transactionDate = t.TransactionDate,
-                                transactionDateStr = sh.configDate(t.TransactionDate),
+                                transactionDateStr = "",
                                 accTreeId = td.AccTreeId,
+                                actualExchange = t.ExchangeRate,
+                                currencyId = t.CurrencyId,
                                 parentId = td.AccountTree != null ? td.AccountTree.AccParent : (int?)null,
-                                credit = td.Credit,
-                                debit = td.Debit
+                                credit = t.CurrencyId == 1 ? td.Credit : td.Credit * t.ExchangeRate,
+                                debit = t.CurrencyId == 1 ? td.Debit : td.Debit * t.ExchangeRate
                             })
                         .OrderBy(x => x.transactionDate)
                         .ToList();
+
+                    foreach (var item in transactionDetails)
+                    {
+                        item.transactionDateStr = sh.configDate(item.transactionDate);
+                    }
 
                     // الآن نجمع حسب parentId (أو حسب accTreeId لو تفضل)
                     var grouped = transactionDetails
@@ -485,6 +520,7 @@ namespace Purchases.MyLogic
                         debit = grouped.Sum(s => s.debit),
                         credit = grouped.Sum(s => s.credit)
                     };
+
                     finalResult.Add(data);
                 }
 
@@ -492,7 +528,7 @@ namespace Purchases.MyLogic
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException(ex.Message);
+                throw;
                 // يمكنك تسجيل الخطأ هنا مثلاً باستخدام logging
             }
 
@@ -1115,26 +1151,6 @@ namespace Purchases.MyLogic
             var FinancialCycleAccountTreeIdList = new List<dynamic>();
             List<TransactionDetail> RetrivedDataList = new List<TransactionDetail>();
 
-           // SharedClass sh = new SharedClass();
-           // int FinancialCycleId = sh.GetCurrentFinancialCycleId();
-
-            // دي عشان اقسم مبلغ الموازنة علي عدد الشهور المطلوب ليها التقرير
-            //int MonthsPercentage = 1;
-            //if (dateFrom != null & dateTo != null)
-            //{
-            //    MonthsPercentage = ((dateFrom.Value.Year - dateTo.Value.Year) * 12) + (dateTo.Value.Month - dateFrom.Value.Month) + 1;
-            //    if (dateTo.Value.Day < dateFrom.Value.Day)
-            //    {
-            //        MonthsPercentage--;
-            //    }
-
-            //    RetrivedDataList = db.TransactionDetails.Where(x => x.BalanceId != null && x.Balance.Credint > 0 && DbFunctions.TruncateTime(x.Transaction.TransactionDate) >= DbFunctions.TruncateTime(dateFrom) & DbFunctions.TruncateTime(x.Transaction.TransactionDate) <= DbFunctions.TruncateTime(dateTo)).ToList();
-            //}
-            //else
-            //{
-            //    RetrivedDataList = db.TransactionDetails.Where(x => x.BalanceId != null && x.Balance.Credint > 0).ToList();
-            //}
-
            // decimal MonthsPercentage = 100; // نفرض مبدئياً إنها 100%
             int monthsDiff = 0;
             if (dateFrom != null && dateTo != null)
@@ -1216,8 +1232,12 @@ namespace Purchases.MyLogic
                     obj.credint = item1.Credint;
                     obj.credintPercent = (item1.Credint / 12) * monthsDiff;
                     obj.parentId = item;
-                    obj.actualExchange = RetrivedDataList.Where(x => x.BalanceId == item1.Id).Sum(x => x.Debit) - RetrivedDataList.Where(x => x.BalanceId == item1.Id).Sum(x => x.Credit);
+                    //obj.actualExchange = RetrivedDataList.Where(x => x.BalanceId == item1.Id).Sum(x => x.Debit) - RetrivedDataList.Where(x => x.BalanceId == item1.Id).Sum(x => x.Credit);
 
+                    var transactionDetails = RetrivedDataList.Where(x => x.BalanceId == item1.Id).ToList();
+                    obj.actualExchange = transactionDetails.Sum(x => CalculateActualExchange(x.Transaction.CurrencyId, x.Transaction.TransactionDate, x.Debit))
+                                        - transactionDetails.Sum(x => CalculateActualExchange(x.Transaction.CurrencyId, x.Transaction.TransactionDate, x.Credit));
+                    
                     res.Add(obj);
                 }
                 
@@ -1287,18 +1307,21 @@ namespace Purchases.MyLogic
                 objPrent.credintPercent = Math.Round((decimal)objPrent.credintPercent, 2);
 
                 objPrent.sumOfCredint = res.Sum(x => x.credint);
-                objPrent.actualExchange = RetrivedDataList.Where(q=> q.Transaction.CurrencyId == 1).Where(x => x.AccTreeId == item).Sum(x => Math.Abs((x.Credit - x.Debit)??0));
+                //objPrent.actualExchange = RetrivedDataList.Where(q=> q.Transaction.CurrencyId == 1).Where(x => x.AccTreeId == item).Sum(x => Math.Abs((x.Credit - x.Debit)??0));
 
-                foreach (var item1 in 
-                    RetrivedDataList.Where(q => q.Transaction.CurrencyId != 1).Where(x => x.AccTreeId == item).ToList())
-                {
-                    var CurrencyId = item1.Transaction.CurrencyId;
-                    var TransactionDate = item1.Transaction.TransactionDate;
-                    var Amount = item1.Credit + item1.Debit;
+                objPrent.actualExchange = RetrivedDataList.Where(x => x.AccTreeId == item).Sum(x => x.Transaction.CurrencyId == 1? 
+                    Math.Abs((x.Credit - x.Debit) ?? 0)
+                    : CalculateActualExchange(x.Transaction.CurrencyId, x.Transaction.TransactionDate, (x.Credit + x.Debit) ?? 0) ?? 0);
 
-                    decimal? actualExchange = CalculateActualExchange(CurrencyId, TransactionDate, Amount);
-                    objPrent.actualExchange += actualExchange;
-                }
+                //foreach (var item1 in RetrivedDataList.Where(q => q.Transaction.CurrencyId != 1).Where(x => x.AccTreeId == item).ToList())
+                //{
+                //    var CurrencyId = item1.Transaction.CurrencyId;
+                //    var TransactionDate = item1.Transaction.TransactionDate;
+                //    var Amount = item1.Credit + item1.Debit;
+
+                //    decimal? actualExchange = CalculateActualExchange(CurrencyId, TransactionDate, Amount);
+                //    objPrent.actualExchange += actualExchange?? 0;
+                //}
 
                 parentRes.Add(objPrent);
             }
@@ -1312,6 +1335,12 @@ namespace Purchases.MyLogic
         {
             if(currencyId == null || transactionDate == null)
                 return 0;
+
+            if (amount == null)
+                return 0;
+
+            if (currencyId == 1)
+                return amount;
 
             var CurrencyDetailObj = db.CurrencyDetails.FirstOrDefault(q => q.CurrencyTypeId == currencyId && q.Year == transactionDate.Value.Year && q.Month == transactionDate.Value.Month);
 
@@ -1492,9 +1521,13 @@ namespace Purchases.MyLogic
                     credint = Math.Round(item1.Credint ?? 0, 2),
                     credintPercent = Math.Round(item1.Credint ?? 0 / monthsPercentage, 2),
                     parentId = item,
+                    //actualExchange = retrievedDataList
+                    //                    .Where(x => x.BalanceId == item1.Id)
+                    //                    .Sum(x => x.Debit + x.Credit)
                     actualExchange = retrievedDataList
                                         .Where(x => x.BalanceId == item1.Id)
-                                        .Sum(x => x.Debit + x.Credit)
+                                        .Sum(x => CalculateActualExchange(x.Transaction.CurrencyId,x.Transaction.TransactionDate, x.Debit + x.Credit)??0) 
+                                            
                 }).ToList();
 
                 var parentDto = new BalanceVM
@@ -1807,6 +1840,17 @@ namespace Purchases.MyLogic
             return tobObjParent;
         }
 
+
+
+        private decimal ConvertToBaseCurrency(decimal? amount, int? currencyId, decimal? exchangeRate)
+        {
+            decimal value = amount ?? 0;
+
+            if (currencyId == 1)
+                return value;
+
+            return value * (exchangeRate ?? 1);
+        }
     }
 }
 

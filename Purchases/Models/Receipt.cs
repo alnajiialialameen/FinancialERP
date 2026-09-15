@@ -43,11 +43,11 @@ namespace Purchases.Models
         public Nullable<System.DateTime> UpdatingDate { get; set; }
     
         public virtual AccountTree AccountTree { get; set; }
-        public virtual AspNetUser AspNetUser { get; set; }
-        public virtual AspNetUser AspNetUser1 { get; set; }
         public virtual CurrencyType CurrencyType { get; set; }
         public virtual ReceiptType ReceiptType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ReceiptDetail> ReceiptDetails { get; set; }
+        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
     }
 }

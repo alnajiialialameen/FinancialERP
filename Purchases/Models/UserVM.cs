@@ -20,5 +20,9 @@ namespace Purchases.Models
         public string OldPassword { get; set; }
         public string NewPassword { get; set; }
         public string ConfirmPassword { get; set; }
+
+        public int? FinancialCycleId { get; set; }
+        public string CompanyInfoName { get; set; }
+        public int? CompanyInfoId { get; set; }
     }
 }

@@ -1,0 +1,568 @@
+﻿@model Purchases.Models.RegisterViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+@section content{
+    <style>
+        .swal2-styled.swal2-cancel {
+            color: #080808
+        }
+
+    </style>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <div class="grad"></div>
+        <section class="content-header">
+            <h1>
+                إدارة المستخدمين
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> الإدارة المالية</a></li>
+                <li class="active">إدارة المستخدمين</li>
+            </ol>
+        </section>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <button type="button" class="btn btn-primary  pull-left btn-add" data-toggle="modal" data-target="#add-modal"><i class="fa fa-plus-square">  </i> مستخدم جديد  </button>
+                        </div><!-- /.box-header -->-
+                        <div class="box-body">
+                            <table id="tbx" class="table table-bordered table-hover"></table>
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </section>
+    </div><!-- /.content-wrapper -->
+
+<div class="example-modal">
+    <div class="modal fade in" data-backdrop="static" id="add-modal">
+        <div class="modal-dialog" style="width:70% !important">
+            <div class="modal-content">
+                <div class="modal-header .no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"> إضافة مستخدم</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <form method="post" id="add-form">
+                                <div class="box .no-border">
+                                    <!-- /.box-header -->
+                                    <div class="box-body">
+                                        <!-- Input addon -->
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="user-name"> الاسم الكامل</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                                            @*<select class="form-control name list" id="name" name="name" style="width:100%"></select>*@
+                                                            <input class="form-control username w-100" id="user-name" name="username" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="name"> رقم الهاتف</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                                            @*<select class="form-control name list" id="name" name="name" style="width:100%"></select>*@
+                                                            <input type="number" maxlength="10" class="form-control name w-100" id="name" name="name" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="role"> الصلاحية </label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-phone-alt"></i></span>
+                                                        <select class="form-control role list" id="role" name="role" style="width:100%"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label for="password"> كلمة المرور  </label>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                                                    <input type="text" class="form-control   password" id="password" name="password" placeholder="كلمة المرور " value="123456" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="airportName"> المطار </label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-plane-departure"></i></span>
+                                                        <select class="form-control airportName list" id="airportName" name="airportName" style="width:100%"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-lg-12 ">
+                                            <div class="pull-left">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">رجوع</button>
+                                                <button type="submit" class="btn btn-primary adduser" value="add">حفظ</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+<div class="example-modal">
+    <div class="modal fade in" data-backdrop="static" id="edit-modal">
+        <div class="modal-dialog" style="width:70% !important">
+            <div class="modal-content">
+                <div class="modal-header .no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"> تعديل مستخدم</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <form method="post" id="edit-form">
+                                <div class="box .no-border">
+                                    <!-- /.box-header -->
+                                    <div class="box-body">
+                                        <!-- Input addon -->
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="ed-user-name"> الاسم الكامل</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                                            <input class="form-control edusername" id="ed-user-name" name="edusername">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="ed-name"> اسم المستخدم</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                                            <input id="ed-id" class="hidden" />
+                                                            <input class="form-control edname" id="ed-name" name="edname">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="col-lg-6">
+                                                <label for="ed-password"> كلمة المرور  </label>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                                                    <input type="text" class="form-control   password" id="ed-password" name="edpassword" placeholder="كلمة المرور " value="123456" disabled>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="edrole"> الصلاحية </label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-phone-alt"></i></span>
+                                                        <select class="form-control role list" id="ed-role" name="edrole" style="width:100%"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-lg-12">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="edairportName"> المطار </label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-plane-departure"></i></span>
+                                                            <select class="form-control edairportName list" id="edairportName" name="edairportName" style="width:100%"></select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-lg-12 ">
+                                            <div class="pull-left">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">رجوع</button>
+                                                <button type="submit" class="btn btn-warning adduser" value="add">تعديل</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+
+                            </form>
+                        </div>
+                    </div><!-- /.row (main row) -->
+
+                </div>
+                @*<div class="modal-footer">
+
+                    </div>*@
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+    }
+
+
+   @section scripts {
+        <script>
+
+            var dataTable;
+           //$(function () {
+            $(document).ready(function () {
+                loadData();
+                
+                select2list(".role", "/Account/getAllRoles", " صلاحية المستخدم ");
+                select2listNew(".airportName", "/Account/getAirports", "المطار الذي يعمل به");
+                select2listNew(".edairportName", "/Account/getAirports", "المطار الذي يعمل به");
+            });
+            function loadData() {
+                    dataTable = $('#tbx').DataTable({
+                        "language": {
+                            "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                            "search": "بحث"
+                        },
+                        ajax: {
+                            url: '/Account/LoadData',
+                            dataSrc: ''
+                        },
+                        columnDefs: [
+                            { className: "hidden", "targets": [ 0, 2, 6] }
+                        ],
+                        columns: [
+
+                            {
+                                "title": "# ",
+                                "data": "Id"
+                            },
+                            {
+                                "title": "الاسم بالكامل",
+                                "data": "Name"
+                            },
+                            {
+                                "title": "اسم المستخدم",
+                                "data": "UserName"
+                            },
+                            {
+                                "title": "رقم الهاتف",
+                                "data": "Phone"
+                            },
+                            {
+                                "title": "الصلاحية",
+                                "data": "Role"
+                            },
+                            {
+                                "title": "الادارة او المطار",
+                                "data": "CompanyInfoName"
+                            },
+                            {
+                                "title": "#",
+                                "data": "CompanyInfoId"
+                            },
+                            {
+                                "title": "<i class='fa fa-cog'></i>",
+                                "data": null,
+                                "width": "30%",
+                                "orderable": false,
+                                "render": function (data) {
+                                    return '<div class="btn-opreation">'
+                                                 + '<button class="btn btn-warning transfer resetPassword">Reset Password <i class="transfer-fa fa fa-redo-alt"> </i></button>'
+                                                 + '<button class="btn btn-success transfer openEditModal" style="margin-right:4px">تعديل <i class=" transfer-fa fa  fa-edit"></i></button> '
+                                        + '</div> ';
+
+                                }
+                            }
+
+
+                        ]
+
+                    });
+
+                }
+
+            function select2list(selector, url, placeholder) {
+                    $(selector).select2({
+                        language: { inputTooShort: function () { return 'enter 1 letter at less'; } },
+                        ajax: {
+                            url: url,
+                            dataType: 'json',
+                            delay: 100,
+                            data: function (params) {
+                                return {
+                                    q: params.term,
+                                    page: params.page
+                                };
+                            },
+                            processResults: function (data, params) {
+                                params.page = params.page || 1;
+                                return {
+                                    results: data,
+                                    pagination: {
+                                        more: ((data.total_count) > (params.page * 20))
+                                    }
+                                };
+                            },
+                            cache: true
+                        },
+                        placeholder: placeholder,
+                        minimumInputLength: 1,
+                    });
+
+                };
+
+
+                /*-----------------------------------------------validator------------------------------------------------------------------*/
+                $('#add-form').bootstrapValidator({
+                    onSuccess: function (e) {
+                        create();
+                        e.preventDefault();
+
+                    },
+                    submitButtons: 'button[type="submit"]',
+                    feedbackIcons: {
+                        valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                        invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                        validating: 'fa fa-refresh fa-spin success-feedback-icons'
+                    },
+                    fields: {
+                        name: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'يجب الا يكون حقل اسم المستخدم فارغ'
+                                }
+                            }
+                        },
+                        username: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'يجب الا يكون حقل رقم الهاتف فارغ'
+                                }
+                            }
+                        },
+                        role: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'يجب الا يكون حقل الصلاحية فارغ'
+                                }
+                            }
+                        }
+
+
+                    }
+                });
+
+                $('#edit-form').bootstrapValidator({
+                    onSuccess: function (e) {
+                        edit($('#ed-id').val());
+                        e.preventDefault();
+                    },
+                    submitButtons: 'button[type="submit"]',
+                    feedbackIcons: {
+                        valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                        invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                        validating: 'fa fa-refresh fa-spin success-feedback-icons'
+                    },
+                    fields: {
+                        edname: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'يجب الا يكون حقل الاسم  فارغ'
+                                }
+                            }
+                        },
+                        edrole: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'يجب الا يكون حقل الصلاحية فارغ'
+                                }
+                            }
+                        },
+                        edpassword: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'يجب الا يكون حقلكلمة المرور فارغ'
+                                }
+                            }
+                        }
+
+                    }
+                });
+            /*-----------------------------------------------buttons click------------------------------------------------------------------*/
+
+                //Open Edit Modal
+                $("#tbx").on('click', '.openEditModal', function () {
+                    // get the current row
+                    var currentRow = $(this).closest("tr");
+
+                    $('#ed-id').val(currentRow.find("td:eq(0)").text());
+                    $('#ed-name').val(currentRow.find("td:eq(2)").text()); // get current row st 2TD value
+                    $('#ed-user-name').val(currentRow.find("td:eq(1)").text()); // get current row st 2TD value
+
+                    var roleOption = new Option(currentRow.find("td:eq(4)").text(), currentRow.find("td:eq(4)").text(), true, true);
+                    $('select[name="edrole"]').append(roleOption).trigger('change');
+
+                    var companyInfoOption = new Option(currentRow.find("td:eq(5)").text(), currentRow.find("td:eq(5)").text(), true, true);
+                    $('select[name="edairportName"]').append(companyInfoOption).trigger('change');
+
+                    $('#edit-modal').modal('show');
+
+                });
+
+                //Open Reset password aweet alert
+                $("#tbx").on('click', '.resetPassword', function () {
+                    // get the current row
+                    var currentRow = $(this).closest("tr");
+
+                    var employeeid = currentRow.find("td:eq(0)").text();
+                    console.clear();
+                    console.log(employeeid);
+
+                    Swal.fire({
+                        title: 'إعادة تعين كلمة المرور',
+                        text: "سيتم التعديل لكلمة المرور الافتراضية (123456)",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#245571',
+                        cancelButtonColor: '#f4f4f4',
+                        confirmButtonText: 'موافق',
+                        cancelButtonText: 'رجوع',
+                        //allowOutsideClick: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            confirmresetPassword(employeeid);
+                        }
+                    });
+                });
+
+            /*-----------------------------------------------functions------------------------------------------------------------------*/
+
+                 //register new account
+                function create() {
+                    var ob = {
+                        //"Password": $('#password').val(),
+                        //"ConfirmPassword": $('#password').val(),
+                        "UserName": $('#user-name').val(),
+                        "Phone": $('#name').val(),
+                        "AirportName": $('#airportName').text(),
+                        "CompanyInfoId": parseInt($('#airportName').val()),
+                        "Role" : $('#role').text()
+                    };
+                    console.clear();
+                    console.log(ob);
+                    $.ajax({
+                        url: "@Url.Action("Create", "Account")",
+                        type: "POST",
+                        data: JSON.stringify(ob),
+                        contentType: "application/json charset=utf-8",
+                        dataType: "json",
+                        error: function (response) {
+                            //toastr[response.Status](response.Message, response.Title);
+                        },
+                        success: function (response) {
+                            toastr[response.Status](response.Message, response.Title);
+                            //$('.name').val(null);
+                            //$('.username').val(null);
+                            //$('.role').val(null);
+
+                            $('#add-user').modal('hide');
+                            dataTable.ajax.reload();
+                            $('.list').val(null).trigger('change');
+                            $('#add-form').bootstrapValidator("resetForm", true);
+                        }
+                      });
+                    }
+
+                //update selected account
+                function edit()
+                {
+                    var ob = {
+                        "UserName": $('#ed-user-name').val(),
+                        "Phone": $('#ed-name').val(),
+                        "Id": $('#ed-id').val(),
+                        "CompanyInfoId": parseInt($('#edairportName').val()),
+                        "Role": $('#select2-ed-role-container').text(),
+                    };
+                    console.clear();
+                    console.log(ob);
+
+                    $.ajax({
+                        url: "@Url.Action("Edit", "Account")",
+                        type: "POST",
+                        data: JSON.stringify(ob),
+                        contentType: "application/json charset=utf-8",
+                        dataType: "json",
+                        error: function (response) {
+                            //toastr[response.Status](response.Message, response.Title);
+                        },
+                        success: function (response) {
+                            toastr[response.Status](response.Message, response.Title);
+                            //$('.ed-name').val(null);
+                            $('#edit-modal').modal('hide');
+                            dataTable.ajax.reload();
+                            $('.list').val(null).trigger('change');
+                            $('#edit-form').bootstrapValidator("resetForm", true);
+                        }
+                     });
+                }
+
+            //called from sweet alert
+            function confirmresetPassword(employeeid)
+            {
+                var ob = {
+                    "Id": employeeid,
+                };
+
+                $.ajax({
+                        url: "@Url.Action("ResetPassword", "Account")",
+                        type: "POST",
+                        data: JSON.stringify(ob),
+                        contentType: "application/json charset=utf-8",
+                        dataType: "json",
+                        error: function (response) {
+                            //toastr[response.Status](response.Message, response.Title);
+                        },
+                        success: function (response) {
+                            toastr[response.Status](response.Message, response.Title);
+                            ////$('.ed-name').val(null);
+                            //$('#edit-modal').modal('hide');
+                            //dataTable.ajax.reload();
+                            //$('.list').val(null).trigger('change');
+                            //$('#edit-form').bootstrapValidator("resetForm", true);
+                        }
+                    });
+                }
+        </script>
+    }

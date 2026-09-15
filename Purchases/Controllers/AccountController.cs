@@ -176,6 +176,9 @@ namespace Purchases.Controllers
                     Name = item.FullName,
                     Phone = item.PhoneNumber,
                     Role = RoleController.GetRole(item.Id),
+                    CompanyInfoId = item.UserWorkDetails.FirstOrDefault(q=> q.UserId == item.Id).CompanyInfoId,
+                    CompanyInfoName = item.UserWorkDetails.FirstOrDefault(q=> q.UserId == item.Id).CompanyInfo.Name,
+                    FinancialCycleId = item.UserWorkDetails.FirstOrDefault(q=> q.UserId == item.Id).FinancialCycleId,
                 });
             }
             
@@ -242,7 +245,18 @@ namespace Purchases.Controllers
                         {
                             var UserId = identityUser.Id;
                             creationReasult = UserManager.AddToRole(UserId, RegisterViewModel.Role);
-                            
+
+                            int FinancialCycleId = shared.GetCurrentFinancialCycleId();
+                            var obj = new UserWorkDetail()
+                            {
+                                UserId = UserId,
+                                CompanyInfoId = RegisterViewModel.CompanyInfoId,
+                                FinancialCycleId = FinancialCycleId
+                            };
+
+                            db.UserWorkDetails.Add(obj);
+                            db.SaveChanges();
+
                             return Json(new { Message = " تم الحفظ بنجاح", Status = "success", Title = "نجاح" }, JsonRequestBehavior.AllowGet);
                         }
                     }
@@ -274,6 +288,28 @@ namespace Purchases.Controllers
 
                 ApplicationDbContext dbContext = new ApplicationDbContext();
 
+                var userWorkonDetails = db.UserWorkDetails.FirstOrDefault(q=> q.UserId == data.Id);
+                
+                if(userWorkonDetails != null)
+                {
+                    userWorkonDetails.CompanyInfoId = data.CompanyInfoId;
+                    userWorkonDetails.FinancialCycleId = CurrentFinancialCycleId;
+
+                    db.Entry(userWorkonDetails).State = EntityState.Modified;
+                }
+                else
+                {
+                    int FinancialCycleId = shared.GetCurrentFinancialCycleId();
+                    var obj = new UserWorkDetail()
+                    {
+                        UserId = data.Id,
+                        CompanyInfoId = data.CompanyInfoId,
+                        FinancialCycleId = FinancialCycleId
+                    };
+
+                    db.UserWorkDetails.Add(obj);
+                }
+
                 var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(dbContext));
                 if (data.Id != "" && data.Role != "")
                 {
@@ -283,6 +319,7 @@ namespace Purchases.Controllers
                 }
                 db.Entry(AspNetUser).State = EntityState.Modified;
                 db.SaveChanges();
+
                 return Json(new { Message = " تم التعديل بنجاح", Status = "success", Title = "نجاح" });
 
             }
@@ -424,11 +461,12 @@ namespace Purchases.Controllers
 
         public ActionResult getAirports(string q)
         {
-            var data = db.AspNetUsers.Select(p => new
+            var data = db.CompanyInfoes.Select(p => new
             {
-                id = p.AirportName.Trim(),
-                text = p.AirportName.Trim()
+                id = p.Id,
+                text = p.Name.Trim()
             }).Where(f => f.text.Contains(q)).Distinct().ToList();
+
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

@@ -24,8 +24,8 @@ namespace Purchases.Models
         public Nullable<System.DateTime> UpdatingDate { get; set; }
         public string UpdatedBy { get; set; }
     
+        public virtual CompanyRegisteration CompanyRegisteration { get; set; }
         public virtual AspNetUser AspNetUser { get; set; }
         public virtual AspNetUser AspNetUser1 { get; set; }
-        public virtual CompanyRegisteration CompanyRegisteration { get; set; }
     }
 }

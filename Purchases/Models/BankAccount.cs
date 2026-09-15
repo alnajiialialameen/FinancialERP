@@ -38,8 +38,6 @@ namespace Purchases.Models
         public Nullable<System.DateTime> UpdatingDate { get; set; }
     
         public virtual AccountSub AccountSub { get; set; }
-        public virtual AspNetUser AspNetUser { get; set; }
-        public virtual AspNetUser AspNetUser1 { get; set; }
         public virtual BankAccountType BankAccountType { get; set; }
         public virtual CurrencyType CurrencyType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -48,5 +46,7 @@ namespace Purchases.Models
         public virtual ICollection<PrintCheck> PrintChecks { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TransactionRecipient> TransactionRecipients { get; set; }
+        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
     }
 }

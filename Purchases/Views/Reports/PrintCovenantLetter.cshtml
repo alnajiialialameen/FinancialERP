@@ -78,8 +78,10 @@
         <br /><br /><br /><br />
         <div style="display: flex; justify-content: space-between">
             <div class="text-right">
-                <h3>الاســـــم: بلقيس محجوب احمد حمدالله</h3>
-                <h3>مدير الادارة العامة للشؤون المالية والمحاسبية</h3>
+                @*<h3>الاســـــم: بلقيس محجوب احمد حمدالله</h3>
+                <h3>مدير الادارة العامة للشؤون المالية والمحاسبية</h3>*@
+                <h3>@Session["FullName"].ToString()</h3>
+                <h3>@Session["Role"].ToString()</h3>
             </div>
         </div>
     </div>

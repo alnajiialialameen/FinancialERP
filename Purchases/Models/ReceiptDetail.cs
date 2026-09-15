@@ -27,9 +27,9 @@ namespace Purchases.Models
         public Nullable<System.DateTime> UpdatingDate { get; set; }
     
         public virtual AccountTree AccountTree { get; set; }
-        public virtual AspNetUser AspNetUser { get; set; }
-        public virtual AspNetUser AspNetUser1 { get; set; }
         public virtual Receipt Receipt { get; set; }
         public virtual CurrencyType CurrencyType { get; set; }
+        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
     }
 }

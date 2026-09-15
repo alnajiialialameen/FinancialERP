@@ -55,6 +55,7 @@ namespace Purchases.Models
             this.AccountTrees1 = new HashSet<AccountTree>();
             this.AccountTypes = new HashSet<AccountType>();
             this.AccountTypes1 = new HashSet<AccountType>();
+            this.AspNetRoles = new HashSet<AspNetRole>();
             this.AspNetUserClaims = new HashSet<AspNetUserClaim>();
             this.AspNetUserClaims1 = new HashSet<AspNetUserClaim>();
             this.AspNetUserLogins = new HashSet<AspNetUserLogin>();
@@ -119,9 +120,9 @@ namespace Purchases.Models
             this.TransactionDetails1 = new HashSet<TransactionDetail>();
             this.Units = new HashSet<Unit>();
             this.Units1 = new HashSet<Unit>();
+            this.UserWorkDetails = new HashSet<UserWorkDetail>();
             this.Vats = new HashSet<Vat>();
             this.Vats1 = new HashSet<Vat>();
-            this.AspNetRoles = new HashSet<AspNetRole>();
         }
     
         public string Id { get; set; }
@@ -138,6 +139,7 @@ namespace Purchases.Models
         public string UserName { get; set; }
         public bool IsDefualtPassword { get; set; }
         public string FullName { get; set; }
+        public string AirportName { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<int> FinancialCycleId { get; set; }
         public string NormalizedUserName { get; set; }
@@ -146,7 +148,6 @@ namespace Purchases.Models
         public string NormalizedEmail { get; set; }
         public Nullable<System.DateTime> LockoutEnd { get; set; }
         public string ConcurrencyStamp { get; set; }
-        public string AirportName { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Circu> Circus { get; set; }
@@ -224,6 +225,8 @@ namespace Purchases.Models
         public virtual ICollection<AccountType> AccountTypes { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AccountType> AccountTypes1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AspNetRole> AspNetRoles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetUserClaim> AspNetUserClaims { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -355,10 +358,10 @@ namespace Purchases.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Unit> Units1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserWorkDetail> UserWorkDetails { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Vat> Vats { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Vat> Vats1 { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AspNetRole> AspNetRoles { get; set; }
     }
 }

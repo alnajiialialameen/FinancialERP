@@ -49,7 +49,6 @@ namespace Purchases.Models
         public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUserRole> AspNetUserRoles { get; set; }
-        public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<Balance> Balances { get; set; }
         public virtual DbSet<BankAccount> BankAccounts { get; set; }
         public virtual DbSet<BankAccountType> BankAccountTypes { get; set; }
@@ -85,6 +84,9 @@ namespace Purchases.Models
         public virtual DbSet<Supplier> Suppliers { get; set; }
         public virtual DbSet<Unit> Units { get; set; }
         public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
+        public virtual DbSet<CompanyInfo> CompanyInfoes { get; set; }
+        public virtual DbSet<UserWorkDetail> UserWorkDetails { get; set; }
+        public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
     
         public virtual ObjectResult<Nullable<decimal>> GetLastAccNumber(Nullable<int> accParentId)
         {

@@ -29,10 +29,10 @@ namespace Purchases.Models
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatingDate { get; set; }
     
-        public virtual AspNetUser AspNetUser { get; set; }
-        public virtual AspNetUser AspNetUser1 { get; set; }
         public virtual BankAccount BankAccount { get; set; }
         public virtual Check Check { get; set; }
         public virtual Transaction Transaction { get; set; }
+        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
     }
 }
