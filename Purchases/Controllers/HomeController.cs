@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Mvc;
 using Purchases.Models;
 using Purchases.CurencyOperation;
+using Purchases.MyLogic;
+using Microsoft.AspNet.Identity;
 
 namespace Purchases.Controllers
 {
@@ -12,6 +14,7 @@ namespace Purchases.Controllers
     {
         DateTime now = DateTime.Now;
         Entities db = new Entities();
+
         public ActionResult Index()
         {
             //الصنف الاكثر طلبا
@@ -67,9 +70,15 @@ namespace Purchases.Controllers
             return View();
         }
 
+        public ActionResult GetNotifications()
+        {
+            var shared = new SharedClass();
+            var userId = User.Identity.GetUserId();
+            var data = shared.GetNotifications(userId);
 
-
-
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        
         //الدالة دي برسل ليها المبلغ بتحول لي نص(التفقيطة)
         public ActionResult ConvertToText(string amount)
         {

@@ -20,6 +20,19 @@ namespace Purchases.Controllers
             return View();
         }
 
+        public ActionResult OverLimitItems()
+        {
+            return View();
+        }
+
+        public ActionResult LoadOverLimitItemsData()
+        {
+            var userId = User.Identity.GetUserId();
+            var data = shared.GetOverloadBalanceItems(userId);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult LoadData()
         {
             List<object> data = new List<object>();

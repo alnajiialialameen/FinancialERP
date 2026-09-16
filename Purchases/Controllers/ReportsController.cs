@@ -1354,9 +1354,10 @@ namespace Purchases.Controllers
                     decimal? amount = item.Credit - bankAmount;
 
                     ViewBag.TotlaAmount = amount.ToString();
+                    ViewBag.CurrencyType = transactionObj.CurrencyType.Name;
 
                     BaseClass baseClass = new BaseClass();
-                    string txtSumOfBous = baseClass.ChangeNumberToText(amount.ToString(), 0);
+                    string txtSumOfBous = baseClass.ChangeNumberToText(amount.ToString(), transactionObj.CurrencyId-1??1);
                     ViewBag.TotalAmountTxt = txtSumOfBous;
                 }
            // }

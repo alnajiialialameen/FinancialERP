@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
 
 namespace Purchases.CurencyOperation
 {
     public class CurrencyInfo
     {
-        public enum Currencies { Sudan = 0, UAE, SaudiArabia, Tunisia, Gold };
+        public enum Currencies { Sudan = 0, USD, UAE, SaudiArabia, Tunisia, Gold };
 
         #region Constructors
 
@@ -32,6 +28,26 @@ namespace Purchases.CurencyOperation
                     Arabic2CurrencyPartName = "قرشان";
                     Arabic310CurrencyPartName = "قروش";
                     Arabic1199CurrencyPartName = "قرشاً";
+                    PartPrecision = 2;
+                    IsCurrencyPartNameFeminine = false;
+                    break;
+                
+                case Currencies.USD:
+                    CurrencyID = 0;
+                    CurrencyCode = "USD";
+                    IsCurrencyNameFeminine = false;
+                    EnglishCurrencyName = "US Dollar";
+                    EnglishPluralCurrencyName = "US Dollars";
+                    EnglishCurrencyPartName = "Cent";
+                    EnglishPluralCurrencyPartName = "Cents";
+                    Arabic1CurrencyName = "دولار";
+                    Arabic2CurrencyName = "دولاران";
+                    Arabic310CurrencyName = "دولارات";
+                    Arabic1199CurrencyName = "دولاراً";
+                    Arabic1CurrencyPartName = "سنت";
+                    Arabic2CurrencyPartName = "سنتان";
+                    Arabic310CurrencyPartName = "سنتات";
+                    Arabic1199CurrencyPartName = "سنتاً";
                     PartPrecision = 2;
                     IsCurrencyPartNameFeminine = false;
                     break;

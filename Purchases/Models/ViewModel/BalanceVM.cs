@@ -7,6 +7,7 @@ namespace Purchases.Models.ViewModel
     {
         public int Id { get; set; }
         public int accTreeId { get; set; }
+        public int? rootParentId { get; set; }
         public int transactionId { get; set; }
         public string accTreeName { get; set; }
         public Nullable<int> balanceId { get; set; }
@@ -34,4 +35,11 @@ namespace Purchases.Models.ViewModel
         public List<BalanceVM> details { get; set; }
         public TransactionDetail detail { get; set; }
     }
+
+    public class NotificationDto
+    {
+        public int type { get; set; }
+        public string message { get; set; } = string.Empty;
+    }
+
 }

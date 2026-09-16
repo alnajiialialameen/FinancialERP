@@ -232,29 +232,14 @@
 
                         @if (Request.IsAuthenticated)
                         {
-                            <!-- الجرس -->
-                            <li class="dropdown" id="notificationDropdown" style="display:none;">
-                                <a href="#" class="dropdown-toggle fs-3" data-toggle="dropdown" id="btnNotification" style="font-size: 25px;">
-                                    <i class="fa fa-bell text-white"></i>
-                                    <span class="label label-danger" id="notificationCount" style="font-size: 15px;">0</span>
-                                </a>
-
-                                <ul class="dropdown-menu" id="notificationMenu" >
-                                    <!-- سيتم تعبئتها بواسطة JavaScript -->
-                                </ul>
-                            </li>
-
                             <li class="dropdown user user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <img src="~/Content/img/user3.jpg"
-                                         class="user-image"
-                                         alt="User Image"
-                                         style="margin-left:10px;">
-
+                                    <img src="~/Content/img/user3.jpg" class="user-image pull-right" alt="User Image">
                                     <span class="hidden-xs" style="display:inline-block !important">
                                         @Session["FullName"].ToString()
                                     </span>
                                 </a>
+
                                 <ul class="dropdown-menu">
                                     <!-- User image -->
                                     <li class="user-header">
@@ -498,7 +483,7 @@
     <script src="~/Scripts/jquery-ui.min.js"></script>
     <script src="~/Temp/sweetalert2/js/sweetalert2.min.js"></script>
     <script src="~/Temp/sweetalert2/js/sweetalert.js"></script>
-    <script src="~/Temp/Tree/dist/jstree.js"></script>
+    <script src="~/Temp/Tree/dist/jstree.min.js"></script>
     <script src="~/Temp/charts/chart.js"></script>
     <script src="~/Temp/AutoNumeric/auto-numeric.js"></script>
 
@@ -709,107 +694,57 @@
     }
 </script>
 
-<script>
-    function CustomAutoNumeric(inputId) {
-        return new AutoNumeric(inputId, {
-            digitGroupSeparator: ',', // الفاصلة بين الآلاف
-            decimalCharacter: '.',    // النقطة كعلامة عشرية
-            decimalPlaces: 2,          // عدد المنازل العشرية
-            defaultValue: "0.00"      // القيمة الافتراضية
+    <script>
+        function CustomAutoNumeric(inputId) {
+            return new AutoNumeric(inputId, {
+                digitGroupSeparator: ',', // الفاصلة بين الآلاف
+                decimalCharacter: '.',    // النقطة كعلامة عشرية
+                decimalPlaces: 2,          // عدد المنازل العشرية
+                defaultValue: "0.00"      // القيمة الافتراضية
+            });
+        }
+
+        // ضبط التاريخ علي صيغة معينة
+        $('.calendar').datepicker({
+            todayBtn: "linked",
+            language: "it",
+            autoclose: true,
+            todayHighlight: true,
+            format: 'dd/mm/yyyy'
         });
-    }
 
-    // ضبط التاريخ علي صيغة معينة
-    $('.calendar').datepicker({
-        todayBtn: "linked",
-        language: "it",
-        autoclose: true,
-        todayHighlight: true,
-        format: 'dd/mm/yyyy'
-    });
+        function formatNumber(num) {
+            //if (num === null) {
+            //    return '0';
+            //}
 
-    function formatNumber(num) {
-        //if (num === null) {
-        //    return '0';
-        //}
-
-        if (num === null || num === undefined || isNaN(num)) {
-            return '0';
-        }
-
-        // تمت اضفاته مؤخرا وشغالة تمام
-        num = num.toString(); // ✅ حول القيمة لنص
-
-        // معالجة الجزء الصحيح والجزء العشري
-        var parts = num.split('.');
-        var integerPart = parts[0];
-        var decimalPart = parts[1] || '';
-
-        // إذا كان هناك جزء صحيح، أضف له الفواصل
-        integerPart = integerPart.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-        // إذا كان هناك جزء عشري، أضف له الفواصل
-        if (decimalPart) {
-            // var roundedDecimal = parseFloat(decimalPart).toFixed(2); // تقريب إلى خانتين عشريتين
-            var roundedDecimal = (parseFloat('0.' + decimalPart).toFixed(2)).split('.')[1];
-            // roundedDecimal = roundedDecimal.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            roundedDecimal = roundedDecimal.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            return integerPart + '.' + roundedDecimal;
-        }
-
-        return integerPart;
-    }
-
-
-    function loadNotifications() {
-
-        $.get("/Home/GetNotifications", function (data) {
-
-            var menu = $("#notificationMenu");
-            menu.empty();
-
-            if (data.length > 0) {
-                $("#notificationDropdown").show(); // إظهار الجرس
-                $("#notificationDropdown").css("display", "block"); // إظهار
-                data.forEach(function (item) {
-                    menu.append(`
-                        <li>
-                            <span  class="text-danger hide">${item.type}</span>
-                            <a style="font-size:16px;" href="#" onClick="GoToSpecificPage(${item.type})">
-                                ${item.message}
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                    `);
-                });
-
-                $("#notificationCount").text(data.length);
-            } else {
-                // إخفاء الجرس إذا لم توجد إشعارات
-                $("#notificationDropdown").css("display", "none");  // إخفاء
-                $("#notificationDropdown").hide(); // إخفاء الجرس
-                $("#notificationCount").text("0");
+            if (num === null || num === undefined || isNaN(num)) {
+                return '0';
             }
-        });
-    }
-    $(function () {
-        loadNotifications();
-    });
-    function GoToSpecificPage(type) {
-        switch (type) {
-            case 1:
-                window.location.href = "/Transactions/PettyCashNotPayed";
-                break;
-            case 2:
-                window.location.href = "/Balances/OverLimitItems";
-                break;
-            case 3:
-                window.location.href = "/Transactions/IndexAll";
-                break;
-            default:
-                console.log("Unknown type: " + type);
+
+            // تمت اضفاته مؤخرا وشغالة تمام
+            num = num.toString(); // ✅ حول القيمة لنص
+
+            // معالجة الجزء الصحيح والجزء العشري
+            var parts = num.split('.');
+            var integerPart = parts[0];
+            var decimalPart = parts[1] || '';
+
+            // إذا كان هناك جزء صحيح، أضف له الفواصل
+            integerPart = integerPart.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+            // إذا كان هناك جزء عشري، أضف له الفواصل
+            if (decimalPart) {
+                // var roundedDecimal = parseFloat(decimalPart).toFixed(2); // تقريب إلى خانتين عشريتين
+                var roundedDecimal = (parseFloat('0.' + decimalPart).toFixed(2)).split('.')[1];
+                // roundedDecimal = roundedDecimal.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                roundedDecimal = roundedDecimal.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return integerPart + '.' + roundedDecimal;
+            }
+
+            return integerPart;
         }
-    }
-</script>
+
+    </script>
 </body>
 </html>

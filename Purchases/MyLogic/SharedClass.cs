@@ -710,11 +710,28 @@ namespace Purchases.MyLogic
                 return val.ToString("0.##"); // تظهر حتى خانتين عشريتين فقط
         }
 
-
         public List<TransactionVM> loadPettyCashNotPayedData(string userId)
         {
+            var currentDate = DateTime.Now;
+            var threeMonthsAgo = currentDate.AddMonths(-3);
+
             int financialCycleId = GetUserCurrentFinancialCycleId(userId);
-            var query = db.Transactions.Where(q => q.FinancialCycleId == financialCycleId && (q.DocumentTypeId == 4 && q.IsPosted != true) || (q.DocumentTypeId != 4 && q.DocumentTypeId != 7 && q.Note.Contains("نثري")))
+            int companyInfoId = GetUserCurrentCompanyInfoId(userId);
+            var query = db.Transactions
+                .Where(q =>
+                    q.TransactionDate.HasValue &&
+                    q.TransactionDate.Value < threeMonthsAgo &&
+                    q.FinancialCycleId == financialCycleId &&
+                    q.FinancialCycleId == financialCycleId &&
+                    (
+                        (q.DocumentTypeId == 4 && q.IsPosted != true)
+                        ||
+                        (
+                            q.DocumentTypeId != 4 &&
+                            q.DocumentTypeId != 7 &&
+                            q.Note.Contains("نثري")
+                        )
+                    ))
                 .Select(p => new TransactionVM()
                 {
                     transactionId = p.Id,
@@ -732,6 +749,60 @@ namespace Purchases.MyLogic
                 }).OrderByDescending(d => d.transactionId).ToList();
 
             return query;
+        }
+    
+        public List<BalanceVM> GetOverloadBalanceItems(string userId)
+        {
+            var accTreeClass = new TreeClass();
+
+            int FinancialCycleId = this.GetUserCurrentFinancialCycleId(userId);
+
+            var data = db.Balances
+                            .Where(q => q.FinanceCycleId == FinancialCycleId && q.ActualExchange >= q.Credint)
+                            .Select(q=> new BalanceVM
+                            {
+                                Id = q.Id,
+                                accTreeName = q.AccountTree.AccName,
+                                accTreeId = q.AccountTreeId??0,
+                                balanceId = q.Id,
+                                actualExchange = q.ActualExchange,
+                                credint = q.Credint,
+                                year = q.FinancialCycle.Year,
+                                relativeDeviation = q.RelativeDeviation,
+                            })
+                            .ToList();
+
+            data.ForEach(q => q.rootParentId = accTreeClass.getRootParentId(q.accTreeId));
+
+            return data;
+        }
+
+        public List<NotificationDto> GetNotifications(string userId)
+        {
+            var pettyCashCount = this.loadPettyCashNotPayedData(userId).Count();
+
+            var items = new List<NotificationDto>();
+            if (pettyCashCount > 0)
+            {
+                items.Add(new NotificationDto
+                {
+                    type = 1,
+                    message = $"يوجد عدد ({pettyCashCount}) نثريات منذ قبل 3 أشهر لم تتم إزالتها"
+                });
+            }
+
+            var overloadBalanceCount = this.GetOverloadBalanceItems(userId).Count();
+            if (overloadBalanceCount > 0)
+            {
+                items.Add(new NotificationDto
+                {
+                    type = 2,
+                    message =
+                        $"يوجد عدد ({overloadBalanceCount}) بنود تجاوزت الحد المصدق به"
+                });
+            }
+
+            return items;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Purchases.CurencyOperation
         public BaseClass()
         {
             currencies.Add(new CurrencyInfo(CurrencyInfo.Currencies.Sudan));
-            currencies.Add(new CurrencyInfo(CurrencyInfo.Currencies.UAE));
+            currencies.Add(new CurrencyInfo(CurrencyInfo.Currencies.USD));
             currencies.Add(new CurrencyInfo(CurrencyInfo.Currencies.SaudiArabia));
             currencies.Add(new CurrencyInfo(CurrencyInfo.Currencies.Tunisia));
             currencies.Add(new CurrencyInfo(CurrencyInfo.Currencies.Gold));
