@@ -590,9 +590,10 @@ namespace Purchases.MyLogic
             }
         }
         // طباعة بيانات الحركة بين تاريخين 
-        public List<TransactionVM> printDataByDatesForBank(int? bankId, DateTime? dateFrom, DateTime? dateTo)
+        public List<TransactionVM> printDataByDatesForBank(int? bankId, DateTime? dateFrom, DateTime? dateTo, string userId)
         {
             List<TransactionVM> data = new List<TransactionVM>();
+            var companyInfoId = sh.GetUserCurrentCompanyInfoId(userId);
 
             try
             {
@@ -602,7 +603,7 @@ namespace Purchases.MyLogic
                 if (dateFrom != null & dateTo != null)
                 {
                     transactionsList = db.Transactions
-                        .Where(x => x.DocumentTypeId != 5 &&
+                        .Where(x => x.DocumentTypeId != 5 && x.CompanyInfoId == companyInfoId &&
                                DbFunctions.TruncateTime(x.TransactionDate) >= DbFunctions.TruncateTime(dateFrom) &&
                                DbFunctions.TruncateTime(x.TransactionDate) <= DbFunctions.TruncateTime(dateTo))
                         .ToList();

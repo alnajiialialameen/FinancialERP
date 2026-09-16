@@ -227,8 +227,9 @@ namespace Purchases.Controllers
         [HttpGet]
         public ActionResult printDataInDateRange(int? bankId = null, DateTime? dateFrom = null, DateTime? dateTo = null)
         {
+            var userId = User.Identity.GetUserId();
             // var dataOld = reportObject.printDataByDates(dateFrom, dateTo).OrderBy(x=>x.transactionDate);
-            var data = reportObject.printDataByDatesForBank(bankId, dateFrom, dateTo).OrderBy(x => x.transactionDate);
+            var data = reportObject.printDataByDatesForBank(bankId, dateFrom, dateTo, userId  ).OrderBy(x => x.transactionDate);
             //var data = reportObject.printAllData();
 
             ViewBag.SumOfAmount = data.Sum(x => x.credit);
