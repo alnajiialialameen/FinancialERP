@@ -1,0 +1,234 @@
+﻿@using Purchases.Models;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+    Entities db = new Entities();
+}
+
+@section content{
+
+<div class="content-wrapper">
+    <div class="grad"></div>
+    <label id="CommitteeFormationId" class="hidden">@ViewBag.ACUCommitteFormationId</label>
+    <label id="OrderId" class="hidden">@ViewBag.OrderId</label>
+    <label id="EmployeeId" class="hidden">EmployeeId</label>
+    
+    <section class="content">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="box">
+                    @*<div class="box-header">
+                        <button type="button" class="btn btn-primary pull-left btn-add" data-toggle="modal" data-target="#add-modal"><i class="fa fa-plus-square">  </i> صنف جديد </button>
+                    </div>*@
+                <!-- /.box-header -->
+                    <div class="box-body">
+                        <table id="tbx" class="table table-bordered table-hover"></table>
+                    </div><!-- /.box-body -->
+                </div><!-- /.box -->
+            </div>
+
+            <div class="col-lg-3">
+
+                <!-- Profile Image -->
+                <div class="box box-primary">
+                    <div class="box-body box-profile">
+                        @*<img class="profile-user-img img-responsive img-circle" src="../../dist/img/user4-128x128.jpg" alt="User profile picture">*@
+                        <h4>عن العطاء</h4>
+
+                        <h3 class="profile-username text-center" id="OrderDescription">@ViewBag.Description</h3>
+
+                        <p class="text-muted text-center" id="DepartmentName">@ViewBag.DepartmentName</p>
+
+                        <ul class="list-group list-group-unbordered">
+                            <li class="list-group-item">
+                                <b>تاريخ الطلب</b> <span class="pull-left" id="OrderDate">@ViewBag.OrderDate</span>
+                            </li>
+                            <li class="list-group-item">
+                                <b>نوع الطلب</b> <span class="pull-left">مناقصة</span>
+                            </li>
+                            <li class="list-group-item">
+                                <b>الحالة الحالية</b> <span class="pull-left">مصدق</span>
+                            </li>
+                            <li class="list-group-item">
+                                <b>تاريخ أمر التشكيل</b> <span class="pull-left" id="ResolutionDate">@ViewBag.ResolutionDate</span>
+                            </li>
+                        </ul>
+
+                        <a href="~/ACUCommitteFormations/Index/@ViewBag.OrderId" class="btn btn-primary btn-block"><b>انتقل للطلب</b></a>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+
+        <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    </div>
+
+    <div class="modal fade in" id="myModal"  data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:50% !important">
+            <div class="modal-content">
+                <div class="modal-header .no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"> إضافة عضو جديد</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <form method="post" id="add-form">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="name"> اسم العضو </label>
+                                            <label class="form-control  disabled" id="MemberName" name="MemberName">هشام سليمان محمد</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="name">الوظيفة في اللجنة</label>                                            
+                                                <select id="CommitteeJobId" class="form-control">
+                                                    <option value="-1">-إختار الوظيفة-</option>
+                                                    @{
+                                                        foreach (var item in db.CommitteeJobs.ToList())
+                                                        {
+                                                            <option value="@item.Id">
+                                                                @item.Name
+                                                            </option>
+                                                        }
+                                                    }
+                                                </select>                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div><!-- /.row (main row) -->
+                    
+                </div>
+
+            <div class="modal-footer">
+                <div class="row">
+                    <button type="submit" class="btn btn-primary save" style="float:right" onclick="AddMember()">حفظ</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="close" >إلغاء</button>
+                </div>
+            </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+
+}
+
+@section scripts{
+
+    <script>
+        ///var dataTable = $("#tbx").DataTable();
+        $(function () {
+            function loadData() {
+                var OrderId = $('#OrderId').text();
+                dataTable = $('#tbx').DataTable({
+                    "language": {
+                        "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                        "search": "بحث"
+                    },
+                    ajax: {
+                        url: '/ACUCommitteFormations/getAllEmployees/' + OrderId,
+                        dataSrc: ''
+                    },
+                    columns: [
+                        {
+                            "title": "# ",
+                            "data": "Id"
+                        },
+
+                        {
+                            "title": "الاسم",
+                            "data": "Name"
+                        },
+
+                        {
+                            "title": "نوع التوظيف",
+                            "data": "EmploymetType"
+                        },
+
+                        {
+                            "title": "الادارة",
+                            "data": "Department"
+                        },
+
+                        {
+                            "title": "الدرجة",
+                            "data": "Grade"
+                        },
+
+                        {
+                            "title": "<i class='fa fa-cog'></i>",
+                            "data": null,
+                            "orderable": false,
+                            "render": function (data) {
+                                return '<div class="btn-opreation">'
+                                            + '<button class="btn btn-success transfer openEditModal"  data-toggle="modal" data-target="#myModal">إضافة <i class="transfer-fa fa  fa-plus"></i></button> '
+                                       + '</div> ';
+                            }
+                        }
+                    ]
+                });
+
+            }
+            loadData();
+        });
+        var obj = [];
+        $("#tbx").on('click', '.transfer', function () {
+            var currentRow = $(this).closest("tr");
+
+            var EmployeeId = currentRow.find("td:eq(0)").text();
+            var MemberName = currentRow.find("td:eq(1)").text();
+            console.clear();
+            console.log(EmployeeId);
+            $('#EmployeeId').text(EmployeeId);
+            $('#MemberName').text(MemberName);
+            
+            $('#myModal').modal('show');
+        });
+
+        function AddMember() {
+            var EmployeeId = $('#EmployeeId').text();
+            var CommitteFormationId = $('#CommitteeFormationId').text();
+            var OrderId = $('#OrderId').text();
+            var CommitteeJobId = $('#CommitteeJobId').val();
+
+            obj = {
+                "EmployeeId": EmployeeId,
+                "CommitteeJobId": CommitteeJobId,
+                "CommitteFormationId": CommitteFormationId,
+                "OrderId": OrderId,
+            };
+
+            console.clear();
+            console.log(obj);
+            
+            $.ajax({
+                "type": "POST",
+                "url": '/ACUCommitteFormations/AddMember',
+                "dataType": "json",
+                "traditional": true,
+                "data": JSON.stringify(obj),
+                "contentType": "application/json  charset=utf-8",
+                "error": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                },
+                "success": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    dataTable.ajax.reload();
+                    $('#myModal').modal('toggle');
+                }
+            });
+
+        }
+
+    </script>
+}

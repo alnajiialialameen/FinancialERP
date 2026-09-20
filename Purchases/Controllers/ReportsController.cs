@@ -100,7 +100,7 @@ namespace Purchases.Controllers
             // var data1 = reportObject.BalancePositionForBanks(FinancialCycleId, bankId, dateFrom, dateTo);
             List<BalanceVM> data = new List<BalanceVM>();
 
-            var dataList = db.AccountSubs.Include(q=>q.AccountTree).ToList();
+            var dataList = db.AccountSubs.Include(q => q.AccountTree).ToList();
 
 
             List<BalanceVM> res;
@@ -153,7 +153,7 @@ namespace Purchases.Controllers
             string txtSumOfBous = baseClass.ChangeNumberToText(data.Sum(x => x.credit).ToString(), 0);
             ViewBag.txtSumOfBous = txtSumOfBous;
 
-            data= data.Where(q=>q.debit > 0 || q.credit > 0).ToList();
+            data = data.Where(q => q.debit > 0 || q.credit > 0).ToList();
             if (dataList.Any(q => q.AccTreeId == Id))
                 return View(data);
             else
@@ -164,6 +164,7 @@ namespace Purchases.Controllers
         {
             return View();
         }
+       
         [HttpGet]
         public ActionResult printLedgerByDatesForSearch(int? bankId, int Id, DateTime? dateFrom, DateTime? dateTo)
         {
@@ -192,7 +193,7 @@ namespace Purchases.Controllers
             }
 
             data.AddRange(res);
-            data = data.Where(q=> q.debit> 0 || q.credit > 0).ToList();
+            data = data.Where(q => q.debit > 0 || q.credit > 0).ToList();
             return Json(new { data, IsParent }, JsonRequestBehavior.AllowGet);
         }
 
@@ -229,7 +230,7 @@ namespace Purchases.Controllers
         {
             var userId = User.Identity.GetUserId();
             // var dataOld = reportObject.printDataByDates(dateFrom, dateTo).OrderBy(x=>x.transactionDate);
-            var data = reportObject.printDataByDatesForBank(bankId, dateFrom, dateTo, userId  ).OrderBy(x => x.transactionDate);
+            var data = reportObject.printDataByDatesForBank(bankId, dateFrom, dateTo, userId).OrderBy(x => x.transactionDate);
             //var data = reportObject.printAllData();
 
             ViewBag.SumOfAmount = data.Sum(x => x.credit);
@@ -1326,42 +1327,40 @@ namespace Purchases.Controllers
 
             foreach (var item in credits)
             {
-               //int bankId = sh.IsItBankAccount(Id, item.Credit);
-
-                 int bankId = sh.IsTransactionHasBankAccount(Id); // دي الاصح ال مفترض تشتغل لكن ما اتاكدت منها
+                int bankId = sh.IsItBankAccount(Id, item.Credit);
 
                 //if (bankId > 0)
-                decimal? bankAmount = 0;
-                if (bankId == bankAccountId)
+                //decimal? bankAmount = 0;
+                if (bankId > 0)
                 {
-                    
-                   //if (bankId == bankAccountId)
+                    //if (bankId == bankAccountId)
                     //{
-                        var transactionRecipientsLetters = transactionRecipientsList.Where(q => q.BankAccountId == bankId).ToList();
+                //    var transactionRecipientsLetters = transactionRecipientsList.Where(q => q.BankAccountId == bankId).ToList();
 
-                        if (transactionRecipientsLetters.Any())
-                        {
-                            bankAmount = transactionRecipientsLetters.Sum(q => q.Amount);
-                        }
-                    }
+                //    if (transactionRecipientsLetters.Any())
+                //    {
+                //        bankAmount = transactionRecipientsLetters.Sum(q => q.Amount);
+                //    }
+                //}
 
-                    var BankObj = db.BankAccounts.Find(bankId);
-                    ViewBag.BankLabel = BankObj.BankLabel;
-                    ViewBag.SendBank = BankObj.AccountSub.AccountTree.AccName + " بالرقم " + BankObj.Number;
+                var BankObj = db.BankAccounts.Find(bankId);
+                ViewBag.BankLabel = BankObj.BankLabel;
+                ViewBag.SendBank = BankObj.AccountSub.AccountTree.AccName + " بالرقم " + BankObj.Number;
 
-                    ViewBag.FirstSignature = BankObj.FirstSignature; // التوقيع الاول
-                    ViewBag.SecondSignature = BankObj.SecondSignature; // التوقيع الثاني
+                ViewBag.FirstSignature = BankObj.FirstSignature; // التوقيع الاول
+                ViewBag.SecondSignature = BankObj.SecondSignature; // التوقيع الثاني
 
-                    decimal? amount = item.Credit - bankAmount;
+                //decimal? amount = item.Credit - bankAmount;
+                decimal? amount = item.Credit;
 
-                    ViewBag.TotlaAmount = amount.ToString();
-                    ViewBag.CurrencyType = transactionObj.CurrencyType.Name;
+                ViewBag.TotlaAmount = amount.ToString();
+                ViewBag.CurrencyType = transactionObj.CurrencyType.Name;
 
-                    BaseClass baseClass = new BaseClass();
-                    string txtSumOfBous = baseClass.ChangeNumberToText(amount.ToString(), transactionObj.CurrencyId-1??1);
-                    ViewBag.TotalAmountTxt = txtSumOfBous;
-                }
-           // }
+                BaseClass baseClass = new BaseClass();
+                string txtSumOfBous = baseClass.ChangeNumberToText(amount.ToString(), transactionObj.CurrencyId - 1 ?? 1);
+                ViewBag.TotalAmountTxt = txtSumOfBous;
+            }
+             }
 
             return View();
         }
@@ -1517,6 +1516,108 @@ namespace Purchases.Controllers
 
             return View();
         }
-  
+
+        public ActionResult printBankLetterNew(int Id, int? bankAccountId = null)
+        {
+            SharedClass sh = new SharedClass();
+            var transactionObj = db.Transactions.Find(Id);
+            string pattren = @"^\d{10,}$"; // بالنسبة لي رقم فاتورة ايصالي
+
+            ViewBag.Id = Id;
+            var transactionDate = transactionObj.TransactionDate.Value;
+            ViewBag.TransactionDate = $"{transactionDate.Day}-{transactionDate.Month}-{transactionDate.Year}";
+
+            // بيانات الحساب المدفوع له
+            // اذا العملية تحويل بنكي يبقى المدفوع له حساب بنكي ايضا
+            if (transactionObj.DocumentTypeId == 5)
+            {
+                int debitAccTreeId = db.TransactionDetails.FirstOrDefault(x => x.Debit > 0 && x.TransactionId == transactionObj.Id).AccTreeId;
+                int AccountSubId = db.AccountSubs.FirstOrDefault(x => x.AccTreeId == debitAccTreeId).Id;
+                var BankObj = db.BankAccounts.FirstOrDefault(x => x.AccountSubId == AccountSubId);
+                ViewBag.RecipientDetails = " حساب شركة مطارات السودان المحدودة طرف  " + BankObj.AccountSub.AccountTree.AccName + " بالرقم " + BankObj.Number;
+            }
+            else // اذا العملية ما تحويل بنكي
+            {
+                // المستلمين مجموعة (الكشف المرفق)
+                if (transactionObj.Recipient.Trim().Contains("كشف"))
+                {
+                    ViewBag.RecipientDetails = "أرقام الحسابات طرفكم حسب الكشف المرفق.";
+                }
+                else
+                {
+                    // المستلم فرد واحد
+                    if (transactionObj.RecipientId > 0) // الشرط ده عشان لو المستلم عنده اكتر من حساب بنكي يجيب لي المحدد في العملية ما يجيب لي اول واحد بي
+                    {
+                        var Recipient = db.Recipients.FirstOrDefault(x => x.Id == transactionObj.RecipientId);
+                        ViewBag.RecipientDetails = Recipient != null ?
+                                                " حساب السيد / " + Recipient.RecipientName + " - طرف بنك " + Recipient.BankName + " - فرع " + Recipient.BranchName + " - بالرقم " + Recipient.AccountNumber : "";
+                    }
+                    else if (Regex.IsMatch(transactionObj.Recipient.Trim(), pattren))
+                    {
+                        ViewBag.RecipientDetails = "نظام الدفع الالكتروني(إيصالي) برقم الفاتورة " + transactionObj.Recipient.Trim();
+                    }
+                    else
+                    {
+                        var Recipient = db.Recipients.FirstOrDefault(x => x.RecipientName == transactionObj.Recipient);
+                        ViewBag.RecipientDetails = Recipient != null ?
+                                                " حساب السيد / " + Recipient.RecipientName + " - طرف بنك " + Recipient.BankName + " - فرع " + Recipient.BranchName + " - بالرقم " + Recipient.AccountNumber : "";
+                    }
+                }
+            }
+
+            // بيانات البنك الدافع او المسدد
+            var credits = db.TransactionDetails.Where(x => x.TransactionId == Id && x.Credit > 0).ToList();
+            var transactionRecipientsList = db.TransactionRecipients.Where(x => x.TransactionId == Id).ToList();
+
+            foreach (var item in credits)
+            {
+                //int bankId = sh.IsItBankAccount(Id, item.Credit);
+
+                //int bankId = sh.IsTransactionHasBankAccount(Id); // دي الاصح ال مفترض تشتغل لكن ما اتاكدت منها
+
+                int bankId = db.BankAccounts.Any(q => q.AccountSub.AccTreeId == item.AccTreeId)? 
+                                                        db.BankAccounts.FirstOrDefault(q => q.AccountSub.AccTreeId == item.AccTreeId).Id : 0;
+
+                //if (bankId > 0)
+                decimal? bankAmount = 0;
+                if (bankId == bankAccountId)
+                {
+
+                    //if (bankId == bankAccountId)
+                    //{
+                    var transactionRecipientsLetters = transactionRecipientsList.Where(q => q.BankAccountId == bankAccountId).ToList();
+
+                    if (transactionRecipientsLetters.Any())
+                    {
+                        bankAmount = transactionRecipientsLetters.Sum(q => q.Amount);
+                    }
+                    // }  38,797,246.84 - 39,230,063.68
+
+                    var BankObj = db.BankAccounts.Find(bankId);
+                ViewBag.BankLabel = BankObj.BankLabel;
+                ViewBag.SendBank = BankObj.AccountSub.AccountTree.AccName + " بالرقم " + BankObj.Number;
+
+                ViewBag.FirstSignature = BankObj.FirstSignature; // التوقيع الاول
+                ViewBag.SecondSignature = BankObj.SecondSignature; // التوقيع الثاني
+
+                decimal? amount = item.Credit - bankAmount;
+                //decimal? amount = item.Credit;
+
+                ViewBag.TotlaAmount = amount.ToString();
+                ViewBag.CurrencyType = transactionObj.CurrencyType.Name;
+
+                BaseClass baseClass = new BaseClass();
+                string txtSumOfBous = baseClass.ChangeNumberToText(amount.ToString(), transactionObj.CurrencyId - 1 ?? 1);
+                ViewBag.TotalAmountTxt = txtSumOfBous;
+
+                    continue;
+            }
+
+         }
+
+            return View();
+        }
+
+
     }
 }

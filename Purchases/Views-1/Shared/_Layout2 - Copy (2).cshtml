@@ -1,0 +1,240 @@
+﻿@using Microsoft.AspNet.Identity
+
+<!DOCTYPE html>
+<html>
+<head>
+    @RenderSection("Styles",required:false)
+    <meta charset="UTF-8">
+    <title>ERP System</title>
+    <link rel="icon" type="image/png" href="~/Content/img/Logo.png" />
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.4 -->
+    
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap_rtl.css" rel="stylesheet" />    
+    <link href="~/Content/bootstrapValidator.min.css" rel="stylesheet" />
+   
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link href="~/Content/all.css" rel="stylesheet" />
+    <link href="~/Content/datepicker3.css" rel="stylesheet" />
+    
+    <link href="~/Content/select2.min.css" rel="stylesheet" />
+
+
+
+    <link href="~/Content/datatable.bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/AdminLTE.min.css" rel="stylesheet" />
+    <link href="~/Content/_all-skins.min.css" rel="stylesheet" />
+    <link href="~/Content/stylee.css" rel="stylesheet" />
+    <link href="~/Content/toastr.min.css" rel="stylesheet" />
+
+    <link href="~/Content/jquery-ui.min.css" rel="stylesheet" />
+
+   
+</head>
+<body class="skin-blue sidebar-mini">
+    <div class="wrapper">
+
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="@Url.Action("Index","Home")" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini"><b>ERP</b></span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg"><b>ERP</b>&nbsp; System</span>
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                <div class="navbar-custom-menu">
+                    @*<ul class="nav navbar-nav">
+                        <!-- User Account: style can be found in dropdown.less -->
+                      @using SACLERP.Models;
+                      @using SACLERP.Functions;
+                      @using Microsoft.AspNet.Identity;
+                        @{ 
+                            Entities db = new Entities();
+                            RoleController RoleController = new RoleController();
+                            var userid = User.Identity.GetUserId();
+                            var FullUserName = db.Employees.Single(d => d.UserId == userid).Name;
+                            var Role = RoleController.GetRole(userid);
+
+                        }
+                      @if (Request.IsAuthenticated)
+                      {
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img src="~/Content/img/user3.jpg" class="user-image pull-right" alt="User Image">
+                                <span class="hidden-xs"  style="display:inline-block !important">
+                                   @FullUserName
+                                </span>
+                            </a>
+
+                            <ul class="dropdown-menu">
+                                <!-- User image -->
+                                <li class="user-header">
+                                    <img src="~/Content/img/user3.jpg" />
+                                    <p>
+                                       @FullUserName
+                                        <small>@Role</small>
+                                    </p>
+                                </li>
+                                <!-- Menu Body -->
+                                @*<li class="user-body">
+                                    <div class="col-xs-4 text-center">
+                                        <a href="#">Followers</a>
+                                    </div>
+                                    <div class="col-xs-4 text-center">
+                                        <a href="#">Sales</a>
+                                    </div>
+                                    <div class="col-xs-4 text-center">
+                                        <a href="#">Friends</a>
+                                    </div>
+                                </li>
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-right">
+                                        <a href="@Url.Action("ChangePassword","Account")" class="btn btn-default btn-flat">تغير كلمة المرور</a>
+                                    </div>
+                                    <div class="pull-left">
+                                        <a class="btn btn-default btn-flat" href="javascript:document.getElementById('logoutForm').submit()">تسجيل خروج </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                      }
+                    </ul>*@
+                </div>
+            </nav>
+        </header>
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- Sidebar user panel -->
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul class="sidebar-menu">
+
+
+
+
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fas fa-users"></i>
+                            <span style="font-weight:bold"> الموازنة</span>
+                            <i class="fa fa-angle-left pull-left"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href='@Url.Action("Index", "Balances")'><i class="fa fa-circle-notch"></i> الموازنة </a></li>
+                        </ul>
+                        <ul class="treeview-menu">
+                            <li><a href='@Url.Action("Index", "AccountTree")'><i class="fa fa-circle-notch"></i>  شجرة الحسابات  </a></li>
+                        </ul>
+                        <ul class="treeview-menu">
+                            <li><a href='@Url.Action("Index", "FinancialCycles")'><i class="fa fa-circle-notch"></i>   السنة المالية  </a></li>
+                        </ul>
+                    </li>
+
+
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-user-plus "></i>
+                            <span style="font-weight:bold"> المشتريات </span>
+                            <i class="fa fa-angle-left pull-left"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href='@Url.Action("Index", "Orders")'><i class="fa fa-circle-notch"></i> عروض اسعار </a></li>
+                            <li><a href='@Url.Action("Index2", "Orders")'><i class="fa fa-circle-notch"></i> عطاءات </a></li>
+                            <li><a href='@Url.Action("Index", "searchOrders")'><i class="fa fa-circle-notch"></i> استعلام </a></li>
+                        </ul>
+                    </li>
+
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-cogs "></i>
+                            <span style="font-weight:bold"> تهيئة النظام</span>
+                            <i class="fa fa-angle-left pull-left"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href='@Url.Action("Index", "items")'><i class="fa fa-circle-notch"></i>  الاصناف </a></li>
+                            <li><a href='@Url.Action("Index", "Suppliers")'><i class="fa fa-circle-notch"></i>  الموردين  </a></li>
+                        </ul>
+                    </li>
+                    @*@if (Role == "مدير النظام")
+                    {
+                        <li>
+                            <a href='@Url.Action("Index", "Account")'>
+                                <i class="fa fa-user-cog "></i> <span style="font-weight:bold">  إدارة المستخدمين</span>
+                            </a>
+                        </li>
+                    }*@
+
+
+
+
+                    @*<li class="header">LABELS</li>
+                    <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
+                    <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
+                    <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>*@
+                </ul>
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+
+        @RenderSection("content")
+
+
+        <footer class="main-footer">
+            <div class="pull-left hidden-xs">
+                <b>Version</b> 1.0
+            </div>
+            <strong>Copyright &copy; @DateTime.Now.Year <a href="#"> SACLTD. </a>.</strong> All rights reserved.
+        </footer>
+
+        <form method="post" action="/Account/LogOff/" id="logoutForm" style="display:none">
+            @Html.AntiForgeryToken()
+        </form>
+        </div>
+        <script src="~/Scripts/jquery-2.1.4.min.js"></script>
+        <script src="~/Scripts/bootstrap.min.js"></script>
+        <script src="~/Scripts/all.js"></script>
+        <script src="~/Scripts/angular.min.js"></script>
+        <script src="~/Scripts/bootstrapValidator.min.js"></script>
+        <script src="~/Scripts/select2.full.min.js"></script>
+        <script src="~/Scripts/moment.js"></script>
+        @*<script src="~/Scripts/daterangepicker.js"></script>*@
+        
+        <script src="~/Scripts/jquery.dataTables.min.js"></script>
+        <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
+        <script src="~/Scripts/app.min.js"></script>
+        <script src="~/Scripts/demo.js"></script>
+        <script src="~/Scripts/toastr.min.js"></script>
+        <script src="~/Scripts/printThis.js"></script>
+        <script src="~/Scripts/main.js"></script>
+        <script src="~/Scripts/jspdf.min.js"></script>
+              
+        <script src="~/Scripts/html2canvas.js"></script>
+
+    
+        <script src="~/Scripts/jquery-3.5.1.js"></script>
+
+    <script src="~/Scripts/jquery-ui.min.js"></script>
+
+
+
+        <script src="~/Scripts/SweetAlert.min.js"></script>
+        @*<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>*@
+
+        <script src="~/Scripts/SweetAlert.min.js"></script>
+
+        @RenderSection("scripts", required: false)
+
+        
+</body>
+</html>

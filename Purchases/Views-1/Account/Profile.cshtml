@@ -1,0 +1,289 @@
+﻿@using Purchases.Models;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+@section content{
+    <div class="content-wrapper">
+        <div class="grad"></div>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                الملف الشخصي
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
+                <li class="active"> الملف الشخصي </li>
+            </ol>
+        </section>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="container" style="margin-top:10px;">
+                                <div class="row">
+                                    <div class="col-lg-3 border">
+                                        <div class="d-flex-between">
+                                            <label style="font-size: 18px;">العام المالي الحالي :</label>
+                                            <label class="bg bg-success">@ViewBag.CurrentYear</label>
+                                        </div>
+                                        <div class="d-flex-between">
+                                            <label style="font-size: 18px;">انت تعمل العام المالي  :</label>
+                                            <label class="bg bg-warning" id="UserCurrentYear">@ViewBag.UserCurrentYear</label>
+                                        </div>
+                                        <div class="d-flex-between">
+                                            <label style="font-size: 18px;">طلب تغيير العام المالي</label>
+                                            <button type="button" class="btn btn-info btn-changeFinancialCycleId" data-toggle="modal" data-target="#changeFinancialCycleId-modal">تغيير</button>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-lg-5 border">
+                                        <div class="d-flex-between">
+                                            <label style="font-size: 18px;">العملة المحلية</label>
+                                            <label class="bg bg-success">@ViewBag.LocalCurrency</label>
+                                        </div>
+                                        <div class="row" style="display: flex; flex-direction:column; align-items:center;">
+                                            <div class="col-lg-12">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>العملة</th>
+                                                            <th>الشهر</th>
+                                                            <th>السنة</th>
+                                                            <th>سعر الصرف</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @{
+                                                          Entities db = new Entities();
+                                                          foreach(var item in db.CurrencyDetails.Where(x=>x.IsActive == true).Take(10).ToList())
+                                                          {
+                                                            <tr>
+                                                                <td>@item.Id</td>
+                                                                <td>@item.CurrencyType.Name</td>
+                                                                <td>@item.Month</td>
+                                                                <td>@item.Year</td>
+                                                                <td>@item.ExchangeRate</td>
+                                                            </tr>
+                                                          }
+                                                        }
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+
+                                            <a href="@Url.Action("Index","CurrencyDetails")" target="_blank" class="btn btn-info">عرض الكل</a>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 border">
+                                        <div class="text-center">
+                                            <img src="~/Content/img/user3.jpg" style="width: 80px; height: 80px; border: 1px solid black; border-radius:50%; margin-top: 15px;" />
+                                        </div>
+                                        <div class="d-flex-between form-control mt-2">
+                                            <label style="font-size: 18px;">الاسم</label>
+                                            <label class="">@ViewBag.FullName</label>
+                                        </div>
+                                        <div class="d-flex-between form-control">
+                                            <label style="font-size: 18px;">الدور</label>
+                                            <label class="">@ViewBag.Role</label>
+                                        </div>
+                                        <div class="d-flex-between form-control">
+                                            <label style="font-size: 18px;">اسم المستخدم</label>
+                                            <label class="">@ViewBag.UserName</label>
+                                        </div>
+                                        <div class="d-flex-between form-control">
+                                            <label style="font-size: 18px;">الايميل</label>
+                                            <label class="">@ViewBag.Email</label>
+                                        </div>
+                                        <div class="d-flex-between form-control">
+                                            <label style="font-size: 18px;">رقم الهاتف</label>
+                                            <label class="">@ViewBag.PhoneNumber</label>
+                                        </div>
+                                        <div class="d-flex-between">
+                                            <button type="button" class="btn btn-primary form-control btn-add btn-sm" data-toggle="modal" data-target="#changepassword-modal">تغير كلمة المرور</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr />
+
+                                <div class="row">
+                                    <h2 class="text-center w-100 text-primary">العمليات المالية التي نفذتها خلال هذا العام</h2>
+                                    <div class="col-lg-8">
+                                        <div class="border">
+                                            <canvas id="lienerChart"></canvas>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="border">
+                                            <canvas id="CircleChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- /.box-body -->
+                        </div><!-- /.box -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div>
+        </section>
+    </div>
+
+
+
+    <div class="example-modal">
+        <div class="modal fade in" id="changeFinancialCycleId-modal" data-backdrop="static">
+            <div class="modal-dialog" >
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">إختار العام المالي</h4>
+                    </div>
+                    <div class="modal-body">
+                        <select id="SelectFinanceCycleId" class="form-control">
+                            <option value="-1">-إختارالعام المالي-</option>
+                            @{
+                                foreach(var item in db.FinancialCycles.ToList())
+                                {
+                                    <option value="@item.Id">@item.Year</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnUpdateFinancialCycleId" class="btn btn-success">تعديل</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+@section scripts{
+    <script>
+
+        $(document).ready(function () {
+            getLinePointChartData();
+            getDoctTypeChartData();
+        });
+
+        function getLinePointChartData() {
+            $.get("/Account/GetChartData", { type: "" }, function (response) {
+                console.clear();
+                console.log(response); // Log the response to check its structure
+
+                const ctx = document.getElementById('lienerChart').getContext('2d');
+
+                const config = {
+                    type: 'line', // Line chart
+                    data: {
+                        labels: response.labels, // The labels from your server (e.g., months)
+                        datasets: response.datasets // The datasets (transaction counts)
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'العمليات المحاسبية التي نفذتها حسب الشهر' // Chart title
+                            }
+                        },
+                        scales: {
+                            x: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'الشهور' // X-axis label
+                                }
+                            },
+                            y: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'العمليات' // Y-axis label
+                                }
+                            }
+                        }
+                    }
+                };
+
+                // Create and render the chart
+                new Chart(ctx, config);
+            });
+        }
+
+        // Function to generate random colors
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function getDoctTypeChartData() {
+            $.get("/Account/GetDoctTypeChartData", { type: "" }, function (response) {
+                console.clear();
+                console.log(response); // Log the response to check its structure
+                const backgroundColors = response.datasets[0].data.map(() => getRandomColor());
+
+                const ctx = document.getElementById('CircleChart').getContext('2d');
+
+                const config = {
+                    type: 'pie', // Line chart
+                    data: response,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'العمليات المحاسبية التي نفذتها حسب نوع القيد' // Chart title
+                            },
+                            legend: {
+                                position: 'top',
+                            },
+                        },
+                        //scales: {
+                        //    x: {
+                        //        display: true,
+                        //        title: {
+                        //            display: true,
+                        //            text: 'الشهور' // X-axis label
+                        //        }
+                        //    },
+                        //    y: {
+                        //        display: true,
+                        //        title: {
+                        //            display: true,
+                        //            text: 'العمليات' // Y-axis label
+                        //        }
+                        //    }
+                        //}
+                    }
+                };
+
+                // Create and render the chart
+                new Chart(ctx, config);
+            });
+        }
+
+        $('#btnUpdateFinancialCycleId').on('click', function () {
+            var Id = $('#SelectFinanceCycleId').val();
+            var UserCurrentYear = $('#SelectFinanceCycleId option:selected').text();
+            console.clear();
+            console.log(UserCurrentYear);
+            $.post("/Account/UpdateUserYear", { Id: Id }, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('#changeFinancialCycleId-modal').modal('hide');
+                $('#UserCurrentYear').text(UserCurrentYear);
+            });
+        });
+    </script>
+}

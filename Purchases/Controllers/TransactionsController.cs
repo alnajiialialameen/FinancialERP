@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
 using Purchases.Models;
-using Purchases.Models.ViewModal;
 using Purchases.Models.ViewModel;
 using Purchases.MyLogic;
 using System;
@@ -536,6 +535,26 @@ namespace Purchases.Controllers
             return Json(transactionRecipients.Where(q=>q.Amount > 0), JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult deleteTransactionRecipient(int Id)
+        {
+            if (Id <= 0)
+            {
+                return Json(new { Message = "حدث خطأ أثناء عملية الحذف", Title = "خطأ", Status = "error" }, JsonRequestBehavior.AllowGet);
+            }
+
+            var transactionObj = db.TransactionRecipients.Find(Id);
+
+            if(transactionObj == null)
+            {
+                return Json(new { Message = "حدث خطأ أثناء عملية الحذف", Title = "خطأ", Status = "error" }, JsonRequestBehavior.AllowGet);
+            }
+
+            db.TransactionRecipients.Remove(transactionObj);
+            db.SaveChanges();
+
+            return Json(new { Message = "تمت عملية الحذف  بنجاح", Title = "نجاح", Status = "success" }, JsonRequestBehavior.AllowGet);
+        }
+
         // دي لمن يختار المستلم من القائمة ويعمل حفظ
         [HttpPost]
         public ActionResult SaveTransactionRecipients(int id, int recipientNameId, int recipientBankId, decimal amount)
@@ -580,7 +599,6 @@ namespace Purchases.Controllers
                 return Json(new { Message = "حدث خطأ أثناء عملية الاضافة(Exception)", Title = "خطأ", Status = "error" });
             }
         }
-
 
         // دي لمن يضغط علي ذر طباعة مباشرة
         [HttpGet]
@@ -631,7 +649,6 @@ namespace Purchases.Controllers
                 return Json(new { Message = "حدث خطأ أثناء عملية الاضافة(Exception)", Title = "خطأ", Status = "error" });
             }
         }
-
 
         // النثريات ال غير مزالة بالعمليات
         public ActionResult PettyCashNotPayed()

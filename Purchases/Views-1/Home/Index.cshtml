@@ -1,0 +1,443 @@
+﻿
+@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+@section content
+{
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+
+        <!-- Content Header -->
+        <section class="content-header py-3">
+            <div class="container-fluid">
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                    <h1 class="h3 mb-0">
+                        اللوحة الرئيسية
+                    </h1>
+
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+
+                            <li class="breadcrumb-item">
+                                <a href="#">
+                                    <i class="fa fa-home"></i>
+                                    اللوحة الرئيسية
+                                </a>
+                            </li>
+
+                            <li class="breadcrumb-item active"
+                                aria-current="page">
+                                Dashboard
+                            </li>
+
+                        </ol>
+                    </nav>
+
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- Info Cards -->
+        <section class="content">
+
+            <div class="container-fluid">
+
+                <div class="row g-3 mb-4">
+
+                    <!-- Most Requested Item -->
+                    <div class="col-12 col-sm-6 col-xl-3">
+
+                        <div class="card border-0 shadow-sm h-100">
+
+                            <div class="card-body d-flex align-items-center">
+
+                                <div class="bg-danger text-white rounded-3
+                                            d-flex align-items-center justify-content-center
+                                            flex-shrink-0"
+                                     style="width: 65px; height: 65px;">
+
+                                    <i class="fa fa-chart-bar fa-2x"></i>
+
+                                </div>
+
+                                <div class="ms-3 text-end flex-grow-1">
+
+                                    <h6 class="text-muted mb-2">
+                                        اكثر الاصناف طلبا
+                                    </h6>
+
+                                    <h5 class="mb-0 fw-bold">
+
+                                        @ViewBag.RushItem
+                                        /
+                                        @ViewBag.RushItemCount
+
+                                    </h5>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Most Requested Item This Month -->
+                    <div class="col-12 col-sm-6 col-xl-3">
+
+                        <div class="card border-0 shadow-sm h-100">
+
+                            <div class="card-body d-flex align-items-center">
+
+                                <div class="bg-success text-white rounded-3
+                                            d-flex align-items-center justify-content-center
+                                            flex-shrink-0"
+                                     style="width: 65px; height: 65px;">
+
+                                    <i class="fa fa-chart-line fa-2x"></i>
+
+                                </div>
+
+                                <div class="ms-3 text-end flex-grow-1">
+
+                                    <h6 class="text-muted mb-2">
+                                        الاكثر طلبا في الشهر الحالي
+                                    </h6>
+
+                                    <h5 class="mb-0 fw-bold">
+
+                                        @ViewBag.RushItemThisMonth
+                                        /
+                                        @ViewBag.RushItemCountThisMonth
+
+                                    </h5>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Most Requested Department -->
+                    <div class="col-12 col-sm-6 col-xl-3">
+
+                        <div class="card border-0 shadow-sm h-100">
+
+                            <div class="card-body d-flex align-items-center">
+
+                                <div class="bg-info text-white rounded-3
+                                            d-flex align-items-center justify-content-center
+                                            flex-shrink-0"
+                                     style="width: 65px; height: 65px;">
+
+                                    <i class="fa fa-building fa-2x"></i>
+
+                                </div>
+
+                                <div class="ms-3 text-end flex-grow-1">
+
+                                    <h6 class="text-muted mb-2">
+                                        الادارة الاكثر طلبا
+                                    </h6>
+
+                                    <h5 class="mb-0 fw-bold">
+
+                                        @ViewBag.RushDepartment
+                                        /
+                                        @ViewBag.RushDepartmentCount
+
+                                    </h5>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Most Requested Department This Month -->
+                    <div class="col-12 col-sm-6 col-xl-3">
+
+                        <div class="card border-0 shadow-sm h-100">
+
+                            <div class="card-body d-flex align-items-center">
+
+                                <div class="bg-warning text-dark rounded-3
+                                            d-flex align-items-center justify-content-center
+                                            flex-shrink-0"
+                                     style="width: 65px; height: 65px;">
+
+                                    <i class="fa fa-building fa-2x"></i>
+
+                                </div>
+
+                                <div class="ms-3 text-end flex-grow-1">
+
+                                    <h6 class="text-muted mb-2">
+                                        الاكثر طلبا في الشهر الحالي
+                                    </h6>
+
+                                    <h5 class="mb-0 fw-bold">
+
+                                        @ViewBag.RushDepartmentThisMonth
+                                        /
+                                        @ViewBag.RushDepartmentCountThisMonth
+
+                                    </h5>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Charts -->
+                <div class="card border-0 shadow-sm">
+
+                    <div class="card-body">
+
+                        <div class="row g-4">
+
+                            <!-- Line Chart -->
+                            <div class="col-12 col-lg-8">
+
+                                <div class="border rounded-3 p-3 h-100">
+
+                                    <div style="height: 350px;">
+
+                                        <canvas id="myChart"></canvas>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Pie Chart -->
+                            <div class="col-12 col-lg-4">
+
+                                <div class="border rounded-3 p-3 h-100">
+
+                                    <div style="height: 350px;">
+
+                                        <canvas id="myChart1"></canvas>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+}
+
+
+@section scripts
+{
+
+    <script>
+
+        $(document).ready(function () {
+
+            getLinePointChartData();
+
+            getDoctTypeChartData();
+
+        });
+
+
+        // Line Chart
+        function getLinePointChartData() {
+
+            $.get("/Account/GetChartData",
+                { type: "dashboard" },
+                function (response) {
+
+                    const ctx =
+                        document.getElementById('myChart')
+                            .getContext('2d');
+
+                    const config = {
+
+                        type: 'line',
+
+                        data: {
+
+                            labels: response.labels,
+
+                            datasets: response.datasets
+
+                        },
+
+                        options: {
+
+                            responsive: true,
+
+                            maintainAspectRatio: false,
+
+                            plugins: {
+
+                                title: {
+
+                                    display: true,
+
+                                    text: 'العمليات المحاسبية حسب الشهر'
+
+                                }
+
+                            },
+
+                            scales: {
+
+                                x: {
+
+                                    display: true,
+
+                                    title: {
+
+                                        display: true,
+
+                                        text: 'الشهور'
+
+                                    }
+
+                                },
+
+                                y: {
+
+                                    display: true,
+
+                                    title: {
+
+                                        display: true,
+
+                                        text: 'العمليات'
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    };
+
+                    new Chart(ctx, config);
+
+                });
+
+        }
+
+
+        // Generate Random Color
+        function getRandomColor() {
+
+            const letters = '0123456789ABCDEF';
+
+            let color = '#';
+
+            for (let i = 0; i < 6; i++) {
+
+                color += letters[Math.floor(Math.random() * 16)];
+
+            }
+
+            return color;
+
+        }
+
+
+        // Pie Chart
+        function getDoctTypeChartData() {
+
+            $.get("/Account/GetDoctTypeChartData",
+                { type: "dashboard" },
+                function (response) {
+
+                    const backgroundColors =
+                        response.datasets[0].data.map(
+                            () => getRandomColor()
+                        );
+
+                    response.datasets[0].backgroundColor =
+                        backgroundColors;
+
+                    const ctx =
+                        document.getElementById('myChart1')
+                            .getContext('2d');
+
+                    const config = {
+
+                        type: 'pie',
+
+                        data: response,
+
+                        options: {
+
+                            responsive: true,
+
+                            maintainAspectRatio: false,
+
+                            plugins: {
+
+                                title: {
+
+                                    display: true,
+
+                                    text: 'العمليات المحاسبية حسب نوع العملية'
+
+                                },
+
+                                legend: {
+
+                                    position: 'top'
+
+                                }
+
+                            }
+
+                        }
+
+                    };
+
+                    new Chart(ctx, config);
+
+                });
+
+        }
+
+    </script>
+
+}

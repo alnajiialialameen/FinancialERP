@@ -1,0 +1,256 @@
+﻿@{
+    ViewBag.Title = "AccTreeFinancialCycle";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+@using Purchases.Models;
+@{
+    Entities db = new Entities();
+    AccountTree Select = new AccountTree();
+    List<AccountTree> Model = db.AccountTrees.ToList();
+}
+
+@section content{
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <div class="grad"></div>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                الشجرة الحسابية <i class="fas fa-folder"></i>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
+                <li class="active">الشجرة الحسابية</li>
+            </ol>
+        </section>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="container" style="margin:20px 0px;">
+                            <div class="row">
+                                <label class="text-danger h3">العام المالي الحالي : </label><label class="text-success h3">@ViewBag.Year</label>
+                                <label id="FinancialCycleId" class="hidden">@ViewBag.FinancialCycleId</label>
+                            </div>
+                                <table id="dataTable" class="table table-bordered table-sm table-hover" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>الرقم </th>
+                                            <th>الحساب</th>
+                                            <th> الحساب الاب(الاساسي)</th>
+                                            <th> الحساب الاب(الحالي)</th>
+                                            <th>العمليات</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div><!-- /.box-body -->
+                        </div><!-- /.box -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div>
+        </section>
+    </div>
+
+
+
+
+<div class="example-modal">
+    <div class="modal fade in" id="add-modal">
+        <div class="modal-dialog" style="width:80% !important">
+            <div class="modal-content">
+                <div class="modal-header .no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" name="btnDismiss"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"> إضافة حساب جديد</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                                <div class="box .no-border">
+                                    <!-- /.box-header -->
+                                    <div class="box-body">
+                                        <!-- Input addon -->
+                                        <div class="row">
+                                            <div class="col-lg-12 our-title">
+                                                <label class="text-danger h3">العام المالي الحالي : </label><label class="text-success h3">@ViewBag.Year</label>
+                                                <label id="AccId" class="hidden"></label>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="addAccName">  اسم الحساب</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-addon">
+                                                            <i class="fa fa-book"></i>
+                                                        </div>
+                                                        <input class="form-control addAccName" disabled name="addAccName" id="addAccName" placeholder="اسم الحساب" autocomplete="off" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="addAccParentNameOld"> اسم الحساب الاب</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-addon">
+                                                            <i class="fa fa-book"></i>
+                                                        </div>
+                                                        <input class="form-control addAccParentNameOld" disabled name="addAccParentNameOld" id="addAccParentNameOld" placeholder="اسم الحساب" autocomplete="off" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="addAccParentName"> اسم الحساب الاب الجديد</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-addon">
+                                                            <i class="fa fa-book"></i>
+                                                        </div>
+                                                        <select class="form-control list addAccParentName" name="addAccParentName" id="addAccParentName" style="width:100%"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-12 ">
+                                                <div class="pull-left">
+                                                    <button id="btnUpdate" class="btn btn-warning update" onclick="Update()">تعديل</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+}
+
+
+@section scripts{
+
+    <script>
+        var myId = 0;
+        var dataTable;
+        $(document).ready(function () {
+            select2list("#addAccParentName", "/AccountTree/GetAccountNoneSub", "اسم الحساب الاب");
+
+            //$('.tree').on('click', 'span', function () {
+            //    $('#add-modal').modal('show');
+            //    // Get the text of the clicked node
+            //    var nodeText = nodeText = $(this).text().trim();
+            //    $('.addAccParentName').text("الحساب الاب - " + nodeText);
+            //    $('#addAccParent').text(nodeText);
+            //});
+
+            // عند الضغط على الزر +
+            $('.tree').on('click', '.add-btn', function (e) {
+                e.stopPropagation(); // ما يخلي الضغط يختار الـ node
+
+                //var parentId = $(this).data('id');
+                //var tree = $('.tree').jstree(true);
+
+                //var newNodeId = 'node_' + Math.random().toString(36).substr(2, 9);
+                //tree.create_node(parentId, {
+                //    "id": newNodeId,
+                //    "text": "عنصر جديد"
+                //}, "last", function () {
+                //    tree.open_node(parentId); // افتح الأب بعد الإضافة
+                //});
+                $('#add-modal').modal('show');
+                    // Get the text of the clicked node
+                    var nodeText = nodeText = $(this).text().trim();
+                    $('.addAccParentName').text("الحساب الاب - " + nodeText);
+                    $('#addAccParent').text(nodeText);
+            });
+
+            dataTable = $("#dataTable").DataTable({
+                "processing": true,
+                // "serverSide": true,
+                "ajax": {
+                    "url": "/AccountTree/LoadData",
+                    "type": "GET",
+                    "datatype": "json",
+                },
+                "columns": [
+                    { "data": "Id", "autowidth": true },
+                    { "data": "AccName", "autowidth": true },
+                    { "data": "AccParentName", "autowidth": true },
+                    { "data": "GetParentNameList", "autowidth": true },
+                    {
+                        "data": "Id", "width": "150px", "render": function (data) {
+                            return '<button class="btn btn-info transfer btn-dataTable" onclick="Detail(' + data + ')">تفاصيل</button> ' +
+                            '<button class="btn btn-warning transfer btn-dataTable" >تعديل</button> ';
+                        }
+                    },
+                ],
+                "language": {
+                    "sProcessing": "جارٍ التحميل...",
+                    "sLengthMenu": "أظهر _MENU_ مدخلات",
+                    "sZeroRecords": "لم يعثر على أية سجلات",
+                    "sInfo": "إظهار _START_ إلى _END_ من أصل _TOTAL_ مدخل",
+                    "sInfoEmpty": "يعرض 0 إلى 0 من أصل 0 سجل",
+                    "sInfoFiltered": "(منتقاة من مجموع _MAX_ مُدخل)",
+                    "sInfoPostFix": "",
+                    "sSearch": "ابحث:",
+                    "sUrl": "",
+                    "oPaginate": {
+                        "sFirst": "الأول",
+                        "sPrevious": "السابق",
+                        "sNext": "التالي",
+                        "sLast": "الأخير",
+                    }
+                }
+            });
+
+            //دي دالة ذر الحذف في الجدول الصغير
+            $('.table-striped').on('click', '.btn-warning', function () {
+                $(this).closest('tr').remove();
+
+            });
+        });
+    
+        $('#dataTable').on('click', '.btn-warning', function () {
+
+            var currentRow = $(this).closest("tr");
+            var data = $('#dataTable').DataTable().row(currentRow).data();
+            var AccName = data['AccName'];
+            var AccParentNameOld = data['AccParentName'];
+            var AccId = data['Id'];
+
+            $('#AccId').text(AccId);
+            $('#addAccParentNameOld').val(AccParentNameOld);
+            $('#addAccName').val(AccName);
+            $('#add-modal').show();
+        });
+
+        $('.close').on('click', function () {
+            $('#add-modal').hide();
+        });
+
+        function Update() {
+            var AccId = $('#AccId').text();
+            var FinancialCycleId = $('#FinancialCycleId').text();
+            var AccParentId = $('#addAccParentName').val();
+            
+            console.clear();
+            console.log(AccId);
+            console.log(FinancialCycleId);
+            console.log(AccParentId);
+
+            $.post('/AccountTree/UpdateAccTreeFinancialCycle', { Id: AccId, FinancialCycleId: FinancialCycleId, AccParentId: AccParentId }, function (response) {
+                dataTable.ajax.reload();
+                toastr[response.Status](response.Message, response.Title);
+                $('#add-modal').hide();
+            });
+        }
+    </script>
+}

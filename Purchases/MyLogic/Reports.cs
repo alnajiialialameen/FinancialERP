@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNet.Identity;
-using Purchases.Controllers;
-using Purchases.Functions;
+﻿using Purchases.Functions;
 using Purchases.Models;
-using Purchases.Models.ViewModal;
 using Purchases.Models.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -334,11 +331,19 @@ namespace Purchases.MyLogic
             try
             {
                 int financialCycleId = new SharedClass().GetUserCurrentFinancialCycleId(userId);
+                int companyInfoId = new SharedClass().GetUserCurrentCompanyInfoId(userId);
+                var userRoles = roleController.GetRole(userId);
 
                 var query = db.Transactions
                    .Where(t => t.FinancialCycleId == financialCycleId &&
                                t.TransactionDetails.Any(td => td.AccTreeId == accountId));
 
+
+                if (userRoles.Contains("المدير المالي بالمطار") || userRoles.Contains("مدير إدارة الحسابات"))
+                {
+                    query = query.Where(x => x.CompanyInfoId == companyInfoId);
+                }
+             
                 // تطبيق الفلاتر حسب التواريخ
                 if (dateFrom.HasValue && dateTo.HasValue)
                 {
@@ -391,6 +396,7 @@ namespace Purchases.MyLogic
 
             return result;
         }
+        
         // دي دالة دفتر الاستاذ الجديدة وشغالة تمام - فيها التواريخ واسم البنك (اسم البنك عشان نفصل مصروفات بورتسودان من الرئاسة) واسم البند
         public List<BalanceVM> GetLedgerForAccountAndBankForParents(int accountId, int? bankId, DateTime? dateFrom, DateTime? dateTo, string userId)
         {
@@ -406,7 +412,8 @@ namespace Purchases.MyLogic
                     List<int> AllKeys = trc.getAllItemsByParentId(directChild.Id);
 
                     //var AllKeysAfterFliter = db.AccountSubs.Where(x => AllKeys.Contains(x.AccTreeId ?? 0)).Select(s => new { AccTreeId= s.AccTreeId ?? 0, AccParentId = s.AccountTree.AccParent}).ToList();
-                    var AllKeysAfterFliter = db.AccountSubs.Where(x => AllKeys.Contains(x.AccTreeId ?? 0)).Select(s => s.AccTreeId).ToList();
+                    var AllKeysAfterFliter = db.AccountSubs.Where(x => AllKeys.Contains(x.AccTreeId ?? 0))
+                                                                                         .Select(s => s.AccTreeId).ToList();
 
                     var isOk = AllKeysAfterFliter.Count() > 0? true : false;
                     //// old code
@@ -417,16 +424,14 @@ namespace Purchases.MyLogic
                         query = db.Transactions
                             .Where(t =>
                                 t.FinancialCycleId == financialCycleId && 
-                                t.TransactionDetails.Any(td =>
-                                    AllKeysAfterFliter.Contains(td.AccTreeId)));
+                                t.TransactionDetails.Any(td => AllKeysAfterFliter.Contains(td.AccTreeId)));
                     }
                     else
                     {
                         query = db.Transactions
                             .Where(t =>
                                 t.FinancialCycleId == financialCycleId &&
-                                t.TransactionDetails.Any(td =>
-                                    td.AccTreeId == directChild.Id));
+                                t.TransactionDetails.Any(td => td.AccTreeId == directChild.Id));
                     }
 
                     var userRoles = roleController.GetRole(userId);
@@ -443,8 +448,7 @@ namespace Purchases.MyLogic
                         var toDate = dateTo.Value;
                         query = query.Where(t =>
                             t.TransactionDate.HasValue &&
-                            t.TransactionDate.Value >= fromDate &&
-                            t.TransactionDate.Value <= toDate);
+                            t.TransactionDate.Value >= fromDate && t.TransactionDate.Value <= toDate);
                     }
 
                     // فلترة حسب البنك إذا موجود
@@ -452,6 +456,7 @@ namespace Purchases.MyLogic
                     {
                         query = query.Where(t => t.TransactionDetails.Any(td => td.AccTreeId == bankId));
                     }
+
                     var transactionList = query.ToList();
                     var transactionDetails = isOk ? transactionList
                         .SelectMany(t => t.TransactionDetails
@@ -472,8 +477,7 @@ namespace Purchases.MyLogic
                                 debit = t.CurrencyId == 1 ? td.Debit : td.Debit * t.ExchangeRate,
                             })
                         .OrderBy(x => x.transactionDate)
-                        .ToList()
-                        :
+                        .ToList() :
                         query
                         .SelectMany(t => t.TransactionDetails
                         .Where(td => td.AccTreeId == directChild.Id),
@@ -589,6 +593,7 @@ namespace Purchases.MyLogic
                 return data;
             }
         }
+       
         // طباعة بيانات الحركة بين تاريخين 
         public List<TransactionVM> printDataByDatesForBank(int? bankId, DateTime? dateFrom, DateTime? dateTo, string userId)
         {

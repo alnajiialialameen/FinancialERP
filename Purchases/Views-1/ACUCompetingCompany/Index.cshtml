@@ -1,0 +1,439 @@
+﻿//@using Purchases.Models;
+@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+    Entities db = new Entities();
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    @section content{
+        <div>
+            <div class="content-wrapper">
+
+                <label class="hidden" id="OrderId">@ViewBag.OrderId</label>
+                <label class="hidden" id="ACUCommitteFormationId">@ViewBag.ACUCommitteFormationId</label>
+                <label id="EmployeeId" class="hidden">EmployeeId</label>
+                <label id="AccountTreeId" class="hidden">AccountTreeId</label>
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>
+                       الشركات والمؤسسات المسجلة
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li><a href="#">Examples</a></li>
+                        <li class="active">User profile</li>
+                    </ol>
+                </section>
+
+                <!-- Main content -->
+                <section class="content">
+                    <div class="row">
+                        <!-- /.col -->
+                        <div class="col-md-12">
+                            <div class="tab-pane" id="CommitteeMember">
+                                <div class="box">
+                                    <div class="box-header">
+                                        @*<button class="btn btn-primary btnAdd pull-left" data-toggle="modal" data-target="#myModal"> شركة جديدة <i class="fa fa-plus square"></i></button>*@
+                                        @*<button type="button" id="btnAddCommitteeMembers" class="btn btn-primary pull-left" onclick="AddCompetingCompany()"><i class="fa fa-plus-square">  </i> عضو جديد </button>*@
+                                    </div><!-- /.box-header -->
+                                    <div class="box-body">
+                                        <table id="tbx" class="table table-bordered table-hover"></table>
+                                    </div><!-- /.box-body -->
+                                </div><!-- /.box -->
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+
+                </section>
+                <!-- /.content -->
+            </div>
+        </div>
+
+
+    <div class="modal fade in" id="myModal" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:50% !important">
+            <div class="modal-content">
+                <div class="modal-header .no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"> إضافة شركة جديدة</h4>
+                    <label class="hidden" id="Id"></label>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <form method="post" id="add-form">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="name"> اسم الشركة </label>
+                                            <input class="form-control" id="Name" disabled onkeyup="return validateText(this.value, 'Name');" name="Name" placeholder="اسم الشركة-المؤسسة"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="name">الايميل</label>
+                                            <input class="form-control" id="Email" onkeyup="return validateEmail(this.value, 'Email');" name="Email" placeholder="الايميل" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="name"> رقم الهاتف - 1 </label>
+                                            <input class="form-control" type="number" onkeyup="return validatePhone(this.value, 'Phone1');" id="Phone1" name="Phone1" placeholder="رقم الهاتف - 1" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="name"> رقم الهاتف - 2 </label>
+                                            <input class="form-control" type="number" id="Phone2"  onkeyup="return validatePhone(this.value, 'Phone2');" name="Phone2" placeholder="رقم الهاتف - 2" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label for="name"> العنوان </label>
+                                            <textarea class="form-control" id="Address" name="Address" placeholder="العنوان" cols="4"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <input type="checkbox" id="status"  name="status" value="1" />
+                                        <label>مفعلة؟</label>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <input type="checkbox" id="IsQualified" name="IsQualified" value="1" />
+                                        <label>شركة مؤهلة؟</label>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <input type="checkbox" id="IsAgentComapny" name="IsAgentComapny" value="1" />
+                                        <label>شركة وكيل؟</label>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    
+                                    <div class="col-6">
+                                        <label>الرخصة التجارية</label>
+                                        <input type="text" id="LicenseNumber" class="form-control" onkeyup="return validateText(this.value, 'LicenseNumber');" placeholder="رقم الرخصة التجارية"/>
+                                        
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div><!-- /.row (main row) -->
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success btnSave pull-right" onclick="SaveAndUpdate()">حفظ</button>
+                    <button class="btn btn-danger btnCancel" data-dismiss="modal">إلغاء</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+        }
+
+    @section scripts{
+        <script>
+
+        $(document).ready(function () {
+            //var ACUCommitteFormationId = $('#ACUCommitteFormationId').text();
+            //if (ACUCommitteFormationId != null & ACUCommitteFormationId != 0) {
+            //    $('#btnAddCommitteeMembers').css("display", "block");
+            //} else {
+            //    $('#btnAddCommitteeMembers').css("display", "none");
+            //}
+        });
+
+        $(function () {
+            function loadData() {
+                dataTable = $('#tbx').DataTable({
+                    "language": {
+                        "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                        "search": "بحث"
+                    },
+                    ajax: {
+                        url: '/ACUCompetingCompany/getAllCompanies',
+                        dataSrc: ''
+                    },
+                    "columnDefs": [
+                           {
+                               "targets": [7],
+                               'visible': false,
+                               'sClass': 'center',
+                           }
+                    ],
+                    columns: [
+                        {
+                            "title": "# ",
+                            "data": "Id"
+                        },
+                        {
+                            "title": "الاسم",
+                            "data": "Name"
+                        },
+
+                        {
+                            "title": "رقم الهاتف",
+                            "data": "Phone1"
+                        },
+                        {
+                            "title": "رقم التسجيل",
+                            "data": "LicenseNumber"
+                        },
+
+                        {
+                            "title": "الايميل",
+                            "data": "Email"
+                        },
+                        {
+                            "title": "الحالة",
+                            "data": "StatusText"
+                        },
+
+                        {
+                            "title": "<i class='fa fa-cog'></i>",
+                            "data": null,
+                            "orderable": false,
+                            "render": function (data) {
+                                return '<div class="btn-group">' +
+                                            '<button type="button" class="btn btn-default" data-toggle="dropdown">  <i class="fa fa-ellipsis-v"></i> </button> <div class="dropdown-menu btn-threePoint">' +
+                                            '<a class="dropdown-item btnSelect" href="#">تعديل</a> <br />' +
+                                            '<a class="dropdown-item btnDelete" href="#">حذف</a> <br />' +
+                                            '<a class="dropdown-item btnDocument" href="#">المستندات</a> <br />' +
+                                        '</div></div>';
+                            }
+                        },
+                        {
+                            "title": "AccountTreeId",
+                            "data": "AccountTreeId"
+                        },
+                    ]
+                });
+            }
+            loadData();
+        });
+
+        //Date picker
+        $('.datepicker').datepicker({
+            autoclose: true
+        })
+
+        $('.btnAdd').click(function () {
+            $('.btnSave').removeClass('btn btn-warning');
+            $('.btnSave').addClass('btn btn-success');            
+            $('.btnSave').text('حفظ');
+        });
+
+        var obj = [];
+
+        $("#tbx").on('click', '.btnSelect', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var Id = data['Id'];
+            var compName = data['Name'];
+            var AccountTreeId = data['AccountTreeId'];
+
+            $('#Id').text(Id);
+            $('#AccountTreeId').text(AccountTreeId);
+            $('#Name').val(compName);
+            $('#myModal').modal('show');
+
+            $('.btnSave').removeClass('btn btn-info');
+            $('.btnSave').addClass('btn btn-warning');
+            $('.btnSave').text('تعديل');
+
+            $.get('/ACUCompetingCompany/getCompanyById', { Id: Id }, function (response) {
+                //var data = JSON.stringify(response);
+
+                response['Name']!=null?$('#Name').val(response['Name']):
+                $('#Name').val(compName);
+                $('#Phone1').val(response['Phone1']);
+                $('#Phone2').val(response['Phone2']);
+                $('#Email').val(response['Email']);
+                $('#Address').val(response['Address']);
+                $('#LicenseNumber').val(response['LicenseNumber']);
+                var status = response['StatusText'];
+
+                if (status == 'غير مفعل')
+                {
+                    $('#status').prop('checked', false);
+                }
+                else
+                {
+                    $('#status').prop('checked', true);
+                }
+            });
+        });
+
+        $("#tbx").on('click', '.btnDelete', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var Id = data['Id'];
+            var CommitteeJobId = $('#CommitteeJobId').val();
+
+            obj = {
+                "Id": Id,
+            };
+
+            $.ajax({
+                "type": "POST",
+                "url": '/ACUCompetingCompany/Delete',
+                "dataType": "json",
+                "traditional": true,
+                "data": JSON.stringify(obj),
+                "contentType": "application/json  charset=utf-8",
+                "error": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                },
+                "success": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    dataTable.ajax.reload();
+                }
+            });
+        });
+
+        $("#tbx").on('click', '.btnDocument', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var Id = data['Id'];
+
+            window.open("/ACUCompetingCompany/CompanyDocument/" + Id, '_blank');
+        });
+
+        function SaveAndUpdate() {
+            var btnText = $('.btnSave').text();
+            var Name = $('#Name').val();
+            var Phone1 = $('#Phone1').val();
+            var Phone2 = $('#Phone2').val();
+            var Email = $('#Email').val();
+            var Address = $('#Address').val();
+            var Id = $('#Id').text();
+            var AccountTreeId = $('#AccountTreeId').text();
+            var LicenseNumber = $('#LicenseNumber').val();
+
+            var IsAgentComapny = false;
+            var IsQualified = false;
+            var status = 0;
+
+            if ($("input[name=status]").is(":checked")) {
+                status = 1;
+            } else {
+                status = 0;
+            }
+
+            if ($("input[name=IsAgentComapny]").is(":checked")) {
+                IsAgentComapny = true;
+            } else {
+                IsAgentComapny = false;
+            }
+
+            if ($("input[name=IsQualified]").is(":checked")) {
+                IsQualified = true;
+            } else {
+                IsQualified = false;
+            }
+
+            obj = {
+                "Id": Id,
+                "Name": Name,
+                "Phone1": Phone1,
+                "Phone2": Phone2,
+                "Email": Email,
+                "Address": Address,
+                "status": status,
+                "AccountTreeId": AccountTreeId,
+                "LicenseNumber": LicenseNumber,
+                "IsAgentComapny": IsAgentComapny,
+                "IsQualified": IsQualified,
+            };
+
+            var url = '';
+
+            url = '/ACUCompetingCompany/Add';
+
+            $.ajax({
+                "type": "POST",
+                "url": url,
+                "dataType": "json",
+                "traditional": true,
+                "data": JSON.stringify(obj),
+                "contentType": "application/json  charset=utf-8",
+                "error": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    $('#myModal').modal('toggle');
+                    $('#tbx').DataTable().ajax.reload();
+                },
+                "success": function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    $('#myModal').modal('toggle');
+                    $('#tbx').DataTable().ajax.reload();
+                }
+                
+        });
+        }
+
+        </script>
+
+        <script>
+            function validatePhone(Phone, fieldId) {
+
+                if (Phone == '' | Phone.match(/^\+(?:[0-9] ?){6,14}[0-9]$/) || Phone.length <=9)
+                {
+                    $('#' + fieldId).css({ "border": 'solid 2px red' });
+                    return false;
+                } else {
+                    $('#' + fieldId).css({ "border": 'solid 1px #d2d6de' });
+                    return true;
+                }
+                $.validator.addMethod('fnType', function (value, element) {
+                    return value.match(/^\+(?:[0-9] ?){6,14}[0-9]$/);
+                }, 'Enter Valid  phone number');
+            }
+
+            function validateEmail(email, fieldId) {
+                var regex = /^([a-zA-Z0-9_.+-])+\@@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+                if (email == '' | email.match(/^([a-zA-Z0-9_.+-])+\@@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/)) {
+                    $('#' + fieldId).css({ "border": 'solid 2px red' });
+                    return false;
+                } else {
+                    $('#' + fieldId).css({ "border": 'solid 1px #d2d6de' });
+                    return true;
+                }
+            }
+
+            function validateText(text, fieldId) {
+                if (text == '') {
+                    $('#' + fieldId).css({ "border": 'solid 2px red' });
+                    return false;
+                } else {
+                    $('#' + fieldId).css({ "border": 'solid 1px #d2d6de' });
+                    return true;
+                }
+            }
+
+        </script>
+    }
+</body>
+</html>

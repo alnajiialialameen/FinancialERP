@@ -1,0 +1,94 @@
+﻿@using Purchases.Models;
+@{
+    Entities db = new Entities();
+    AccountTree Select = new AccountTree();
+    List<AccountTree> Model = db.AccountTrees.ToList();
+}
+
+<link href="~/Temp/Tree/dist/themes/default-dark/style.min.css" rel="stylesheet" />
+
+<div id="htmltree" class="demo tree" style="font-size:16px">
+    <ul>
+        <li>
+            <span> شجرة الحسابات</span>
+
+            @foreach (AccountTree T1 in Model.Where(x => x.AccParent == 0))
+            {
+                <ul>
+                    <li class="nodeId">
+                        <span>@T1.AccName.ToString()</span>
+                        @foreach (AccountTree T2 in Model.Where(x => x.AccParent == T1.Id))
+                        {
+                            <ul>
+                                <li class="nodeId">
+                                    <span>@T2.AccName.ToString() </span>
+                                    @foreach (AccountTree T3 in Model.Where(x => x.AccParent == T2.Id))
+                                    {
+                                        <ul>
+                                            <li class="nodeId">
+                                                <span>@T3.AccName</span>
+                                                @foreach (AccountTree T4 in Model.Where(x => x.AccParent == T3.Id))
+                                                {
+                                                    <ul>
+                                                        <li>
+                                                            <span>@T4.AccName</span>
+
+                                                            @foreach (AccountTree T5 in Model.Where(x => x.AccParent == T4.Id))
+                                                            {
+                                                                <ul>
+                                                                    <li>
+                                                                        <span>@T5.AccName</span>
+                                                                        @foreach (AccountTree T6 in Model.Where(x => x.AccParent == T5.Id))
+                                                                        {
+                                                                            <ul>
+                                                                                <li>
+                                                                                    <span>@T6.AccName</span>
+                                                                                    @foreach (AccountTree T7 in Model.Where(x => x.AccParent == T6.Id))
+                                                                                    {
+                                                                                        <ul>
+                                                                                            <li>
+                                                                                                <span>@T7.AccName</span>
+                                                                                                @foreach (AccountTree T8 in Model.Where(x => x.AccParent == T7.Id))
+                                                                                                {
+                                                                                                    <ul>
+                                                                                                        <li>
+                                                                                                            <span>@T8.AccName</span>
+                                                                                                            @foreach (AccountTree T9 in Model.Where(x => x.AccParent == T8.Id))
+                                                                                                            {
+                                                                                                                <ul>
+                                                                                                                    <li>
+                                                                                                                        <span>@T9.AccName</span>
+                                                                                                                    </li>
+                                                                                                                </ul>
+                                                                                                            }
+
+                                                                                                        </li>
+                                                                                                    </ul>
+                                                                                                }
+
+                                                                                            </li>
+                                                                                        </ul>
+                                                                                    }
+
+                                                                                </li>
+                                                                            </ul>
+                                                                        }
+
+                                                                    </li>
+                                                                </ul>
+                                                            }
+                                                        </li>
+                                                    </ul>
+                                                }
+                                            </li>
+                                        </ul>
+                                    }
+                                </li>
+                            </ul>
+                        }
+                    </li>
+                </ul>
+            }
+        </li>
+    </ul>
+</div>

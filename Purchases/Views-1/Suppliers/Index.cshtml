@@ -1,0 +1,403 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+@section content{
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <div class="grad"></div>
+
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                الموردين
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المالي </a></li>
+                <li class="active"> المشتريات</li>
+            </ol>
+
+        </section>
+
+
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <button type="button" class="btn btn-primary pull-left btn-add" data-toggle="modal" data-target="#add-modal"><i class="fa fa-plus-square">  </i>  مورد جديد </button>
+                        </div><!-- /.box-header -->
+                        <div class="box-body">
+                            <table id="tbx" class="table table-bordered table-hover"></table>
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </section>
+
+
+    </div><!-- /.content-wrapper -->
+
+
+<div class="example-modal">
+    <div class="modal fade in" id="add-modal">
+        <div class="modal-dialog" style="width:80% !important">
+            <div class="modal-content">
+                <div class="modal-header .no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"> إضافة  مورد جديد</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <form method="post" id="add-form">
+                                <div class="box .no-border">
+                                    <!-- /.box-header -->
+                                    <div class="box-body">
+                                        <!-- Input addon -->
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="box .no-border">
+                                                    <!-- /.box-header -->
+                                                    <div class="box-body">
+                                                        <!-- Input addon -->
+                                                        <div class="row">
+
+                                                            <div class="col-lg-12">
+                                                                <div class="col-lg-6">
+                                                                    <div class="form-group">
+                                                                        <label for="name">  اسم المورد</label>
+                                                                        <div class="input-group">
+                                                                            <div class="input-group-addon">
+                                                                                <i class="fa  fa-user"></i>
+                                                                            </div>
+                                                                            <input class="form-control name" name="name" id="name" placeholder=" اسم المورد" autocomplete="off" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="form-group">
+                                                                        <label for="phone">  رقم الهاتف</label>
+                                                                        <div class="input-group">
+                                                                            <span class="input-group-addon"><i class="fa fa-phone-alt"></i></span>
+                                                                            <input type="text" class="form-control phone" id="phone" name="phone" placeholder=" رقم هاتف المورد " autocomplete="off">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+
+                                                            <div class="col-lg-12 ">
+                                                                <div class="pull-left">
+                                                                    <button type="button" class="btn btn-default " data-dismiss="modal">رجوع</button>
+                                                                    <button type="submit" class="btn btn-primary save">حفظ</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <!-- /.box-body -->
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+
+                            </form>
+                        </div>
+                    </div><!-- /.row (main row) -->
+
+                </div>
+                @*<div class="modal-footer">
+
+                    </div>*@
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+
+    
+
+
+
+
+
+    <!-- Edit Modal -->
+    <div class="example-modal">
+        <div class="modal fade in" id="edit-modal">
+            <div class="modal-dialog" style="width:80% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">تعديل اسم المورد </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <form method="post" id="edit-form">
+                                    <div class="box .no-border">
+                                        <!-- /.box-header -->
+                                        <div class="box-body">
+                                            <!-- Input addon -->
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="edname">  اسم المورد</label>
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon">
+                                                                    <i class="fa fa-user">
+                                                                </i></span>
+                                                                <input id="ed-id" class="ed-id hidden" name="ed-id" />
+                                                                <input type="text" class="form-control  edname" id="edname" name="edname" placeholder="اسم المورد  " autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="edphone">  رقم الهاتف</label>
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon"><i class="fa fa-phone-alt"></i></span>
+                                                                <input type="text" class="form-control edphone" id="edphone" name="edphone" placeholder=" رقم هاتف المورد " autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 ">
+                                                        <div class="pull-left">
+                                                            <button type="button" class="btn btn-default " data-dismiss="modal">رجوع</button>
+                                                            <button type="submit" class="btn btn-primary save">حفظ</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <!-- /.box-body -->
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div><!-- /.row (main row) -->
+
+                    </div>
+                    @*<div class="modal-footer">
+
+                        </div>*@
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div>
+}
+
+
+@section scripts{
+
+    <script>
+    var dataTable;
+        $(function () {
+           
+            function loadData() {
+                dataTable = $('#tbx').DataTable({
+                    "language": {
+                        "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                        "search": "بحث"
+                    },
+                    ajax: {
+                        url: '/Suppliers/LoadData',
+                        dataSrc: ''
+                    },
+                    columns: [
+                        {
+                            "title": "# ",
+                            "data": "Id"
+                        },
+                        {
+                            "title": "إسم المورد   ",
+                            "data": "Name"
+                        },
+                        {
+                            "title": " رقم التلفون",
+                            "data": "Phone"
+                        },
+                        {
+                            "title": "<i class='fa fa-cog'></i>",
+                            "data": null,
+                            "width": "10%",
+                            "orderable": false,
+                            "render": function (data) {
+                                return '<div class="btn-opreation">'
+                                             + '<button class="btn btn-success transfer openEditModal">تعديل <i class=" transfer-fa fa  fa-edit"></i></button> '
+                                    + '</div> ';
+
+                            }
+                        }
+
+
+                    ]
+
+                });
+
+            }
+            loadData();
+
+
+
+
+            function save() {
+
+
+                var ob = {
+                    "Name": $('#name').val(),
+                    "Phone": $('#phone').val()
+                };
+                $.ajax({
+                    url: "@Url.Action("Create", "Suppliers")",
+                    type: "POST",
+                data: JSON.stringify(ob),
+                contentType: "application/json charset=utf-8",
+                dataType: "json",
+                error: function (response) {
+                    //toastr[response.Status](response.Message, response.Title);
+                },
+                success: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+
+                    $('#add-form').bootstrapValidator('resetForm', true);
+                    $('#add-modal').modal('hide');
+                    dataTable.ajax.reload();
+                }
+            });
+        };
+
+        //$('.save').click(function () {
+        //    save();
+        //});
+
+
+        $('#add-form').bootstrapValidator({
+            onSuccess: function (e) {
+                save();
+                e.preventDefault();
+
+            },
+            submitButtons: 'button[type="submit"]',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                validating: 'fa fa-refresh fa-spin success-feedback-icons'
+            },
+            fields: {
+                name: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل اسم المورد  فارغ'
+                        }
+                    }
+                },
+                phone: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل  رقم الهاتف  فارغ'
+                        }
+                    }
+                },
+            }
+        });
+
+
+
+
+
+   });//End Document Ready
+
+
+    ///////////////////////////////////////////////////////////////////////
+
+    //Open Edit Modal
+    $("#tbx").on('click', '.openEditModal', function () {
+        // get the current row
+        var currentRow = $(this).closest("tr");
+
+        $('#ed-id').val(currentRow.find("td:eq(0)").text());
+        $('#edname').val(currentRow.find("td:eq(1)").text()); // get current row st 2TD value
+        $('#edphone').val(currentRow.find("td:eq(2)").text()); // get current row st 2TD value
+        $('#edit-modal').modal('show');
+
+    });
+
+
+    //Validation And Save Edit Data
+    $('#edit-form').bootstrapValidator({
+        onSuccess: function (e) {
+            edit();
+            e.preventDefault();
+
+        },
+        submitButtons: 'button[type="submit"]',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok success-feedback-icons',
+            invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+            validating: 'fa fa-refresh fa-spin success-feedback-icons'
+        },
+        fields: {
+            edname: {
+                validators: {
+                    notEmpty: {
+                        message: 'يجب الا يكون حقل اسم المورد  فارغ'
+                    }
+                }
+            },
+            edphone: {
+                validators: {
+                    notEmpty: {
+                        message: 'يجب الا يكون حقل رقم الهاتف   فارغ'
+                    }
+                }
+            }
+
+        }
+    });
+
+    function edit() {
+
+
+        var ob = {
+            "Id": $('#ed-id').val(),
+            "Name": $('#edname').val(),
+            "Phone": $('#edphone').val()
+        };
+        $.ajax({
+            url: "@Url.Action("Edit", "Suppliers")",
+            type: "POST",
+        data: JSON.stringify(ob),
+        contentType: "application/json charset=utf-8",
+        dataType: "json",
+        error: function (response) {
+            //toastr[response.Status](response.Message, response.Title);
+        },
+        success: function (response) {
+            toastr[response.Status](response.Message, response.Title);
+            $('#edit-form').bootstrapValidator('resetForm', true);
+            $('#edit-modal').modal('hide');
+            dataTable.ajax.reload();
+
+
+        }
+    });
+    };
+
+
+    </script>
+
+
+
+}
+
+

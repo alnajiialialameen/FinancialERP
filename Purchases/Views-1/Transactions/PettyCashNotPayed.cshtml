@@ -1,0 +1,554 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+@section content{
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <div class="grad"></div>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                النثريات بالعمليات
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
+                <li class="active">النثريات بالعمليات</li>
+            </ol>
+        </section>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="row m-3">
+                                <div class="col-12">
+                                    <a class="btn btn-primary" style="margin-right:15px; margin-bottom: 20px;" href="@Url.Action("PettyCashNotPayedByPerson", "Transactions")">النثريات بالاشخاص </a>
+                                </div>
+                            </div>
+                            <div class="container">
+                                <table id="tbx" class="table table-bordered table-sm table-hover" style="width:100%">
+                                </table>
+                            </div><!-- /.box-body -->
+                        </div><!-- /.box -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div>
+        </section>
+
+    </div><!-- /.content-wrapper -->
+
+    <div class="example-modal">
+        <div class="modal fade in" id="add-modal" data-backdrop="static">
+            <div class="modal-dialog" style="width:80% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"> إضافة قيد جديد</h4>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Input addon -->
+
+                        <form id="add-form">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label for="addAccName">اسم الحساب</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-book"></i>
+                                            </div>
+                                            <select class="form-control list addAccName" name="addAccName" id="addAccName" style="width:100%"></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <div class="flex">
+                                            <label for="debitAmount">المبلغ المدين</label>
+                                            <strong id="AmountCurrencyDecimalText" class="AmountCurrencyDecimalText"></strong>
+                                        </div>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa  fa-book"></i>
+                                            </div>
+                                            <input class="form-control debitAmount" type="text" name="debitAmount" id="debitAmount" placeholder="المبلغ مدين" autocomplete="off" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <div class="flex"><label for="creditAmount">المبلغ الدائن</label><strong id="AmountCurrencyDecimalTextCr" class="AmountCurrencyDecimalTextCr"></strong></div>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa  fa-book"></i>
+                                            </div>
+                                            <input class="form-control creditAmount" type="text" name="creditAmount" id="creditAmount" placeholder="المبلغ" autocomplete="off" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-lg-12">
+                                    <button type="submit" class="btn btn-info btn-block" onclick="addToTable()">ترحيل</button>
+                                </div>
+                            </div>
+
+                        </form>
+
+                        <br />
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <table id="example1" class="table table-bordered table-striped virtualTable">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align:center ;width:150px;">#</th>
+                                            <th style="text-align:center ;width:750px;">اسم الحساب</th>
+                                            <th style="text-align:center ;width:750px;">مدين</th>
+                                            <th style="text-align:center ;width:750px;">دائن</th>
+                                            <th style="text-align:center;"><i class="fa fa-cogs"></i></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="myTbody"></tbody>
+                                    <tfoot class="myTFoot" style="background-color: #000000; color: #ffffff; text-align: center;"></tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 ">
+                                <div class="pull-left">
+                                    <button type="button" class="btn btn-default " data-dismiss="modal">رجوع</button>
+                                    <button type="submit" id="btnSave" class="btn btn-primary">مراجعة القيد</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div>
+
+    <div class="example-modal">
+        <div class="modal fade in" id="add-statement-modal" data-backdrop="static">
+            <div class="modal-dialog" style="width:60% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"> إضافة عملية جديدة</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="add-statement-form">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="transactionDate"> تاريخ القيد</label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar-alt"></i>
+                                            </span>
+                                            <input type="text" class="form-control calendar transactionDate" id="transactionDate" name="transactionDate" placeholder="تاريخ القيد" autocomplete="off">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="addCurrencyType">العملة</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-money-bill-alt"></i>
+                                            </div>
+                                            <select class="form-control list addCurrencyType" name="addCurrencyType" id="addCurrencyType" style="width:100%"></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="documentType">نوع السند</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-key"></i>
+                                            </div>
+                                            @*<select class="form-control list documentType" name="documentType" id="documentType" style="width:100%"></select>*@
+                                            <select class="form-control list documentType" name="documentType" id="documentType" style="width:100%"></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="recipient">اسم المستلم</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-user"></i>
+                                            </div>
+                                            @*<input type="text" class="form-control recipient" name="recipient" id="recipient" placeholder="اسم المستلم" style="width:100%" />*@
+                                            <select class="form-control list recipient" name="recipient" id="recipient" style="width:100%"></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="statement">البيان</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-book"></i>
+                                            </div>
+                                            <textarea class="form-control statement" id="statement" name="statement"> @ViewBag.Note </textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <button type="submit" class="btn btn-success btnCreate" style="width: 100%;">حفظ</button>
+                            </div>
+                        </form>
+                        <hr />
+                        <div class="row">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead style="background-color:#808080">
+                                    <tr class="text-center">
+                                        <td>مدين</td>
+                                        <td>دائن</td>
+                                        <td>الحساب</td>
+                                    </tr>
+                                </thead>
+                                <tbody class="presntTBody"></tbody>
+                            </table>
+                        </div>
+
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        </div>
+    </div>
+
+
+    @*Add Recipients Modal*@
+    <div class="example-modal">
+        <div class="modal fade in" id="add-recipients-modal" data-backdrop="static">
+            <div class="modal-dialog" style="width:60% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <label id="recipientTransactionId" class="recipientTransactionId hide">44444</label>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"> إضافة مستلمين</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="recipientBank">اسم البنك</label>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-key"></i>
+                                        </div>
+                                        @*<select class="form-control list documentType" name="documentType" id="documentType" style="width:100%"></select>*@
+                                        <select class="form-control list recipientBank" name="recipientBank" id="recipientBank" style="width:100%"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="recipientName">اسم المستلم</label>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-user"></i>
+                                        </div>
+                                        @*<input type="text" class="form-control recipient" name="recipient" id="recipient" placeholder="اسم المستلم" style="width:100%" />*@
+                                        <select class="form-control list recipientName" name="recipientName" id="recipientName" style="width:100%"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="recipientAmount">المبلغ</label>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-user"></i>
+                                        </div>
+                                        @*<input type="text" class="form-control recipient" name="recipient" id="recipient" placeholder="اسم المستلم" style="width:100%" />*@
+                                        <input type="text" class="form-control list recipientAmount" name="recipientAmount" id="recipientAmount" placeholder="المبلغ" style="width:100%" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="recipientStatement">البيان</label>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-book"></i>
+                                        </div>
+                                        <textarea class="form-control recipientStatement" id="recipientStatement" name="recipientStatement" disabled></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <button type="button" class="btn btn-success btnSaveRecipient">حفظ</button>
+                        </div>
+
+                        <div class="row">
+                            <table class="table table-bordered tblRecipient hide" id="tblRecipient">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>اسم المستلم</th>
+                                        <th>اسم البنك</th>
+                                        <th>رقم الحساب</th>
+                                        <th>المبلغ</th>
+                                        <th>#</th>
+                                        <th>#</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblRecipientBody"></tbody>
+                            </table>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        </div>
+    </div>
+
+    @*Add AddedTax Modal*@
+    <div class="example-modal">
+        <div class="modal fade in" id="addedTax-modal" data-backdrop="static">
+            <div class="modal-dialog" style="width:60% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <label id="recipientTransactionId" class="recipientTransactionId hide">44444</label>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"> إضافة ضريبة القيمة المضافة</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="recipientBank">ادخل القيمة</label>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-key"></i>
+                                        </div>
+                                        <input type="number" class="form-control" id="addTaxVal" value="17" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="recipientBank">القيمة الفعلية(%)</label>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-key"></i>
+                                        </div>
+                                        <label type="text" class="form-control" id="addTaxValDisplay"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <button type="button" class="btn btn-success btnSaveAddedTax" onclick="Add17Tax()">حفظ</button>
+                        </div>
+
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        </div>
+    </div>
+
+    @*Add taxConfirmation Modal*@
+    <div class="example-modal">
+        <div class="modal fade in" id="taxConfirmation-modal" data-backdrop="static">
+            <div class="modal-dialog" style="width:40% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <label id="taxConfirmationTransId" class="taxConfirmationTransId hide">44444</label>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"> إضافة ضريبة ال1% </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <h2 class="text-center">
+                                سيتم خصم 1% من اصل المبلغ!
+                            </h2>
+                        </div>
+
+                        <div class="modal-footer d-flex" style="width: 100%;">
+                            <button type="button" class="btn btn-success" onclick="AddOneTax()">تأكيد</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                        </div>
+
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        </div>
+    </div>
+
+}
+}
+
+@section scripts{
+    <script>
+        var myId = 0;
+        var dataTable;
+        var creditAmountObj;
+        var debitAmountObj;
+        var recipientAmountObj;
+
+        $(document).ready(function () {
+
+            select2list("#addAccName", "/Shared/getAccTreesAll", "اسم الحساب");
+
+
+            function loadData() {
+                dataTable = $('#tbx').DataTable({
+                    "language": {
+                        "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                        "search": "بحث"
+                    },
+                    "columnDefs": [
+                        {
+                            "targets": 0,
+                            "className": "text-center",
+                        },
+                    ],
+                    ajax: {
+                        url: '/Shared/loadPettyCashNotPayedData',
+                        dataSrc: ''
+                    },
+                    columns: [
+                        {
+                            "title": "",
+                            "data": "transactionId",
+                            "orderable": false,
+                            "render": function (data) {
+                                return '<a class="btn btn-info btnDetails" data-toggle="modal" data-target="#details-modal"><i class="fa fa-info"></i></a>';
+                            }
+                        },
+                        {
+                            "title": "# ",
+                            "data": "transactionId"
+                        },
+                        {
+                            "title": "البيان",
+                            "data": "note"
+                        },
+                        {
+                            "title": "نوع القيد",
+                            "data": "documentType"
+                        },
+                        {
+                            "title": "اجمالي المبلغ",
+                            "data": "total",
+                            "render": function (data, type, row) {
+                                return formatNumber(data.toString());
+                            }
+                        },
+                        {
+                            "title": "العملة",
+                            "data": "currency"
+                        },
+                        {
+                            "title": "سعر الصرف",
+                            "data": "exchangeRate",
+                            "render": function (data, type, row) {
+                                return formatNumber(data.toString());
+                            }
+                        },
+                        {
+                            "title": "تاريخ القيد",
+                            "data": "transactionDateStr"
+                        },
+                        {
+                            "title": "<i class='fa fa-cog'></i>",
+                            "data": null,
+                            "width": "10%",
+                            "orderable": false,
+                            "render": function (data) {
+                                return `<a class="btn btn-success btnRemovePettuCash" href="RemovePettyCash/${data.transactionId}">إزالة النثرية</a>`;
+                            }
+
+                        },
+                    ]
+                });
+            }
+
+            loadData();
+        });
+
+        //$('#tbx').on('click', '.btnRemovePettuCash', function () {
+        //    var currentRow = $(this).closest("tr");
+        //    var data = $('#tbx').DataTable().row(currentRow).data();
+        //    var TransactionId = data['transactionId'];
+        //    $('#recipientTransactionId').text(TransactionId);
+
+        //    var Note = data['note'];
+        //    $('#recipientStatement').val(Note);
+        //    $('#tblRecipient').addClass('hide');
+
+        //    select2list("#recipientBank", "/Transactions/getTransactionBanks/" + TransactionId, "اختار البنك");
+        //    select2list("#recipientName", "/Shared/getAllRecipient", "  اسم المستلم ");
+
+        //    // Get old data
+        //    $.get('/Transactions/getTransactionRecipients/' + TransactionId, {}, function (response) {
+        //        if (response && response.length > 0) {
+        //            $('#tblRecipient').removeClass('hide');
+
+        //            $('#tblRecipientBody').empty(); // Clear previous rows if needed
+
+        //            response.forEach(function (item) {
+        //                var obj = JSON.stringify(item).replace(/"/g, '&quot;');
+
+        //                var row = `
+        //                                                        <tr>
+        //                                                            <td>${item.Id}</td>
+        //                                                            <td>${item.RecipientName}</td>
+        //                                                            <td>${item.BankName}</td>
+        //                                                            <td>${item.AccountNumber}</td>
+        //                                                            <td>${formatNumber(item.Amount)}</td>
+        //                                                            <td>
+        //                                                                <button class="text-success printBankLetter"
+        //                                                                onClick="printBankLetterForRe(
+        //                                                                    ${item.Id},${item.TransactionId}, ${item.BankAccountId},${item.AccountNumber}
+        //                                                                )">
+        //                                                                <i class="fa fa-print"></i>
+        //                                                                </button>
+        //                                                            </td>
+        //                                                            <td>
+        //                                                                <button class="text-danger deleteTransactionRecipient"
+        //                                                                onClick="deleteTransactionRecipient(${item.Id})">
+        //                                                                <i class="fa fa-trash"></i>
+        //                                                                </button>
+        //                                                            </td>
+        //                                                        </tr>
+        //                                                    `;
+
+        //                $('#tblRecipientBody').append(row);
+        //            });
+        //        }
+        //    });
+
+
+        //    $('#add-recipients-modal').modal('show');
+        //});
+
+    </script>
+}

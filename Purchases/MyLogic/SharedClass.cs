@@ -1,4 +1,5 @@
 ﻿using Microsoft.Ajax.Utilities;
+using Purchases.Functions;
 using Purchases.Models;
 using Purchases.Models.ViewModel;
 using System;
@@ -722,7 +723,6 @@ namespace Purchases.MyLogic
                     q.TransactionDate.HasValue &&
                     q.TransactionDate.Value < threeMonthsAgo &&
                     q.FinancialCycleId == financialCycleId &&
-                    q.FinancialCycleId == financialCycleId &&
                     (
                         (q.DocumentTypeId == 4 && q.IsPosted != true)
                         ||
@@ -735,6 +735,7 @@ namespace Purchases.MyLogic
                 .Select(p => new TransactionVM()
                 {
                     transactionId = p.Id,
+                    companyInfoId = p.CompanyInfoId,
                     currency = p.CurrencyType.Name,
                     documentType = p.DocumentType.Name,
                     total = p.Amount,
@@ -747,6 +748,19 @@ namespace Purchases.MyLogic
                     hasTax = p.HasTax,
                     recipient = p.Recipient ?? ""
                 }).OrderByDescending(d => d.transactionId).ToList();
+
+            var userRoles = db.AspNetUserRoles.Where(x => x.UserId == userId).Select(s => s.AspNetRole.Name).ToList();
+
+            // موظف بالادارة المالية ما يشوف اشعار زي ده
+            // مدير مالي المطار يشوف فقط ما يخص المطار حقه
+            // اي حاجة غير كده يشوف كل شئ
+            if (userRoles.Contains("المدير المالي بالمطار"))
+            {
+                query = query.Where(x => x.companyInfoId == companyInfoId).ToList();
+            } else if (userRoles.Contains("موظف بالادارة المالية"))
+            {
+                query = null;
+            }
 
             return query;
         }

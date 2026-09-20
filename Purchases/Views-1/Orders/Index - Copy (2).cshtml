@@ -1,0 +1,1372 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+@section content{
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <div class="grad"></div>
+
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                الطلبيات
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المالي </a></li>
+                <li class="active"> المشتريات</li>
+            </ol>
+
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <button type="button" class="btn btn-primary pull-left btn-add" data-toggle="modal" data-target="#add-modal"><i class="fa fa-plus-square">  </i> طلبية جديدة </button>
+                        </div><!-- /.box-header -->
+                        <div class="box-body">
+                            <table id="tbx" class="table table-bordered table-hover"></table>
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </section>
+
+
+    </div><!-- /.content-wrapper -->
+
+
+
+
+
+
+
+
+    <!--------------   إضافة طلبية جديدة ---------------->
+    <div class="example-modal">
+        <div class="modal fade in" id="add-modal">
+            <div class="modal-dialog" style="width:90% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"> إضافة  طلبية جديدة</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                
+                                <div class="box .no-border">
+                                    <!-- /.box-header -->
+                                    <div class="box-body">
+                                        <!-- Start Box Of Basic Data -->
+                                        <form method="post" id="add-form">
+                                            <div class="box box-info">
+                                                <div class="box-header ">
+                                                    <h3 class="box-title">البيانات الاساسية</h3>
+                                                </div>
+                                                <div class="box-body">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label for="department"> الادارة </label>
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-addon">
+                                                                            <i class="fa  fa-city"></i>
+                                                                        </div>
+                                                                        <select class="form-control list department" name="department" id="department" style="width:100%"></select>                                                                        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label for="description"> الموضوع </label>
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-addon">
+                                                                            <i class="fa  fa-book"></i>
+                                                                        </div>
+                                                                        <input class="form-control description description" name="description" id="description" placeholder="موضوع الطلب" autocomplete="off" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+
+
+                                                        <div class="col-lg-12">
+
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label for="orderdate"> تاريخ الطلب</label>
+                                                                    <div class="input-group">
+                                                                        <span class="input-group-addon">
+                                                                            <i class="fa fa-calendar-alt"></i>
+                                                                        </span>
+                                                                        <input type="text" class="form-control  calendar orderdate" id="orderdate" name="orderdate" placeholder="تاريخ الطلب" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            @*<div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label for="suggestprice">المبلغ المقترح </label>
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-addon">
+                                                                            <i class="fa  fa-money-bill"></i>
+                                                                        </div>
+                                                                        <input class="form-control suggestprice" name="suggestprice" id="suggestprice" placeholder="المبلغ المقترح من الادارة الطالبة" autocomplete="off" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>*@
+
+
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label for="orderfile"> صورة  الطلب </label>
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-addon">
+                                                                            <i class="fa  fa-file"></i>
+                                                                        </div>
+                                                                        <input type="file" class="form-control btn btn-default report-btn orderfile" id="orderfile" name="orderfile" accept="application/pdf" style="position: relative; top: -1%; width:100%" >
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            
+
+
+                                                        </div>
+
+                                                    </div><!-- /.box -->
+                                                    <!-- Start Box Of Addational  Data -->
+                                                    <div class="box box-info">
+                                                        <div class="box-header ">
+                                                            <h3 class="box-title"> إضافي  </h3>
+                                                        </div>
+                                                        <div class="box-body">
+                                                            <div class="box-body">
+                                                                <table class="table table-bordered passenger-tbl" id="passenger-tbl">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th> الصنف</th>
+                                                                            <th>ت.الصنف</th>
+                                                                            <th style="width:20%"> العدد المطلوب</th>
+                                                                            <th class="text-center"><i class="fa fa-cogs"></i></th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody class="passenger-tbl-body">
+
+                                                                        @*<tr class="passenger-tbl-row">
+                                                                            <td>
+                                                                                <div class="form-group">
+                                                                                    <select class="form-control  item" name="item[]" id="item" style="width:100%"></select>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="form-group">
+                                                                                    <select class="form-control  itemDetail" name="itemDetail[]" id="itemDetail" style="width:100%"></select>
+                                                                                </div>
+                                                                            </td>
+
+                                                                            <td>
+                                                                                <div class="form-group">
+                                                                                    <input type="text" name="requierCount[]" class="form-control requierCount" id="" placeholder="العدد المطلوب" autocomplete="off">
+                                                                                </div>
+                                                                            </td>
+
+                                                                            <td>
+                                                                                <button class="text-center btn-danger  btn-remove" value="removeRow"><i class="fa fa-trash-alt"></i></button>
+                                                                            </td>
+                                                                        </tr>*@
+
+                                                                    </tbody>
+
+                                                                </table>
+                                                                <a class="new-row" id="new-row" style="background: #00c0ef;padding: 10px 20px; border-radius: 8px; margin-right: 10px; color: white; cursor: pointer;" value="newRow"><i class="fa fa-plus-square"></i>إضافة صف جديد</a>
+
+                                                            </div>
+
+                                                        </div><!-- /.box-body -->
+                                                    </div><!-- /.box -->
+
+
+
+
+
+
+                                                    <div class="col-lg-12 ">
+                                                        <div class="pull-left">
+                                                            <button type="button" class="btn btn-default " data-dismiss="modal">رجوع</button>
+                                                            <button type="submit" class="btn btn-primary save " value="add">حفظ</button>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <!-- /.box-body -->
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div><!-- /.row (main row) -->
+
+                            </div>
+                            @*<div class="modal-footer">
+
+                                </div>*@
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+            </div>
+
+
+</div>
+</div>
+
+
+
+ 
+
+<!------------عرض فواتير الطلب------------------>
+<div class="example-modal">
+    <div class="modal fade in" id="invoice-modal">
+        <div class="modal-dialog" style="width:90% !important">
+            <div class="modal-content">
+                <div class="modal-header .no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title invoice-modal-title">   </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            @*<form method="post" id="invoice-form">*@
+                            <div class="box .no-border">
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    <!-- Start Box Of Basic Data -->
+                                    <div class="box box-info">
+                                        <div class="box-header ">
+                                            <h3 class="box-title"> الفواتير</h3>
+                                            <button type="button" class="btn btn-primary pull-left btn-add" data-toggle="modal" data-target="#addNewInvoice-modal"><i class="fa fa-plus-square">  </i> فاتورة جديدة </button>
+
+                                        </div>
+                                        <div class="box-body">
+                                            <div class="row">
+                                                <div class="col-lg-12 " id="orderInvoice">
+                                                    <input id="invoice-orderId"  class="hidden"/>
+                                                    <table class="table table-hover table-responsive" id="tbl-order-invoice">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>المورد</th>
+                                                                <th>استعراض</th>
+                                                                <th>اختيار فاتورة</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="tbody-order-invoice">
+                                                            
+                                                        </tbody>
+                                                    </table>
+                                                    
+
+                                                </div>
+
+                                            </div><!-- /.box -->
+
+                                            <div class="col-lg-12 ">
+                                                <div class="pull-left">
+                                                    <button type="button" class="btn btn-default " data-dismiss="modal">رجوع</button>
+                                                    <button type="submit" class="btn btn-primary save " value="add">حفظ</button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <!-- /.box-body -->
+                                    </div>
+
+                                    @*</form>*@
+                                </div>
+                            </div><!-- /.row (main row) -->
+
+                        </div>
+                        @*<div class="modal-footer">
+
+                            </div>*@
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        </div>
+
+
+    </div>
+</div>
+
+
+
+<!---------         إضافة فاتورة جديدة للطلب   ------------->
+<div class="example-modal">
+    <div class="modal fade in" id="addNewInvoice-modal">
+        <div class="modal-dialog" style="width:70% !important">
+            <div class="modal-content">
+                <div class="modal-header .no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"> إضافة  فاتورة جديدة</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+
+                            <div class="box .no-border">
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    <!-- Start Box Of Basic Data -->
+
+
+
+
+
+
+                                    <form method="post" id="addNewInvoice-form"  enctype="multipart/form-data">
+                                        <div class="box box-info">
+                                            <div class="box-header ">
+                                                <h3 class="box-title">فاتورة جديدة </h3>
+                                            </div>
+                                            <div class="box-body">
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <div class="col-lg-6">
+                                                            
+                                                            <div class="report-row">
+                                                                <div class="col-lg-12" style="margin-bottom:20px">
+                                                                    <div class="col-lg-8">
+                                                                        <select class="form-control list supplier" name="NewInvoiceSupplier" id="NewInvoiceSupplier" style="width:100%"></select>
+                                                                    </div>
+                                                                    <div class="col-lg-4">
+                                                                        <input type="file" class="btn btn-default report-btn"id="NewInvoiceFile" name="NewInvoiceFile" style="position: relative; top: -1%;" multiple>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div><!-- /.box -->
+
+                                                <div class="col-lg-12 ">
+                                                    <div class="pull-left">
+                                                        <button type="button" class="btn btn-default " data-dismiss="modal">رجوع</button>
+                                                        <button type="submit" id="but_upload" class="btn btn-primary save " value="add">حفظ</button>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <!-- /.box-body -->
+                                        </div>
+
+                                    </form>
+
+
+
+                                </div>
+                            </div><!-- /.row (main row) -->
+
+                        </div>
+                        @*<div class="modal-footer">
+
+                            </div>*@
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        </div>
+
+
+    </div>
+</div>
+
+
+
+<!--------------  تكملة بيانات الفاتورة المختارة  ------------------->
+<div class="example-modal">
+    <div class="modal fade in" id="invoicechoosed-modal">
+        <div class="modal-dialog" style="width:80% !important">
+            <div class="modal-content">
+                <div class="modal-header .no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"> بيانات الطلب </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <form method="post" id="invoicechoosed-form">
+                                <div class="box box-info">
+                                    <div class="box-header ">
+                                        <h3 class="box-title">  </h3>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="box-body">
+                                            <input class="hidden" id="invoicechoosed-supplier" />
+
+
+
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="jobtitle"> العملة </label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-addon">
+                                                            <i class="fa  fa-user"></i>
+                                                        </div>
+                                                        <select class="form-control currencytype" name="currencytype" id="currencytype" style="width:100%"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="vattype"> نوع الضريبة </label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-addon">
+                                                            <i class="fa  fa-user"></i>
+                                                        </div>
+                                                        <select class="form-control vattype" name="vattype" id="vattype" style="width:100%"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                           
+                                            <table class="table table-bordered invoicechoosed-tbl" id="invoicechoosed-tbl">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ت.الصنف</th>
+                                                        <th style="width:20%"> العدد المطلوب</th>
+                                                        <th>  سعر الوحدة</th>
+                                                        <th> الاجمالي </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="invoicechoosed-tbl-body" id="invoicechoosed-tbl-body"></tbody>
+
+                                            </table>
+                                            <div>
+                                                <div style="display: block;font-size: 12pt;font-weight: bold;">
+                                                    اجمالي الفاتورة :
+                                                    <span id="invoicetotal" class="invoicetotal" ></span>
+                                                </div>
+                                                <div style="display: block;font-size: 12pt;font-weight: bold;"> 
+                                                    القيمة المضافة :
+                                                    <span id="invoicevat" class="invoicevat" ></span>
+                                                </div>
+                                                <div style="display: block;font-size: 12pt;font-weight: bold;"> 
+                                                    الاجمالي بعد الضريبة :
+                                                    <span id="invoicetotalvat" class="invoicetotalvat" ></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-lg-12 ">
+                                            <div class="pull-left">
+                                                <button type="button" class="btn btn-default " data-dismiss="modal">رجوع</button>
+                                                <button type="submit" class="btn btn-primary save " value="add">حفظ</button>
+                                            </div>
+                                        </div>
+
+                                    </div><!-- /.box-body -->
+
+                                </div>
+
+                            </form>
+                        </div>
+                    </div><!-- /.row (main row) -->
+
+                </div>
+                @*<div class="modal-footer">
+
+                    </div>*@
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+}
+
+
+@section scripts{
+
+
+
+    <script>
+    var dataTable;
+    $(function () {
+
+
+            $('.calendar').datepicker({
+                todayBtn: "linked",
+                language: "it",
+                autoclose: true,
+                todayHighlight: true,
+                dateFormat: 'dd/mm/yy'
+            });
+
+            function loadData() {
+                dataTable = $('#tbx').DataTable({
+                    "language": {
+                        "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                        "search": "بحث"
+                    },
+                    ajax: {
+                        url: '/Orders/LoadData',
+                        dataSrc: ''
+                    },
+                    columns: [
+                        {
+                            "title": "# ",
+                            "data": "Id"
+                        },
+                        {
+                            "title": " الادارة   ",
+                            "data": "Department"
+                        },
+                        {
+                            "title": " الموضوع ",
+                            "data": "Description"
+                        },
+                        {
+                            "title": " تاريخ الطلب ",
+                            "data": "OrderDate",
+                        },
+                        {
+                            "title": "<i class='fa fa-cog'></i>",
+                            "data": null,
+                            "width": "10%",
+                            "orderable": false,
+                            "render": function (data) {
+                                return '<div class="btn-group">' +
+                                            '<button type="button" class="btn btn-default" data-toggle="dropdown">  <i class="fa fa-ellipsis-v"></i> </button> <div class="dropdown-menu btn-threePoint">' +
+                                            '<a class="dropdown-item" href="#" onclick="getInvoiceOrder(' + data.Id + ')">الفواتير</a> <br />' +
+                                            '<a class="dropdown-item" href="#" onclick="viewOrderImage(' + data.Id + ')">عرض صورة الطلب</a> <br />' +
+                                            '<a class="dropdown-item" href="#" onclick="finiacalRequest(' + data.Id + ')"> المطالبة  </a> <br />' +
+                                      '</div></div>'
+
+                            },
+
+                        }
+
+
+                    ]
+
+                });
+
+            }
+            loadData();
+
+
+            function select2list(selector, url, placeholder) {
+                $(selector).select2({
+                    language: { inputTooShort: function () { return 'enter 1 letter at less'; } },
+                    ajax: {
+                        url: url,
+                        dataType: 'json',
+                        delay: 100,
+                        data: function (params) {
+                            return {
+                                q: params.term,
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+                            return {
+                                results: data,
+                                pagination: {
+                                    more: ((data.total_count) > (params.page * 20))
+                                }
+                            };
+                        },
+                        cache: true
+                    },
+                    placeholder: placeholder,
+                    minimumInputLength: 1,
+                });
+
+            };
+            select2list(".department", "/ConsumeHrApi/GetDepartment", "  الادارة ");
+            select2list(".supplier", "/Orders/GetSupplier", "  المورد ");
+            select2list(".currencytype", "/CurrencyTypes/GetCurrencyType", "  نوع العملة ");
+            select2list(".vattype", "/Vats/GetVat", "   نوع الضريبة ");
+            
+            var newOption = new Option("جنية", 1, true, true);
+            $('.currencytype').append(newOption).trigger('change');
+            var newOption = new Option("مشتريات", @ViewBag.Vat, true, true);
+            $('.vattype').append(newOption).trigger('change');
+
+           
+
+
+
+
+         
+           
+
+            function save() {
+                
+
+                var ItemId = $('.item').map(function () {
+                    if ($(this).val() != null) {
+                        return $(this).val();
+                    }
+                    else {
+                        return 0;
+                    }
+                }).get();
+
+                var ItemDetailId = $('.itemDetail').map(function () {
+                    if ($(this).val() != null) {
+                        return $(this).val();
+                    }
+                    else {
+                        return 0;
+                    }
+                }).get();
+
+
+                var RequierCount = $('.requierCount').map(function () {
+                    if ($(this).val() != null) {
+                        return $(this).val();
+                    }
+                    else {
+                        return 0;
+                    }
+                }).get();
+
+
+               // if (window.FormData !== undefined) {
+                //debugger;
+                var fileUpload = $("#orderfile").get(0);
+                    var files = fileUpload.files;
+
+                    // Create FormData object
+                    var fileData = new FormData();
+
+                    // Looping over all files and add it to FormData object
+                    for (var i = 0; i < files.length; i++) {
+                        fileData.append(files[i].name, files[i]);
+                    }
+                    
+                    // Adding one more key to FormData object
+                    fileData.append("DepartmentId", $('#department').val());
+                    fileData.append("DepartmentName", $('#department').text());
+                    fileData.append("Description", $('#description').val());
+                    fileData.append("OrderDate", $('#orderdate').val() , "MM/DD/YYYY").format("DD/MM/YYYY"));
+                    //fileData.append("SuggestPrice", $('#suggestprice').val());
+                    fileData.append("ItemId", ItemId);
+                    fileData.append("ItemDetailId", ItemDetailId);
+                    fileData.append("RequierCount", RequierCount);
+                    
+
+
+                $.ajax({
+                    url: "@Url.Action("Create", "Orders")",
+                    type: "POST",
+                    contentType: false, // Not to set any content header
+                    processData: false,
+                    data: fileData,//JSON.stringify(ob),
+                //contentType: "application/json charset=utf-8",
+                //dataType: "json",
+                error: function (response) {
+                    //toastr[response.Status](response.Message, response.Title);
+                },
+                success: function (response) {
+                    toastr[response.Status](response.Message, response.Title);
+                    $('#add-modal').modal('hide');
+                    dataTable.ajax.reload();
+                    $('.list').val(null).trigger('change');
+                    $('.passenger-tbl-body').empty();
+                    $('#add-form').bootstrapValidator("resetForm", true);
+
+                }
+            });
+
+            }
+
+
+
+
+        function threeRow() {
+            $('.passenger-tbl-body').append('<tr class="passenger-tbl-row">' +
+                                                            '<td>' +
+                                                                '<div class="form-group">' +
+                                                                    '<select class="form-control  item" name="item[]" id="item" style="width:100%"></select>' +
+                                                                '</div>' +
+                                                            '</td>' +
+                                                            '<td>' +
+                                                                '<div class="form-group">' +
+                                                                    '<select class="form-control  itemDetail" name="itemDetail[]" id="itemDetail" style="width:100%"></select>' +
+                                                                '</div>' +
+                                                            '</td>' +
+
+                                                            '<td>' +
+                                                                '<div class="form-group">' +
+                                                                    '<input requier  type="text" name="requierCount[]" class="form-control requierCount" id="" placeholder="العدد المطلوب" autocomplete="off">' +
+                                                                '</div>' +
+                                                            '</td>' +
+
+                                                            '<td>' +
+                                                                    '<button class="text-center btn-danger  btn-remove"  value="removeRow"><i class="fa fa-trash-alt"></i></button>' +
+                                                            '</td>' +
+                                                        '</tr>' +
+
+
+                                                        '<tr class="passenger-tbl-row">' +
+                                                            '<td>' +
+                                                                '<div class="form-group">' +
+                                                                    '<select class="form-control  item" name="item[]" id="item" style="width:100%"></select>' +
+                                                                '</div>' +
+                                                            '</td>' +
+                                                            '<td>' +
+                                                                '<div class="form-group">' +
+                                                                    '<select class="form-control  itemDetail" name="itemDetail[]" id="itemDetail" style="width:100%"></select>' +
+                                                                '</div>' +
+                                                            '</td>' +
+
+                                                            '<td>' +
+                                                                '<div class="form-group">' +
+                                                                    '<input  type="text" name="requierCount[]" class="form-control requierCount" id="" placeholder="العدد المطلوب" autocomplete="off">' +
+                                                                '</div>' +
+                                                            '</td>' +
+
+                                                            '<td>' +
+                                                                    '<button class="text-center btn-danger  btn-remove"  value="removeRow"><i class="fa fa-trash-alt"></i></button>' +
+                                                            '</td>' +
+                                                        '</tr>' +
+
+                                                        '<tr class="passenger-tbl-row">' +
+                                                            '<td>' +
+                                                                '<div class="form-group">' +
+                                                                    '<select class="form-control  item" name="item[]" id="item" style="width:100%"></select>' +
+                                                                '</div>' +
+                                                            '</td>' +
+                                                            '<td>' +
+                                                                '<div class="form-group">' +
+                                                                    '<select class="form-control  itemDetail" name="itemDetail[]" id="itemDetail" style="width:100%"></select>' +
+                                                                '</div>' +
+                                                            '</td>' +
+
+                                                            '<td>' +
+                                                                '<div class="form-group">' +
+                                                                    '<input  type="text" name="requierCount[]" class="form-control requierCount" id="" placeholder="العدد المطلوب" autocomplete="off">' +
+                                                                '</div>' +
+                                                            '</td>' +
+                                                            '<td>' +
+                                                                    '<button class="text-center btn-danger  btn-remove"  value="removeRow"><i class="fa fa-trash-alt"></i></button>' +
+                                                            '</td>' +
+                                                        '</tr>' );
+            select2list(".item", "/Orders/GetItem", "  الصنف ");
+            //select2listParameter(".itemDetail", "/Orders/GetItemDetail", "  ت.الصنف " , 'item');
+        };
+        threeRow();
+
+
+        $('#new-row').click(function () {
+            var id = parseInt($('#passenger-tbl tr:last-child td:first-child').text());
+            $('.passenger-tbl-body').append('<tr class="passenger-tbl-row">' +
+                                                            '<td>' +
+                                                                '<div class="form-group">' +
+                                                                    '<select class="form-control  item" name="item[]" id="item" style="width:100%"></select>' +
+                                                                '</div>' +
+                                                            '</td>' +
+                                                            '<td>' +
+                                                                '<div class="form-group">' +
+                                                                    '<select class="form-control  itemDetail" name="itemDetail[]" id="itemDetail" style="width:100%"></select>' +
+                                                                '</div>' +
+                                                            '</td>' +
+
+                                                            '<td>' +
+                                                                '<div class="form-group">' +
+                                                                    '<input  type="text" name="requierCount[]" class="form-control requierCount" id="requierCount" placeholder="العدد المطلوب" autocomplete="off">' +
+                                                                '</div>' +
+                                                            '</td>' +
+
+                                                            '<td>' +
+                                                                    '<button class="text-center btn-danger  btn-remove"  value="removeRow"><i class="fa fa-trash-alt"></i></button>' +
+                                                            '</td>' +
+                                                        '</tr>');
+            select2list(".item", "/Orders/GetItem", "  الصنف ");
+            //select2listParameter(".itemDetail", "/Orders/GetItemDetail", "  ت.الصنف ", 'item');
+
+        });
+
+        $('#add-form').bootstrapValidator({
+            onSuccess: function (e) {
+                save();
+                e.preventDefault();
+
+            },
+            submitButtons: 'button[type="submit"]',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                validating: 'fa fa-refresh fa-spin success-feedback-icons'
+            },
+            fields: {
+                department: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل الادارة  فارغ'
+                        }
+                    }
+                },
+                description: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل موضوع الطلب فارغ'
+                        }
+                    }
+                },
+                orderdate: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل تاريخ الطلب فارغ'
+                        }
+                    }
+                },
+                orderfile: {
+                    validators: {
+                        file: {
+                            extension: 'pdf',
+                            type: 'application/pdf',
+                            message: 'يجب اختيار ملف على صيغة pdf '
+                        },
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل صورة الطلب فارغ'
+                        }
+                    }
+                },
+                'item[]': {
+                    validators: {
+                        notEmpty: {
+                            message: 'هذا الحقل مطلوب'
+                        }
+                    }
+                },
+                'itemDetail[]': {
+                    validators: {
+                        notEmpty: {
+                            message: 'هذا الحقل مطلوب'
+                        }
+                    }
+                },
+                'requierCount[]': {
+                    validators: {
+                        notEmpty: {
+                            message: 'هذا الحقل مطلوب'
+                        }
+                    }
+                },
+            }
+        });
+
+
+
+        //$('.item').on('select2:select', function (e) {
+        //    select2listParameter(".itemDetail", "/Orders/GetItemDetail", "  ت.الصنف ", $(this).val() );
+        //});
+
+       
+        //$('.itemDetail').on('select2:open', function (e) {
+        //    var currentRow = $(this).closest("tr");
+        //    var row = $(this).parent().parent().children().index($(this).parent());
+        //    alert(row);
+        //    //alert(currentRow.find(".ite val())";
+        //    //select2listParameter(".itemDetail", "/Orders/GetItemDetail", "  ت.الصنف ", $(this).val() );
+        //});
+  
+
+
+
+    });//End Document Ready
+        function select2listParameter(selector, url, placeholder, parameter) {
+            $(selector).select2({
+                language: { inputTooShort: function () { return 'enter 1 letter at less'; } },
+                ajax: {
+                    url: url,
+                    dataType: 'json',
+                    delay: 100,
+                    data: function (params) {
+                        return {
+                            fk: parseInt(parameter),
+                            //fk: parseInt($('.' + parameter + '').val()),
+                            q: params.term,
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data,
+                            pagination: {
+                                more: ((data.total_count) > (params.page * 20))
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: placeholder,
+                minimumInputLength: 1,
+            });
+
+        };
+
+
+        $(".passenger-tbl").on('click', '.itemDetail', function () {
+            //get the current row    select2-itemDetail-container
+            //var currentRow = $(this).closest("tr");
+
+            var currentRow = $(this).closest('tr');
+            var itemid = currentRow.find('.item').val();
+            select2listParameter(".itemDetail", "/Orders/GetItemDetail", "  ت.الصنف ", parseInt(itemid) );
+        });
+ 
+        //$(".passenger-tbl").on('click', '#select2-itemDetail-container', function () {
+        //    //get the current row    select2-itemDetail-container
+        //    //var currentRow = $(this).closest("tr");
+
+        //    var currentRow = $(this).closest('tr');
+        //    var itemid = currentRow.find('.item').val();
+        //    select2listParameter(".itemDetail", "/Orders/GetItemDetail", "  ت.الصنف ", parseInt(itemid) );
+        //});
+ 
+
+
+        $('.passenger-tbl').on('click', '.btn-remove', function () {
+            $(this).closest('tr').remove();
+
+        });
+        
+
+
+    ///////////////////////////////////////////////////////////////////////
+
+    //Open Edit Modal
+    $("#tbx").on('click', '.openEditModal', function () {
+        // get the current row
+        var currentRow = $(this).closest("tr");
+
+        $('#ed-id').val(currentRow.find("td:eq(0)").text());
+        $('#edname').val(currentRow.find("td:eq(1)").text()); // get current row st 2TD value
+        $('#edphone').val(currentRow.find("td:eq(2)").text()); // get current row st 2TD value
+        $('#edit-modal').modal('show');
+
+    });
+
+    //Validation And Save Edit Data
+    $('#edit-form').bootstrapValidator({
+        onSuccess: function (e) {
+            edit();
+            e.preventDefault();
+
+        },
+        submitButtons: 'button[type="submit"]',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok success-feedback-icons',
+            invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+            validating: 'fa fa-refresh fa-spin success-feedback-icons'
+        },
+        fields: {
+            edname: {
+                validators: {
+                    notEmpty: {
+                        message: 'يجب الا يكون حقل اسم المورد  فارغ'
+                    }
+                }
+            },
+            edphone: {
+                validators: {
+                    notEmpty: {
+                        message: 'يجب الا يكون حقل رقم الهاتف   فارغ'
+                    }
+                }
+            }
+
+        }
+    });
+
+    function edit() {
+
+
+        var ob = {
+            "Id": $('#ed-id').val(),
+            "Name": $('#edname').val(),
+            "Phone": $('#edphone').val()
+        };
+        $.ajax({
+            url: "@Url.Action("Edit", "Suppliers")",
+            type: "POST",
+        data: JSON.stringify(ob),
+        contentType: "application/json charset=utf-8",
+        dataType: "json",
+        error: function (response) {
+            //toastr[response.Status](response.Message, response.Title);
+        },
+        success: function (response) {
+            toastr[response.Status](response.Message, response.Title);
+            $('#edit-form').bootstrapValidator('resetForm', true);
+            $('#edit-modal').modal('hide');
+            dataTable.ajax.reload();
+
+
+        }
+    });
+    };
+
+
+
+
+
+
+        $('#addNewInvoice-form').bootstrapValidator({
+            onSuccess: function (e) {
+                addNewInvoice();
+                e.preventDefault();
+
+            },
+            submitButtons: 'button[type="submit"]',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                validating: 'fa fa-refresh fa-spin success-feedback-icons'
+            },
+            fields: {
+                NewInvoiceSupplier: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل اسم المورد  فارغ'
+                        }
+                    }
+                },
+                NewInvoiceFile: {
+                    validators: {
+                        notEmpty: {
+                            message: '    يجب إرفاق ملف الفاتورة    '
+                        }
+                    }
+                }
+
+            }
+        });
+        function addNewInvoice() {
+            // Checking whether FormData is available in browser
+            if (window.FormData !== undefined) {
+
+                var fileUpload = $("#NewInvoiceFile").get(0);
+                var files = fileUpload.files;
+
+                // Create FormData object
+                var fileData = new FormData();
+
+                // Looping over all files and add it to FormData object
+                for (var i = 0; i < files.length; i++) {
+                    fileData.append(files[i].name, files[i]);
+                }
+
+                // Adding one more key to FormData object
+                fileData.append("zxc", 'Manas');
+             
+                var OrderId = $('#invoice-orderId').val();
+                var SupplierId = $('#NewInvoiceSupplier').val();
+
+                
+            
+                $.ajax({
+                    url: '/Orders/CreateNewInvoice?OrderId=' + OrderId + '&SupplierId=' + SupplierId,
+                    type: "POST",
+                    contentType: false, // Not to set any content header
+                    processData: false, // Not to process data
+                    data: fileData,
+                    success: function (response) {
+                        toastr[response.Status](response.Message, response.Title);
+                        $('#addNewInvoice-form').bootstrapValidator('resetForm', true);
+                        $('.list').val(null).trigger('change');
+                        $('#addNewInvoice-modal').modal('hide');
+                        getInvoiceOrder(OrderId);
+                    },
+                    error: function (err) {
+                        alert(err.statusText);
+                    }
+                });
+                
+            } else {
+                alert("FormData is not supported.");
+            }
+        };
+
+
+
+
+        function getInvoiceOrder(id) {
+            $('#tbody-order-invoice').empty();
+
+            var url = "/Orders/GetInvoiceOrder?orderid=" + id;
+            $.get(url, function (data) {
+                //var item = '';
+                var k = 1;
+                $.each(data, function (i, item) {
+                var rows =       '<tr>'+
+                                    '<td class="hidden"><span class="report-name"> ' + item.SupplierId + ' </span></td>' +
+                                    '<td><span class="report-name"> ' + item.Supplier + ' </span></td>' +
+                                    '<td><a onclick="openpdf(' + item.OrderId + ' , ' + item.SupplierId + ')" class="btn btn-default" style="margin-right: 2%;"><i class="fa fa-print"></i></a></td>' +
+                                    '<td><input type="radio" name="r3" id="id'+item.Id+'"   class="flat-red  zxc invoicechoosed"></td>' +
+
+                                    '<td></td>' +
+                                '</tr>';
+                    $('#tbody-order-invoice').append(rows);
+                    if (item.IsChoosed == 1) {
+                        $('#id' + item.Id).prop('checked', true);
+                        $('#id' + item.Id).val("true");
+
+                        //$("#"+ item.Id).attr('checked', 'checked');
+                    } else {
+                        $('#id' + item.Id).val("false");
+
+                    }
+
+
+                });
+            });
+            $('#invoice-orderId').val(id);
+            $('#invoice-modal').modal('show');
+
+        };
+
+
+
+
+       
+
+       
+        function viewOrderImage(orderid) {
+            window.open("/Orders/viewOrderImage?id=" + orderid , "_blank");
+        }
+
+        function openpdf(orderid , supplierid) {
+            //window.location.href = "/Orders/GetReport";
+            window.open("/Orders/GetReport?orderid=" + orderid + "&supplierid=" + supplierid, "_blank");
+        }
+
+
+        
+       
+
+
+        $('#tbody-order-invoice').on('change', '.invoicechoosed', function () {
+            var oerderid = $('#invoice-orderId').val();
+            //get the current row
+            var currentRow = $(this).closest("tr");
+            var supplier = currentRow.find("td:eq(0)").text();
+            
+            $('#choosedspplier').val(supplier);
+
+            $.ajax({
+                url: "/Orders/CheckInvoice?orderid="+oerderid,
+                type: "POST",
+            //data: JSON.stringify(ob),
+            contentType: "application/json charset=utf-8",
+            dataType: "json",
+            error: function (response) {
+                //toastr[response.Status](response.Message, response.Title);
+            },
+            success: function (response)
+            {
+
+                if (response.Status != 'success') {
+                    checkInvoice(oerderid, supplier);
+                } else {
+                    choiseInvoice(oerderid, supplier);
+                }
+              }
+              });
+
+
+            //$('#invoicechoosed-modal').modal('show');
+        })
+
+
+        //إذا وجدت فاتورة مختارة سابقة
+        function checkInvoice(orderid, supplier) {
+
+           
+            var orderid = orderid;
+            Swal.fire({
+                title: ' إختيار فاتورة ',
+                text: "يوجد فاتورة سابقة للطلب المعنى عند الموافقة سيتم ازالة الفاتورة السابقة",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'موافق',
+                cancelButtonText: 'رجوع'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    choiseInvoice(orderid , supplier);
+                }
+            })
+
+        }
+
+        //عرض بيانات الطلب
+        function choiseInvoice(orderid, supplier) {
+            $('#invoicechoosed-tbl-body').empty();
+            $('#invoicechoosed-supplier').val(supplier);
+            var url = "/Orders/GetOrderDetail?orderid=" + orderid;
+            $.get(url, function (data) {
+                //var item = '';
+                var k = 1;
+                $.each(data, function (i, item) {
+                    var rows = '<tr>' +
+                                        '<td class="hidden"><input class="report-name invoicechoosed-orderDetailId" value="' + item.OrderDetailId + '" /> </td>' +
+                                        '<td class="hidden"><input class="report-name invoicechoosed-itemDetailId" value="' + item.ItemDetailId + '" /></td>' +
+                                        '<td><span class="report-name"> ' + item.ItemDetial + ' </span></td>' +
+                                        '<td><span class="report-name"> ' + item.RequierCount + ' </span></td>' +
+                                        '<td><input type="number" class="form-control invoicechoosed-itemprice" name="invoicechooseditemprice" id="invoicechoosed-itemprice" autocomplete="off"/></td>' +
+                                        '<td class="report-name invoicechoosed-totalitemprice" id="invoicechoosed-totalitemprice"> </td>' +
+                                    '</tr>';
+                    $('#invoicechoosed-tbl-body').append(rows);
+
+                });
+                
+            });
+            //$('#invoice-orderId').val(id);
+            
+            $('#invoicechoosed-modal').modal('show');
+        }
+
+        
+       
+        //ضرب سعر الوحدة في الكمية
+        $("#invoicechoosed-tbl-body").on('keyup', '.invoicechoosed-itemprice', function () {
+            
+
+            var currentRow = $(this).closest("tr");
+            
+            var count = currentRow.find("td:eq(3)").text();
+
+            //اجمالي سعر الوحدة
+            currentRow.find("td:eq(5)").text($(this).val() * count);
+
+            //اجمالي الفاتورة وتالضريبة والاجمالي بعد الضريبة
+           var x =  $('.invoicechoosed-totalitemprice').map(function () {
+                if ($(this).text() != '') {
+                    return $(this).text();
+                }
+                else {
+                    return 0;
+                }
+            }).get();
+           var vat = $('#vattype').val();
+           var  sum = 0;
+           x.forEach(function(num){sum+=parseFloat(num) || 0;});
+           $('#invoicetotal').text(sum);
+           $('#invoicevat').text(sum * vat/100);
+           $('#invoicetotalvat').text(sum + (sum * vat/100));
+
+        });
+
+
+
+        $('#invoicechoosed-form').bootstrapValidator({
+            onSuccess: function (e) {
+                invoiceChoosed();
+                e.preventDefault();
+
+            },
+            submitButtons: 'button[type="submit"]',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok success-feedback-icons',
+                invalid: 'glyphicon glyphicon-remove error-feedback-icons',
+                validating: 'fa fa-refresh fa-spin success-feedback-icons'
+            },
+            fields: {
+                NewInvoiceSupplier: {
+                    validators: {
+                        notEmpty: {
+                            message: 'يجب الا يكون حقل اسم المورد  فارغ'
+                        }
+                    }
+                },
+                NewInvoiceFile: {
+                    validators: {
+                        notEmpty: {
+                            message: '    يجب إرفاق ملف الفاتورة    '
+                        }
+                    }
+                }
+
+            }
+        });
+
+        //تكملة بيانات الفاتورة
+        function invoiceChoosed() {
+            var supplierid = $('#invoicechoosed-supplier').val();
+            var orderid = $('#invoice-orderId').val();
+            var ob = {
+                "Id": $('#invoice-orderId').val(),
+                "VatType" : $('#vattype').val(),
+                "CurrencyType" : $('#currencytype').val(),
+                "OrderDetailId": $('.invoicechoosed-orderDetailId').map(function () {
+                    if ($(this).val() != null) {
+                        return $(this).val();
+                    }
+                    else {
+                        return 0;
+                    }
+                }).get(),
+
+                "ItemDetailId": $('.invoicechoosed-itemDetailId').map(function () {
+                    if ($(this).val() != null) {
+                        return $(this).val();
+                    }
+                    else {
+                        return 0;
+                    }
+                }).get(),
+
+                "ItemPrice": $('.invoicechoosed-itemprice').map(function () {
+                    if ($(this).val() != null) {
+                        return $(this).val();
+                    }
+                    else {
+                        return 0;
+                    }
+                }).get(),
+
+            };
+            $.ajax({
+                url: "/Orders/InvoiceChoosed?orderid="+orderid + "&supplierid=" + supplierid,
+                type: "POST",
+            data: JSON.stringify(ob),
+            contentType: "application/json charset=utf-8",
+            dataType: "json",
+            error: function (response) {
+                //toastr[response.Status](response.Message, response.Title);
+            },
+            success: function (response) {
+                toastr[response.Status](response.Message, response.Title);
+
+                $('#invoicechoosed-modal').bootstrapValidator('resetForm', true);
+                $('#invoicechoosed-modal').modal('hide');
+                dataTable.ajax.reload();
+            }
+        });
+
+        }
+        
+        //عرض المطالبة المالية
+        function finiacalRequest(id){
+            window.location.href="/Orders/FinaicalRequest?orderid="+id;
+        }
+    </script>
+
+
+
+}
+
+

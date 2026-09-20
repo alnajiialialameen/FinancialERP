@@ -1,0 +1,221 @@
+﻿@using Purchases.Models.ViewModel;
+@model IEnumerable<TransactionVM>
+@{
+    ViewBag.Title = "PrintInvoice";
+    Layout = "~/Views/Shared/_LayoutPrint.cshtml";
+    //Layout = null;
+}
+
+<style>
+    body {
+        direction: rtl;
+        font-size: 22px;
+        font-weight: 300;
+        margin: 0px 20px;
+        padding: 0px 20px
+    }
+
+    .header {
+        width: 100%;
+        height: 140px;
+    }
+
+        .header .left-side {
+            width: 40%;
+            height: 160px;
+            float: left;
+            text-align: center;
+            border: 2px solid #333;
+            background-color: transparent;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: column;
+        }
+
+        .header .right-side {
+            width: 55%;
+            height: 160px;
+            line-height: 29px;
+            float: right;
+            text-align: right;
+            /*border: 2px solid #333;*/
+            background-color: transparent;
+            border-radius: 4px;
+            display: block;
+        }
+
+    .right-side .row {
+        display: block;
+        text-align: right;
+        font-size: 20px;
+        font-weight: 400;
+        margin: 0px;
+        /* border-bottom: 2px dotted black; */
+    }
+
+
+    table {
+        width: 100%;
+        border: solid 2px #333;
+        text-align: right;
+        margin-top: 30px;
+    }
+
+    thead {
+        text-align: right;
+        border: solid 2px #333;
+    }
+
+    tbody {
+        text-align: center;
+        width: 96%;
+        border: solid 2px #333;
+        height: 330px;
+    }
+
+    .center {
+        text-align: center;
+    }
+
+    .flex {
+        display: flex;
+        justify-content: space-between;
+        margin: 10px 30px;
+    }
+</style>
+
+<div class="header">
+    <div class="left-side">
+        <div>
+            @*<label>مطار بورتسودان الدولي</label>*@
+        </div>
+
+        <div>
+            <strong>تاريخ العملية:</strong>
+            <label for="">@ViewBag.TransactionDate</label>
+        </div>
+
+    </div>
+
+    <div class="right-side">
+        <div class="row">
+            <strong>الوحدة:</strong>
+            <label for="">الادارة المالية</label>
+        </div>
+        <div class="row">
+            <strong>رقم العملية:</strong>
+            <label for="">@ViewBag.transactionId</label>
+        </div>
+        <div class="row">
+            <strong>المدفوع له:</strong>
+            <label for="">@ViewBag.recipient</label>
+        </div>
+        <div class="row">
+            <strong>السنة المالية:</strong>
+            <label for="">@ViewBag.CurrentYear</label>
+        </div>
+        <div class="row">
+            <strong>بالخصم علي البند:</strong>
+            <label for="BalanceName">@ViewBag.BalanceName</label>
+        </div>
+    </div>
+</div>
+@{
+    if (ViewBag.BalanceName == "حساب مذكورين")
+    {
+        <div class="row pull-right" style="margin-right:1px;">
+            <strong>البيان:</strong>
+            <label for="note">@ViewBag.Note</label>
+        </div>
+    }
+}
+
+<div class="container">
+<div class="row">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <td class="text-center">عدد </td>
+                <td class="text-center" colspan="5">الـــــبــــــيـــــان</td>
+                <td class="text-center">المبلغ</td>
+                <td class="text-center">ضريبة 1%</td>
+                <td class="text-center">الصافي</td>
+                <td class="text-center">ملاحظات</td>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int counter = 1;
+                string BalanceName = ViewBag.BalanceName;
+                foreach (var item in Model)
+                {
+                    if (counter == 1 && BalanceName != "حساب مذكورين")
+                    {
+                        <tr>
+                            <td></td>
+                            <td class="text-right" colspan="5">@item.note</td>
+                            <td class="amount">@item.amount</td>
+                            <td class="amount">@item.tax</td>
+                            <td class="amount">@item.total</td>
+                            <td></td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td></td>
+                            <td class="text-right" colspan="5">@item.accName</td>
+                            <td class="amount">@item.amount</td>
+                            <td class="amount">@item.tax</td>
+                            <td class="amount">@item.total</td>
+                            <td></td>
+                        </tr>
+                    }
+                    counter++;
+                }
+            }
+            <tr>
+                <td colspan="6">إجمالي المبلغ كتابة:@ViewBag.AmountText</td>
+                @*<td colspan="6"><strong> جملة المبلغ :</strong> <strong class="amount">@ViewBag.totalAmount</strong></td>*@
+                <td colspan="6">جملة المبلغ :@ViewBag.totalAmount</td>
+            </tr>
+            <tr>
+                <td colspan="6">تمت المراجعة بواسطة------------------------------------</td>
+                <td colspan="6"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div class="row">
+    <p>
+        أشهد بان المبلغ مستحق الدفع وأنه صحيح فيما يتعلق بالتضريب والجمع وفئات الدفع والقيام بالخدمات المطلوبة علي الوجه الاكمل وعليه فاني اطلب دفع المذكور أعلاه
+    </p>
+    <label for="">توقيع ثاني:....................</label>
+    <p>الموظف المسؤول عن مراجعة الحساب</p>
+</div>
+
+
+<div class="row center">
+    <p>تصدق بالدفع</p>
+</div>
+<div class="flex">
+    <p> توقيع أول :................... </p>
+    <p>دفع بشيك نمرة :<strong>@ViewBag.CheckNo</strong></p>
+</div>
+
+
+@section scripts{
+    <script>
+        $('.amount').each(function () {
+            var item = $(this).text();
+
+            // var inputVal = round(item, 2);
+            var formattedVal = formatNumber(item);
+
+            $(this).text(formattedVal);
+        });
+    </script>
+}

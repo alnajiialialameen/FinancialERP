@@ -1,0 +1,165 @@
+﻿@using Purchases.Models.ViewModal;    
+@model IEnumerable<TransactionViewMode>
+     @{
+         ViewBag.Title = "PrintInvoice";
+         Layout = "~/Views/Shared/_LayoutPrint.cshtml";
+         //Layout = null;
+    }
+
+<style>
+    body {
+        direction: rtl;
+        font-size: 22px;
+        font-weight: 300;
+        margin:0px 20px;
+        padding:0px 20px
+    } 
+
+    .header {
+        width: 100%;
+        height: 140px;
+    }
+
+    .header .left-side {
+        width: 40%;
+        height: 160px;
+        float: left;
+        text-align: justify;
+        border: 2px solid #333;
+        background-color: transparent;
+        border-radius: 4px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .header .right-side {
+        width: 55%;
+        height: 160px;
+        line-height: 29px;
+        float: right;
+        text-align: right;
+        /*border: 2px solid #333;*/
+        background-color: transparent;
+        border-radius: 4px;
+        display: block;
+    }
+
+    .right-side .row {
+        display: block;
+        text-align: right;
+        font-size: 20px;
+        font-weight: 400;
+        margin: 0px;
+        /* border-bottom: 2px dotted black; */
+    }
+
+
+    table {
+        width: 100%;
+        border: solid 2px #333;
+        text-align: right;
+        margin-top:30px;
+    }
+
+    thead {
+        text-align: right;
+        border: solid 2px #333;
+    }
+
+    tbody {
+        text-align: center;
+        width: 96%;
+        border: solid 2px #333;
+        height:330px;
+    }
+
+    .center {
+        text-align: center;
+    }
+
+   .flex {
+       display: flex;
+       justify-content:space-around;
+   }
+
+</style>
+
+
+
+<div class="header">
+    <div class="left-side">
+        <label>مطار بورتسودان الدولي</label>
+    </div>
+
+    <div class="right-side">
+        <div class="row">
+            <strong>الوحدة:</strong>
+            <label for="">الادارة المالية</label>
+        </div>
+        <div class="row">
+            <strong>رقم العملية:</strong>
+            <label for="">@Model.FirstOrDefault().transactionId</label>
+        </div>
+        <div class="row">
+            <strong>المدفوع له:</strong>
+            <label for="">@Model.FirstOrDefault().recipient</label>
+        </div>
+        <div class="row">
+            <strong>السنة المالية:</strong>
+            <label for="">@ViewBag.currentYear</label>
+        </div>
+        <div class="row">
+            <strong>بالخصم علي البند:</strong>
+            <label for="BalanceName">@Model.FirstOrDefault().balanceAccName</label>
+        </div>
+    </div>
+</div>
+<br />
+<div class="content">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th class="text-center">عدد </th>
+                <th class="text-center" colspan="5">الـــــبــــــيـــــان</th>
+                <th class="text-center">المبلغ</th>
+                <th class="text-center">ضريبة 1%</th>
+                <th class="text-center">الصافي</th>
+                <th class="text-center">ملاحظات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td></td>
+                    <td colspan="5">@item.note</td>
+                    <td>@item.amount</td>
+                    <td>@item.tax</td>
+                    <td>@item.total</td>
+                    <td></td>
+                </tr>
+            }
+            <tr>
+                <td colspan="6">إجمالي المبلغ كتابة:@ViewBag.AmountText</td>
+                <td colspan="6"><strong>جملة المبلغ: @Model.Sum(x => x.total)</strong></td>
+            </tr>
+            <tr>
+                <td colspan="6">تمت المراجعة بواسطة<br><br>------------------------------------</td>
+                <td colspan="6"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        أشهد بان المبلغ مستحق الدفع وأنه صحيح فيما يتعلق بالتضريب والجمع وفئات الدفع والقيام بالخدمات المطلوبة علي الوجه الاكمل وعليه فاني اطلب دفع المذكور أعلاه
+    </p>
+    <label for="">توقيع ثاني:...................................</label>
+    <p>الموظف المسؤول عن مراجعة الحساب</p>
+    <div class="center">
+        <p>تصدق بالدفع</p>
+    </div>
+    <div class="flex">
+        <p> توقيع أول :........................................ </p>
+        <p>دفع بشيك نمرة :.............................</p>
+    </div>
+</div>

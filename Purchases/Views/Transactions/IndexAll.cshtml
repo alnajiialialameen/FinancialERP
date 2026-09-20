@@ -3,23 +3,6 @@
     Layout = "~/Views/Shared/_Layout2.cshtml";
 }
 
-@*<style>
-    .displaying {
-        display: none;
-    }
-
-    .ui-datepicker .ui-datepicker-next:hover {
-        cursor: pointer;
-    }
-
-    .d-flex {
-        display: flex;
-        width: 100%;
-        justify-content: space-between;
-        flex-direction: row;
-    }
-</style>*@
-
 @section content{
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -52,7 +35,8 @@
             </div>
         </section>
 
-    </div><!-- /.content-wrapper -->
+    </div> 
+    <!-- /.content-wrapper -->
 
     <div class="example-modal">
         <div class="modal fade in" id="add-modal" data-backdrop="static">
@@ -249,7 +233,6 @@
         </div>
     </div>
 
-
     @*Add Recipients Modal*@
     <div class="example-modal">
         <div class="modal fade in" id="add-recipients-modal" data-backdrop="static">
@@ -327,6 +310,7 @@
                                         <th>اسم البنك</th>
                                         <th>رقم الحساب</th>
                                         <th>المبلغ</th>
+                                        <th>#</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
@@ -520,24 +504,24 @@
                             "orderable": false,
                             "render": function (data) {
                                 return `
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-default" data-toggle="dropdown">
-                                        <i class="fa fa-ellipsis-v"></i>
-                                    </button>
-                                    <div class="dropdown-menu btn-threePoint">
-                                    <a href="#" class="btnBankLetter" onclick="printBankLetter(${data.transactionId})">خطاب البنك</a><br />
-                                        ${data.documentType == 'سند دفع'
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default" data-toggle="dropdown">
+                                            <i class="fa fa-ellipsis-v"></i>
+                                        </button>
+                                        <div class="dropdown-menu btn-threePoint">
+                                        <a href="#" class="btnBankLetter" onclick="printBankLetter(${data.transactionId})">خطاب البنك</a><br />
+                                            ${data.documentType == 'سند دفع'
                                         ? `<a href="#" class="btnPrintCheck" onclick="printchecs(${data.transactionId})">طباعة الشيك</a><br />`
                                         : ''
                                     }
-                                        <a href="#" class="btnEdit">تعديل</a><br />
-                                        <a href="#" class="btnAddRecipient">إضافة مستلمين</a><br />
-                                        <a href="#" class="printSanad" onclick="printSanad(${data.transactionId})">طباعة أورنيك 17</a><br />
-                                        <a href="#" class="printSanad" onclick="DeleteTransaction(${data.transactionId})">الغاء الحركة</a><br />
-                                        <a href="#" class="btnPost">ترحيل</a><br />
+                                            <a href="#" class="btnEdit">تعديل</a><br />
+                                            <a href="#" class="btnAddRecipient">إضافة مستلمين</a><br />
+                                            <a href="#" class="printSanad" onclick="printSanad(${data.transactionId})">طباعة أورنيك 17</a><br />
+                                            <a href="#" class="printSanad" onclick="DeleteTransaction(${data.transactionId})">الغاء الحركة</a><br />
+                                            <a href="#" class="btnPost">ترحيل</a><br />
+                                        </div>
                                     </div>
-                                </div>
-                            `;
+                                `;
                             }
 
                         },
@@ -649,6 +633,114 @@
         var rptList = [];
 
         function addToTable() {
+
+            var addAccName = $('#select2-addAccName-container').text();
+            var addAccNameId = $('.addAccName').val();
+            var addBalanceAccName = $('#select2-addBalanceId-container').text();
+
+            var creditAmount = creditAmountObj.getNumber();
+            var debitAmount = debitAmountObj.getNumber();
+
+            // نوع الحركة
+            var isCredit = creditAmount > 0 ? "true" : "false";
+
+            if (addAccName.trim() != "" && addAccNameId != null && creditAmount != null && debitAmount != null && (creditAmount > 0 || debitAmount > 0))
+            {
+                // التحقق من عدم تكرار الحساب في نفس الجانب
+                var isFound = rptList.some(function (item) {
+                    return item.accTrreId == addAccNameId &&
+                        item.isCredit == isCredit;
+                });
+
+                if (!isFound) {
+                    var rows = "<tr id='row' style='font-size:16px;text-align:center;'>"
+                        + "<td class='id'>" + addAccNameId + "</td>"
+                        + "<td class='name'>" + addAccName + "</td>"
+                        + "<td class='debitAmount'>" + formatNumber(debitAmount.toString()) + "</td>"
+                        + "<td class='creditAmount'>" + formatNumber(creditAmount.toString()) + "</td>"
+                        + "<td class='isCredit hidden'>" + isCredit + "</td>"
+                        + "<td class='transDetailId hidden'>0</td>"
+                        + '<td class="btnDelete"><button id="delete" class="btn btn-warning transfer delete">حذف <i class="transfer-fa fa fa-trash"></i></button></td>'
+                        + "</tr>";
+
+                    $('.myTbody').append(rows);
+
+                    // تنظيف الحقول
+                    $('.addAccName').val('');
+                    $('.amount').val('');
+                    $('.list').text(null).trigger('change');
+                    $('.list').val(null).trigger('change');
+                    $('.debitAmount').val('');
+                    $('.creditAmount').val('');
+
+                    // إضافة إلى القائمة
+                    if (creditAmount > 0) {
+                        rptList.push({
+                            addAccName: addAccName,
+                            accTrreId: addAccNameId,
+                            amount: 0,
+                            credit: parseFloat(creditAmount.toFixed(2)),
+                            debit: 0,
+                            isCredit: "true",
+                            documentTypeId: 8
+                        });
+                    } else {
+                        rptList.push({
+                            addAccName: addAccName,
+                            accTrreId: addAccNameId,
+                            amount: 0,
+                            credit: 0,
+                            debit: parseFloat(debitAmount.toFixed(2)),
+                            isCredit: "false",
+                            documentTypeId: 8
+                        });
+                    }
+
+                    // حساب الإجماليات
+                    var totalCreditAmount = 0;
+                    var totalDebitAmount = 0;
+
+                    $.each(rptList, function (index, value) {
+                        totalDebitAmount += parseFloat(value.debit || 0);
+                        totalCreditAmount += parseFloat(value.credit || 0);
+                    });
+
+                    var balance = parseFloat(totalCreditAmount.toFixed(2))
+                        - parseFloat(totalDebitAmount.toFixed(2));
+
+                    var tblFooter =
+                        '<tr>' +
+                        '<td colspan="1">الإجمالي</td>' +
+                        '<td colspan="2">' + totalDebitAmount.toFixed(2) + '</td>' +
+                        '<td colspan="2">' + totalCreditAmount.toFixed(2) + '</td>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td colspan="2">الصافي</td>' +
+                        '<td colspan="3">' + balance.toFixed(2) + '</td>' +
+                        '</tr>';
+
+                    $('.myTFoot').empty().append(tblFooter);
+
+                } else {
+
+                    toastr["error"]("لا يمكن تكرار نفس الحساب في نفس الجانب (مدين أو دائن).", "خطأ");
+
+                }
+
+                $(".AmountCurrencyDecimalText").text('');
+                $(".AmountCurrencyDecimalTextCr").text('');
+
+            } else {
+
+                toastr["error"]("الرجاء إدخال جميع البيانات.", "خطأ");
+
+            }
+
+            creditAmountObj.set(0);
+            debitAmountObj.set(0);
+        }
+
+        function addToTableLast() {
             //هنا لازم ندخل اسم الحساب
             var addAccName = $('#select2-addAccName-container').text();
             var addAccNameId = $('.addAccName').val();
@@ -954,22 +1046,28 @@
                         var obj = JSON.stringify(item).replace(/"/g, '&quot;');
 
                         var row = `
-                                                            <tr>
-                                                                <td>${item.Id}</td>
-                                                                <td>${item.RecipientName}</td>
-                                                                <td>${item.BankName}</td>
-                                                                <td>${item.AccountNumber}</td>
-                                                                <td>${formatNumber(item.Amount)}</td>
-                                                                <td>
-                                                                    <button class="text-success printBankLetter"
-                                                                    onClick="printBankLetterForRe(
-                                                                        ${item.Id},${item.TransactionId}, ${item.BankAccountId},${item.AccountNumber}
-                                                                    )">
-                                                                    <i class="fa fa-print"></i>
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                        `;
+                                                                <tr>
+                                                                    <td>${item.Id}</td>
+                                                                    <td>${item.RecipientName}</td>
+                                                                    <td>${item.BankName}</td>
+                                                                    <td>${item.AccountNumber}</td>
+                                                                    <td>${formatNumber(item.Amount)}</td>
+                                                                    <td>
+                                                                        <button class="text-success printBankLetter"
+                                                                        onClick="printBankLetterForRe(
+                                                                            ${item.Id},${item.TransactionId}, ${item.BankAccountId},${item.AccountNumber}
+                                                                        )">
+                                                                        <i class="fa fa-print"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                    <td>
+                                                                        <button class="text-danger deleteTransactionRecipient"
+                                                                        onClick="deleteTransactionRecipient(${item.Id})">
+                                                                        <i class="fa fa-trash"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            `;
 
                         $('#tblRecipientBody').append(row);
                     });
@@ -981,10 +1079,13 @@
         });
 
         $('.btnSaveRecipient').on('click', function () {
+            debugger;
             var amount = recipientAmountObj.getNumber();
             var recipientNameId = $('#recipientName').val();
             var recipientBankId = $('#recipientBank').val();
             var TransactionId = $('#recipientTransactionId').text();
+            console.clear();
+            console.log(amount);
 
             $.post('/Transactions/SaveTransactionRecipients', {
                 id: TransactionId, recipientNameId: recipientNameId,
@@ -1004,8 +1105,52 @@
             if (AccountNumber != null) {
                 window.open('/Reports/printRecipientBankLetter/' + Id, "_blank");
             } else {
-                window.open(`/Reports/printBankLetter/${transactionId}?bankAccountId=${bankAccountId}`, "_blank");
+                window.open(`/Reports/printBankLetterNew/${transactionId}?bankAccountId=${bankAccountId}`, "_blank");
             }
+        }
+
+        function deleteTransactionRecipient(Id) {
+            $.post('/Transactions/DeleteTransactionRecipient', { id: Id }, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                // Refresh the recipient list after deletion
+                var TransactionId = $('#recipientTransactionId').text();
+                $.get('/Transactions/getTransactionRecipients/' + TransactionId, {}, function (response) {
+                    if (response && response.length > 0) {
+                        $('#tblRecipient').removeClass('hide');
+                        $('#tblRecipientBody').empty(); // Clear previous rows if needed
+                        response.forEach(function (item) {
+                            var obj = JSON.stringify(item).replace(/"/g, '&quot;');
+                            var row = `
+                                                                <tr>
+                                                                    <td>${item.Id}</td>
+                                                                    <td>${item.RecipientName}</td>
+                                                                    <td>${item.BankName}</td>
+                                                                    <td>${item.AccountNumber}</td>
+                                                                    <td>${formatNumber(item.Amount)}</td>
+                                                                    <td>
+                                                                        <button class="text-success printBankLetter"
+                                                                        onClick="printBankLetterForRe(
+                                                                            ${item.Id},${item.TransactionId}, ${item.BankAccountId},${item.AccountNumber}
+                                                                        )">
+                                                                        <i class="fa fa-print"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                    <td>
+                                                                        <button class="text-danger deleteTransactionRecipient"
+                                                                        onClick="deleteTransactionRecipient(${item.Id})">
+                                                                        <i class="fa fa-trash"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            `;
+                            $('#tblRecipientBody').append(row);
+                        });
+                    } else {
+                        $('#tblRecipient').addClass('hide');
+                    }
+                });
+            });
+
         }
         /*----------------------------------------------------------------------------------------------------------*/
 
@@ -1123,5 +1268,6 @@
             });
 
         }
+
     </script>
 }

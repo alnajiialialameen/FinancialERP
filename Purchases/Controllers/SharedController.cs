@@ -556,6 +556,7 @@ namespace Purchases.Controllers
         {
             var userId = User.Identity.GetUserId();
             var data = obj.loadPettyCashNotPayedData(userId);
+
             return new JsonResult { Data = data, MaxJsonLength = 50000000, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
 

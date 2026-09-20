@@ -1,0 +1,1052 @@
+﻿
+@using Microsoft.AspNet.Identity
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>ERP System</title>
+
+    @RenderSection("Styles", required: false)
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="~/Content/select2.min.css" rel="stylesheet" />
+    <link href="~/Content/stylee.css" rel="stylesheet" />
+    <link href="~/Temp/Tree/dist/themes/default/jstree/style.min.css" rel="stylesheet" />
+
+    <style>
+
+        :root {
+            --sidebar-width: 270px;
+            --sidebar-bg: #172033;
+            --sidebar-hover: #273653;
+            --sidebar-text: #cbd5e1;
+            --sidebar-active: #3b82f6;
+            --header-height: 70px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f1f5f9;
+            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+            color: #1e293b;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* ================= HEADER ================= */
+
+        .erp-header {
+            height: var(--header-height);
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            z-index: 1030;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+        }
+
+        .erp-brand {
+            width: var(--sidebar-width);
+            font-size: 23px;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .erp-brand i {
+                color: #3b82f6;
+            }
+
+        .erp-header-right,
+        .erp-header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .erp-menu-btn {
+            border: none;
+            background: transparent;
+            font-size: 23px;
+            color: #475569;
+            cursor: pointer;
+        }
+
+        .erp-icon-btn {
+            position: relative;
+            border: none;
+            background: #f1f5f9;
+            color: #475569;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+            .erp-icon-btn:hover {
+                background: #e2e8f0;
+            }
+
+        .erp-notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ef4444;
+            color: white;
+            font-size: 11px;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .erp-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #334155;
+            font-weight: 600;
+        }
+
+            .erp-user img {
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+
+        /* ================= SIDEBAR ================= */
+
+        .erp-sidebar {
+            position: fixed;
+            top: var(--header-height);
+            right: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            z-index: 1020;
+            overflow-y: auto;
+            transition: transform .3s ease;
+        }
+
+            .erp-sidebar::-webkit-scrollbar {
+                width: 5px;
+            }
+
+            .erp-sidebar::-webkit-scrollbar-thumb {
+                background: #475569;
+                border-radius: 10px;
+            }
+
+        .erp-sidebar-menu {
+            list-style: none;
+            padding: 20px 12px;
+            margin: 0;
+        }
+
+            .erp-sidebar-menu li {
+                margin-bottom: 4px;
+            }
+
+            .erp-sidebar-menu a {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 13px 15px;
+                color: var(--sidebar-text);
+                border-radius: 9px;
+                font-size: 15px;
+                transition: background .2s ease;
+            }
+
+                .erp-sidebar-menu a:hover,
+                .erp-sidebar-menu .active > a {
+                    background: var(--sidebar-hover);
+                    color: #ffffff;
+                }
+
+            .erp-sidebar-menu .active > a {
+                background: var(--sidebar-active);
+            }
+
+            .erp-sidebar-menu a > i:first-child {
+                width: 22px;
+                text-align: center;
+                font-size: 17px;
+            }
+
+            .erp-sidebar-menu .arrow {
+                margin-right: auto;
+                transition: transform .2s ease;
+            }
+
+            .erp-sidebar-menu .submenu {
+                display: none;
+                list-style: none;
+                padding: 5px 12px 5px 0;
+                margin: 0;
+            }
+
+                .erp-sidebar-menu .submenu.show {
+                    display: block;
+                }
+
+                .erp-sidebar-menu .submenu a {
+                    font-size: 14px;
+                    padding: 10px 15px;
+                }
+
+                    .erp-sidebar-menu .submenu a:hover {
+                        background: #273653;
+                    }
+
+        /* ================= MAIN ================= */
+
+        .erp-main {
+            margin-right: var(--sidebar-width);
+            padding-top: var(--header-height);
+            min-height: 100vh;
+            transition: margin-right .3s ease;
+        }
+
+        .erp-content {
+            padding: 25px;
+        }
+
+        .erp-page-header {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            border: 1px solid #e2e8f0;
+        }
+
+            .erp-page-header h1 {
+                font-size: 24px;
+                margin: 0 0 10px;
+                font-weight: 700;
+            }
+
+            .erp-page-header .breadcrumb {
+                margin-bottom: 0;
+            }
+
+        .erp-footer {
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* ================= NOTIFICATIONS ================= */
+
+        .erp-notification-menu {
+            width: 330px;
+            max-width: 90vw;
+            padding: 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+            .erp-notification-menu li {
+                margin: 0;
+            }
+
+            .erp-notification-menu a {
+                white-space: normal;
+                display: block;
+                padding: 12px 15px;
+                color: #334155;
+            }
+
+        /* ================= RESPONSIVE ================= */
+
+        @@media (max-width: 991.98px) {
+
+            .erp-sidebar {
+                transform: translateX(100%);
+            }
+
+                .erp-sidebar.show {
+                    transform: translateX(0);
+                }
+
+            .erp-main {
+                margin-right: 0;
+            }
+
+            .erp-brand {
+                width: auto;
+            }
+
+            .erp-user-name {
+                display: none;
+            }
+
+            .erp-header {
+                padding: 0 15px;
+            }
+
+            .erp-content {
+                padding: 15px;
+            }
+        }
+
+        @@media (min-width: 992px) {
+
+            .erp-sidebar.collapsed {
+                transform: translateX(100%);
+            }
+
+            .erp-main.expanded {
+                margin-right: 0;
+            }
+        }
+
+        /* ================= EXISTING CUSTOM CLASSES ================= */
+
+        .displaying {
+            display: none;
+        }
+
+        fieldset {
+            border: solid 1px #808080 !important;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .trans,
+        .trans-edit {
+            border: solid 1px #808080 !important;
+            border-radius: 5px;
+            width: 100%;
+            padding: 5px;
+            margin-top: 15px;
+        }
+
+        .trans-edit {
+            border-color: #00ff21 !important;
+        }
+
+        .buttons {
+            display: flex !important;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .form-control {
+            font-size: 18px;
+        }
+
+        .content {
+            min-height: auto !important;
+        }
+
+        .border {
+            padding: 5px;
+            border: 1px solid grey !important;
+            border-radius: 4px;
+        }
+
+        .bg {
+            color: #fff;
+            padding: 5px;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+
+            .bg.bg-success {
+                background-color: #2db03e;
+            }
+
+            .bg.bg-warning {
+                background-color: #d4a904;
+            }
+
+        .AmountCurrencyDecimalText1,
+        .AmountCurrencyDecimalTextCr1,
+        .edAmountCurrencyDecimalText1 {
+            margin: 2px;
+            padding: 2px;
+            font-size: 18px;
+            color: #0f25a8;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="erp-header">
+
+        <div class="erp-header-right">
+
+            <a href="@Url.Action("Index","Home")"
+               class="erp-brand">
+
+                <i class="fas fa-layer-group"></i>
+
+                <span>ERP System</span>
+
+            </a>
+
+            <button type="button"
+                    class="erp-menu-btn"
+                    id="sidebarToggle"
+                    aria-label="فتح القائمة">
+
+                <i class="fas fa-bars"></i>
+
+            </button>
+
+        </div>
+
+
+        <div class="erp-header-left">
+
+            @if (Request.IsAuthenticated)
+            {
+
+                <!-- Notifications -->
+
+                <div class="dropdown"
+                     id="notificationDropdown"
+                     style="display:none;">
+
+                    <button type="button"
+                            class="erp-icon-btn"
+                            id="btnNotification"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+
+                        <i class="fas fa-bell"></i>
+
+                        <span class="erp-notification-badge"
+                              id="notificationCount">
+
+                            0
+
+                        </span>
+
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-end erp-notification-menu"
+                        id="notificationMenu">
+
+                        <!-- JavaScript fills notifications -->
+
+                    </ul>
+
+                </div>
+
+
+                <!-- User -->
+
+                <div class="dropdown">
+
+                    <button type="button"
+                            class="btn d-flex align-items-center gap-2"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+
+                        <img src="~/Content/img/user3.jpg"
+                             alt="User Image"
+                             style="width:42px;height:42px;border-radius:50%;object-fit:cover;" />
+
+                        <span class="erp-user-name">
+
+                            @Session["FullName"].ToString()
+
+                        </span>
+
+                        <i class="fas fa-chevron-down small"></i>
+
+                    </button>
+
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+
+                        <li>
+
+                            <div class="px-3 py-3 text-center">
+
+                                <img src="~/Content/img/user3.jpg"
+                                     alt="User Image"
+                                     style="width:65px;height:65px;border-radius:50%;object-fit:cover;" />
+
+                                <div class="fw-bold mt-2">
+
+                                    @Session["FullName"].ToString()
+
+                                </div>
+
+                                <small class="text-muted">
+
+                                    @Session["Role"].ToString()
+
+                                </small>
+
+                            </div>
+
+                        </li>
+
+                        <li>
+                            <hr class="dropdown-divider" />
+                        </li>
+
+                        <li>
+
+                            <a class="dropdown-item"
+                               href="@Url.Action("myProfile","Account")">
+
+                                <i class="fas fa-user me-2"></i>
+
+                                عرض بروفايلي
+
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a class="dropdown-item"
+                               href="javascript:document.getElementById('logoutForm').submit()">
+
+                                <i class="fas fa-sign-out-alt me-2"></i>
+
+                                تسجيل خروج
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            }
+
+        </div>
+
+    </header>
+
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="erp-sidebar" id="erpSidebar">
+
+        <ul class="erp-sidebar-menu">
+
+            <li class="active">
+
+                <a href="@Url.Action("Index", "Home")">
+
+                    <i class="fas fa-home"></i>
+
+                    <span>الرئيسية</span>
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a href="@Url.Action("IndexAll", "Transactions")">
+
+                    <i class="fas fa-keyboard"></i>
+
+                    <span>الادخال</span>
+
+                </a>
+
+            </li>
+
+
+            <!-- المشتريات -->
+
+            <li class="has-submenu">
+
+                <a href="#"
+                   class="submenu-toggle">
+
+                    <i class="fas fa-shopping-cart"></i>
+
+                    <span>المشتريات</span>
+
+                    <i class="fas fa-chevron-left arrow"></i>
+
+                </a>
+
+                <ul class="submenu">
+
+                    <li>
+                        <a href="@Url.Action("Index", "Orders")">
+                            <i class="fas fa-money-bill"></i>
+                            عروض اسعار
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("Index2", "Orders")">
+                            <i class="fas fa-handshake"></i>
+                            عطاءات
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("Index", "searchOrders")">
+                            <i class="fas fa-search-dollar"></i>
+                            استعلام
+                        </a>
+                    </li>
+
+                </ul>
+
+            </li>
+
+
+            <!-- تفاصيل الحسابات الفرعية -->
+
+            <li class="has-submenu">
+
+                <a href="#"
+                   class="submenu-toggle">
+
+                    <i class="fas fa-file-invoice"></i>
+
+                    <span>تفاصيل الحسابات الفرعية</span>
+
+                    <i class="fas fa-chevron-left arrow"></i>
+
+                </a>
+
+                <ul class="submenu">
+
+                    <li>
+                        <a href="@Url.Action("CurrencyChange", "BankTransfers")">
+                            <i class="fas fa-circle-notch"></i>
+                            تبديل العملات
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("Index", "BankAccounts")">
+                            <i class="fas fa-university"></i>
+                            دليل البنوك
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("Index", "ACUCompetingCompany")">
+                            <i class="fas fa-building"></i>
+                            شركات العطاءات
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("Index", "Suppliers")">
+                            <i class="fas fa-user-shield"></i>
+                            الموردين
+                        </a>
+                    </li>
+
+                </ul>
+
+            </li>
+
+
+            <!-- تهيئة النظام -->
+
+            <li class="has-submenu">
+
+                <a href="#"
+                   class="submenu-toggle">
+
+                    <i class="fas fa-cogs"></i>
+
+                    <span>تهيئة النظام</span>
+
+                    <i class="fas fa-chevron-left arrow"></i>
+
+                </a>
+
+                <ul class="submenu">
+
+                    <li>
+                        <a href="@Url.Action("Index", "AccountTree")">
+                            <i class="fas fa-file-contract"></i>
+                            دليل الحسابات
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("Index", "FinancialCycles")">
+                            <i class="fas fa-calendar-week"></i>
+                            السنة المالية
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("PostedTransactions", "Transactions")">
+                            <i class="fas fa-calendar-week"></i>
+                            القيود المرحلة
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("Index", "OpeningBalances")">
+                            <i class="fas fa-calendar-week"></i>
+                            الارصدة الافتتاحية
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("Index", "Balances")">
+                            <i class="fas fa-balance-scale"></i>
+                            الموازنة
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("Index", "CurrencyDetails")">
+                            <i class="fas fa-money-bill"></i>
+                            اسعار الصرف
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("Index", "items")">
+                            <i class="fab fa-product-hunt"></i>
+                            الاصناف
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("Index", "Recipients")">
+                            <i class="fas fa-users-cog"></i>
+                            حسابات الموظفين والعملاء
+                        </a>
+                    </li>
+
+                </ul>
+
+            </li>
+
+
+            <!-- التقارير الورقية -->
+
+            <li class="has-submenu">
+
+                <a href="#"
+                   class="submenu-toggle">
+
+                    <i class="fas fa-chart-line"></i>
+
+                    <span>التقارير الورقية</span>
+
+                    <i class="fas fa-chevron-left arrow"></i>
+
+                </a>
+
+                <ul class="submenu">
+
+                    <li>
+                        <a href="@Url.Action("TaxReport", "Reports")">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            ضريبة ال 1%
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("printLedgerReport", "Reports")">
+                            <i class="fas fa-receipt"></i>
+                            دفتر الأستاذ
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("printDataReport", "Reports")">
+                            <i class="fas fa-circle-notch"></i>
+                            قيد اليومية
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("BalancesReport", "Reports")">
+                            <i class="fas fa-balance-scale-left"></i>
+                            موقف الموازنة
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("BalancesReportForBanks", "Reports")">
+                            <i class="fab fa-stack-exchange"></i>
+                            موقف الصرف بالبنوك
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("BankTransReport", "Reports")">
+                            <i class="fas fa-exchange-alt"></i>
+                            التحويلات البنكية
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("FinalAccountingReports", "Reports")">
+                            <i class="fas fa-book"></i>
+                            الحسابات الختامية
+                        </a>
+                    </li>
+
+                </ul>
+
+            </li>
+
+        </ul>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="erp-main" id="erpMain">
+
+        <div class="erp-content">
+
+            @RenderSection("content", required: false)
+
+        </div>
+
+
+        <!-- Footer -->
+
+        <footer class="erp-footer">
+
+            <div class="text-muted">
+
+                <b>Version</b> 1.0
+
+            </div>
+
+            <div>
+
+                <strong>
+                    Copyright &copy; @DateTime.Now.Year
+                    <a href="#">SACLTD.</a>
+                </strong>
+
+                All rights reserved.
+
+            </div>
+
+        </footer>
+
+    </main>
+
+
+    <!-- Logout -->
+
+    <form method="post"
+          action="/Account/LogOff/"
+          id="logoutForm"
+          style="display:none">
+
+        @Html.AntiForgeryToken()
+
+    </form>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/Temp/Tree/dist/jstree.js"></script>
+    <script src="~/Temp/charts/chart.js"></script>
+    <script src="~/Temp/AutoNumeric/auto-numeric.js"></script>
+
+    @RenderSection("scripts", required: false)
+
+
+    <script>
+
+        // Sidebar Toggle
+
+        $('#sidebarToggle').on('click', function () {
+
+            if (window.innerWidth <= 991) {
+
+                $('#erpSidebar').toggleClass('show');
+
+            } else {
+
+                $('#erpSidebar').toggleClass('collapsed');
+
+                $('#erpMain').toggleClass('expanded');
+
+            }
+
+        });
+
+
+        // Sidebar Submenus
+
+        $('.submenu-toggle').on('click', function (e) {
+
+            e.preventDefault();
+
+            var submenu = $(this).next('.submenu');
+
+            var arrow = $(this).find('.arrow');
+
+            submenu.toggleClass('show');
+
+            arrow.toggleClass('fa-chevron-left fa-chevron-down');
+
+        });
+
+
+        // Close mobile sidebar when clicking outside
+
+        $(document).on('click', function (e) {
+
+            if (window.innerWidth <= 991) {
+
+                if (!$(e.target).closest('#erpSidebar, #sidebarToggle').length) {
+
+                    $('#erpSidebar').removeClass('show');
+
+                }
+
+            }
+
+        });
+
+
+        // Load Notifications
+
+        function loadNotifications() {
+
+            $.get("/Home/GetNotifications", function (data) {
+
+                var menu = $("#notificationMenu");
+
+                menu.empty();
+
+                if (data.length > 0) {
+
+                    $("#notificationDropdown").show();
+
+                    data.forEach(function (item) {
+
+                        menu.append(`
+
+                                            <li>
+                                                <a href="#"
+                                                   onclick="GoToSpecificPage(${item.type})">
+
+                                                    ${item.message}
+
+                                                </a>
+                                            </li>
+
+                                        `);
+
+                    });
+
+                    $("#notificationCount").text(data.length);
+
+                } else {
+
+                    $("#notificationDropdown").hide();
+
+                    $("#notificationCount").text("0");
+
+                }
+
+            });
+
+        }
+
+
+        $(function () {
+
+            loadNotifications();
+
+        });
+
+
+        // Notification Navigation
+
+        function GoToSpecificPage(type) {
+
+            switch (type) {
+
+                case 1:
+                    window.location.href =
+                        "/Transactions/PettyCashNotPayed";
+                    break;
+
+                case 2:
+                    window.location.href =
+                        "/Balances/OverLimitItems";
+                    break;
+
+                case 3:
+                    window.location.href =
+                        "/Transactions/IndexAll";
+                    break;
+
+                default:
+                    console.log("Unknown type: " + type);
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>

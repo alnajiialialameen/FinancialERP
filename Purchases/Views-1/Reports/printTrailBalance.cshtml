@@ -1,0 +1,121 @@
+﻿@model  IEnumerable<Purchases.Models.ViewModel.BalanceVM>
+@{
+    ViewBag.Title = "PrintInvoice";
+    Layout = "~/Views/Shared/_LayoutPrint.cshtml";
+}
+
+<style>
+    .p-r {
+        padding-right: 40px !important;
+    }
+</style>
+
+<section class="invoiceCupps">
+    <div class="invoice-Cupps-header">
+        <div class="text-left text-word">
+            <p>Sudan Airports Company Ltd.</p>
+            <p>Administration of Financial & Accounting</p>
+            <p>Accounts Department</p>
+            <p>Tel: 0123-456-789</p>
+            <p>Fax : 0977-839-998</p>
+        </div>
+
+        <div class="text-center">
+            <img src="~/Temp/Image/WhiteLogo.png" height="150" />
+        </div>
+
+        <div class="text-right text-word">
+            <p>شركة مطارات السودان المحدودة</p>
+            <p>الادارة العامة للشؤون المالية والمحاسبية</p>
+            <p>إدارة الحسابات</p>
+            <p>تـلـ: 0123-456-789</p>
+            <p>فاكس : 0977-839-998</p>
+
+        </div>
+
+      
+    </div>
+
+    <div class="invoice-Body">
+
+        <div class="wrapper">
+            <div class="row">
+                <div class="col-md-12 justify-content-center text-center">
+                    <h2><u>@ViewBag.CurrentFinancialCycle  مـيـزان الـمـراجــعــة للعام </u></h2>
+                    <h2><u>@ViewBag.AccName</u></h2>
+                </div>
+
+                @{
+                    if (@ViewBag.DateFrom != null && @ViewBag.DateTo != null)
+                    {
+                        <div class="text-center">
+                            <h3>في الفترة من @ViewBag.DateFrom و حتي @ViewBag.DateTo</h3>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <div style="display:flex; justify-content:space-between; padding: 5px;">
+            <span>@DateTime.Now</span>تاريخ الطباعة
+        </div>
+
+        <table class="table table-bordered table-striped">
+            <thead class="bg-dark">
+                <tr class="text-center bg-dark" style="font-weight: bolder; font-size: x-large;">
+                    <td>لــــه</td>
+                    <td>مــنــه</td>
+                    <td colspan="3">الــبـنـد</td>
+                    <td>#</td>
+                </tr>
+            </thead>
+            <tbody>
+    @{
+        int counter = 1;
+        foreach (var item1 in Model)
+        {
+            <tr class="text-center">
+                @if (item1.isExpense == true)
+                {
+                    <td class="amount">0</td>
+                    <td class="amount">@Math.Abs((decimal)item1.actualExchange)</td>  // منه
+                }
+                else
+                {
+                    <td class="amount">@Math.Abs((decimal)item1.actualExchange)</td> // له
+                    <td class="amount">0</td>
+                }
+                <td colspan="3">@item1.accTreeName</td>
+                <td class="text-center">@counter</td>
+            </tr>
+
+            counter = counter + 1;
+        }
+            <tr>
+                <td class="amount" style="font-weight: bolder; ">
+                    @Math.Abs(Model.Where(x => x.isExpense == true).Sum(s => Math.Abs(s.actualExchange ?? 0)))
+                </td>
+                <td class="amount" style="font-weight: bolder; ">
+                    @Math.Abs(Model.Where(x => x.isExpense == false).Sum(s => Math.Abs(s.actualExchange ?? 0)))
+                </td>
+                <td colspan="4" style="font-weight: bolder; ">الاجمالي</td>
+            </tr>      
+         }
+                
+            </tbody>
+        </table>
+    </div>
+
+    <div class="number-Word invoice-footer">
+        <div class="number-Word">@ViewBag.txtSumOfBous</div>
+        <div class="chief ">
+            <div class="Manager">
+                <span>التوقيع</span><br /><br />
+                <span>-------------------------------</span>
+            </div>
+        </div>
+    </div>
+
+</section>

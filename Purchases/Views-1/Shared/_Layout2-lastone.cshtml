@@ -1,0 +1,820 @@
+﻿@using Microsoft.AspNet.Identity
+
+<!DOCTYPE html>
+<html>
+<head>
+    @RenderSection("Styles",required:false)
+    <meta charset="UTF-8">
+    <title>ERP System</title>
+
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.4 -->
+    
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap_rtl.css" rel="stylesheet" />    
+    <link href="~/Content/bootstrapValidator.min.css" rel="stylesheet" />
+   
+    <!-- Font Awesome -->
+    <link href="~/Content/all.css" rel="stylesheet" />
+    @*<link href="~/Content/datepicker3.css" rel="stylesheet" />*@
+    
+    <link href="~/Content/select2.min.css" rel="stylesheet" />
+    <link href="~/Content/datatable.bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/AdminLTE.min.css" rel="stylesheet" />
+    <link href="~/Content/_all-skins.min.css" rel="stylesheet" />
+    <link href="~/Content/stylee.css" rel="stylesheet" />
+    <link href="~/Content/toastr.min.css" rel="stylesheet" />
+    <link href="~/Content/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Temp/Tree/dist/themes/default/style.min.css" rel="stylesheet" />
+    <link href="~/Temp/sweetalert2/css/sweetalert2.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.picker.min.css" rel="stylesheet" />
+
+    <style type="text/css">
+        .displaying {
+            display: none;
+        }
+
+        fieldset {
+            border: solid 1px #808080 !important;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top:20px;
+        }
+
+        .trans {
+            border: solid 1px #808080 !important;
+            border-radius: 5px;
+            width: 100%;
+            padding: 5px;
+            margin-top:15px;
+        }
+
+        .trans-edit {
+            border: solid 1px #00ff21 !important;
+            border-radius: 5px;
+            width: 100%;
+            padding: 5px;
+            margin-top:15px;
+        }
+
+        .legend {
+            position: absolute;
+            top: 15px;
+            right:45px;
+            background-color: white;
+            padding: 0 10px;
+            transform: scale3d(1.2, 1.2, 1.2);
+        }
+        
+        .buttons{
+            display: flex !important;
+            flex-direction: row;
+            justify-content:space-between;
+        }
+
+        .float{
+	        position:fixed;
+	        width:40px;
+	        height:40px;
+	        bottom:50px;
+	        left:100px;
+	        border-radius:50px;
+	        text-align:center;
+	        box-shadow: 7px 2px 3px #7e7b7b; 
+        }
+
+       .one{
+	        background-color:#ff6a00;
+	        color:#FFF;
+            margin-left:210px;
+        }
+
+       .two{
+            margin-left:70px;
+	        background-color:#0094ff;
+	        color:#FFF;
+        }
+
+        .third{
+            margin-left:140px;
+	        background-color:#0C9;
+	        color:#FFF;
+        }
+
+        .exit{
+            float:right;
+            bottom:120px;
+	        background-color:red;
+	        color:#FFF;
+        }
+
+        .my-float{
+	        margin-top:10px;
+        }
+
+        /*a:hover{
+            color: #FFF;
+        }*/
+        .d-flex-between{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            align-content: center;
+            padding: 5px 20px;
+        }
+        .border{
+            padding: 5px;
+            border: 1px solid grey;
+            border-radius: 4px;
+        }
+           .bg{
+            color: #fff;
+            padding: 5px;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        .bg.bg-success{
+            background-color: #2db03e;
+        }
+        .bg.bg-warning{
+            background-color: #d4a904;
+        }
+    </style>
+
+    <style>
+        .main-header .sidebar-toggle:before {
+            /*content: "\f0c9";*/
+            content: none;
+        }
+        /* Tooltip container */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+        }
+
+        /* Tooltip text */
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            padding: 5px 0;
+            border-radius: 6px;
+            /* Position the tooltip text - see examples below! */
+            position: absolute;
+            z-index: 1;
+            content:"eeeeeeeeeeeeeee",
+        }
+
+        /* Show the tooltip text when you mouse over the tooltip container */
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
+
+        .AmountCurrencyDecimalText1, .AmountCurrencyDecimalTextCr1, .edAmountCurrencyDecimalText1{
+            margin: 2px;
+            padding: 2px;
+            font-size: 18px;
+            color: #0f25a8;
+        }
+        .flex{
+            display: flex;
+            justify-content:space-between;
+            align-items:center;
+            width:100%;
+        }
+
+        .form-control{
+            font-size:18px
+        }
+        .content{
+              min-height: auto !important;
+        }
+    </style>
+
+</head>
+
+<body class="skin-blue sidebar-mini">
+    <div class="wrapper">
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="@Url.Action("Index","Home")" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini"><b>ERP</b></span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg"><b>ERP</b>&nbsp; System</span>
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="fa fa-bars" style="font-size: large;"></span>
+                </a>
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <!-- User Account: style can be found in dropdown.less -->
+                      @using Purchases.Models;
+                      @using Purchases.Functions;
+                      @using Microsoft.AspNet.Identity;
+                        @{ 
+                            Entities db = new Entities();
+                            RoleController RoleController = new RoleController();
+                            var userid = User.Identity.GetUserId();
+                            var FullUserName = db.AspNetUsers.Find(userid).FullName;
+                            //var FullUserName = "User Name";
+                            var Role = RoleController.GetRole(userid);
+                        }
+
+                      @if (Request.IsAuthenticated)
+                      {
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img src="~/Content/img/user3.jpg" class="user-image pull-right" alt="User Image">
+                                <span class="hidden-xs"  style="display:inline-block !important">
+                                   @FullUserName
+                                </span>
+                            </a>
+
+                            <ul class="dropdown-menu">
+                                <!-- User image -->
+                                <li class="user-header">
+                                    <img src="~/Content/img/user3.jpg" />
+                                    <p>
+                                       @FullUserName
+                                        <small>@Role</small>
+                                    </p>
+                                </li>
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-right">
+                                        <a href="@Url.Action("myProfile","Account")" class="btn btn-info btn-flat">عرض بروفايلي</a>
+                                        @*<button type="button" class="btn btn-primary  pull-left btn-add" data-toggle="modal" data-target="#changepassword-modal">تغير كلمة المرور</button>*@
+                                    </div>
+                                    <div class="pull-left">
+                                        <a class="btn btn-default btn-flat" href="javascript:document.getElementById('logoutForm').submit()">تسجيل خروج </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                      }
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- Sidebar user panel -->
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul class="sidebar-menu">
+                    <li><a href='@Url.Action("Index", "Home")'><i class="fa fa-home"></i>الرئيسية</a></li>
+                    <li><a href='@Url.Action("IndexAll", "Transactions")'><i class="fa fa-circle-notch"></i>الادخال</a></li>
+
+                        @*<li class="treeview">
+                <a href="#">
+                    <i class="fas fa-users"></i>
+                    <span style="font-weight:bold"> الحسابات</span>
+                    <i class="fa fa-angle-left pull-left"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href='@Url.Action("Index", "Reciepts")'><i class="fa fa-circle-notch"></i> سندات الصرف </a></li>
+                </ul>
+                <ul class="treeview-menu">
+                    <li><a href='@Url.Action("SalariesSettlement", "Transactions")'><i class="fa fa-circle-notch"></i>  تسويات المرتبات  </a></li>
+                </ul>
+                <ul class="treeview-menu">
+                    <li><a href='@Url.Action("Index", "Transactions")'><i class="fa fa-circle-notch"></i>   القيود المحاسبية  </a></li>
+                </ul>
+                <ul class="treeview-menu">
+                    <li><a href='@Url.Action("Index", "BankTransfers")'><i class="fa fa-circle-notch"></i>   التحوويل بين البنوك   </a></li>
+                </ul>
+                <ul class="treeview-menu">
+                    <li><a href='@Url.Action("PostedTransactions", "Transactions")'><i class="fa fa-circle-notch"></i>   القيود المرحلة  </a></li>
+                </ul>
+                <ul class="treeview-menu">
+                    <li><a href='@Url.Action("AddProse", "Reciepts")'><i class="fa fa-circle-notch"></i>   اضافة النثرية  </a></li>
+                </ul>
+                <ul class="treeview-menu">
+                    <li><a href='@Url.Action("RemoveProse", "Reciepts")'><i class="fa fa-circle-notch"></i>   ازالة النثرية  </a></li>
+                </ul>
+                <ul class="treeview-menu">
+                    <li><a href='@Url.Action("AddDeposit", "Deposits")'><i class="fa fa-circle-notch"></i>  الامانات  </a></li>
+                </ul>
+                <ul class="treeview-menu">
+                    <li><a href='@Url.Action("RemoveDeposits", "Deposits")'><i class="fa fa-circle-notch"></i> ازالة الامانات  </a></li>
+                </ul>
+                <ul class="treeview-menu">
+                    <li><a href='@Url.Action("SearchByRecipient", "Transactions")'><i class="fa fa-circle-notch"></i> البحث </a></li>
+                </ul>
+
+                <ul class="treeview-menu">
+                    <li><a href='@Url.Action("CurrencyChange", "BankTransfers")'><i class="fa fa-circle-notch"></i> تبديل العملات </a></li>
+                </ul>
+            </li>
+
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-cogs "></i>
+                    <span style="font-weight:bold">سندات القبض</span>
+                    <i class="fa fa-angle-left pull-left"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href='@Url.Action("Index", "Revenues")'><i class="fa fa-circle-notch"></i>فواتير شركات الطيران</a></li>
+                    <li><a href='@Url.Action("RevenueSadad", "Revenues")'><i class="fa fa-circle-notch"></i>الفواتير المسددة</a></li>
+                </ul>
+            </li>*@
+
+
+
+                        <li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-user-plus "></i>
+                                <span style="font-weight:bold"> المشتريات </span>
+                                <i class="fa fa-angle-left pull-left"></i>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href='@Url.Action("Index", "Orders")'><i class="fa fa-circle-notch"></i> عروض اسعار </a></li>
+                                <li><a href='@Url.Action("Index2", "Orders")'><i class="fa fa-circle-notch"></i> عطاءات </a></li>
+                                <li><a href='@Url.Action("Index", "searchOrders")'><i class="fa fa-circle-notch"></i> استعلام </a></li>
+                            </ul>
+                        </li>
+
+
+                        <li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-file-invoice"></i>
+                                <span style="font-weight:bold"> تفاصيل الحسابات الفرعية </span>
+                                <i class="fa fa-angle-left pull-left"></i>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href='@Url.Action("Index", "BankAccounts")'><i class="fa fa-circle-notch"></i>دليل البنوك</a></li>
+                                <li><a href='@Url.Action("Index", "ACUCompetingCompany")'><i class="fa fa-circle-notch"></i>شركات العطاءات</a></li>
+                                <li><a href='@Url.Action("Index", "Suppliers")'><i class="fa fa-circle-notch"></i>  الموردين  </a></li>
+                            </ul>
+                        </li>
+
+
+                        <li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-cogs "></i>
+                                <span style="font-weight:bold"> تهيئة النظام</span>
+                                <i class="fa fa-angle-left pull-left"></i>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href='@Url.Action("Index", "AccountTree")'><i class="fa fa-circle-notch"></i>  دليل الحسابات  </a></li>
+                                <li><a href='@Url.Action("Index", "FinancialCycles")'><i class="fa fa-circle-notch"></i>   السنة المالية  </a></li>
+                                <li><a href='@Url.Action("Index", "Balances")'><i class="fa fa-circle-notch"></i> الموازنة </a></li>
+                                <li><a href='@Url.Action("Index", "CurrencyDetails")'><i class="fa fa-circle-notch"></i>  اسعار الصرف </a></li>
+                                <li><a href='@Url.Action("Index", "items")'><i class="fa fa-circle-notch"></i>  الاصناف </a></li>
+                            </ul>
+                        </li>
+
+
+                        <li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-cogs "></i>
+                                <span style="font-weight:bold"> التقارير الورقية</span>
+                                <i class="fa fa-angle-left pull-left"></i>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href='@Url.Action("TaxReport", "Reports")'><i class="fa fa-circle-notch"></i>  ضريبة ال 1%  </a></li>
+                                <li><a href='@Url.Action("printLedgerReport", "Reports")'><i class="fa fa-circle-notch"></i>  دفتر الأستاذ  </a></li>
+                                <li><a href='@Url.Action("printDataReport", "Reports")'><i class="fa fa-circle-notch"></i>  قيد اليومية  </a></li>
+                                <li><a href='@Url.Action("BalancesReport", "Reports")'><i class="fa fa-circle-notch"></i>  موقف الموازنة  </a></li>
+                                <li><a href='@Url.Action("BalancesReportForBanks", "Reports")'><i class="fa fa-circle-notch"></i>  موقف الصرف بالبنوك  </a></li>
+                                <li><a href='@Url.Action("BankTransReport", "Reports")'><i class="fa fa-circle-notch"></i>التحويلات البنكية  </a></li>
+                                <li><a href='@Url.Action("FinalAccountingReports", "Reports")'><i class="fa fa-circle-notch"></i>الحسابات الختامية</a></li>
+                                @*<li><a href='@Url.Action("printFiveTaxReport", "Reports")'><i class="fa fa-circle-notch"></i>  ضريبة ال 5%  </a></li>*@
+                            </ul>
+                        </li>
+                        @*@if (Role == "مدير النظام")
+            {
+                <li>
+                    <a href='@Url.Action("Index", "Account")'>
+                        <i class="fa fa-user-cog "></i> <span style="font-weight:bold">  إدارة المستخدمين</span>
+                    </a>
+                </li>
+            }*@
+
+
+
+
+                        @*<li class="header">LABELS</li>
+            <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
+            <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
+            <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>*@
+</ul>
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+
+        @RenderSection("content")
+
+        <footer class="main-footer">
+            <div class="pull-left hidden-xs">
+                <b>Version</b> 1.0
+            </div>
+            <strong>Copyright &copy; @DateTime.Now.Year <a href="#"> SACLTD. </a>.</strong> All rights reserved.
+        </footer>
+
+        <form method="post" action="/Account/LogOff/" id="logoutForm" style="display:none">
+            @Html.AntiForgeryToken()
+        </form>
+    </div>
+
+
+    <div class="example-modal">
+        <div class="modal fade in" data-backdrop="static" id="changepassword-modal">
+            <div class="modal-dialog" style="width:50% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"> تعديل كلمة المرور</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <form method="post" id="edit-form">
+                                    <div class="box .no-border">
+                                        <!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label for="ed-password"> كلمة المرور القديمة  </label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                                                        <input type="password" class="form-control oldPassword" autocomplete="off" id="oldPassword" name="oldPassword" placeholder="كلمة المرور القديمة ">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label for="ed-password"> كلمة المرور الجديدة  </label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                                                        <input type="password" class="form-control newPassword" autocomplete="off" id="newPassword" name="newPassword" placeholder="كلمة المرور الجديدة ">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label for="ed-password"> تاكيد كلمة المرور الجديدة  </label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                                                        <input type="password" class="form-control reNewPassword" autocomplete="off" id="reNewPassword" name="reNewPassword" placeholder="تاكيد كلمة المرور الجديدة ">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12 ">
+                                                <div class="d-flex justify-content-between">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">رجوع</button>
+                                                    <button type="button" class="btn btn-warning btnResetPassword" value="btnResetPassword">تعديل</button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <!-- /.box-body -->
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div><!-- /.row (main row) -->
+
+                    </div>
+                    @*<div class="modal-footer">
+
+                        </div>*@
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div>
+
+    <div class="example-modal">
+        <div class="modal fade in" id="details-modal" data-backdrop="static">
+            <div class="modal-dialog" style="width:60% !important">
+                <div class="modal-content">
+                    <div class="modal-header .no-border">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"> عرض تفاصيل القيد</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row" style="margin:0px;">
+                            <div class="col-lg-3 text-right">
+                                <label>التاريخ :</label><label class="tarnsDate"></label>
+                            </div>
+                            <div class="col-lg-9 text-left">
+                                <label> البيان :</label><label class="tarnsStatement"></label>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead style="background-color:#808080">
+                                    <tr class="text-center">
+                                        <td>#</td>
+                                        <td>الحساب</td>
+                                        <td>مدين</td>
+                                        <td>دائن</td>
+                                    </tr>
+                                </thead>
+                                <tbody class="detailsTBody"></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="2">الاجمالي</th>
+                                        <th id="tdCreditAmount"></th>
+                                        <th id="tdDebitAmount"></th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2">الصافي</th>
+                                        <th colspan="2" id="tdBalance"></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        </div>
+    </div>
+
+    <script src="~/Scripts/jquery-2.1.4.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/all.js"></script>
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/bootstrapValidator.min.js"></script>
+    <script src="~/Scripts/select2.full.min.js"></script>
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
+    <script src="~/Scripts/app.min.js"></script>
+    <script src="~/Scripts/demo.js"></script>
+    <script src="~/Scripts/toastr.min.js"></script>
+    <script src="~/Scripts/printThis.js"></script>
+    <script src="~/Scripts/main.js"></script>
+    <script src="~/Scripts/jspdf.min.js"></script>
+    <script src="~/Scripts/html2canvas.js"></script>
+    <script src="~/Scripts/jquery-3.5.1.js"></script>
+    <script src="~/Scripts/jquery-ui.min.js"></script>
+    <script src="~/Temp/sweetalert2/js/sweetalert2.min.js"></script>
+    <script src="~/Temp/sweetalert2/js/sweetalert.js"></script>
+    <script src="~/Temp/Tree/dist/jstree.min.js"></script>
+    <script src="~/Temp/charts/chart.js"></script>
+    <script src="~/Temp/AutoNumeric/auto-numeric.js"></script>
+
+    @RenderSection("scripts", required: false)
+    
+    <script>
+      
+        function CustomAutoNumeric(inputId) {
+            return new AutoNumeric(inputId, {
+                digitGroupSeparator: ',', // الفاصلة بين الآلاف
+                decimalCharacter: '.',    // النقطة كعلامة عشرية
+                decimalPlaces: 2,          // عدد المنازل العشرية
+                defaultValue: "0.00"      // القيمة الافتراضية
+            });
+        }
+
+        // ضبط التاريخ علي صيغة معينة
+        $('.calendar').datepicker({
+            todayBtn: "linked",
+            language: "it",
+            autoclose: true,
+            todayHighlight: true,
+            format: 'dd/mm/yyyy'
+        });
+
+        $('.btnResetPassword').click(function () {
+            var OldPassword = $('#oldPassword').val();
+            var NewPassword = $('#newPassword').val();
+            var ConfirmPassword = $('#reNewPassword').val();
+
+            var obj = {
+                "OldPassword": OldPassword,
+                "NewPassword": NewPassword,
+                "ConfirmPassword": ConfirmPassword,
+            }
+            console.clear();
+            console.log(obj);
+
+
+            if (NewPassword === ConfirmPassword) {
+                $.post('/Account/ChangePassword', { data: obj }, function (response) {
+
+                    toastr[response.Status](response.Message, response.Title);
+                });
+            } else {
+                toastr['error']('يجب تطابق كلمة المرور الجديدة وتاكيد كلمة المرور الجديدة', 'خطأ');
+            }
+        });
+
+        // الدالة دي بغرض توحيد الدوال حذفت من جميع الشاشات و بقت هنا فقط
+        function select2list(selector, url, placeholder) {
+            $(selector).select2({
+                language: { inputTooShort: function () { return 'ادخل حرف واحد علي الاقل'; } },
+                ajax: {
+                    url: url,
+                    dataType: 'json',
+                    delay: 100,
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data,
+                            pagination: {
+                                more: ((data.total_count) > (params.page * 20))
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: placeholder,
+                minimumInputLength: 1,
+            });
+        };
+
+        // دي حقت اسم المستلم بتقبل انه يدخل قيمة جديدة اذا ما موجودة في البيانات الراجعة - مستخدمة في اسم المستلم
+        function select2listNew(selector, url, placeholder) {
+            $(selector).select2({
+                tags: true, // السماح بإضافة قيم جديدة
+                language: {
+                    inputTooShort: function () { return 'ادخل حرف واحد على الأقل'; },
+                    noResults: function () { return 'لا توجد نتائج مطابقة، يمكنك إدخال قيمة جديدة'; } // رسالة في حالة عدم وجود نتائج
+                },
+                ajax: {
+                    url: url,
+                    dataType: 'json',
+                    delay: 100,
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+
+                        // تحويل البيانات إلى تنسيق { id: ..., text: ... } المطلوب بواسطة Select2
+                        var transformedData = data.map(function (item) {
+                            return { id: item.text, text: item.text }; // هنا نقوم باستخدام `text` كـ `id` أيضًا
+                        });
+
+                        // إرجاع البيانات مع التحكم في التحميل المتدرج
+                        return {
+                            results: transformedData,
+                            pagination: {
+                                more: (data.length >= 20) // استخدم شرط مناسب للتحكم في التحميل المتدرج
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: placeholder,
+                minimumInputLength: 1,
+                createTag: function (params) { // للسماح بإدخال القيم الجديدة
+                    return {
+                        id: params.term,
+                        text: params.term,
+                        newTag: true // تحديد العنصر كقيمة جديدة
+                    };
+                }
+            });
+        }
+
+        select2listNew(".recipient", "/Shared/getAllRecipient", "  اسم المستلم ");
+
+        $('#tbx').on('click', '.btnDetails', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var TransactionId = data['transactionId'];
+            var TransactionDate = data['transactionDateStr'];
+            var Note = data['note'];
+
+            $('.tarnsDate').text(TransactionDate);
+            $('.tarnsStatement').text(Note);
+
+            $.get('/Transactions/getDetailData', { "Id": TransactionId }, function (response) {
+                $('.detailsTBody').empty();
+                var sumOfDebit = 0;
+                var sumOfCredit = 0;
+                $.each(response, function (key, value) {
+                    var rows = "<tr id='row' style='font-size: 16px;text-align:center;'>"
+                                    + "<td class='id'>" + value.id + "</td>"
+                                    + "<td class='accName'>" + value.accName + "</td>"
+                                    + "<td class='accName'>" + formatNumber(value.debit.toString()) + "</td>"
+                                    + "<td class='credit'>" + formatNumber(value.credit.toString()) + "</td>"
+                                + "</tr>";
+                    $('.detailsTBody').append(rows);
+
+                    sumOfCredit = sumOfCredit + value.credit;
+                    sumOfDebit = sumOfDebit + value.debit;
+
+                });
+                var balance = sumOfDebit - sumOfCredit;
+
+                $('#tdDebitAmount').text(formatNumber(sumOfDebit.toString()));
+                $('#tdCreditAmount').text(formatNumber(sumOfCredit.toString()));
+                $('#tdBalance').text(formatNumber(balance.toString()));
+
+            });
+        });
+
+        //posting الترحيل
+        $('#tbx').on('click', '.btnPost', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var TransactionId = data['transactionId'];
+
+            $.post('/Transactions/Posting', { "Id": TransactionId }, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('#tbx').DataTable().ajax.reload();
+            });
+        });
+
+        //Editing التعديل
+        $('#tbx').on('click', '.btnEdit', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var Id = data['transactionId'];
+            window.open('/Transactions/Edit/' + Id, '_blank');
+        });
+
+        //Go to Print View
+        function printSanad(id) {
+            window.open("/Reports/printOrnik17/" + id, "_blank");
+        }
+    </script>
+
+    <script>
+
+        function formatNumber(num) {
+            if (num === null)
+            {
+                return 0;
+            }
+            // معالجة الجزء الصحيح والجزء العشري
+            var parts = num.split('.');
+            var integerPart = parts[0];
+            var decimalPart = parts[1] || '';
+
+            // إذا كان هناك جزء صحيح، أضف له الفواصل
+            integerPart = integerPart.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+            // إذا كان هناك جزء عشري، أضف له الفواصل
+            if (decimalPart) {
+                // var roundedDecimal = parseFloat(decimalPart).toFixed(2); // تقريب إلى خانتين عشريتين
+                var roundedDecimal = (parseFloat('0.' + decimalPart).toFixed(2)).split('.')[1];
+                console.log(roundedDecimal);
+                // roundedDecimal = roundedDecimal.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                roundedDecimal = roundedDecimal.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return integerPart + '.' + roundedDecimal;
+            }
+
+            return integerPart;
+        }
+
+        $(document).ready(function () {
+
+
+            //$('#debitAmount').on('input', function () {
+            //    var inputVal = $(this).val();
+            //    var formattedVal = formatNumber(inputVal);
+
+            //    $('#AmountCurrencyDecimalText').text(formattedVal);
+            //});
+
+            //$('#creditAmount').on('input', function () {
+            //    var inputVal = $(this).val();
+            //    var formattedVal = formatNumber(inputVal);
+            //    $('#AmountCurrencyDecimalTextCr').text(formattedVal);
+            //});
+
+            //// دي مستخدمة في شاشه التحويل المالية بين البنوك
+            //$('#amount').on('input', function () {
+            //    var inputVal = $(this).val();
+            //    var formattedVal = formatNumber(inputVal);
+            //    $('#AmountCurrencyDecimalText').text(formattedVal);
+            //});
+
+            //// دي مستخدمة في شاشه التحويل المالية بين البنوك
+            //$('#ed-amount').on('input', function () {
+            //    var inputVal = $(this).val();
+            //    var formattedVal = formatNumber(inputVal);
+            //    $('#edAmountCurrencyDecimalText').text(formattedVal);
+            //});
+        });
+    </script>
+</body>
+</html>

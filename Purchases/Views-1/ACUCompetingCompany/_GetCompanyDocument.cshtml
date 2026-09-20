@@ -1,0 +1,96 @@
+﻿@model PagedList.IPagedList<DeskServiceERP.Models.ITTeamSetting>
+
+@using PagedList.Mvc
+@using DeskServiceERP.Extension;
+
+
+@{
+    CommonUsed ob = new CommonUsed();
+    Layout = null;
+
+}
+
+<style>
+    .re-sort:hover {
+      
+        color:#2d2cdd;
+        text-decoration:double;
+      
+    }
+</style>
+
+
+<div id="content">
+    <div>
+        <!---===========================================strart====================================================================================================-->
+
+       
+            <div class="card card-solid">
+                <div class="card-body pb-0">
+                    <div class="row">
+                        @foreach (var item in Model)
+                        {
+                            <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
+                                <div class="card bg-light d-flex flex-fill">
+                                    <div class="card-header text-muted border-bottom-0">
+                                        @Html.DisplayFor(modelItem => item.HelpDeskUser.Id)- @Html.DisplayFor(modelItem => item.HelpDeskUser.RoleId)
+                                    </div>
+                                    <div class="card-body pt-0">
+                                        <div class="row">
+                                            <div class="col-7">
+                                                <h2 class="lead"><b> @Html.DisplayFor(modelItem => ob.APIGetEmployee(item.HelpDeskUser.EmployeeId).Name)</b></h2>
+                                                <p class="text-black text-sm"><b >التفاصيل: </b> @Html.DisplayFor(modelItem => item.HelpDeskUser.Division.Name) / @Html.DisplayFor(modelItem => item.HelpDeskUser.Unit.Name) </p>
+                                                <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                    <li class="lg"><i class="fas fa-lg fa-building"></i> المنشأة: @Html.DisplayFor(modelItem => item.HelpDeskUser.Branch.Name)</li>
+                                                    <li class="lg"><i class="fas fa-lg fa-phone"></i> رقم الهاتف #: @Html.DisplayFor(modelItem => item.HelpDeskUser.Phone)</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-5 text-center">
+                                                <img src="~/Temp/Image/WhiteLogo.png" alt="user-avatar" class="img-circle img-fluid">
+                                            </div>
+                                        </div>
+                                        <div class="form-group-sm">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="IsAvailable @item.Id" checked="@item.IsAvailable" onchange="IsActiveIsAvailable(@item.Id,2)">
+                                                <label class="custom-control-label" for="IsAvailable @item.Id">متاح؟</label>
+                                            </div>
+
+                                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                                <input type="checkbox" class="custom-control-input" id="IsActive @item.Id" checked="@item.IsActivate" onchange="IsActiveIsAvailable(@item.Id,1)">
+                                                <label class="custom-control-label" for="IsActive @item.Id">نشط؟</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="text-right">
+                                            <a href="#" class="btn btn-sm bg-teal">
+                                                <i class="fas fa-comments"></i>
+                                            </a>
+                                            <a href="@Url.Action("Details/" + @item.HelpDeskUserId, "ITTeamSettings" )" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-user"></i> الملف الشخصي
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+
+            <br />
+
+            صفحة  @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) من  @Model.PageCount  (عدد عناصر @ViewBag.ItemCount)
+
+            <div id="contentPager">
+                @Html.PagedListPager(Model, page => Url.Action("GetDataITTeamSetting", new{ page,EmployeeId = ViewBag.EmployeeId,Get = 1,Search = 2,Count = ViewBag.ItemCount,}))
+            </div>
+</div>
+
+   @if (ViewBag.ItemCount > 0)
+   {
+   }
+</div>
+
+

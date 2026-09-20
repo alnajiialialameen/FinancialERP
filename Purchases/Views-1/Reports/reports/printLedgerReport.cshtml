@@ -1,0 +1,211 @@
+﻿@{
+    ViewBag.Title = "TaxReport";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<h2>TaxReport</h2>
+
+@section content
+{
+    <div class="content-wrapper">
+        <div class="grad"></div>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                دفتر الاستاذ
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
+                <li class="active">  دفتر الاستاذ</li>
+            </ol>
+        </section>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label for="transactionDate"> من تاريخ</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar-alt"></i>
+                            </span>
+                            <input type="text" class="form-control  calendar DateFrom" id="DateFrom" name="DateFrom" placeholder="تاريخ القيد" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label for="transactionDate"> الي تاريخ</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar-alt"></i>
+                            </span>
+                            <input type="text" class="form-control  calendar DateTo" id="DateTo" name="DateTo" placeholder="حتي تاريخ" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label for="name">اسم الحساب</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-book"></i>
+                            </div>
+                            <select class="form-control list addAccName" name="addAccName" id="addAccName" style="width:100%"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label for="name">اسم البنك</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-book"></i>
+                            </div>
+                            <select class="form-control list accBankId" name="accBankId" id="accBankId" style="width:100%"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class=" col-md-3">
+                    <button id="btnsearch" onclick="Search()" class="btn btn-primary btn-sm form-control">بحث</button>
+                </div>
+
+                <div class=" col-md-3">
+                    <button id="btnall" onclick="PrintData()" class="btn form-control btn-info btn-sm">طباعة التقرير </button>
+                </div>
+            </div>
+
+            <div class="row" style="margin: 30px;">
+                <table id="tbl" class="dataTable table table-striped table-hover" style="width:100%">
+                    <tbody id="tbod"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+}
+
+@section scripts{
+
+    <script>
+        var myId = 0;
+
+        $(document).ready(function () {
+            select2list("#addAccName", "/Shared/getAccTrees", "اسم الحساب");
+            select2list("#accBankId", "/Shared/getAllBanks", "اسم البنك");
+        });
+
+        function PrintData() {
+            var Id = $('.addAccName').val();
+            var bankId = $('.accBankId').val();
+            var DateFrom = $('#DateFrom').val();
+            var DateTo = $('#DateTo').val();
+
+            if (Id === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "خطاء",
+                    text: "الرجاء اختيار اسم الحساب",
+                });
+                return;
+            }
+
+            var url = "/Reports/printLedgerByDates?Id=" + Id + "&bankId=" + bankId
+               + "&dateFrom=" + DateFrom + "&dateTo=" + DateTo;
+            window.open(url, '_blank').focus();
+        }
+    
+        function Search() {
+            var DateFrom = $('#DateFrom').val();
+            var DateTo = $('#DateTo').val();
+            var Id = $('.addAccName').val();
+            var bankId = $('.accBankId').val();
+
+            if (Id === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "خطاء",
+                    text: "الرجاء اختيار اسم الحساب",
+                });
+                return;
+            }
+
+            var dataTable = $('#tbl').DataTable({
+                destroy: true,
+                "language": {
+                    "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                    "search": "بحث"
+                },
+                ajax: {
+                    url: "/Reports/printLedgerByDatesForSearch?Id=" + Id + "&bankId=" + bankId + "&dateFrom=" + DateFrom + "&dateTo=" + DateTo,
+                    dataSrc: ''
+                },
+                columns: [
+                    {
+                        "title": "",
+                        "data": "transactionId",
+                        "orderable": false,
+                        "render": function (data) {
+                            return '<a class="btn btn-info btnDetails" data-toggle="modal" data-target="#details-modal"><i class="fa fa-info"></i></a>';
+                        }
+                    },
+                    {
+                        "title": "# ",
+                        "data": "transactionId"
+                    },
+                    {
+                        "title": "البيان",
+                        "data": "note"
+                    },
+                    {
+                        "title": "اجمالي المبلغ",
+                        "data": "amount"
+                    },
+                    {
+                        "title": "تاريخ العملية",
+                        "data": "transDate"
+                    },
+                ]
+            });
+        }
+
+
+        $('#tbl').on('click', '.btnDetails', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbl').DataTable().row(currentRow).data();
+            var TransactionId = data['transactionId'];
+            var TransactionDate = data['transDate'];
+            var Note = data['note'];
+
+            $('.tarnsDate').text(TransactionDate);
+            $('.tarnsStatement').text(Note);
+
+            $.get('/Transactions/getDetailData', { "Id": TransactionId }, function (response) {
+                $('.detailsTBody').empty();
+                var sumOfDebit = 0;
+                var sumOfCredit = 0;
+                $.each(response, function (key, value) {
+                    var rows = "<tr id='row' style='font-size: 16px;text-align:center;'>"
+                        + "<td class='id'>" + value.id + "</td>"
+                        + "<td class='accName'>" + value.accName + "</td>"
+                        + "<td class='accName'>" + formatNumber(value.debit.toString()) + "</td>"
+                        + "<td class='credit'>" + formatNumber(value.credit.toString()) + "</td>"
+                        + "</tr>";
+                    $('.detailsTBody').append(rows);
+
+                    sumOfCredit = sumOfCredit + value.credit;
+                    sumOfDebit = sumOfDebit + value.debit;
+
+                });
+                var balance = sumOfDebit - sumOfCredit;
+
+                $('#tdDebitAmount').text(formatNumber(sumOfDebit.toString()));
+                $('#tdCreditAmount').text(formatNumber(sumOfCredit.toString()));
+                $('#tdBalance').text(formatNumber(balance.toString()));
+
+            });
+        });
+
+    </script>
+}

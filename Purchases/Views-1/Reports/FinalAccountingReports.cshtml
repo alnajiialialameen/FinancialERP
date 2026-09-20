@@ -1,0 +1,139 @@
+﻿@{
+    ViewBag.Title = "TaxReport";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<h2>TaxReport</h2>
+
+@section content
+{
+    <div class="content-wrapper">
+        <div class="grad"></div>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                تقارير الحسابات الختامية
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
+                <li class="active">تقارير الحسابات الختامية</li>
+            </ol>
+        </section>
+       
+        <section class="content">
+            <hr />
+            <label style="display:none" id="financeCycleId">@ViewBag.financeCycleId</label>
+            <fieldset>
+                <legend style="width: max-content; padding: 0px 20px;">ميزان المراجعة</legend>
+                <div class="row">
+                    <div class=" col-md-4">
+                        <button id="btnPrintTrailBalance" onclick="printTrailBalance()" class="btn btn-primary form-control">ميزان المراجعة بالارصدة</button>
+                    </div>
+
+                    <div class=" col-md-4">
+                        <button id="btnPrintTrailBalanceSummation" onclick="printTrailBalanceSummation()" class="btn btn-success form-control">ميزان المراجعة بالمجاميع</button>
+                    </div>
+
+                    <div class=" col-md-4">
+                        <button id="btnPrintTrailBalanceExplanation" onclick="printTrailBalanceExplanation()" class="btn btn-info form-control">ميزان المراجعة الايضاح</button>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend style="width: max-content; padding: 0px 20px;">القوائم المالية</legend>
+                <div class="row">
+                    <div class=" col-md-4">
+                        <button id="btnPrintTrailBalanceIncomeStatement" onclick="printTrailBalanceIncomeStatement()" class="btn btn-danger form-control">قائمة الدخل</button>
+                    </div>
+
+                </div>
+            </fieldset>
+
+        </section>
+    </div>
+}
+
+@section scripts{
+
+    <script>
+        var myId = 0;
+
+        $(document).ready(function () {
+            select2list("#addAccName", "/Shared/getAllBanks", "اسم البنك");
+        });
+
+        // ميزان المراجعة بالارصدة
+        function printTrailBalance() {
+            var financeCycleId = $('#financeCycleId').text();
+
+            if (financeCycleId === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "خطاء",
+                    text: "الرجاء اختيار اسم الحساب",
+                });
+                return;
+            }
+
+            var url = "/Reports/printTrailBalance?financeCycleId=" + financeCycleId;
+
+            window.open(url, '_blank').focus();
+        }
+
+        // ميزان المراجعة بالمجاميع
+        function printTrailBalanceSummation() {
+            var financeCycleId = $('#financeCycleId').text();
+
+            if (financeCycleId === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "خطاء",
+                    text: "الرجاء اختيار اسم الحساب",
+                });
+                return;
+            }
+
+            var url = "/Reports/printTrailBalanceSummation?financeCycleId=" + financeCycleId;
+
+            window.open(url, '_blank').focus();
+        }
+
+        // ايضاح ميزان المراجعة
+        function printTrailBalanceExplanation() {
+            var financeCycleId = $('#financeCycleId').text();
+
+            if (financeCycleId === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "خطاء",
+                    text: "الرجاء اختيار اسم الحساب",
+                });
+                return;
+            }
+
+            var url = "/Reports/printTrailBalanceExplanation?financeCycleId=" + financeCycleId;
+
+            window.open(url, '_blank').focus();
+        }
+
+        // قائمة الدخل
+        function printTrailBalanceIncomeStatement() {
+            var financeCycleId = $('#financeCycleId').text();
+
+            if (financeCycleId === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "خطاء",
+                    text: "الرجاء اختيار اسم الحساب",
+                });
+                return;
+            }
+
+            var url = "/Reports/printTrailBalanceIncomeStatement?financeCycleId=" + financeCycleId;
+
+            window.open(url, '_blank').focus();
+        }
+
+    </script>
+}
