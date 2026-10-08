@@ -153,7 +153,7 @@
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar-alt"></i>
                                             </span>
-                                            <input type="text" class="form-control calendar transactionDate" id="transactionDate" name="transactionDate" placeholder="تاريخ القيد" autocomplete="off">
+                                            <input type="text" class="form-control calendar transactionDatetransactionDate" id="transactionDate" name="transactionDate" placeholder="تاريخ القيد" autocomplete="off">
                                         </div>
                                     </div>
                                 </div>
@@ -448,7 +448,7 @@
                             "data": "documentType"
                         },
                         {
-                            "title": "اجمالي المبلغ",
+                            "title": "اصل المبلغ",
                             "data": "total",
                             "render": function (data, type, row) {
                                 return formatNumber(data.toString());
@@ -509,16 +509,17 @@
                                             <i class="fa fa-ellipsis-v"></i>
                                         </button>
                                         <div class="dropdown-menu btn-threePoint">
-                                        <a href="#" class="btnBankLetter" onclick="printBankLetter(${data.transactionId})">خطاب البنك</a><br />
-                                            ${data.documentType == 'سند دفع'
-                                        ? `<a href="#" class="btnPrintCheck" onclick="printchecs(${data.transactionId})">طباعة الشيك</a><br />`
-                                        : ''
-                                    }
+                                            <a href="#" class="btnBankLetter" onclick="printBankLetter(${data.transactionId})">خطاب البنك</a><br />
+                                            ${data.documentType == 'سند دفع'?
+                                             `<a href="#" class="btnPrintCheck" onclick="printchecs(${data.transactionId})">طباعة الشيك</a><br />`
+                                            : ''
+                                            }
                                             <a href="#" class="btnEdit">تعديل</a><br />
                                             <a href="#" class="btnAddRecipient">إضافة مستلمين</a><br />
                                             <a href="#" class="printSanad" onclick="printSanad(${data.transactionId})">طباعة أورنيك 17</a><br />
                                             <a href="#" class="printSanad" onclick="DeleteTransaction(${data.transactionId})">الغاء الحركة</a><br />
                                             <a href="#" class="btnPost">ترحيل</a><br />
+                                            <a href="#" class="btnIsPaied">تم الدفع</a><br />
                                         </div>
                                     </div>
                                 `;
@@ -539,6 +540,23 @@
             select2listNew("#recipient", "/Shared/getAllRecipient", "اسم المستلم");
             select2list("#addCurrencyType", "/Shared/getCurrency", "العملة");
             select2list("#documentType", "/Shared/getDocumentTypes", "نوع السند");
+
+           const today = new Date();
+           const selectedYear = @ViewBag.Year;
+
+            const defaultDate = new Date(
+                selectedYear,
+                today.getMonth(),
+                today.getDate()
+            );
+
+            $('.calendar').datepicker({
+                todayBtn: "linked",
+                language: "it",
+                autoclose: true,
+                todayHighlight: true,
+                format: 'dd/mm/yyyy'
+            }).datepicker('setDate', defaultDate);
 
         });
 
@@ -611,13 +629,13 @@
                 validating: 'fa fa-refresh fa-spin success-feedback-icons'
             },
             fields: {
-                transactionDate: {
-                    validators: {
-                        notEmpty: {
-                            message: 'يجب الا يكون حقل اسم تاريخ القيد  فارغ'
-                        }
-                    }
-                },
+                //transactionDate: {
+                //    validators: {
+                //        notEmpty: {
+                //            message: 'يجب الا يكون حقل تاريخ القيد  فارغ'
+                //        }
+                //    }
+                //},
                 statement: {
                     validators: {
                         notEmpty: {
@@ -913,6 +931,7 @@
                         toastr[response.Status](response.Message, response.Title);
                     },
                     success: function (response) {
+                       
                         if (response.Status == "warning") {
                             toastr[response.Status](response.Message, response.Title);
                         } else {
@@ -1078,6 +1097,17 @@
             $('#add-recipients-modal').modal('show');
         });
 
+        $('#tbx').on('click', '.btnIsPaied', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var TransactionId = data['transactionId'];
+
+            $.post('/Transactions/SetIsTransactionPaied/' + TransactionId, {}, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('#tbx').DataTable().ajax.reload();
+            });
+        });
+
         $('.btnSaveRecipient').on('click', function () {
             debugger;
             var amount = recipientAmountObj.getNumber();
@@ -1121,28 +1151,28 @@
                         response.forEach(function (item) {
                             var obj = JSON.stringify(item).replace(/"/g, '&quot;');
                             var row = `
-                                                                <tr>
-                                                                    <td>${item.Id}</td>
-                                                                    <td>${item.RecipientName}</td>
-                                                                    <td>${item.BankName}</td>
-                                                                    <td>${item.AccountNumber}</td>
-                                                                    <td>${formatNumber(item.Amount)}</td>
-                                                                    <td>
-                                                                        <button class="text-success printBankLetter"
-                                                                        onClick="printBankLetterForRe(
-                                                                            ${item.Id},${item.TransactionId}, ${item.BankAccountId},${item.AccountNumber}
-                                                                        )">
-                                                                        <i class="fa fa-print"></i>
-                                                                        </button>
-                                                                    </td>
-                                                                    <td>
-                                                                        <button class="text-danger deleteTransactionRecipient"
-                                                                        onClick="deleteTransactionRecipient(${item.Id})">
-                                                                        <i class="fa fa-trash"></i>
-                                                                        </button>
-                                                                    </td>
-                                                                </tr>
-                                                            `;
+                                            <tr>
+                                                <td>${item.Id}</td>
+                                                <td>${item.RecipientName}</td>
+                                                <td>${item.BankName}</td>
+                                                <td>${item.AccountNumber}</td>
+                                                <td>${formatNumber(item.Amount)}</td>
+                                                <td>
+                                                    <button class="text-success printBankLetter"
+                                                    onClick="printBankLetterForRe(
+                                                        ${item.Id},${item.TransactionId}, ${item.BankAccountId},${item.AccountNumber}
+                                                    )">
+                                                    <i class="fa fa-print"></i>
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <button class="text-danger deleteTransactionRecipient"
+                                                    onClick="deleteTransactionRecipient(${item.Id})">
+                                                    <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        `;
                             $('#tblRecipientBody').append(row);
                         });
                     } else {

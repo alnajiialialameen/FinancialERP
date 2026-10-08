@@ -27,7 +27,7 @@ namespace Purchases.Controllers
             {
                 SharedClass shClass = new SharedClass();
                 var userId = User.Identity.GetUserId();
-                int financialCycleId = shClass.GetUserCurrentFinancialCycleId(userId);
+                int? financialCycleId = shClass.GetUserCurrentFinancialCycleId(userId);
                 string FinancialCyclYear = shClass.GetUserCurrentFinancialCycleYear(userId);
                 int FinancialCyclYeare = Convert.ToInt32(FinancialCyclYear);
 
@@ -104,7 +104,7 @@ namespace Purchases.Controllers
                 SharedClass shClass = new SharedClass();
                 TreeClass tree = new TreeClass();
                 var userId = User.Identity.GetUserId();
-                int financialCycleId = shClass.GetUserCurrentFinancialCycleId(userId);
+                int? financialCycleId = shClass.GetUserCurrentFinancialCycleId(userId);
                 string FinancialCyclYear = shClass.GetUserCurrentFinancialCycleYear(userId);
                 int FinancialCyclYeare = Convert.ToInt32(FinancialCyclYear);
 
@@ -202,7 +202,7 @@ namespace Purchases.Controllers
                 SharedClass shClass = new SharedClass();
                 TreeClass tree = new TreeClass();
                 var userId = User.Identity.GetUserId();
-                int financialCycleId = shClass.GetUserCurrentFinancialCycleId(userId);
+                int? financialCycleId = shClass.GetUserCurrentFinancialCycleId(userId);
                 string FinancialCyclYear = shClass.GetUserCurrentFinancialCycleYear(userId);
                 int FinancialCyclYeare = Convert.ToInt32(FinancialCyclYear);
 
@@ -286,7 +286,7 @@ namespace Purchases.Controllers
             {
                 SharedClass shClass = new SharedClass();
                 var userId = User.Identity.GetUserId();
-                int financialCycleId = shClass.GetUserCurrentFinancialCycleId(userId);
+                int? financialCycleId = shClass.GetUserCurrentFinancialCycleId(userId);
 
                 List<OpeningBalanceVM> data = new List<OpeningBalanceVM>();
 
@@ -395,8 +395,8 @@ namespace Purchases.Controllers
                 var tree = new TreeClass();
                 var userId = User.Identity.GetUserId();
 
-                int financialCycleId = shClass.GetUserCurrentFinancialCycleId(userId);
-                int previousFinancialCycleId = financialCycleId - 1;
+                int? financialCycleId = shClass.GetUserCurrentFinancialCycleId(userId);
+                int? previousFinancialCycleId = financialCycleId - 1;
                 string financialCycleYear = db.FinancialCycles.Find(previousFinancialCycleId).Year;
 
                 var AccountTreesIdsForPrincipleAccounts = tree.getAllItemsByParentId(1); // الاصول - Principle Accounts

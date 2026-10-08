@@ -303,6 +303,7 @@ namespace Purchases.Controllers
 
                 AccountTree AccountTree = db.AccountTrees.Find(model.Id);
                 AccountTree.AccName = model.AccName;
+                AccountTree.IsActive = true;
                 AccountTree.CreatedBy = userid;
                 AccountTree.CreationDate = DateTime.Now;
 
@@ -468,7 +469,7 @@ namespace Purchases.Controllers
             SharedClass sh = new SharedClass();
             var userId = User.Identity.GetUserId();
 
-            int CurrentFinancialCycleId = sh.GetUserCurrentFinancialCycleId(userId);
+            int? CurrentFinancialCycleId = sh.GetUserCurrentFinancialCycleId(userId);
 
             if (CurrentFinancialCycleId != FinancialCycleId)
             {

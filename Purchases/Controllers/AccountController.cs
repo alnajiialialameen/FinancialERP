@@ -338,9 +338,9 @@ namespace Purchases.Controllers
                 return Json(new { Message = "يجب اختيار العام المالي", Status = "error", Title = "خطأ" }, JsonRequestBehavior.AllowGet);            
             }
 
-            if(db.AspNetUsers.Any(q=> q.Id == userId))
+            if(db.UserWorkDetails.Any(q=> q.UserId == userId))
             {
-                var User = db.AspNetUsers.Find(userId);
+                var User = db.UserWorkDetails.FirstOrDefault(q=> q.UserId == userId);
 
                 User.FinancialCycleId = Id;
                 db.Entry(User).State = EntityState.Modified;

@@ -283,7 +283,7 @@ namespace Purchases.MyLogic
         {
             List<TransactionVM> data = new List<TransactionVM>();
             SharedClass cs = new SharedClass();
-            int financialCycleId = cs.GetUserCurrentFinancialCycleId(userId);
+            int? financialCycleId = cs.GetUserCurrentFinancialCycleId(userId);
 
             try
             {
@@ -330,7 +330,7 @@ namespace Purchases.MyLogic
             var result = new List<BalanceVM>();
             try
             {
-                int financialCycleId = new SharedClass().GetUserCurrentFinancialCycleId(userId);
+                int? financialCycleId = new SharedClass().GetUserCurrentFinancialCycleId(userId);
                 int companyInfoId = new SharedClass().GetUserCurrentCompanyInfoId(userId);
                 var userRoles = roleController.GetRole(userId);
 
@@ -339,10 +339,10 @@ namespace Purchases.MyLogic
                                t.TransactionDetails.Any(td => td.AccTreeId == accountId));
 
 
-                if (userRoles.Contains("المدير المالي بالمطار") || userRoles.Contains("مدير إدارة الحسابات"))
-                {
-                    query = query.Where(x => x.CompanyInfoId == companyInfoId);
-                }
+                //if (userRoles.Contains("المدير المالي بالمطار") || userRoles.Contains("مدير إدارة الحسابات"))
+                //{
+                //    query = query.Where(x => x.CompanyInfoId == companyInfoId);
+                //}
              
                 // تطبيق الفلاتر حسب التواريخ
                 if (dateFrom.HasValue && dateTo.HasValue)
@@ -401,7 +401,7 @@ namespace Purchases.MyLogic
         public List<BalanceVM> GetLedgerForAccountAndBankForParents(int accountId, int? bankId, DateTime? dateFrom, DateTime? dateTo, string userId)
         {
             var finalResult = new List<BalanceVM>();
-            int financialCycleId = new SharedClass().GetUserCurrentFinancialCycleId(userId);
+            int? financialCycleId = new SharedClass().GetUserCurrentFinancialCycleId(userId);
             int companyInfoId = new SharedClass().GetUserCurrentCompanyInfoId(userId);
             try
             {
@@ -434,12 +434,12 @@ namespace Purchases.MyLogic
                                 t.TransactionDetails.Any(td => td.AccTreeId == directChild.Id));
                     }
 
-                    var userRoles = roleController.GetRole(userId);
+                    //var userRoles = roleController.GetRole(userId);
 
-                    if(userRoles.Equals("موظف بالادارة المالية") || userRoles.Equals("المدير المالي بالمطار"))
-                    {
-                        query = query.Where(q => q.CompanyInfoId == companyInfoId);
-                    }
+                    //if(userRoles.Equals("موظف بالادارة المالية") || userRoles.Equals("المدير المالي بالمطار"))
+                    //{
+                    //    query = query.Where(q => q.CompanyInfoId == companyInfoId);
+                    //}
 
                     // تطبيق الفلاتر حسب التواريخ
                     if (dateFrom.HasValue && dateTo.HasValue)
@@ -875,7 +875,7 @@ namespace Purchases.MyLogic
             try
             {
                 List<Transaction> dList = new List<Transaction>();
-                int financialCycleId = cs.GetUserCurrentFinancialCycleId(userId);
+                int? financialCycleId = cs.GetUserCurrentFinancialCycleId(userId);
 
                 if (dateFrom != null & dateTo != null)
                 {
@@ -947,7 +947,7 @@ namespace Purchases.MyLogic
             try
             {
                 List<Transaction> dList = new List<Transaction>();
-                int financialCycleId = cs.GetUserCurrentFinancialCycleId(userId);
+                int? financialCycleId = cs.GetUserCurrentFinancialCycleId(userId);
 
                 if (dateFrom != null & dateTo != null)
                 {

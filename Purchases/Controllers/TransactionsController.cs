@@ -32,6 +32,24 @@ namespace Purchases.Controllers
         // سندات القيد
         public ActionResult IndexAll()
         {
+            var userId = User.Identity.GetUserId();
+            SharedClass sh = new SharedClass();
+            var financialCycleYear = sh.GetUserCurrentFinancialCycleYear(userId);
+
+            ViewBag.Year = financialCycleYear;
+
+            return View();
+        }
+
+        // سندات القيد
+        public ActionResult IndexAll1()
+        {
+            var userId = User.Identity.GetUserId();
+            SharedClass sh = new SharedClass();
+            var financialCycleYear = sh.GetUserCurrentFinancialCycleYear(userId);
+
+            ViewBag.Year = financialCycleYear;
+
             return View();
         }
 
@@ -311,9 +329,9 @@ namespace Purchases.Controllers
             var currentTransactionYear = first.transactionDate.Value.Year.ToString();
             // var financialCycleId = sh.GetCurrentFinancialCycleId();// اذا السنة المالية مقفولة ما يعمل اي حاجه
             //int FinancialCycleId = sh.GetFinancialCycleIdForSpecificDate(currentTransactionYear); // هنا دي مفترض تتحول حسب العام المالي للمستخدم
-            int FinancialCycleId = sh.GetUserCurrentFinancialCycleId(userid); // جلب العام المالي للمستخدم الحالي
+            int? FinancialCycleId = sh.GetUserCurrentFinancialCycleId(userid); // جلب العام المالي للمستخدم الحالي
 
-            int res = obj.UpdateData(data, userid, FinancialCycleId);
+            int res = obj.UpdateData(data, userid, FinancialCycleId??0);
 
             if (res == -1000)
             {
@@ -692,5 +710,24 @@ namespace Purchases.Controllers
             return View();
         }
 
+
+        [HttpPost]
+        public ActionResult SetIsTransactionPaied(int id)
+        {
+            var data = db.Transactions.Find(id);
+            if (data == null)
+            {
+                return Json(new { Message = "حدث خطأ أثناء عملية التعديل", Title = "خطأ", Status = "error" });
+            }
+
+            data.IsPaied = true;
+            data.IsPosted = true;
+
+            db.Entry(data).State = EntityState.Modified;
+            db.SaveChanges();
+
+
+            return Json(new { Message = "تم تعديل العملية بنجاح", Title = "نجاح", Status = "success" });
+        }
     }
 }

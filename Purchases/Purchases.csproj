@@ -518,13 +518,16 @@
     <Content Include="My-Layout\Bootstrap\css\bootstrap-icons.css" />
     <Content Include="My-Layout\Bootstrap\css\bootstrap.min.css" />
     <Content Include="My-Layout\Bootstrap\css\bootstrap.rtl.min.css" />
+    <Content Include="My-Layout\Bootstrap\js\bootstrap.bundle.min-old.js" />
     <Content Include="My-Layout\Bootstrap\js\bootstrap.bundle.min.js" />
     <Content Include="My-Layout\Bootstrap\js\bootstrap.min.js" />
+    <Content Include="My-Layout\DataTable\datatables.min.css" />
+    <Content Include="My-Layout\DataTable\js\DataTables 3.1.3.js" />
     <Content Include="My-Layout\jQuery-v3.7.1\jQuery v3.7.1.min.js" />
     <Content Include="My-Layout\jQuery-v3.7.1\jQuery.min.js" />
     <Content Include="My-Layout\navbar.css" />
-    <Content Include="My-Layout\Select2 4.0.13\css\Select2 4.0.13.min.css" />
-    <Content Include="My-Layout\Select2 4.0.13\js\Select2 4.0.13.js" />
+    <Content Include="My-Layout\Select2 4.1.0\css\Select2 4.1.0.min.css" />
+    <Content Include="My-Layout\Select2 4.1.0\js\Select2 4.1.0.js" />
     <Content Include="My-Layout\sidebars.css" />
     <Content Include="Scripts\all.js" />
     <Content Include="Scripts\angular.min.js" />
@@ -540,6 +543,8 @@
     <Content Include="Models\Model1.edmx.diagram">
       <DependentUpon>Model1.edmx</DependentUpon>
     </Content>
+    <Content Include="My-Layout\fonts\bootstrap-icons.woff" />
+    <Content Include="My-Layout\fonts\bootstrap-icons.woff2" />
     <None Include="Properties\PublishProfiles\Fin-Puplish.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -812,6 +817,7 @@
     <Content Include="Views\Transactions\PettyCashNotPayedByPerson.cshtml" />
     <Content Include="Views\Transactions\RemovePettyCash.cshtml" />
     <Content Include="Views\Balances\OverLimitItems.cshtml" />
+    <Content Include="Views\Transactions\IndexAll1.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

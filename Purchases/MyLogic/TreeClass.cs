@@ -99,7 +99,7 @@ namespace Purchases.MyLogic
             //IQueryable<AccountTree> AccountTree = db.AccountTrees.Where(x=> x.AccountSubs.Any());
             IQueryable<AccountTree> AccountTree = db.AccountTrees;
             SharedClass sh = new SharedClass();
-            int FinancialCycleId = sh.GetUserCurrentFinancialCycleId(userId);
+            int? FinancialCycleId = sh.GetUserCurrentFinancialCycleId(userId);
 
             var ItemList = new List<TreeViewModelItem>();
             foreach (var item in AccountTree)
@@ -511,6 +511,7 @@ namespace Purchases.MyLogic
                             d.AccTypeId = data.AccTypeId;
                             d.AccNatureId = data.AccNatureId;
                             d.AccFinalId = data.AccFinalId;
+                            d.IsActive = true;
                             d.CreatedBy = userid;
                             d.CreationDate = DateTime.Now;
 

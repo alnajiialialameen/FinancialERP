@@ -626,6 +626,7 @@
           <Property Name="ExchangeRate" Type="decimal" Precision="18" Scale="4" />
           <Property Name="Note" Type="nvarchar" MaxLength="150" />
           <Property Name="IsPosted" Type="bit" />
+          <Property Name="IsPaied" Type="bit" />
           <Property Name="RecipientId" Type="int" />
           <Property Name="FinancialCycleId" Type="int" />
           <Property Name="CreatedDate" Type="datetime" />
@@ -4651,6 +4652,7 @@
           <NavigationProperty Name="CompanyInfo" Relationship="FinancialERP1Model.FK_Transaction_CompanyInfo" FromRole="Transaction" ToRole="CompanyInfo" />
           <NavigationProperty Name="AspNetUser" Relationship="FinancialERP1Model.FK_Transaction_AspNetUsers" FromRole="Transaction" ToRole="AspNetUser" />
           <NavigationProperty Name="AspNetUser1" Relationship="FinancialERP1Model.FK_Transaction_AspNetUsers1" FromRole="Transaction" ToRole="AspNetUser" />
+          <Property Name="IsPaied" Type="Boolean" />
         </EntityType>
         <EntityType Name="TransactionDetail">
           <Key>
@@ -8731,6 +8733,7 @@
           <EntitySetMapping Name="Transactions">
             <EntityTypeMapping TypeName="FinancialERP1Model.Transaction">
               <MappingFragment StoreEntitySet="Transaction">
+                <ScalarProperty Name="IsPaied" ColumnName="IsPaied" />
                 <ScalarProperty Name="CompanyInfoId" ColumnName="CompanyInfoId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="DocumentTypeId" ColumnName="DocumentTypeId" />

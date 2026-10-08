@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -329,10 +330,20 @@ namespace Purchases.MyLogic
         {
             try
             {
-                int? Year = 0;
-                Year = db.UserWorkDetails.FirstOrDefault(q=> q.UserId == userId).FinancialCycleId;
+                //int? Year = 0;
+                //Year = db.UserWorkDetails.AsNoTracking().Where(q=> q.UserId == userId).
+                //    Select(q => q.FinancialCycleId)
+                //    .FirstOrDefault();
 
-                return Convert.ToInt32(Year);
+                //return Convert.ToInt32(Year);
+
+                int FinancialCycleId = db.UserWorkDetails
+                            //.AsNoTracking()
+                            .Where(x => x.UserId == userId)
+                            .Select(x => x.FinancialCycleId)
+                            .FirstOrDefault()??0;
+
+                return FinancialCycleId;
             }
             catch (Exception e)
             {
@@ -450,6 +461,7 @@ namespace Purchases.MyLogic
                     // اذا السنة المالية مقفولة ما يعمل اي حاجه
                     //int FinancialCycleId = this.GetFinancialCycleIdForSpecificDate(currentTransactionYear); // هنا دي مفترض تتحول حسب العام المالي للمستخدم
                     int FinancialCycleId = this.GetUserCurrentFinancialCycleId(userid); // جلب العام المالي للمستخدم الحالي
+                    int companyInfoId = this.GetUserCurrentCompanyInfoId(userid); // جلب العام المالي للمستخدم الحالي
                     if (db.FinancialCycles.Any(x => x.Id == FinancialCycleId && x.IsClosed == true))
                     {
                         return -1000;
@@ -475,6 +487,7 @@ namespace Purchases.MyLogic
                     decimal? amount = bankAmount - totalWithoutbankAmount;
 
                     t.CurrencyId = modal[0].currencyId;
+                    t.CompanyInfoId = companyInfoId;
                     t.RecipientId = modal[0].recipientId;
                     t.TransactionDate = Convert.ToDateTime(modal[0].transactionDate);
                     t.CreatedDate = now;

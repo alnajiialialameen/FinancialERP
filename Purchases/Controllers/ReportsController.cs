@@ -416,7 +416,7 @@ namespace Purchases.Controllers
         public ActionResult printAccountStatement(int Id)
         {
             var userId = User.Identity.GetUserId();
-            var financialCycleId = sh.GetUserCurrentFinancialCycleId(userId);
+            int financialCycleId = sh.GetUserCurrentFinancialCycleId(userId);
 
             List<TransactionVM> data = reportObject.printsAccountStatement(Id, financialCycleId);
             string AccName = db.AccountTrees.Find(Id).AccName;

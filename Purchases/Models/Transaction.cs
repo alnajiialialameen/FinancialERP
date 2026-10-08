@@ -42,6 +42,7 @@ namespace Purchases.Models
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatingDate { get; set; }
         public Nullable<int> CompanyInfoId { get; set; }
+        public Nullable<bool> IsPaied { get; set; }
     
         public virtual DocumentType DocumentType { get; set; }
         public virtual FinancialCycle FinancialCycle { get; set; }

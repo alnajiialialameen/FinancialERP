@@ -39,7 +39,21 @@ namespace Purchases.Controllers
             var userId = User.Identity.GetUserId();
 
             int financeCycleId = shared.GetUserCurrentFinancialCycleId(userId);
-            foreach (var b in db.Balances.Where(x=> x.FinanceCycleId == financeCycleId).ToList())
+            //var cycles = db.UserWorkDetails
+            //                            .AsNoTracking()
+            //                            .Where(x => x.UserId == userId)
+            //                            .Select(x => new
+            //                            {
+            //                                x.FinancialCycleId,
+            //                                Year = x.FinancialCycle.Year
+            //                            })
+            //                            .ToList();
+
+            var balances = db.Balances
+                .Where(x => x.FinanceCycleId == financeCycleId)
+                .ToList();
+
+            foreach (var b in balances)
             {
                 var item = new
                 {

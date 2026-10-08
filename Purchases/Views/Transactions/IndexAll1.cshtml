@@ -1,0 +1,2090 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html dir="rtl">
+<head>
+    <meta name="viewport" content="width=device-width" />
+
+    <link href="~/My-Layout/Select2 4.1.0/css/Select2 4.1.0.min.css" rel="stylesheet" />
+    <link href="~/My-Layout/Bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/My-Layout/Bootstrap/css/bootstrap-icons.css" rel="stylesheet" />
+    @*<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />*@
+    <link href="~/My-Layout/DataTable/datatables.min.css" rel="stylesheet" />
+    <link href="~/Content/toastr.min.css" rel="stylesheet" />
+
+    <style>
+        #tbx,
+        #tbx_wrapper,
+        #tbx tbody,
+        #tbx td {
+            overflow: visible !important;
+        }
+
+        .select2-container {
+            flex: 1 1 auto;
+            width: 100% !important;
+        }
+
+            .select2-container .select2-selection--single {
+                height: 38px !important;
+                border: 1px solid #dee2e6 !important;
+                border-radius: 0 0.375rem 0.375rem 0 !important;
+            }
+
+        .select2-container--default
+        .select2-selection--single
+        .select2-selection__rendered {
+            line-height: 36px !important;
+            padding-right: 12px !important;
+            padding-left: 12px !important;
+        }
+
+        .select2-container--default
+        .select2-selection--single
+        .select2-selection__arrow {
+            height: 36px !important;
+        }
+
+        [dir="rtl"] .input-group .select2-container .select2-selection--single {
+            border-radius: 0.375rem 0 0 0.375rem !important;
+        }
+
+        [dir="rtl"] .select2-container--default
+        .select2-selection--single
+        .select2-selection__arrow {
+            left: 6px;
+            right: auto;
+        }
+
+        .modal {
+            overflow: visible !important;
+        }
+
+        .select2-container {
+            z-index: 9999 !important;
+        }
+
+        /*إجبار القائمة المنسدلة لـ Select2 على الظهور فوق أي موديل أو شاشة سوداء*/
+        .select2-container--open {
+            z-index: 9999999 !important;
+        }
+
+        /*إصلاح مشكلة التركيز في حقل البحث داخل Select2*/
+        .select2-search__field {
+            z-index: 9999999 !important;
+        }
+
+        .floating-btn {
+            position: fixed;
+            top: 15px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            z-index: 1050;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+    </style>
+    <title>IndexAll1</title>
+</head>
+
+<body dir="rtl">
+    <div class="container-fluid">
+
+        <div class="d-flex flex-row w-100 justify-content-between align-items-center px-3 mt-3">
+            <h3>
+                سندات القيد
+            </h3>
+            @*<ol class="breadcrumb">
+                    <li><a href="#" style="text-decoration:none;"><i class="bi bi-home-alt"></i> النظام المحاسبي</a></li>
+                    >
+                    <li class="active">  سندات القيد</li>
+                </ol>*@
+
+            <a href="/Home/Index"
+               class="btn btn-success rounded-circle shadow floating-btn"
+               title="الرئيسية">
+                <i class="bi bi-house"></i>
+            </a>
+        </div>
+
+        <div class="card card-body mt-3">
+            <div class="mb-1">
+                <button class="btn btn-primary float-start"
+                        data-bs-toggle="modal"
+                        data-bs-target="#add-modal">
+                    إضافة قيد
+                </button>
+            </div>
+
+            <table class="table table-striped table-bordered" id="tbx"></table>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="example-modal">
+        <div class="modal fade" id="add-modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+
+            <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header border-0 d-flex justify-content-between align-items-center">
+                        <h5 class="modal-title" id="addModalLabel">
+                            إضافة قيد جديد
+                        </h5>
+
+                        <button type="button"
+                                class="btn-close ms-0"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                        </button>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+
+                        <form id="add-form">
+
+                            <div class="row">
+
+                                <!-- Account -->
+                                <div class="col-lg-4 mb-3">
+                                    <label for="addAccName" class="form-label">
+                                        اسم الحساب
+                                    </label>
+
+                                    <select class="form-select addAccName"
+                                            name="addAccName"
+                                            id="addAccName"
+                                            style="width:100%">
+                                    </select>
+
+                                </div>
+
+
+                                <!-- Debit -->
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+
+                                        <div class="d-flex">
+                                            <label for="debitAmount" class="form-label">
+                                                المبلغ المدين
+                                            </label>
+
+                                            <strong id="AmountCurrencyDecimalText"
+                                                    class="AmountCurrencyDecimalText ms-1">
+                                            </strong>
+                                        </div>
+
+                                        <input class="form-control debitAmount"
+                                               type="text"
+                                               name="debitAmount"
+                                               id="debitAmount"
+                                               placeholder="المبلغ مدين"
+                                               autocomplete="off">
+                                    </div>
+                                </div>
+
+
+                                <!-- Credit -->
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+
+                                        <div class="d-flex">
+                                            <label for="creditAmount" class="form-label">
+                                                المبلغ الدائن
+                                            </label>
+
+                                            <strong id="AmountCurrencyDecimalTextCr"
+                                                    class="AmountCurrencyDecimalTextCr ms-1">
+                                            </strong>
+                                        </div>
+
+                                        <input class="form-control creditAmount"
+                                               type="text"
+                                               name="creditAmount"
+                                               id="creditAmount"
+                                               placeholder="المبلغ"
+                                               autocomplete="off">
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <!-- Post Button -->
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <button type="button"
+                                            class="btn btn-info w-100"
+                                            onclick="addToTable()">
+                                        ترحيل
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+
+
+                        <br>
+
+
+                        <!-- Table -->
+                        <div class="row">
+                            <div class="col-lg-12">
+
+                                <div class="table-responsive">
+                                    <table id="example1"
+                                           class="table table-bordered table-striped virtualTable">
+
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center" style="width:150px;">
+                                                    #
+                                                </th>
+
+                                                <th class="text-center" style="width:750px;">
+                                                    اسم الحساب
+                                                </th>
+
+                                                <th class="text-center" style="width:750px;">
+                                                    مدين
+                                                </th>
+
+                                                <th class="text-center" style="width:750px;">
+                                                    دائن
+                                                </th>
+
+                                                <th class="text-center">
+                                                    <i class="bi bi-cogs"></i>
+                                                </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody class="myTbody"></tbody>
+
+                                        <tfoot class="myTFoot text-center">
+                                        </tfoot>
+
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Footer Buttons -->
+                        <div class="row">
+                            <div class="col-lg-12">
+
+                                <div class="d-flex justify-content-end gap-2">
+
+                                    <button type="button"
+                                            class="btn btn-secondary"
+                                            data-bs-dismiss="modal">
+                                        رجوع
+                                    </button>
+
+                                    <button type="submit"
+                                            id="btnSave"
+                                            class="btn btn-primary">
+                                        مراجعة القيد
+                                    </button>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- /.modal-body -->
+
+                </div>
+                <!-- /.modal-content -->
+
+            </div>
+            <!-- /.modal-dialog -->
+
+        </div>
+        <!-- /.modal -->
+    </div>
+
+    <div class="example-modal">
+
+        <div class="modal"
+             id="add-statement-modal"
+             data-bs-backdrop="static"
+             tabindex="-1"
+             aria-hidden="true">
+
+            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header border-0 d-flex justify-content-between align-items-center">
+                        <h5 class="modal-title" id="addStatementModalLabel">
+                            إضافة عملية جديدة
+                        </h5>
+
+                        <button type="button"
+                                class="btn-close ms-0"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                        </button>
+
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+
+                        <form id="add-statement-form" novalidate>
+                            <div class="row">
+                                <!-- تاريخ القيد -->
+                                <div class="col-6 mb-3">
+
+                                    <label for="transactionDate" class="form-label d-block">
+                                        تاريخ القيد
+                                    </label>
+
+                                    <input type="date"
+                                           class="form-control calendar transactionDate"
+                                           id="transactionDate"
+                                           name="transactionDate"
+                                           placeholder="تاريخ القيد"
+                                           autocomplete="off">
+
+                                </div>
+
+                                <!-- العملة -->
+                                <div class="col-lg-6 mb-3">
+
+                                    <label for="addCurrencyType" class="form-label  d-block">
+                                        العملة
+                                    </label>
+
+                                    <select class="form-control addCurrencyType"
+                                            name="addCurrencyType"
+                                            id="addCurrencyType"
+                                            style="width:100%"
+                                            required>
+                                    </select>
+
+                                    <div id="addCurrencyTypeError" class="invalid-feedback">
+                                        يرجى اختيار العملة
+                                    </div>
+                                </div>
+
+                                <!-- نوع السند -->
+                                <div class="col-lg-6 mb-3">
+
+                                    <label for="documentType" class="form-label">
+                                        نوع السند
+                                    </label>
+
+                                    <select class="form-select documentType"
+                                            name="documentType"
+                                            id="documentType"
+                                            style="width:100%"
+                                            required>
+                                    </select>
+
+                                    <div id="documentTypeError" class="invalid-feedback">
+                                        يرجى اختيار نوع السند
+                                    </div>
+                                </div>
+
+                                <!-- اسم المستلم -->
+                                <div class="col-lg-6 mb-3">
+
+                                    <label for="recipient" class="form-label">
+                                        اسم المستلم
+                                    </label>
+
+                                    <select class="form-select  recipient"
+                                            name="recipient"
+                                            id="recipient"
+                                            style="width:100%"
+                                            required>
+                                    </select>
+
+                                    <div id="recipientError" class="invalid-feedback">
+                                        يرجى اختيار المستلم
+                                    </div>
+
+                                </div>
+
+                                <!-- البيان -->
+                                <div class="col-lg-12 mb-3">
+
+                                    <label for="statement" class="form-label">
+                                        البيان
+                                    </label>
+
+                                    <textarea class="form-control statement" id="statement" name="statement">@ViewBag.Note</textarea>
+
+                                    <div id="statementError" class="invalid-feedback">
+                                        يرجى ادخال البيان
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Save -->
+                            <div class="row">
+                                <div class="col-12">
+
+                                    <button type="submit"
+                                            class="btn btn-success btnCreate w-100">
+                                        حفظ
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </form>
+
+
+                        <hr />
+
+
+                        <!-- Details Table -->
+                        <div class="row">
+
+                            <div class="col-12">
+
+                                <div class="table-responsive">
+
+                                    <table class="table table-bordered table-striped table-hover">
+
+                                        <thead class="table-secondary">
+                                            <tr class="text-center">
+                                                <th>مدين</th>
+                                                <th>دائن</th>
+                                                <th>الحساب</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody class="presntTBody"></tbody>
+
+                                    </table>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <!-- /.modal-body -->
+
+                </div>
+                <!-- /.modal-content -->
+
+            </div>
+            <!-- /.modal-dialog -->
+
+        </div>
+        <!-- /.modal -->
+
+    </div>
+
+    <div class="example-modal">
+
+        <div class="modal fade"
+             id="add-recipients-modal"
+             data-bs-backdrop="static"
+             tabindex="-1"
+             aria-labelledby="addRecipientsModalLabel"
+             aria-hidden="true">
+
+            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header border-0 d-flex justify-content-between align-items-center">
+                        <label id="recipientTransactionId"
+                               class="recipientTransactionId d-none">
+                            44444
+                        </label>
+
+                        <!-- العنوان أقصى اليمين -->
+                        <h5 class="modal-title mb-0">
+                            إضافة مستلمين
+                        </h5>
+
+                        <!-- زر الإغلاق أقصى اليسار -->
+                        <button type="button"
+                                class="btn-close ms-0"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                        </button>
+
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+
+                        <div class="row">
+
+                            <!-- اسم البنك -->
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+
+                                    <label for="recipientBank" class="form-label">
+                                        اسم البنك
+                                    </label>
+
+                                    <select class="form-select recipientBank"
+                                            name="recipientBank"
+                                            id="recipientBank"
+                                            style="width:100%">
+                                    </select>
+
+
+                                </div>
+                            </div>
+
+
+                            <!-- اسم المستلم -->
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+
+                                    <label for="recipientName" class="form-label">
+                                        اسم المستلم
+                                    </label>
+
+                                    <select class="form-select recipientName"
+                                            name="recipientName"
+                                            id="recipientName"
+                                            style="width:100%">
+                                    </select>
+
+
+                                </div>
+                            </div>
+
+
+                            <!-- المبلغ -->
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+
+                                    <label for="recipientAmount" class="form-label">
+                                        المبلغ
+                                    </label>
+
+
+                                    <input type="text"
+                                           class="form-control recipientAmount"
+                                           name="recipientAmount"
+                                           id="recipientAmount"
+                                           placeholder="المبلغ"
+                                           style="width:100%">
+
+
+                                </div>
+                            </div>
+
+
+                            <!-- البيان -->
+                            <div class="col-lg-12">
+                                <div class="mb-3">
+
+                                    <label for="recipientStatement" class="form-label">
+                                        البيان
+                                    </label>
+
+                                    <textarea class="form-control recipientStatement"
+                                              id="recipientStatement"
+                                              name="recipientStatement"
+                                              disabled></textarea>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <!-- حفظ -->
+                        <div class="row mb-3">
+
+                            <div class="col-12">
+
+                                <button type="button"
+                                        class="btn btn-success btnSaveRecipient w-100">
+                                    حفظ
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Recipients Table -->
+                        <div class="row">
+
+                            <div class="col-12">
+
+                                <div class="table-responsive">
+
+                                    <table class="table table-bordered table-striped table-hover tblRecipient d-none"
+                                           id="tblRecipient">
+
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>اسم المستلم</th>
+                                                <th>اسم البنك</th>
+                                                <th>رقم الحساب</th>
+                                                <th>المبلغ</th>
+                                                <th>#</th>
+                                                <th>#</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody id="tblRecipientBody"></tbody>
+
+                                    </table>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <!-- /.modal-body -->
+
+                </div>
+                <!-- /.modal-content -->
+
+            </div>
+            <!-- /.modal-dialog -->
+
+        </div>
+        <!-- /.modal -->
+
+    </div>
+
+    <div class="modal fade"
+         id="addedTax-modal"
+         data-bs-backdrop="static"
+         data-bs-keyboard="false"
+         tabindex="-1"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" style="max-width:60%;">
+            <div class="modal-content">
+
+                <div class="modal-header border-0 d-flex justify-content-between align-items-center">
+                    <h5 class="modal-title">إضافة ضريبة القيمة المضافة</h5>
+
+                    <label id="recipientTransactionId"
+                           class="recipientTransactionId d-none">
+                        44444
+                    </label>
+
+                    <button type="button"
+                            class="btn-close ms-0"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row">
+
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label for="addTaxVal" class="form-label">
+                                    ادخل القيمة
+                                </label>
+
+                                <input type="number"
+                                       class="form-control"
+                                       id="addTaxVal"
+                                       value="17" />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label for="addTaxValDisplay" class="form-label">
+                                    القيمة الفعلية(%)
+                                </label>
+
+                                <label class="form-control"
+                                       id="addTaxValDisplay">
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="button"
+                                    class="btn btn-success btnSaveAddedTax"
+                                    onclick="Add17Tax()">
+                                حفظ
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade"
+         id="taxConfirmation-modal"
+         data-bs-backdrop="static"
+         data-bs-keyboard="false"
+         tabindex="-1"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" style="max-width:40%;">
+            <div class="modal-content">
+
+                <div class="modal-header border-0 d-flex justify-content-between align-items-center">
+                    <h5 class="modal-title">
+                        إضافة ضريبة الـ 1%
+                    </h5>
+
+                    <label id="taxConfirmationTransId"
+                           class="taxConfirmationTransId d-none">
+                        44444
+                    </label>
+
+                    <button type="button"
+                            class="btn-close ms-0"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <h2 class="text-center">
+                        سيتم خصم 1% من أصل المبلغ!
+                    </h2>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-success"
+                            onclick="AddOneTax()">
+                        تأكيد
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        إلغاء
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade"
+         id="details-modal"
+         data-bs-backdrop="static"
+         data-bs-keyboard="false"
+         tabindex="-1"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" style="max-width: 60%;">
+            <div class="modal-content">
+
+                <div class="modal-header border-0 d-flex justify-content-between align-items-center">
+                    <h5 class="modal-title">
+                        عرض تفاصيل القيد
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close ms-0"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row m-0">
+                        <div class="col-lg-3 text-end">
+                            <label>التاريخ :</label>
+                            <label class="tarnsDate"></label>
+                        </div>
+
+                        <div class="col-lg-9 text-start">
+                            <label>البيان :</label>
+                            <label class="tarnsStatement"></label>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="row">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead class="table-secondary">
+                                    <tr class="text-center">
+                                        <th>#</th>
+                                        <th>الحساب</th>
+                                        <th>مدين</th>
+                                        <th>دائن</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="detailsTBody"></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="2">الاجمالي</th>
+                                        <th id="tdDebitAmount"></th>
+                                        <th id="tdCreditAmount"></th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2">الصافي</th>
+                                        <th colspan="2" id="tdBalance"></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 1. jQuery أولاً -->
+    <script src="~/My-Layout/jQuery-v3.7.1/jQuery v3.7.1.min.js"></script>
+
+    <!-- 2. Bootstrap -->
+    <script src="~/My-Layout/Bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- 3. Select2 -->
+    <script src="~/My-Layout/Select2 4.1.0/js/Select2 4.1.0.js"></script>
+    <script src="~/My-Layout/DataTable/js/DataTables 3.1.3.js"></script>
+    <script src="~/Temp/AutoNumeric/auto-numeric.js"></script>
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/toastr.min.js"></script>
+
+    <script>
+        var myId = 0;
+        var dataTable;
+        var creditAmountObj;
+        var debitAmountObj;
+        var recipientAmountObj;
+
+        $(document).ready(function () {
+            const today = new Date();
+            const selectedYear = @ViewBag.Year;
+
+            const dateValue = `${selectedYear}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+            $('#transactionDate').val(dateValue);
+
+            //*********************************************************** */
+
+            select2list("#addAccName", "/Shared/getAccTrees", "اسم الحساب", "#add-modal");
+
+            creditAmountObj = CustomAutoNumeric('#creditAmount');
+            debitAmountObj = CustomAutoNumeric('#debitAmount');
+            recipientAmountObj = CustomAutoNumeric('#recipientAmount');
+
+            loadData();
+        });
+
+        function loadData() {
+            dataTable = $('#tbx').DataTable({
+                "language": {
+                    "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                    "search": "بحث"
+                },
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "className": "text-center",
+                    },
+                ],
+                ajax: {
+                    url: '/Shared/LoadData',
+                    dataSrc: ''
+                },
+                columns: [
+                    {
+                        "title": "",
+                        "data": "transactionId",
+                        "orderable": false,
+                        "render": function (data) {
+                            return '<a class="btn btn-info btnDetails" data-bs-toggle="modal" data-bs-target="#details-modal"><i class="bi bi-info"></i></a>';
+                        }
+                    },
+                    {
+                        "title": "# ",
+                        "data": "transactionId"
+                    },
+                    {
+                        "title": "البيان",
+                        "data": "note"
+                    },
+                    {
+                        "title": "نوع القيد",
+                        "data": "documentType"
+                    },
+                    {
+                        "title": "اصل المبلغ",
+                        "data": "total",
+                        "render": function (data, type, row) {
+                            return formatNumber(data.toString());
+                        }
+                    },
+                    {
+                        "title": "العملة",
+                        "data": "currency"
+                    },
+                    {
+                        "title": "سعر الصرف",
+                        "data": "exchangeRate",
+                        "render": function (data, type, row) {
+                            return formatNumber(data.toString());
+                        }
+                    },
+                    {
+                        "title": "تاريخ القيد",
+                        "data": "transactionDateStr"
+                    },
+                    {
+                        "title": "<i class='fa fa-cog'></i>",
+                        "data": null,
+                        "width": "10%",
+                        "orderable": false,
+                        "render": function (data) {
+                            if (data.hasAddedTax == false || data.hasAddedTax == null) {
+                                //return '<a href="#" class="btn btn-success addedTax" onclick="Add17Tax(' + data.transactionId + ')">إضافة 17%</a>';
+                                return '<a href="#" class="btn btn-success addedTax" onclick="OpenAdd17TaxModal(' + data.transactionId + ')">القيمة المضافة</a>';
+                            } else {
+                                return '<a href="#" class="btn btn-danger addedTax" onclick="delete17Tax(' + data.transactionId + ')">الغاء القيمة المضافة</a>';
+                            }
+                        }
+                    },
+                    {
+                        "title": "<i class='fa fa-cog'></i>",
+                        "data": null,
+                        "width": "10%",
+                        "orderable": false,
+                        "render": function (data) {
+                            if (data.hasTax == false || data.hasTax == null) {
+                                return '<a href="#" class="btn btn-success addedTax" onclick="OpenAddTaxModal(' + data.transactionId + ')">إضافة 1%</a>';
+                                //return '<a href="#" class="btn btn-success addedTax" onclick="AddOneTax(' + data.transactionId + ')">إضافة 1%</a>';
+                            } else {
+                                return '<a href="#" class="btn btn-danger addedTax" onclick="deleteOneTax(' + data.transactionId + ')">الغاء 1%</a>';
+                            }
+                        }
+                    },
+                    {
+                        "title": "<i class='fa fa-cog'></i>",
+                        "data": null,
+                        //"width": "10%",
+                        "orderable": false,
+                        "render": function (data) {
+                            //    return `
+                            //    <div class="dropdown">
+                            //        <button class="btn btn-link text-dark p-0 border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            //           <i class="bi bi-three-dots-vertical fs-4"></i>
+                            //         </button>
+                            //        <ul class="dropdown-menu dropdown-menu-end">
+                            //            <li>
+                            //                <a href="#" class="ropdown-menu-item dropdown-item"
+                            //                   onclick="printBankLetter(${data.transactionId})">
+                            //                    خطاب البنك
+                            //                </a>
+                            //            </li>
+
+                            //            ${data.documentType == 'سند دفع' ? `
+                            //            <li>
+                            //                <a href="#" class="ropdown-menu-item dropdown-item"
+                            //                   onclick="printchecs(${data.transactionId})">
+                            //                    طباعة الشيك
+                            //                </a>
+                            //            </li>
+                            //            ` : ''}
+
+                            //            <li>
+                            //                <a href="#" class="ropdown-menu-item dropdown-item btnEdit">
+                            //                    تعديل
+                            //                </a>
+                            //            </li>
+
+                            //            <li>
+                            //                <a href="#" class="ropdown-menu-item dropdown-item btnAddRecipient">
+                            //                    إضافة مستلمين
+                            //                </a>
+                            //            </li>
+
+                            //            <li>
+                            //                <a href="#" class="ropdown-menu-item dropdown-item"
+                            //                   onclick="printSanad(${data.transactionId})">
+                            //                    طباعة أورنيك 17
+                            //                </a>
+                            //            </li>
+
+                            //            <li>
+                            //                <a href="#" class="ropdown-menu-item dropdown-item"
+                            //                   onclick="DeleteTransaction(${data.transactionId})">
+                            //                    الغاء الحركة
+                            //                </a>
+                            //            </li>
+
+                            //            <li>
+                            //                <a href="#" class="ropdown-menu-item dropdown-item btnPost">
+                            //                    ترحيل
+                            //                </a>
+                            //            </li>
+
+                            //            <li>
+                            //                <a href="#" class="ropdown-menu-item dropdown-item btnIsPaied">
+                            //                    تم الدفع
+                            //                </a>
+                            //            </li>
+                            //        </ul>
+                            //    </div>
+                            //`;
+
+                            return `
+                                                                        <div class="dropdown">
+                                                                            <button type="button"
+                                                                                    class="btn btn-link text-dark p-0 border-0"
+                                                                                    data-bs-toggle="dropdown"
+                                                                                    aria-expanded="false">
+
+                                                                                <i class="bi bi-three-dots-vertical fs-4"></i>
+
+                                                                            </button>
+
+                                                                            <ul class="dropdown-menu dropdown-menu-end">
+
+                                                                                <li>
+                                                                                    <a href="#"
+                                                                                       class="dropdown-item"
+                                                                                       onclick="printBankLetter(${data.transactionId})">
+                                                                                        خطاب البنك
+                                                                                    </a>
+                                                                                </li>
+
+                                                                                ${data.documentType == 'سند دفع' ? `
+                                                                                <li>
+                                                                                    <a href="#"
+                                                                                       class="dropdown-item"
+                                                                                       onclick="printchecs(${data.transactionId})">
+                                                                                        طباعة الشيك
+                                                                                    </a>
+                                                                                </li>
+                                                                                ` : ''}
+
+                                                                                <li>
+                                                                                    <a href="#" class="dropdown-item btnEdit">
+                                                                                        تعديل
+                                                                                    </a>
+                                                                                </li>
+
+                                                                                <li>
+                                                                                    <a href="#" class="dropdown-item btnAddRecipient">
+                                                                                        إضافة مستلمين
+                                                                                    </a>
+                                                                                </li>
+
+                                                                                <li>
+                                                                                    <a href="#"
+                                                                                       class="dropdown-item"
+                                                                                       onclick="printSanad(${data.transactionId})">
+                                                                                        طباعة أورنيك 17
+                                                                                    </a>
+                                                                                </li>
+
+                                                                                <li>
+                                                                                    <a href="#"
+                                                                                       class="dropdown-item"
+                                                                                       onclick="DeleteTransaction(${data.transactionId})">
+                                                                                        الغاء الحركة
+                                                                                    </a>
+                                                                                </li>
+
+                                                                                <li>
+                                                                                    <a href="#" class="dropdown-item btnPost">
+                                                                                        ترحيل
+                                                                                    </a>
+                                                                                </li>
+
+                                                                                <li>
+                                                                                    <a href="#" class="dropdown-item btnIsPaied">
+                                                                                        تم الدفع
+                                                                                    </a>
+                                                                                </li>
+
+                                                                            </ul>
+                                                                        </div>
+                                                                    `;
+                        }
+                    }
+                ]
+            });
+
+        }
+
+        var rptList = [];
+        function addToTable() {
+            var addAccName = $('#select2-addAccName-container').text();
+            var addAccNameId = $('.addAccName').val();
+            var addBalanceAccName = $('#select2-addBalanceId-container').text();
+
+            var creditAmount = creditAmountObj.getNumber();
+            var debitAmount = debitAmountObj.getNumber();
+
+            // نوع الحركة
+            var isCredit = creditAmount > 0 ? "true" : "false";
+
+            if (addAccName.trim() != "" && addAccNameId != null && creditAmount != null && debitAmount != null && (creditAmount > 0 || debitAmount > 0)) {
+                // التحقق من عدم تكرار الحساب في نفس الجانب
+                var isFound = rptList.some(function (item) {
+                    return item.accTrreId == addAccNameId &&
+                        item.isCredit == isCredit;
+                });
+
+                if (!isFound) {
+                    var rows = "<tr id='row' style='font-size:16px;text-align:center;'>"
+                        + "<td class='id'>" + addAccNameId + "</td>"
+                        + "<td class='name'>" + addAccName + "</td>"
+                        + "<td class='debitAmount'>" + formatNumber(debitAmount.toString()) + "</td>"
+                        + "<td class='creditAmount'>" + formatNumber(creditAmount.toString()) + "</td>"
+                        + "<td class='isCredit d-none'>" + isCredit + "</td>"
+                        + "<td class='transDetailId d-none'>0</td>"
+                        + '<td class="btnDelete"><button id="delete" class="btn btn-warning transfer delete">حذف <i class="transfer bi bi-trash"></i></button></td>'
+                        + "</tr>";
+
+                    $('.myTbody').append(rows);
+
+                    // تنظيف الحقول
+                    $('.addAccName').val('');
+                    $('.amount').val('');
+                    $('.list').text(null).trigger('change');
+                    $('.list').val(null).trigger('change');
+                    $('.debitAmount').val('');
+                    $('.creditAmount').val('');
+
+                    // إضافة إلى القائمة
+                    if (creditAmount > 0) {
+                        rptList.push({
+                            addAccName: addAccName,
+                            accTrreId: addAccNameId,
+                            amount: 0,
+                            credit: parseFloat(creditAmount.toFixed(2)),
+                            debit: 0,
+                            isCredit: "true",
+                            documentTypeId: 8
+                        });
+                    } else {
+                        rptList.push({
+                            addAccName: addAccName,
+                            accTrreId: addAccNameId,
+                            amount: 0,
+                            credit: 0,
+                            debit: parseFloat(debitAmount.toFixed(2)),
+                            isCredit: "false",
+                            documentTypeId: 8
+                        });
+                    }
+
+                    // حساب الإجماليات
+                    var totalCreditAmount = 0;
+                    var totalDebitAmount = 0;
+
+                    $.each(rptList, function (index, value) {
+                        totalDebitAmount += parseFloat(value.debit || 0);
+                        totalCreditAmount += parseFloat(value.credit || 0);
+                    });
+
+                    var balance = parseFloat(totalCreditAmount.toFixed(2))
+                        - parseFloat(totalDebitAmount.toFixed(2));
+
+                    var tblFooter =
+                        '<tr>' +
+                        '<td colspan="1">الإجمالي</td>' +
+                        '<td colspan="2">' + totalDebitAmount.toFixed(2) + '</td>' +
+                        '<td colspan="2">' + totalCreditAmount.toFixed(2) + '</td>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td colspan="2">الصافي</td>' +
+                        '<td colspan="3">' + balance.toFixed(2) + '</td>' +
+                        '</tr>';
+
+                    $('.myTFoot').empty().append(tblFooter);
+
+                } else {
+
+                    toastr["error"]("لا يمكن تكرار نفس الحساب في نفس الجانب (مدين أو دائن).", "خطأ");
+
+                }
+
+                $(".AmountCurrencyDecimalText").text('');
+                $(".AmountCurrencyDecimalTextCr").text('');
+
+            } else {
+
+                toastr["error"]("الرجاء إدخال جميع البيانات.", "خطأ");
+
+            }
+
+            creditAmountObj.set(0);
+            debitAmountObj.set(0);
+        }
+
+        $('#btnSave').click(function () {
+
+            var transactionId = $('#TransactionId').text();
+            var statement = $('#Note').val();
+            var currencyId = $('#addCurrencyType').val();
+            var transactionDate = moment($('#transactionDate').val(), "DD/MM/YYYY").format("MM/DD/yyyy");
+
+            var totalDebitAmount = 0;
+            var totalCreditAmount = 0;
+
+            $.each(rptList, function (index, value) {
+                totalDebitAmount = totalDebitAmount + parseFloat(parseFloat(value.debit).toFixed(2));
+                totalCreditAmount = totalCreditAmount + parseFloat(parseFloat(value.credit).toFixed(2));
+
+            });
+
+            totalDebitAmount = parseFloat(parseFloat(totalDebitAmount).toFixed(2));
+            totalCreditAmount = parseFloat(parseFloat(totalCreditAmount).toFixed(2));
+
+            if (totalDebitAmount == 0 || totalCreditAmount == 0) {
+                toastr["error"]("يجب ادخال القيم اولا", "خطأ");
+            }
+            else if (totalDebitAmount == totalCreditAmount) {
+                $('.presntTBody').empty();
+                rptList.forEach(function (row) {
+                    var rows = "<tr id='row' style='font-size: 16px;text-align:center;'>"
+                        + "<td class='id'>" + row['debit'] + "</td>"
+                        + "<td class='name'>" + row['credit'] + "</td>"
+                        + "<td class='Amount'>" + row['addAccName'] + "</td>"
+                        + '</tr>';
+
+                    $('.presntTBody').append(rows);
+                    //$('#add-statement-modal').modal('show');
+                });
+
+                // ==========================================
+                // 1. تعريف الموديل الأول (استبدل 'first-modal-id' بالـ ID الفعلي للموديل الأول)
+                var firstModalElement = document.getElementById('add-modal');
+
+                if (firstModalElement) {
+                    var firstModal = bootstrap.Modal.getInstance(firstModalElement);
+                    if (firstModal) firstModal.hide();
+                }
+                // تعريف الموديل الثاني
+                var secondModalElement = document.getElementById('add-statement-modal');
+                var secondModal = bootstrap.Modal.getOrCreateInstance(secondModalElement);
+                secondModal.show();
+
+                setTimeout(function () {
+                    select2list(
+                        "#addCurrencyType",
+                        "/Shared/getCurrency",
+                        "العملة",
+                        "#add-statement-modal"
+                    );
+
+                    select2list(
+                        "#documentType",
+                        "/Shared/getDocumentTypes",
+                        "نوع السند",
+                        "#add-statement-modal"
+                    );
+
+                    select2listNew("#recipient", "/Shared/getAllRecipient", "اسم المستلم", "#add-statement-modal");
+                }, 300); // تأخير 300 جزء من الثانية كافٍ جداً
+            } else {
+                toastr["error"]("الرجاء مساواة الطرفين ", "خطأ");
+            }
+        });
+
+        $('#add-statement-form').on('submit', function (e) {
+            e.preventDefault();
+
+            let isValid = true;
+
+            // تاريخ القيد
+            if (!$('#transactionDate').val()) {
+                $('#transactionDate')
+                    .addClass('is-invalid');
+                isValid = false;
+            } else {
+                $('#transactionDate')
+                    .removeClass('is-invalid');
+            }
+
+            // العملة - Select2
+            if (!$('#addCurrencyType').val()) {
+                $('#addCurrencyType')
+                    .next('.select2-container')
+                    .find('.select2-selection')
+                    .addClass('is-invalid');
+                $('#addCurrencyTypeError').addClass('d-block');
+
+                isValid = false;
+            } else {
+                $('#addCurrencyType')
+                    .next('.select2-container')
+                    .find('.select2-selection')
+                    .removeClass('is-invalid');
+
+                $('#addCurrencyTypeError').removeClass('d-block');
+            }
+
+            // نوع السند
+            if (!$('#documentType').val()) {
+                $('#documentType')
+                    .next('.select2-container')
+                    .find('.select2-selection')
+                    .addClass('is-invalid');
+                $('#documentTypeError').addClass('d-block');
+
+                isValid = false;
+            } else {
+                $('#documentType')
+                    .next('.select2-container')
+                    .find('.select2-selection')
+                    .removeClass('is-invalid');
+                $('#documentTypeError').removeClass('d-block');
+            }
+
+            // اسم المستلم
+            if (!$('#recipient').val()) {
+                $('#recipient')
+                    .next('.select2-container')
+                    .find('.select2-selection')
+                    .addClass('is-invalid');
+                $('#recipientError').addClass('d-block');
+                isValid = false;
+            } else {
+                $('#recipient')
+                    .next('.select2-container')
+                    .find('.select2-selection')
+                    .removeClass('is-invalid');
+                $('#recipientError').removeClass('d-block');
+            }
+
+            // البيان
+            if (!$('#statement').val().trim()) {
+                $('#statement').addClass('is-invalid');
+                $('#statementError').addClass('d-block');
+                isValid = false;
+            } else {
+                $('#statement').removeClass('is-invalid');
+                $('#statementError').removeClass('d-block');
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            // كل الحقول صحيحة
+            saveNew();
+
+            this.reset(); // إعادة تعيين النموذج بعد الحفظ
+        });
+
+        function saveNew() {
+            var statement = $('#statement').val();
+            var currencyId = $('#addCurrencyType').val();
+            var recipientId = $('#recipient').val();
+            var recipient = $('#recipient option:selected').text();
+
+            if (recipient.includes(" - ")) {
+                recipient = recipient.split(" - ")[0];
+            } else {
+                recipient = recipient; // لو مافي شرطة، نحتفظ بالنص كما هو
+            }
+            var transactionDate = $('#transactionDate').val();
+            // var transactionDate = moment($('#transactionDate').val()).format("MM/DD/YYYY");
+
+            var documentTypeId = $('#documentType').val();
+
+            if (statement != null & transactionDate != null) {
+                //هنا اضفنا حقل البيان والتاريخ لي مصفوفة موجودة مسبقا بها بيانات
+                rptList = rptList.map(v => Object.assign(v, {
+                    'documentTypeId': documentTypeId,
+                    "recipient": recipient,
+                    "note": statement,
+                    "transactionDate": transactionDate,
+                    "currencyId": currencyId,
+                    "recipientId": recipientId
+                }));
+
+                $.ajax({
+                    url: "/Shared/Create",
+                    type: "POST",
+                    data: JSON.stringify(rptList),
+                    contentType: "application/json charset=utf-8",
+                    dataType: "json",
+                    error: function (response) {
+                        toastr[response.Status](response.Message, response.Title);
+                    },
+                    success: function (response) {
+                        if (response.Status == "warning") {
+                            toastr[response.Status](response.Message, response.Title);
+                        } else {
+                            toastr[response.Status](response.Message, response.Title);
+
+                            var modalElement = document.getElementById('add-statement-modal');
+                            var modal = bootstrap.Modal.getInstance(modalElement);
+
+                            // سجّل الحدث BEFORE hide
+                            modalElement.addEventListener('hidden.bs.modal', function () {
+
+                                // تحديث DataTable
+                                $('#tbx').DataTable().ajax.reload(null, false);
+
+                                $(".presntTBody").empty();
+                                $(".myTbody").empty();
+                                $('.myTFoot').empty();
+
+                                // Bootstrap 5.3 cleanup
+                                document.querySelectorAll('.modal-backdrop').forEach(function (backdrop) {
+                                    backdrop.remove();
+                                });
+
+                                document.body.classList.remove('modal-open');
+                                document.body.style.removeProperty('overflow');
+                                document.body.style.removeProperty('padding-right');
+
+                            }, { once: true });
+
+                            if (modal) {
+                                modal.hide();
+                            }
+
+                            setTimeout(function () {
+
+                                console.log("Modals:", $('.modal.show').length);
+                                console.log("Backdrops:", $('.modal-backdrop').length);
+                                console.log("Body classes:", $('body').attr('class'));
+
+                            }, 500);
+                            $('#add-statement-form')[0].reset();
+
+                            rptList = [];
+                        }
+                    }
+                });
+
+            } else {
+                toastr["error"]("الرجاء ادخال جميع البيانات", "خطأ");
+            }
+        }
+
+        $('#btnCreate').click(function () {
+            var transactionId = $('#TransactionId').text();
+            var statement = $('#Note').val();
+            var currencyId = $('#addCurrencyType').val();
+            var transactionDate = moment($('#transactionDate').val(), "DD/MM/YYYY").format("MM/DD/yyyy");
+
+            if (statement != null & transactionDate != null) {
+                //هنا اضفنا حقل البيان والتاريخ لي مصفوفة موجودة مسبقا بها بيانات
+                rptList = rptList.map(v => Object.assign(v, { "transactionId": transactionId, "note": statement, "transactionDate": transactionDate, "currencyId": currencyId }));
+
+                $.ajax({
+                    //url: "/Transactions/Update",
+                    url: "",
+                    type: "POST",
+                    data: JSON.stringify(rptList),
+                    contentType: "application/json charset=utf-8",
+                    dataType: "json",
+                    error: function (response) {
+                        toastr[response.Status](response.Message, response.Title);
+                    },
+                    success: function (response) {
+
+                        if (response.Status == "warning") {
+                            toastr[response.Status](response.Message, response.Title);
+                        } else {
+                            toastr[response.Status](response.Message, response.Title);
+                            //$('.list').val(null).trigger('change');
+                            $('#add-modal').modal("hide");
+                            $('#add-statement-modal').modal("hide");
+                            $(".presntTBody").empty();
+                            window.location.reload();
+                        }
+                    }
+                });
+
+            } else {
+                toastr["error"]("الرجاء ادخال جميع البيانات", "خطأ");
+            }
+        });
+
+    </script>
+
+    <script>
+
+        // الدالة دي بغرض توحيد الدوال حذفت من جميع الشاشات و بقت هنا فقط
+        function select2list(selector, url, placeholder, modalName = null) {
+
+            $(selector).select2({
+                dropdownParent: $(modalName),
+                language: {
+                    inputTooShort: function () { return 'ادخل حرف واحد علي الاقل'; },
+                    noResults: function () { return 'لا توجد نتائج مطابقة، يمكنك إدخال قيمة جديدة'; } // رسالة في حالة عدم وجود نتائج
+                },
+                ajax: {
+                    url: url,
+                    dataType: 'json',
+                    delay: 100,
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data,
+                            pagination: {
+                                more: ((data.total_count) > (params.page * 20))
+                            }
+                        };
+                    },
+                    cache: false
+                },
+                placeholder: placeholder,
+                minimumInputLength: 1,
+                width: '100%' // لضبط عرض القائمة المنسدلة لتكون بعرض العنصر الأساسي
+            });
+        };
+
+        // دي حقت اسم المستلم بتقبل انه يدخل قيمة جديدة اذا ما موجودة في البيانات الراجعة - مستخدمة في اسم المستلم
+        function select2listNew(selector, url, placeholder, modalName = null) {
+            $(selector).select2({
+                tags: true, // السماح بإضافة قيم جديدة
+                dropdownParent: $(modalName),
+                language: {
+                    inputTooShort: function () { return 'ادخل حرف واحد على الأقل'; },
+                    noResults: function () { return 'لا توجد نتائج مطابقة، يمكنك إدخال قيمة جديدة'; } // رسالة في حالة عدم وجود نتائج
+                },
+                ajax: {
+                    url: url,
+                    dataType: 'json',
+                    delay: 100,
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        // تحويل البيانات إلى تنسيق { id: ..., text: ... } المطلوب بواسطة Select2
+                        var transformedData = data.map(function (item) {
+                            //return { id: item.text, text: item.text }; // هنا نقوم باستخدام `text` كـ `id` أيضًا
+                            //return { id: item.id??0, text: item.text };
+                            return { id: item.id != null && item.id != 0 ? item.id : item.text, text: item.text };
+                        });
+
+                        // إرجاع البيانات مع التحكم في التحميل المتدرج
+                        return {
+                            results: transformedData,
+                            pagination: {
+                                more: (data.length >= 20) // استخدم شرط مناسب للتحكم في التحميل المتدرج
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: placeholder,
+                minimumInputLength: 1,
+                createTag: function (params) { // للسماح بإدخال القيم الجديدة
+                    return {
+                        id: params.term,
+                        text: params.term,
+                        newTag: true // تحديد العنصر كقيمة جديدة
+                    };
+                }
+            });
+        }
+
+        function CustomAutoNumeric(inputId) {
+            return new AutoNumeric(inputId, {
+                digitGroupSeparator: ',', // الفاصلة بين الآلاف
+                decimalCharacter: '.',    // النقطة كعلامة عشرية
+                decimalPlaces: 2,          // عدد المنازل العشرية
+                defaultValue: "0.00"      // القيمة الافتراضية
+            });
+        }
+
+        function formatNumber(num) {
+            //if (num === null) {
+            //    return '0';
+            //}
+
+            if (num === null || num === undefined || isNaN(num)) {
+                return '0';
+            }
+
+            // تمت اضفاته مؤخرا وشغالة تمام
+            num = num.toString(); // ✅ حول القيمة لنص
+
+            // معالجة الجزء الصحيح والجزء العشري
+            var parts = num.split('.');
+            var integerPart = parts[0];
+            var decimalPart = parts[1] || '';
+
+            // إذا كان هناك جزء صحيح، أضف له الفواصل
+            integerPart = integerPart.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+            // إذا كان هناك جزء عشري، أضف له الفواصل
+            if (decimalPart) {
+                // var roundedDecimal = parseFloat(decimalPart).toFixed(2); // تقريب إلى خانتين عشريتين
+                var roundedDecimal = (parseFloat('0.' + decimalPart).toFixed(2)).split('.')[1];
+                // roundedDecimal = roundedDecimal.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                roundedDecimal = roundedDecimal.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return integerPart + '.' + roundedDecimal;
+            }
+
+            return integerPart;
+        }
+
+        $('#creditAmount').keyup(function () {
+            var creditAmount = $(this).val();
+
+            if (creditAmount != null & creditAmount > 0) {
+                debitAmountObj.set(0);
+                // $('#debitAmount').val(0);
+            }
+        });
+
+        $('#debitAmount').keyup(function () {
+            var debitAmount = $(this).val();
+
+            if (debitAmount != null & debitAmount > 0) {
+                creditAmountObj.set(0);
+                // $('#creditAmount').val(0);
+            }
+        });
+
+        $('#addTaxVal').on('input', function () {
+            var addTaxVal = parseFloat($(this).val()) || 0; // نقرأ القيمة كرقم
+            var addTaxValPercent = addTaxVal * 0.01;        // نحسب النسبة
+            $('#addTaxValDisplay').text(addTaxValPercent.toFixed(4)); // نعرضها بخانتين عشريتين
+        });
+
+        function OpenAddTaxModal(Id) {
+            $('#taxConfirmationTransId').text(Id);
+
+            new bootstrap.Modal(document.getElementById('taxConfirmation-modal')).show();
+        }
+        function OpenAdd17TaxModal(Id) {
+            $('#recipientTransactionId').text(Id);
+            //$('#addedTax-modal').modal('show');
+
+            new bootstrap.Modal(document.getElementById('addedTax-modal')).show();
+            $('#addTaxVal').focus();
+            $('#addTaxVal').val(17);
+            var addTaxValPercent = 17 * 0.01;        // نحسب النسبة
+            $('#addTaxValDisplay').text(addTaxValPercent.toFixed(4)); // نعرضها بخانتين عشريتين
+        }
+        //addedTax الضريبة المضافة
+        function Add17Tax() {
+            var Id = $('#recipientTransactionId').text();
+            var AddedTaxPercent = $('#addTaxValDisplay').text();
+            $.post('/Transactions/Add17Tax', { "Id": Id, "HasAddedTax": true, "AddedTaxPercent": AddedTaxPercent }, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('#tbx').DataTable().ajax.reload();
+                $('#addedTax-modal').modal('hide');
+            });
+        }
+
+        function delete17Tax(Id) {
+            $.post('/Transactions/Add17Tax', { "Id": Id, "HasAddedTax": false, AddedTaxPercent: 0 }, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('#tbx').DataTable().ajax.reload();
+            });
+        }
+
+        //addedTax الضريبة المضافة
+        function AddOneTax() {
+            var Id = $('#taxConfirmationTransId').text();
+            $.post('/Transactions/AddTax', { "Id": Id, "HasTax": true }, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('#tbx').DataTable().ajax.reload();
+            });
+        }
+
+        function deleteOneTax(Id) {
+            $.post('/Transactions/AddTax', { "Id": Id, "HasTax": false }, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('#tbx').DataTable().ajax.reload();
+            });
+        }
+
+        // عرض التفاصيل
+        $('#tbx').on('click', '.btnDetails', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var IsDeleted = data['IsDeleted'];
+            var TransactionId = data['transactionId'];
+            var TransactionDate = data['transactionDateStr'];
+            var Note = data['note'];
+
+            $('.tarnsDate').text(TransactionDate);
+            $('.tarnsStatement').text(Note);
+
+            if (!IsDeleted) {
+                $.get('/Transactions/getDetailData', { "Id": TransactionId }, function (response) {
+                    $('.detailsTBody').empty();
+                    var sumOfDebit = 0;
+                    var sumOfCredit = 0;
+                    $.each(response, function (key, value) {
+                        var rows = "<tr id='row' style='font-size: 16px;text-align:center;'>"
+                            + "<td class='id'>" + value.id + "</td>"
+                            + "<td class='accName'>" + value.accName + "</td>"
+                            + "<td class='accName'>" + formatNumber(value.debit.toString()) + "</td>"
+                            + "<td class='credit'>" + formatNumber(value.credit.toString()) + "</td>"
+                            + "</tr>";
+                        $('.detailsTBody').append(rows);
+
+                        sumOfCredit = sumOfCredit + value.credit;
+                        sumOfDebit = sumOfDebit + value.debit;
+
+                    });
+
+                    var balance = sumOfDebit.toFixed(2) - sumOfCredit.toFixed(2);
+
+                    $('#tdDebitAmount').text(formatNumber(sumOfDebit.toString()));
+                    $('#tdCreditAmount').text(formatNumber(sumOfCredit.toString()));
+                    $('#tdBalance').text(formatNumber(balance.toString()));
+
+                });
+            }
+            else {
+                $.get('/DeleteTransactions/getDeletedDetailData', { "Id": TransactionId }, function (response) {
+                    $('.detailsTBody').empty();
+                    var sumOfDebit = 0;
+                    var sumOfCredit = 0;
+                    $.each(response, function (key, value) {
+                        var rows = "<tr id='row' style='font-size: 16px;text-align:center;'>"
+                            + "<td class='id'>" + value.id + "</td>"
+                            + "<td class='accName'>" + value.accName + "</td>"
+                            + "<td class='accName'>" + formatNumber(value.debit.toString()) + "</td>"
+                            + "<td class='credit'>" + formatNumber(value.credit.toString()) + "</td>"
+                            + "</tr>";
+                        $('.detailsTBody').append(rows);
+
+                        sumOfCredit = sumOfCredit + value.credit;
+                        sumOfDebit = sumOfDebit + value.debit;
+
+                    });
+
+                    var balance = sumOfDebit.toFixed(2) - sumOfCredit.toFixed(2);
+
+                    $('#tdDebitAmount').text(formatNumber(sumOfDebit.toString()));
+                    $('#tdCreditAmount').text(formatNumber(sumOfCredit.toString()));
+                    $('#tdBalance').text(formatNumber(balance.toString()));
+
+                });
+            }
+        });
+
+        //$(document).on('click', '[data-bs-toggle="dropdown"]', function (e) {
+        //    e.preventDefault();
+
+        //    const dropdown = bootstrap.Dropdown.getOrCreateInstance(this);
+        //    dropdown.toggle();
+        //});
+
+    </script>
+
+    <script>
+
+        $('#creditAmount').keyup(function () {
+            var creditAmount = $(this).val();
+
+            if (creditAmount != null & creditAmount > 0) {
+                debitAmountObj.set(0);
+                // $('#debitAmount').val(0);
+            }
+        });
+
+        $('#debitAmount').keyup(function () {
+            var debitAmount = $(this).val();
+
+            if (debitAmount != null & debitAmount > 0) {
+                creditAmountObj.set(0);
+                // $('#creditAmount').val(0);
+            }
+        });
+
+        $('.myTbody').on('click', '.delete', function () {
+            var currentRow = $(this).closest("tr");
+
+            var accTrreId = currentRow.find('.id').text();
+
+            $.each(rptList, function (index, obj) {
+                if (obj.accTrreId === accTrreId) {
+                    rptList.splice(index, 1); // Remove 1 element at the found index
+                    return false; // Stop the loop
+                }
+            });
+
+            $(this).closest("tr").remove();
+        });
+
+        $('#tbx').on('click', '.btnAddRecipient', function () {
+
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+
+            var TransactionId = data['transactionId'];
+
+            $('#recipientTransactionId').text(TransactionId);
+
+            var Note = data['note'];
+            $('#recipientStatement').val(Note);
+
+            $('#tblRecipient').addClass('hide');
+
+            console.clear();
+            console.log("TransactionId: ", TransactionId);
+            // Get old data
+            $.get('/Transactions/getTransactionRecipients/' + TransactionId, function (response) {
+
+                if (response && response.length > 0) {
+
+                    $('#tblRecipient').removeClass('d-none');
+                    $('#tblRecipientBody').empty();
+
+                    response.forEach(function (item) {
+
+                        var row = `
+                                                <tr>
+                                                    <td>${item.Id}</td>
+                                                    <td>${item.RecipientName}</td>
+                                                    <td>${item.BankName}</td>
+                                                    <td>${item.AccountNumber}</td>
+                                                    <td>${formatNumber(item.Amount)}</td>
+                                                    <td>
+                                                        <button type="button"
+                                                                class="btn btn-success printBankLetter"
+                                                                onclick="printBankLetterFor(
+                                                                    ${item.Id},
+                                                                    ${item.TransactionId},
+                                                                    ${item.BankAccountId},
+                                                                    '${item.AccountNumber}'
+                                                                )">
+                                                            <i class="bi bi-printer"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td>
+                                                        <button type="button"
+                                                                class="btn btn-danger deleteTransactionRecipient"
+                                                                onclick="deleteTransactionRecipient(${item.Id})">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            `;
+
+                        $('#tblRecipientBody').append(row);
+                    });
+                }
+            });
+
+            // Open Modal
+            var modalElement = document.getElementById('add-recipients-modal');
+            var modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+
+            // بعد ظهور المودال فعلياً
+            modalElement.addEventListener('shown.bs.modal', function () {
+
+                select2list(
+                    "#recipientBank",
+                    "/Transactions/getTransactionBanks/" + TransactionId,
+                    "اختار البنك",
+                    "#add-recipients-modal"
+                );
+
+                select2list(
+                    "#recipientName",
+                    "/Shared/getAllRecipient",
+                    "اسم المستلم",
+                    "#add-recipients-modal"
+                );
+
+            }, { once: true });
+
+
+            modal.show();
+        });
+
+        $('#tbx').on('click', '.btnIsPaied', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var TransactionId = data['transactionId'];
+
+            $.post('/Transactions/SetIsTransactionPaied/' + TransactionId, {}, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('#tbx').DataTable().ajax.reload();
+            });
+        });
+
+        $('.btnSaveRecipient').on('click', function () {
+            debugger;
+            var amount = recipientAmountObj.getNumber();
+            var recipientNameId = $('#recipientName').val();
+            var recipientBankId = $('#recipientBank').val();
+            var TransactionId = $('#recipientTransactionId').text();
+            console.clear();
+            console.log(amount);
+
+            $.post('/Transactions/SaveTransactionRecipients', {
+                id: TransactionId, recipientNameId: recipientNameId,
+                recipientBankId: recipientBankId, amount: amount
+            }, function (response) {
+                //window.location.href = response.redirectToUrl;
+                $('#recipientBank').empty();
+                $('#recipientName').empty();
+                $('#recipientAmount').val('');
+                $('#add-recipients-modal').modal('hide');
+                window.open(response.redirectToUrl, "_blank");
+            })
+        });
+
+        function printBankLetterForRe(Id, transactionId, bankAccountId, AccountNumber) {
+            debugger;
+            if (AccountNumber != null) {
+                window.open('/Reports/printRecipientBankLetter/' + Id, "_blank");
+            } else {
+                window.open(`/Reports/printBankLetterNew/${transactionId}?bankAccountId=${bankAccountId}`, "_blank");
+            }
+        }
+
+        function deleteTransactionRecipient(Id) {
+            $.post('/Transactions/DeleteTransactionRecipient', { id: Id }, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                // Refresh the recipient list after deletion
+                var TransactionId = $('#recipientTransactionId').text();
+                $.get('/Transactions/getTransactionRecipients/' + TransactionId, {}, function (response) {
+                    if (response && response.length > 0) {
+                        $('#tblRecipient').removeClass('hide');
+                        $('#tblRecipientBody').empty(); // Clear previous rows if needed
+                        response.forEach(function (item) {
+                            var obj = JSON.stringify(item).replace(/"/g, '&quot;');
+                            var row = `
+                                                                            <tr>
+                                                                                <td>${item.Id}</td>
+                                                                                <td>${item.RecipientName}</td>
+                                                                                <td>${item.BankName}</td>
+                                                                                <td>${item.AccountNumber}</td>
+                                                                                <td>${formatNumber(item.Amount)}</td>
+                                                                                <td>
+                                                                                    <button class="btn btn-success printBankLetter"
+                                                                                    onClick="printBankLetterForRe(
+                                                                                        ${item.Id},${item.TransactionId}, ${item.BankAccountId},${item.AccountNumber}
+                                                                                    )">
+                                                                                    <i class="bi bi-printer"></i>
+                                                                                    </button>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <button class="btn btn-danger deleteTransactionRecipient"
+                                                                                    onClick="deleteTransactionRecipient(${item.Id})">
+                                                                                    <i class="bi bi-trash"></i>
+                                                                                    </button>
+                                                                                </td>
+                                                                            </tr>
+                                                                        `;
+                            $('#tblRecipientBody').append(row);
+                        });
+                    } else {
+                        $('#tblRecipient').addClass('hide');
+                    }
+                });
+            });
+
+        }
+
+        // طباعة خطاب البنك
+        function printBankLetter(Id) {
+            window.open('/Reports/printBankLetter/' + Id, '_blank');
+        }
+
+        //Go to Print View
+        function printchecs(id) {
+            event.preventDefault();
+            $.get('/PrintChecs/CheckTheCheck/', { Id: id }, function (response) {
+                if (response.Status == "error") {
+                    toastr[response.Status](response.Message, response.Title);
+                } else {
+                    window.open("/PrintChecs/Index/" + id, "_blank");
+                }
+            });
+
+        }
+
+        // الغاء الحركة بالشيك لو عندها شيك
+        function DeleteTransaction(id) {
+            event.preventDefault();
+            $.get('/DeleteTransactions/Delete/', { Id: id }, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('#tbx').DataTable().ajax.reload();
+            });
+
+        }
+
+        //posting الترحيل
+        $('#tbx').on('click', '.btnPost', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var TransactionId = data['transactionId'];
+
+            $.post('/Transactions/Posting', { "Id": TransactionId }, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('#tbx').DataTable().ajax.reload();
+            });
+        });
+
+        //Editing التعديل
+        $('#tbx').on('click', '.btnEdit', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var Id = data['transactionId'];
+
+            const win = window.open('/Transactions/Edit/' + Id, '_blank', 'noopener,noreferrer');
+            win.focus(); // دي بتخلي المتصفح يديها أولوية
+
+            //window.open('/Transactions/Edit/' + Id, '_blank');
+        });
+
+        //Go to Print View
+        function printSanad(id) {
+            window.open("/Reports/printOrnik17/" + id, "_blank");
+        }
+
+    </script>
+</body>
+</html>
