@@ -54,9 +54,9 @@
             <span>@DateTime.Now</span>تاريخ الطباعة
         </div>
 
-        <table class="table table-bordered table-striped">
-            <thead class="bg-dark">
-                <tr class="text-center">
+        <table class="table table-bordered">
+            <thead >
+                <tr class="text-center" >
                     <td>الايراد الفعلي</td>
                     <td>الاعتماد النسبي</td>
                     <td>الاعتماد الكلي</td>
@@ -67,24 +67,24 @@
             <tbody>
                 @{
                     int counter = 1;
-                    foreach (var item1 in Model)
+                    foreach (var item1 in Model.Where(q => q.accTreeName != "رسوم الغرامات"))
                     {
                         int counter1 = 1;
-                        <tr class="text-center" style="background-color:#d3caca !important">
-                            <td class="text-right amount">@item1.actualExchange</td>
-                            <td class="text-right amount">@item1.credintPercent</td>
-                            <td class="text-right amount">@item1.credint</td>
+                        <tr class="text-center">
+                            <td class="text-right amount truncateDecimal">@item1.actualExchange</td>
+                            <td class="text-right amount truncateDecimal">@item1.credintPercent</td>
+                            <td class="text-right amount truncateDecimal">@item1.credint</td>
                             <td colspan="3" class="text-right">@item1.accTreeName</td>
                             <td class="text-center">@counter</td>
                         </tr>
                         if (item1.details != null)
                         {
-                            foreach (var item in item1.details)
+                            foreach (var item in item1.details.Where(q => q.accTreeName != "رسوم الغرامات"))
                             {
                                 <tr>
-                                    <td class="text-right amount">@item.actualExchange</td>
-                                    <td class="text-right amount">@item.credintPercent</td>
-                                    <td class="text-right amount">@item.credint</td>
+                                    <td class="text-right amount truncateDecimal">@item.actualExchange</td>
+                                    <td class="text-right amount truncateDecimal">@item.credintPercent</td>
+                                    <td class="text-right amount truncateDecimal">@item.credint</td>
                                     <td colspan="3" class="p-r text-right">@item.accTreeName</td>
                                     <td class="text-center">@counter1 . @counter</td>
                                 </tr>
@@ -95,14 +95,26 @@
                         counter++;
                     }
 
-                    <tr class="text-center" style="background-color:#d3caca">
-                        <td class="amount">@Model.Sum(s => s.actualExchange)</td>
-                        <td class="amount"> @Model.Sum(s => s.credintPercent)</td>
-                        <td class="amount"> @Model.Sum(s => s.credint)</td>
-                        <td colspan="4">الاجمالي</td>
+                    var finalObj = Model.Where(q => q.accTreeName == "رسوم الغرامات").FirstOrDefault();
+
+                    <tr class="text-center">
+                        <td class="text-right amount truncateDecimal">@finalObj.actualExchange</td>
+                        <td class="text-right amount truncateDecimal">@finalObj.credintPercent</td>
+                        <td class="text-right amount truncateDecimal">@finalObj.credint</td>
+                        <td colspan="3" class="text-right">@finalObj.accTreeName</td>
+                        <td class="text-center">@counter</td>
                     </tr>
                 }
             </tbody>
+
+            <tfoot>
+                <tr class="text-center" style="background-color:#d3caca">
+                    <td class="amount truncateDecimal">@Model.Sum(s => s.actualExchange)</td>
+                    <td class="amount truncateDecimal"> @Model.Sum(s => s.credintPercent)</td>
+                    <td class="amount truncateDecimal"> @Model.Sum(s => s.credint)</td>
+                    <td colspan="4">الاجمالي</td>
+                </tr>
+            </tfoot>
         </table>
     </div>
 

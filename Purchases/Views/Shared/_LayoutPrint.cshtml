@@ -8,35 +8,37 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
-    <style>
-            body {
-                font-family: Arial, sans-serif;
-                text-align: center;
-            }
-        
-            .invoiceCupps {
-                padding: 0px 20px;
-                font-family: Arial;
-                margin: 0px 20px;
-            }
-            .invoiceCupps .invoice-Cupps-header {
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: flex-end;
-                border: 2px solid #808080;
-                border-radius: 5px;
-                padding: 16px;
-                margin-bottom: 10px;
-            }
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+
+    .invoiceCupps {
+        padding: 0px 20px;
+        font-family: Arial;
+        margin: 0px 20px;
+    }
+
+        .invoiceCupps .invoice-Cupps-header {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end;
+            border: 2px solid #808080;
+            border-radius: 5px;
+            padding: 16px;
+            margin-bottom: 10px;
+        }
+
             .invoiceCupps .invoice-Cupps-header .text-word {
                 float: none;
             }
 
-            .invoiceCupps .invoice-Cupps-header .text-word h6 {
-                font-size: 21px;
-                font-weight: bolder;
-            }
+                .invoiceCupps .invoice-Cupps-header .text-word h6 {
+                    font-size: 21px;
+                    font-weight: bolder;
+                }
 
             .invoiceCupps .invoice-Cupps-header .image-R {
                 float: right;
@@ -50,58 +52,169 @@
                 margin-top: -100px;
             }
 
-            .invoiceCupps .invoice-Cupps-Body {
-                clear: both;
-            }
+        .invoiceCupps .invoice-Cupps-Body {
+            clear: both;
+        }
 
             .invoiceCupps .invoice-Cupps-Body .h-mr {
                 margin-right: 20px;
                 font-size: 21px;
             }
 
-            .invoiceCupps .invoice-Cupps-details th {
-                background-color: #ebefef;
+        .invoiceCupps .invoice-Cupps-details th {
+            background-color: #ebefef;
+        }
+
+        .invoiceCupps .invoice-Cupps-details table {
+            min-width: 100%;
+            text-align: right;
+        }
+
+        .invoiceCupps .invoice-Cupps-details table, th, td {
+            border: 1px solid #282a2c;
+            padding: .5rem;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .invoiceCupps .invoice-Cupps-details .footer {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: #ebefef;
+            font-weight: bolder;
+            font-size: 20px;
+            min-width: 30%;
+            margin-top: 3%;
+            padding: 16px;
+            line-height: 30px;
+        }
+
+    .footer .titel {
+        float: right;
+    }
+
+    .footer .value {
+        float: left;
+    }
+
+    .numberFormat {
+        margin: 2px;
+        padding: 2px;
+        font-size: 18px;
+    }
+
+
+    table {
+        width: 100%;
+        border-collapse: collapse !important;
+        border: 2px solid #000 !important;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+    }
+
+        /* Header */
+        table thead tr {
+            background-color: cornflowerblue !important;
+            color: white !important;
+        }
+
+        table thead td,
+        table thead th {
+            /*        background-color: cornflowerblue !important;*/
+            color: white !important;
+            border: 2px solid #000 !important;
+            padding: 12px 10px;
+            text-align: center;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        /* Body */
+        table tbody td,
+        table tbody th {
+            border: 2px solid #000 !important;
+            padding: 10px;
+            color: #222;
+        }
+
+        /* Striped rows */
+        table tbody tr:nth-child(even) {
+            /*        background-color: #eaf2f8 !important;*/
+        }
+
+        table tbody tr:nth-child(odd) {
+            /*        background-color: #fff !important;*/
+        }
+
+        /* Hover */
+        table tbody tr:hover td {
+            /*        background-color: #d6eaff !important;*/
+        }
+
+        /* Footer */
+        table tfoot td,
+        table tfoot th {
+            background-color: cornflowerblue !important;
+            color: white !important;
+            border: 1px solid #000 !important;
+            padding: 10px;
+            font-weight: bold;
+        }
+
+
+
+    @@media print {
+        /* إجبار المتصفح على طباعة ألوان الخلفية */
+/*        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }*/
+
+        table {
+            width: 100%;
+/*            border-collapse: collapse !important;*/
+/*            border: 2px solid #000 !important;*/
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+            /* Header */
+            table thead tr {
+                background-color: cornflowerblue !important;
+                color: white !important;
             }
 
-            .invoiceCupps .invoice-Cupps-details table {
-                min-width: 100%;
-                text-align: right;
-            }
-
-            .invoiceCupps .invoice-Cupps-details table, th, td {
-                border: 1px solid #282a2c;
-                padding: .5rem;
-                font-size: 18px;
+            table thead td,
+            table thead th {
+                color: white !important;
+                background-color: red !important;
+/*                border: 2px solid #000 !important;*/
+                padding: 12px 10px;
                 text-align: center;
+                font-weight: bold;
+                white-space: nowrap;
             }
-
-            .invoiceCupps .invoice-Cupps-details .footer {
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                background-color: #ebefef;
-                font-weight: bolder;
-                font-size: 20px;
-                min-width: 30%;
-                margin-top: 3%;
-                padding: 16px;
-                line-height: 30px;
+            /* Body */
+            table tbody td,
+            table tbody th {
+                border: 2px solid #000 !important;
+                padding: 10px;
+                color: #222;
             }
-
-            .footer .titel {
-                float: right;
+            /* يمكنك تفعيل ألوان الصفوف الفردية والزوجية إذا أردتها في الطباعة */
+            /* table tbody tr:nth-child(even) td { background-color: #eaf2f8 !important; } */
+            /* table tbody tr:nth-child(odd) td { background-color: #fff !important; } */
+            /* Footer */
+            table tfoot td,
+            table tfoot th {
+                background-color: cornflowerblue !important;
+                color: white !important;
+                border: 2px solid #000 !important;
+                padding: 10px;
+                font-weight: bold;
             }
-
-            .footer .value {
-                float: left;
-            }
-        
-            .numberFormat {
-                margin: 2px;
-                padding: 2px;
-                font-size: 18px;
-            }
-    </style>
+    }
+</style>
 
 </head>
 <body>
@@ -177,6 +290,25 @@
                 });
             });
         });
+
+
+
+        function truncateDecimal() {
+            document.querySelectorAll('.truncateDecimal').forEach(element => {
+                const value = element.textContent.trim().replace(/,/g, '');
+                const number = Number(value);
+
+                if (!isNaN(number)) {
+                    element.textContent = number.toLocaleString('en-US', {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 20
+                    });
+                }
+            });
+        }
+
+        // تنفيذ الدالة
+        truncateDecimal();
 
 
     </script>
