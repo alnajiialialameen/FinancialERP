@@ -1,12 +1,10 @@
 ﻿using Newtonsoft.Json.Linq;
-using Purchases.Models;
 using Purchases.Models.ViewModal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace Purchases.MyLogic
 {
@@ -24,7 +22,7 @@ namespace Purchases.MyLogic
                 var ConsumeApi = HC.GetAsync("Departments");
                 ConsumeApi.Wait();
                 var response = ConsumeApi.Result;
-                
+
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonString = await response.Content.ReadAsStringAsync();
@@ -53,7 +51,7 @@ namespace Purchases.MyLogic
                 //http://localhost:57677/api/
                 List<EmployeeDTO> EmployeesList = null;
                 HttpClient HC = new HttpClient();
-                HC.BaseAddress = new Uri(Constant.BaseAPIURLServer);
+                HC.BaseAddress = new Uri(Constant.BaseAPIURL);
                 var ConsumeApi = HC.GetAsync("Employees/AllEmployees");
                 ConsumeApi.Wait();
                 var ReadData = ConsumeApi.Result;
@@ -72,7 +70,7 @@ namespace Purchases.MyLogic
             }
         }
 
-        //جلب بيانات البنك لجميع الموظفين
+        //جلب بيانات البنك لجميع الموظفينB
         public List<EmployeeBankInfoDTO> getEmployeesBankInfo()
         {
             try
@@ -92,6 +90,32 @@ namespace Purchases.MyLogic
                 }
 
                 return EmployeesList;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public decimal? GetEmployeeTotalDeductions(int EmployeeId, List<int> DeductionIds, int year)
+        {
+            try
+            {
+                decimal? result = 0;
+                var url = $"Employees/GetEmployeeTotalDeductions?employeeId={EmployeeId}&deductionIdsList={DeductionIds}&year={year}";
+                HttpClient HC = new HttpClient();
+                HC.BaseAddress = new Uri(Constant.BaseAPIURLServer);
+                var ConsumeApi = HC.GetAsync(url);
+                ConsumeApi.Wait();
+                var ReadData = ConsumeApi.Result;
+                if (ReadData.IsSuccessStatusCode)
+                {
+                    var DisplayRecord = ReadData.Content.ReadAsAsync<decimal?>();
+                    DisplayRecord.Wait();
+                    result = DisplayRecord.Result;
+                }
+
+                return result;
             }
             catch (Exception ex)
             {

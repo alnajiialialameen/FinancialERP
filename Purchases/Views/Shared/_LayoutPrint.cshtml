@@ -105,114 +105,126 @@
     }
 
 
-    table {
+    /*table {
         width: 100%;
         border-collapse: collapse !important;
         border: 2px solid #000 !important;
         font-family: Arial, sans-serif;
         font-size: 14px;
-    }
+    }*/
 
-        /* Header */
-        table thead tr {
+    /* Header */
+    /*table thead tr {
             background-color: cornflowerblue !important;
             color: white !important;
         }
 
         table thead td,
-        table thead th {
-            /*        background-color: cornflowerblue !important;*/
-            color: white !important;
+        table thead th {*/
+    /*        background-color: cornflowerblue !important;*/
+    /*color: white !important;
             border: 2px solid #000 !important;
             padding: 12px 10px;
             text-align: center;
             font-weight: bold;
             white-space: nowrap;
-        }
+        }*/
 
-        /* Body */
-        table tbody td,
+    /* Body */
+    /*table tbody td,
         table tbody th {
             border: 2px solid #000 !important;
             padding: 10px;
             color: #222;
-        }
+        }*/
 
-        /* Striped rows */
-        table tbody tr:nth-child(even) {
-            /*        background-color: #eaf2f8 !important;*/
-        }
+    /* Striped rows */
+    /*table tbody tr:nth-child(even) {*/
+    /*        background-color: #eaf2f8 !important;*/
+    /*}
 
-        table tbody tr:nth-child(odd) {
-            /*        background-color: #fff !important;*/
-        }
+        table tbody tr:nth-child(odd) {*/
+    /*        background-color: #fff !important;*/
+    /*}*/
 
-        /* Hover */
-        table tbody tr:hover td {
-            /*        background-color: #d6eaff !important;*/
-        }
+    /* Hover */
+    /*table tbody tr:hover td {*/
+    /*        background-color: #d6eaff !important;*/
+    /*}*/
 
-        /* Footer */
-        table tfoot td,
+    /* Footer */
+    /*table tfoot td,
         table tfoot th {
             background-color: cornflowerblue !important;
             color: white !important;
             border: 1px solid #000 !important;
             padding: 10px;
             font-weight: bold;
-        }
-
-
-
-    @@media print {
-        /* إجبار المتصفح على طباعة ألوان الخلفية */
-/*        * {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
         }*/
 
-        table {
-            width: 100%;
-/*            border-collapse: collapse !important;*/
-/*            border: 2px solid #000 !important;*/
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-        }
-            /* Header */
-            table thead tr {
-                background-color: cornflowerblue !important;
-                color: white !important;
-            }
 
-            table thead td,
-            table thead th {
-                color: white !important;
-                background-color: red !important;
-/*                border: 2px solid #000 !important;*/
-                padding: 12px 10px;
-                text-align: center;
-                font-weight: bold;
-                white-space: nowrap;
-            }
-            /* Body */
-            table tbody td,
-            table tbody th {
-                border: 2px solid #000 !important;
-                padding: 10px;
-                color: #222;
-            }
-            /* يمكنك تفعيل ألوان الصفوف الفردية والزوجية إذا أردتها في الطباعة */
-            /* table tbody tr:nth-child(even) td { background-color: #eaf2f8 !important; } */
-            /* table tbody tr:nth-child(odd) td { background-color: #fff !important; } */
-            /* Footer */
-            table tfoot td,
-            table tfoot th {
-                background-color: cornflowerblue !important;
-                color: white !important;
-                border: 2px solid #000 !important;
-                padding: 10px;
-                font-weight: bold;
-            }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        display: table-header-group;
+        background-color: cornflowerblue !important;
+    }
+
+    tfoot {
+        display: table-footer-group;
+        background-color: cornflowerblue !important;
+    }
+
+    th {
+        color: #fff !important;
+        background-color: cornflowerblue !important;
+    }
+
+    th,
+    td {
+        border: 2px solid #000 !important;
+        padding: 6px;
+    }
+
+    @@media print {
+        table {
+            border-collapse: collapse !important;
+            width: 100% !important;
+        }
+
+        thead, tr, td, th {
+/*            color: #fff !important;*/
+        }
+
+        thead,
+        tbody,
+        tfoot,
+        tr,
+        th,
+        td {
+            border-color: #000 !important;
+        }
+
+        th {
+            background-color: cornflowerblue !important;
+        }
+
+        th,
+        td {
+            border: 2px solid #000 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        thead th,
+        tfoot td {
+            background-color: cornflowerblue !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
     }
 </style>
 

@@ -331,6 +331,7 @@
                             <li><a href='@Url.Action("Index", "CurrencyDetails")'><i class="fa fa-money-bill"></i>  اسعار الصرف </a></li>
                             <li><a href='@Url.Action("Index", "items")'><i class="fab fa-product-hunt"></i>  الاصناف </a></li>
                             <li><a href='@Url.Action("Index", "Recipients")'><i class="fa fa-users-cog"></i>  حسابات الموظفين والعملاء </a></li>
+                            <li><a href='@Url.Action("Index", "EmpPettyCash")'><i class="fa fa-users-cog"></i>  عهد الموظفين  </a></li>
                         </ul>
                     </li>
 
@@ -719,6 +720,15 @@
         });
     }
 
+    function CustomAutoNumericForElement(inputElement) {
+        return new AutoNumeric(inputElement, {
+            digitGroupSeparator: ',',
+            decimalCharacter: '.',
+            decimalPlaces: 2,
+            minimumValue: '0',
+            emptyInputBehavior: 'zero'
+        });
+    }
     // ضبط التاريخ علي صيغة معينة
     $('.calendar').datepicker({
         todayBtn: "linked",

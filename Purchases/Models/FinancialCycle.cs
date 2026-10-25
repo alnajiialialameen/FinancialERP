@@ -24,6 +24,7 @@ namespace Purchases.Models
             this.Transactions = new HashSet<Transaction>();
             this.UserWorkDetails = new HashSet<UserWorkDetail>();
             this.AspNetUsers = new HashSet<AspNetUser>();
+            this.EmployeePettyCashCustodies = new HashSet<EmployeePettyCashCustody>();
         }
     
         public int Id { get; set; }
@@ -55,5 +56,7 @@ namespace Purchases.Models
         public virtual ICollection<AspNetUser> AspNetUsers { get; set; }
         public virtual AspNetUser AspNetUser { get; set; }
         public virtual AspNetUser AspNetUser1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EmployeePettyCashCustody> EmployeePettyCashCustodies { get; set; }
     }
 }

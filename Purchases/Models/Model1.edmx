@@ -254,6 +254,14 @@
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="128" />
           <Property Name="UpdatingDate" Type="datetime" />
         </EntityType>
+        <EntityType Name="AccountTreeHrDeduction">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AccTreeId" Type="int" />
+          <Property Name="DeductionIds" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="AccountType">
           <Key>
             <PropertyRef Name="Id" />
@@ -465,6 +473,17 @@
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="128" />
           <Property Name="UpdatingDate" Type="datetime" />
         </EntityType>
+        <EntityType Name="EmployeePettyCashCustody">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmployeeId" Type="int" />
+          <Property Name="TotalDeductionAmount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="PaiedAmount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="AccTreeId" Type="int" />
+          <Property Name="FinancialCycleId" Type="int" />
+        </EntityType>
         <EntityType Name="FinancialCycle">
           <Key>
             <PropertyRef Name="Id" />
@@ -602,6 +621,7 @@
           <Property Name="AccountNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="BankName" Type="nvarchar" MaxLength="50" />
           <Property Name="BranchName" Type="nvarchar" MaxLength="50" />
+          <Property Name="EmployeeId" Type="int" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -1034,6 +1054,18 @@
             </Principal>
             <Dependent Role="AccountTree">
               <PropertyRef Name="UpdatedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AccountTreeHrDeduction_AccountTree">
+          <End Role="AccountTree" Type="Self.AccountTree" Multiplicity="0..1" />
+          <End Role="AccountTreeHrDeduction" Type="Self.AccountTreeHrDeduction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AccountTree">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AccountTreeHrDeduction">
+              <PropertyRef Name="AccTreeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1894,6 +1926,30 @@
             </Principal>
             <Dependent Role="DocumentType">
               <PropertyRef Name="UpdatedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeePettyCashCustody_AccountTree">
+          <End Role="AccountTree" Type="Self.AccountTree" Multiplicity="0..1" />
+          <End Role="EmployeePettyCashCustody" Type="Self.EmployeePettyCashCustody" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AccountTree">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EmployeePettyCashCustody">
+              <PropertyRef Name="AccTreeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeePettyCashCustody_FinancialCycle">
+          <End Role="FinancialCycle" Type="Self.FinancialCycle" Multiplicity="0..1" />
+          <End Role="EmployeePettyCashCustody" Type="Self.EmployeePettyCashCustody" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FinancialCycle">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EmployeePettyCashCustody">
+              <PropertyRef Name="FinancialCycleId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3099,6 +3155,7 @@
           <EntitySet Name="AccountSub" EntityType="Self.AccountSub" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AccountSubCategory" EntityType="Self.AccountSubCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AccountTree" EntityType="Self.AccountTree" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AccountTreeHrDeduction" EntityType="Self.AccountTreeHrDeduction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AccountType" EntityType="Self.AccountType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
@@ -3114,6 +3171,7 @@
           <EntitySet Name="DeletedTransactionDetail" EntityType="Self.DeletedTransactionDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DocumentType" EntityType="Self.DocumentType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmployeePettyCashCustody" EntityType="Self.EmployeePettyCashCustody" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FinancialCycle" EntityType="Self.FinancialCycle" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FinancialCycleAccountTree" EntityType="Self.FinancialCycleAccountTree" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OpeningBalance" EntityType="Self.OpeningBalance" Schema="dbo" store:Type="Tables" />
@@ -3200,6 +3258,10 @@
           <AssociationSet Name="FK_AccountTree_AspNetUsers1" Association="Self.FK_AccountTree_AspNetUsers1">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AccountTree" EntitySet="AccountTree" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AccountTreeHrDeduction_AccountTree" Association="Self.FK_AccountTreeHrDeduction_AccountTree">
+            <End Role="AccountTree" EntitySet="AccountTree" />
+            <End Role="AccountTreeHrDeduction" EntitySet="AccountTreeHrDeduction" />
           </AssociationSet>
           <AssociationSet Name="FK_AccountType_AspNetUsers" Association="Self.FK_AccountType_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -3484,6 +3546,14 @@
           <AssociationSet Name="FK_DocumentType_AspNetUsers1" Association="Self.FK_DocumentType_AspNetUsers1">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="DocumentType" EntitySet="DocumentType" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeePettyCashCustody_AccountTree" Association="Self.FK_EmployeePettyCashCustody_AccountTree">
+            <End Role="AccountTree" EntitySet="AccountTree" />
+            <End Role="EmployeePettyCashCustody" EntitySet="EmployeePettyCashCustody" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeePettyCashCustody_FinancialCycle" Association="Self.FK_EmployeePettyCashCustody_FinancialCycle">
+            <End Role="FinancialCycle" EntitySet="FinancialCycle" />
+            <End Role="EmployeePettyCashCustody" EntitySet="EmployeePettyCashCustody" />
           </AssociationSet>
           <AssociationSet Name="FK_FinancialCycle_AspNetUsers" Association="Self.FK_FinancialCycle_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -4214,6 +4284,8 @@
           <NavigationProperty Name="TransactionDetails" Relationship="Self.FK_TransactionDetail_AccountTree" FromRole="AccountTree" ToRole="TransactionDetail" />
           <NavigationProperty Name="AspNetUser" Relationship="FinancialERP1Model.FK_AccountTree_AspNetUsers" FromRole="AccountTree" ToRole="AspNetUser" />
           <NavigationProperty Name="AspNetUser1" Relationship="FinancialERP1Model.FK_AccountTree_AspNetUsers1" FromRole="AccountTree" ToRole="AspNetUser" />
+          <NavigationProperty Name="EmployeePettyCashCustodies" Relationship="FinancialERP1Model.FK_EmployeePettyCashCustody_AccountTree" FromRole="AccountTree" ToRole="EmployeePettyCashCustody" />
+          <NavigationProperty Name="AccountTreeHrDeductions" Relationship="FinancialERP1Model.FK_AccountTreeHrDeduction_AccountTree" FromRole="AccountTree" ToRole="AccountTreeHrDeduction" />
         </EntityType>
         <EntityType Name="AccountType">
           <Key>
@@ -4453,6 +4525,7 @@
           <NavigationProperty Name="AspNetUsers" Relationship="FinancialERP1Model.FK_AspNetUsers_FinancialCycle" FromRole="FinancialCycle" ToRole="AspNetUser" />
           <NavigationProperty Name="AspNetUser" Relationship="FinancialERP1Model.FK_FinancialCycle_AspNetUsers" FromRole="FinancialCycle" ToRole="AspNetUser" />
           <NavigationProperty Name="AspNetUser1" Relationship="FinancialERP1Model.FK_FinancialCycle_AspNetUsers1" FromRole="FinancialCycle" ToRole="AspNetUser" />
+          <NavigationProperty Name="EmployeePettyCashCustodies" Relationship="FinancialERP1Model.FK_EmployeePettyCashCustody_FinancialCycle" FromRole="FinancialCycle" ToRole="EmployeePettyCashCustody" />
         </EntityType>
         <EntityType Name="FinancialCycleAccountTree">
           <Key>
@@ -4605,6 +4678,7 @@
           <Property Name="BankName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="BranchName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_Recipient" FromRole="Recipient" ToRole="Transaction" />
+          <Property Name="EmployeeId" Type="Int32" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
@@ -6613,6 +6687,20 @@
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="Vat" EntitySet="Vats" />
           </AssociationSet>
+          <EntitySet Name="EmployeePettyCashCustodies" EntityType="FinancialERP1Model.EmployeePettyCashCustody" />
+          <AssociationSet Name="FK_EmployeePettyCashCustody_AccountTree" Association="FinancialERP1Model.FK_EmployeePettyCashCustody_AccountTree">
+            <End Role="AccountTree" EntitySet="AccountTrees" />
+            <End Role="EmployeePettyCashCustody" EntitySet="EmployeePettyCashCustodies" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeePettyCashCustody_FinancialCycle" Association="FinancialERP1Model.FK_EmployeePettyCashCustody_FinancialCycle">
+            <End Role="FinancialCycle" EntitySet="FinancialCycles" />
+            <End Role="EmployeePettyCashCustody" EntitySet="EmployeePettyCashCustodies" />
+          </AssociationSet>
+          <EntitySet Name="AccountTreeHrDeductions" EntityType="FinancialERP1Model.AccountTreeHrDeduction" />
+          <AssociationSet Name="FK_AccountTreeHrDeduction_AccountTree" Association="FinancialERP1Model.FK_AccountTreeHrDeduction_AccountTree">
+            <End Role="AccountTree" EntitySet="AccountTrees" />
+            <End Role="AccountTreeHrDeduction" EntitySet="AccountTreeHrDeductions" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="AspNetRole">
           <Key>
@@ -8123,6 +8211,64 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="EmployeePettyCashCustody">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployeeId" Type="Int32" />
+          <Property Name="TotalDeductionAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="PaiedAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="AccTreeId" Type="Int32" />
+          <NavigationProperty Name="AccountTree" Relationship="FinancialERP1Model.FK_EmployeePettyCashCustody_AccountTree" FromRole="EmployeePettyCashCustody" ToRole="AccountTree" />
+          <Property Name="FinancialCycleId" Type="Int32" />
+          <NavigationProperty Name="FinancialCycle" Relationship="FinancialERP1Model.FK_EmployeePettyCashCustody_FinancialCycle" FromRole="EmployeePettyCashCustody" ToRole="FinancialCycle" />
+        </EntityType>
+        <Association Name="FK_EmployeePettyCashCustody_AccountTree">
+          <End Type="FinancialERP1Model.AccountTree" Role="AccountTree" Multiplicity="0..1" />
+          <End Type="FinancialERP1Model.EmployeePettyCashCustody" Role="EmployeePettyCashCustody" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AccountTree">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EmployeePettyCashCustody">
+              <PropertyRef Name="AccTreeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmployeePettyCashCustody_FinancialCycle">
+          <End Type="FinancialERP1Model.FinancialCycle" Role="FinancialCycle" Multiplicity="0..1" />
+          <End Type="FinancialERP1Model.EmployeePettyCashCustody" Role="EmployeePettyCashCustody" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FinancialCycle">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EmployeePettyCashCustody">
+              <PropertyRef Name="FinancialCycleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AccountTreeHrDeduction">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AccTreeId" Type="Int32" />
+          <NavigationProperty Name="AccountTree" Relationship="FinancialERP1Model.FK_AccountTreeHrDeduction_AccountTree" FromRole="AccountTreeHrDeduction" ToRole="AccountTree" />
+          <Property Name="DeductionIds" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_AccountTreeHrDeduction_AccountTree">
+          <End Type="FinancialERP1Model.AccountTree" Role="AccountTree" Multiplicity="0..1" />
+          <End Type="FinancialERP1Model.AccountTreeHrDeduction" Role="AccountTreeHrDeduction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AccountTree">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AccountTreeHrDeduction">
+              <PropertyRef Name="AccTreeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -8710,6 +8856,7 @@
           <EntitySetMapping Name="Recipients">
             <EntityTypeMapping TypeName="FinancialERP1Model.Recipient">
               <MappingFragment StoreEntitySet="Recipient">
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="RecipientName" ColumnName="RecipientName" />
                 <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
@@ -9037,6 +9184,27 @@
                 <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
                 <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmployeePettyCashCustodies">
+            <EntityTypeMapping TypeName="FinancialERP1Model.EmployeePettyCashCustody">
+              <MappingFragment StoreEntitySet="EmployeePettyCashCustody">
+                <ScalarProperty Name="FinancialCycleId" ColumnName="FinancialCycleId" />
+                <ScalarProperty Name="AccTreeId" ColumnName="AccTreeId" />
+                <ScalarProperty Name="PaiedAmount" ColumnName="PaiedAmount" />
+                <ScalarProperty Name="TotalDeductionAmount" ColumnName="TotalDeductionAmount" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AccountTreeHrDeductions">
+            <EntityTypeMapping TypeName="FinancialERP1Model.AccountTreeHrDeduction">
+              <MappingFragment StoreEntitySet="AccountTreeHrDeduction">
+                <ScalarProperty Name="DeductionIds" ColumnName="DeductionIds" />
+                <ScalarProperty Name="AccTreeId" ColumnName="AccTreeId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

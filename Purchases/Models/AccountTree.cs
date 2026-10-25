@@ -28,6 +28,8 @@ namespace Purchases.Models
             this.Receipts = new HashSet<Receipt>();
             this.ReceiptDetails = new HashSet<ReceiptDetail>();
             this.TransactionDetails = new HashSet<TransactionDetail>();
+            this.EmployeePettyCashCustodies = new HashSet<EmployeePettyCashCustody>();
+            this.AccountTreeHrDeductions = new HashSet<AccountTreeHrDeduction>();
         }
     
         public int Id { get; set; }
@@ -71,5 +73,9 @@ namespace Purchases.Models
         public virtual ICollection<TransactionDetail> TransactionDetails { get; set; }
         public virtual AspNetUser AspNetUser { get; set; }
         public virtual AspNetUser AspNetUser1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EmployeePettyCashCustody> EmployeePettyCashCustodies { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AccountTreeHrDeduction> AccountTreeHrDeductions { get; set; }
     }
 }

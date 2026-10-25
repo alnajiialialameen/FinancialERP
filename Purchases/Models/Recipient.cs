@@ -25,6 +25,7 @@ namespace Purchases.Models
         public string AccountNumber { get; set; }
         public string BankName { get; set; }
         public string BranchName { get; set; }
+        public Nullable<int> EmployeeId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Transaction> Transactions { get; set; }

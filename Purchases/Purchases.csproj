@@ -203,6 +203,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\DeleteTransactionsController.cs" />
+    <Compile Include="Controllers\EmpPettyCashController.cs" />
     <Compile Include="Controllers\RecipientBankInfoController.cs" />
     <Compile Include="Controllers\RecipientsController.cs" />
     <Compile Include="Controllers\SharedController.cs" />
@@ -219,6 +220,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountTree.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AccountTreeHrDeduction.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountType.cs">
@@ -294,6 +298,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DocumentType.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EmployeePettyCashCustody.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\FinancialCycle.cs">
@@ -404,9 +411,11 @@
     <Compile Include="Models\ViewModel\BalanceVM.cs" />
     <Compile Include="Models\ViewModel\BaseVM.cs" />
     <Compile Include="Models\ViewModel\EmployeeBankInfoDTO.cs" />
+    <Compile Include="Models\ViewModel\EmployeePettyCashCustodyVM.cs" />
     <Compile Include="Models\ViewModel\RecipientVM.cs" />
     <Compile Include="Models\ViewModel\SummaryVM.cs" />
     <Compile Include="MyLogic\DeleteTransactionObj.cs" />
+    <Compile Include="MyLogic\EmployeePettyCashCustodyObj.cs" />
     <Compile Include="MyLogic\Transact.cs" />
     <Compile Include="Models\ViewModel\AccTreeListObj.cs" />
     <Compile Include="MyLogic\PrintCheckObj.cs" />
@@ -496,7 +505,9 @@
     <Content Include="Content\ionicons.min.css" />
     <Content Include="Content\jquery-ui.min.css" />
     <Content Include="Content\PagedList.css" />
+    <Content Include="Content\printChecs.css" />
     <Content Include="Content\select2.min.css" />
+    <Content Include="Content\SetEmployeeIdFromSACLERP.txt" />
     <Content Include="Content\Sinnper.css" />
     <Content Include="Content\stylee.css" />
     <Content Include="Content\toastr.min.css" />
@@ -818,6 +829,7 @@
     <Content Include="Views\Transactions\RemovePettyCash.cshtml" />
     <Content Include="Views\Balances\OverLimitItems.cshtml" />
     <Content Include="Views\Transactions\IndexAll1.cshtml" />
+    <Content Include="Views\EmpPettyCash\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

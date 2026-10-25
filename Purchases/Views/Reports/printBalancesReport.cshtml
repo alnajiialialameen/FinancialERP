@@ -54,8 +54,8 @@
             <span>@DateTime.Now</span>تاريخ الطباعة
         </div>
 
-        <table class="table table-bordered table-striped">
-            <thead class="bg-dark">
+        <table class="">
+            <thead>
                 <tr class="text-center">
                     <td>الصرف الفعلي</td>
                     <td>الاعتماد النسبي</td>
@@ -70,7 +70,7 @@
                     foreach (var item1 in Model)
                     {
                         int counter1 = 1;
-                        <tr class="text-center">
+                        <tr class="text-center"  style="background-color: #fea621 !important">
                             <td colspan="6" class="text-right font-weight-bold">@item1.accTreeName</td>
                             <td class="text-center">@counter</td>
                         </tr>
@@ -90,7 +90,7 @@
                         }
 
                         counter = counter + 1;
-                        <tr class="text-center" >
+                        <tr class="text-center" style="background-color: #81cfe3 !important" >
                             <td class="font-weight-bold amount">@item1.actualExchange</td>
                             @*<td class="numberFormat">@Model.Where(q => q.Id == item1.Id).Sum(s => s.credint)</td>*@
                             <td class="font-weight-bold amount"> @Model.Sum(s => s.details.Where(x=> x.parentId==item1.Id).Sum(x => x.credintPercent))</td>
@@ -99,15 +99,18 @@
                         </tr>
                     }
 
-                    <tr class="text-center" style="background-color:#d3caca">
-                        <td class="amount">@Model.Sum(s => s.details.Sum(a=> a.actualExchange))</td>
-                        @*<td class="numberFormat">@Model.Where(q => q.Id == item1.Id).Sum(s => s.credint)</td>*@
-                        <td class="amount"> @Model.Sum(s => s.credintPercent)</td>
-                        <td class="amount"> @Model.Sum(s => s.sumOfCredint)</td>
-                        <td colspan="4">الاجمالي</td>
-                    </tr>
+                    
                 }
             </tbody>
+            <tfoot>
+                <tr class="text-center">
+                    <th class="amount">@Model.Sum(s => s.details.Sum(a => a.actualExchange))</th>
+                    @*<td class="numberFormat">@Model.Where(q => q.Id == item1.Id).Sum(s => s.credint)</td>*@
+                    <th class="amount"> @Model.Sum(s => s.credintPercent)</th>
+                    <th class="amount"> @Model.Sum(s => s.sumOfCredint)</th>
+                    <th colspan="4">الاجمالي</th>
+                </tr>
+            </tfoot>
         </table>
     </div>
 

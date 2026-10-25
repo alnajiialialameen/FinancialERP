@@ -249,6 +249,11 @@
         <AssociationConnector Association="FinancialERP1Model.FK_UserWorkDetail_AspNetUsers" />
         <AssociationConnector Association="FinancialERP1Model.FK_Vat_AspNetUsers" />
         <AssociationConnector Association="FinancialERP1Model.FK_Vat_AspNetUsers1" />
+        <EntityTypeShape EntityType="FinancialERP1Model.EmployeePettyCashCustody" Width="1.5" PointX="0.75" PointY="0.75" />
+        <AssociationConnector Association="FinancialERP1Model.FK_EmployeePettyCashCustody_AccountTree" />
+        <AssociationConnector Association="FinancialERP1Model.FK_EmployeePettyCashCustody_FinancialCycle" />
+        <EntityTypeShape EntityType="FinancialERP1Model.AccountTreeHrDeduction" Width="1.5" PointX="3.375" PointY="0.75" />
+        <AssociationConnector Association="FinancialERP1Model.FK_AccountTreeHrDeduction_AccountTree" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

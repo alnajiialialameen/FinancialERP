@@ -87,6 +87,8 @@ namespace Purchases.Models
         public virtual DbSet<CompanyInfo> CompanyInfoes { get; set; }
         public virtual DbSet<UserWorkDetail> UserWorkDetails { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+        public virtual DbSet<EmployeePettyCashCustody> EmployeePettyCashCustodies { get; set; }
+        public virtual DbSet<AccountTreeHrDeduction> AccountTreeHrDeductions { get; set; }
     
         public virtual ObjectResult<Nullable<decimal>> GetLastAccNumber(Nullable<int> accParentId)
         {

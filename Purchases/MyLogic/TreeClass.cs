@@ -246,7 +246,8 @@ namespace Purchases.MyLogic
             }
             else
             {
-                return AccCode = Convert.ToInt32(db.AccountTrees.Find(AccId).AccCode);
+                var code = db.AccountTrees.Find(AccId).AccCode;
+                return AccCode = (int)Convert.ToInt64(code);
             }
         }
         
@@ -476,87 +477,87 @@ namespace Purchases.MyLogic
         }
         
         //for all tree
-        public string AddToTree(List<AccountTreeVM> dataList, string accParentName, string userid)
-        {
-            if (dataList.Count() > 0)
-            {
-                var addAccParentId = db.AccountTrees.FirstOrDefault(x => x.AccName.Trim() == accParentName.Trim()).Id;
+        //public string AddToTree(List<AccountTreeVM> dataList, string accParentName, string userid)
+        //{
+        //    if (dataList.Count() > 0)
+        //    {
+        //        var addAccParentId = db.AccountTrees.FirstOrDefault(x => x.AccName.Trim() == accParentName.Trim()).Id;
 
-                foreach (var data in dataList)
-                {
-                    data.AccParentId = addAccParentId;
-                    int AccId = Convert.ToInt32(db.SpLastTreeAccountId().FirstOrDefault());
-                    int AccParentCode = GetAccParentCode(Convert.ToInt32(data.AccParentId));
-                    //string AccCode = db.GetLastAccNumber(AccParentCode).FirstOrDefault().ToString();
-                    string AccCode = GetLastAccCode(addAccParentId);
+        //        foreach (var data in dataList)
+        //        {
+        //            data.AccParentId = addAccParentId;
+        //            int AccId = Convert.ToInt32(db.SpLastTreeAccountId().FirstOrDefault());
+        //            int AccParentCode = GetAccParentCode(Convert.ToInt32(data.AccParentId));
+        //            //string AccCode = db.GetLastAccNumber(AccParentCode).FirstOrDefault().ToString();
+        //            string AccCode = GetLastAccCode(addAccParentId);
 
-                    //get parent
-                    AccountTree accountTree = db.AccountTrees.Find(addAccParentId);
+        //            //get parent
+        //            AccountTree accountTree = db.AccountTrees.Find(addAccParentId);
 
-                    if (data.AccName != null)
-                    {
-                        if (db.AccountTrees.Any(x => x.AccName == data.AccName))
-                        {
-                            return "error";
-                            //return Json(new { Message = "هذا البند موجود  مسبقا في الشجرة المحاسبية", Title = "عملية الاضافة", Status = "error" });
-                        }
+        //            if (data.AccName != null)
+        //            {
+        //                if (db.AccountTrees.Any(x => x.AccName == data.AccName))
+        //                {
+        //                    return "error";
+        //                    //return Json(new { Message = "هذا البند موجود  مسبقا في الشجرة المحاسبية", Title = "عملية الاضافة", Status = "error" });
+        //                }
 
 
-                        if (!db.AccountTrees.Any(f => f.AccName == data.AccName))
-                        {
-                            AccountTree d = new AccountTree();
-                            d.Id = AccId;
-                            d.AccCode = AccCode;
-                            d.AccName = data.AccName;
-                            d.AccTypeId = data.AccTypeId;
-                            d.AccNatureId = data.AccNatureId;
-                            d.AccFinalId = data.AccFinalId;
-                            d.IsActive = true;
-                            d.CreatedBy = userid;
-                            d.CreationDate = DateTime.Now;
+        //                if (!db.AccountTrees.Any(f => f.AccName == data.AccName))
+        //                {
+        //                    AccountTree d = new AccountTree();
+        //                    d.Id = AccId;
+        //                    d.AccCode = AccCode;
+        //                    d.AccName = data.AccName;
+        //                    d.AccTypeId = data.AccTypeId;
+        //                    d.AccNatureId = data.AccNatureId;
+        //                    d.AccFinalId = data.AccFinalId;
+        //                    d.IsActive = true;
+        //                    d.CreatedBy = userid;
+        //                    d.CreationDate = DateTime.Now;
 
-                            if (data.AccTypeId == 2)//حساب فرعي
-                            {
-                                AccountSub sub = new AccountSub();
-                                sub.AccCategoryId = data.AccSubCategory;
-                                sub.AccTreeId = AccId;
-                                sub.CreatedBy = userid;
-                                sub.CreationDate = DateTime.Now;
+        //                    if (data.AccTypeId == 2)//حساب فرعي
+        //                    {
+        //                        AccountSub sub = new AccountSub();
+        //                        sub.AccCategoryId = data.AccSubCategory;
+        //                        sub.AccTreeId = AccId;
+        //                        sub.CreatedBy = userid;
+        //                        sub.CreationDate = DateTime.Now;
 
-                                db.AccountSubs.Add(sub);
-                            }
+        //                        db.AccountSubs.Add(sub);
+        //                    }
 
-                            if (accountTree == null)
-                            {
-                                d.AccParent = 0;
-                            }
-                            else
-                            {
-                                d.AccParent = accountTree.Id;
-                            }
-                            if (data.AccParent == null || data.AccParentId == 0)
-                            {
-                                d.TheLevel = 0;
-                            }
-                            else
-                            {
-                                d.TheLevel = Convert.ToInt32(accountTree.TheLevel) + 1;
-                            }
+        //                    if (accountTree == null)
+        //                    {
+        //                        d.AccParent = 0;
+        //                    }
+        //                    else
+        //                    {
+        //                        d.AccParent = accountTree.Id;
+        //                    }
+        //                    if (data.AccParent == null || data.AccParentId == 0)
+        //                    {
+        //                        d.TheLevel = 0;
+        //                    }
+        //                    else
+        //                    {
+        //                        d.TheLevel = Convert.ToInt32(accountTree.TheLevel) + 1;
+        //                    }
 
-                            db.AccountTrees.Add(d);
-                            db.SaveChanges();
-                        }
-                    }
-                }
-                return "success";
-                //return Json(new { Message = "تمت عملية الإضافة  بنجاح", Title = "نجاح", Status = "success" });
-            }
-            else
-            {
-                return "error";
-               //return Json(new { Message = "حدث خطأ أثناء عملية الإضافة", Title = "خطأ", Status = "error" });
-            }
-        }
+        //                    db.AccountTrees.Add(d);
+        //                    db.SaveChanges();
+        //                }
+        //            }
+        //        }
+        //        return "success";
+        //        //return Json(new { Message = "تمت عملية الإضافة  بنجاح", Title = "نجاح", Status = "success" });
+        //    }
+        //    else
+        //    {
+        //        return "error";
+        //       //return Json(new { Message = "حدث خطأ أثناء عملية الإضافة", Title = "خطأ", Status = "error" });
+        //    }
+        //}
         
         //for bankAccount
         public int AddToTree(string accParentName, string accName, int accTypeId, int accSubCategory, string userid)
@@ -937,5 +938,98 @@ namespace Purchases.MyLogic
             }
         }
 
+        public string AddToTree(List<AccountTreeVM> dataList, string accParentName, string userId)
+        {
+            if (dataList == null || dataList.Count == 0)
+                return "error";
+
+            if (string.IsNullOrWhiteSpace(accParentName))
+                return "error";
+
+            // Get parent account
+            string parentName = accParentName.Trim();
+
+            var parentAccount = db.AccountTrees
+                .FirstOrDefault(x => x.AccName.Trim() == parentName);
+
+            if (parentAccount == null)
+                return "error";
+
+            int parentId = parentAccount.Id;
+
+            // Validate input and duplicate names
+            var accountNames = dataList
+                .Where(x => x != null && !string.IsNullOrWhiteSpace(x.AccName))
+                .Select(x => x.AccName.Trim())
+                .ToList();
+
+            if (accountNames.Count != dataList.Count)
+                return "error";
+
+            if (accountNames.Distinct(StringComparer.OrdinalIgnoreCase).Count()
+                != accountNames.Count)
+                return "error";
+
+            if (db.AccountTrees.Any(x => accountNames.Contains(x.AccName)))
+                return "error";
+
+            using (var transaction = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    foreach (var data in dataList)
+                    {
+                        data.AccParentId = parentId;
+
+                        int accountId = Convert.ToInt32(
+                            db.SpLastTreeAccountId().FirstOrDefault());
+
+                        string accountCode = GetLastAccCode(parentId);
+
+                        var account = new AccountTree
+                        {
+                            Id = accountId,
+                            AccCode = accountCode,
+                            AccName = data.AccName.Trim(),
+                            AccTypeId = data.AccTypeId,
+                            AccNatureId = data.AccNatureId,
+                            AccFinalId = data.AccFinalId,
+                            IsActive = true,
+                            CreatedBy = userId,
+                            CreationDate = DateTime.Now,
+                            AccParent = parentId,
+                            TheLevel = (parentAccount.TheLevel ?? 0) + 1
+                        };
+
+                        db.AccountTrees.Add(account);
+
+                        if (data.AccTypeId == 2)
+                        {
+                            var subAccount = new AccountSub
+                            {
+                                AccCategoryId = data.AccSubCategory,
+                                AccTreeId = accountId,
+                                CreatedBy = userId,
+                                CreationDate = DateTime.Now
+                            };
+
+                            db.AccountSubs.Add(subAccount);
+                        }
+
+                        // Save to database so subsequent operations can see
+                        // the inserted account if needed.
+                        db.SaveChanges();
+                    }
+
+                    transaction.Commit();
+                    return "success";
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
     }
 }

@@ -654,7 +654,6 @@ namespace Purchases.MyLogic
             }
         }
 
-
         public BalanceVM GetOpenBalanceForBank(int financeCycleYear, int? financeCycleId, int bankId)
         {
             try
@@ -690,7 +689,6 @@ namespace Purchases.MyLogic
                 return new BalanceVM();
             }
         }
-
 
         public List<BalanceVM> GetOpenBalanceForSpecificAccTree(int financeCycleYear, int? financeCycleId, int accTreeId)
         {

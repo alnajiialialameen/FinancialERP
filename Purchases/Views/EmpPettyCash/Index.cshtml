@@ -1,0 +1,178 @@
+﻿@using Purchases.Models.ViewModel;
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+@section content{
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <div class="grad"></div>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                عهد الموظفين
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
+                <li class="active">عهد الموظفين </li>
+            </ol>
+        </section>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="container">
+                                <div class="row my-4 left">
+                                    <div class="col-lg-3">
+                                        <select id="accTreeId" class="form-control">
+                                            <option value="0">-Select Value-</option>
+                                            @{
+                                                foreach (var item in ViewBag.GetPettyCachItems as List<DDListObj>)
+                                                {
+                                                    <option value="@item.id">@item.text</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <table id="tbx" class="table table-bordered table-sm table-hover" style="width:100%">
+                                </table>
+                            </div><!-- /.box-body -->
+                        </div><!-- /.box -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div>
+        </section>
+
+    </div>
+    <!-- /.content-wrapper -->
+}
+
+
+@section scripts{
+    <script>
+        var dataTable;
+        var totalDeductionAmount;
+
+        $(document).ready(function () {
+            function loadData() {
+                dataTable = $('#tbx').DataTable({
+                    "language": {
+                        "lengthMenu": "عرض _MENU_ سجل في الصفحة",
+                        "search": "بحث"
+                    },
+                    "columnDefs": [
+                        {
+                            "targets": 0,
+                            "className": "text-center",
+                        },
+                    ],
+                    ajax: {
+                        url: '/EmpPettyCash/LoadData/0',
+                        dataSrc: ''
+                    },
+                    //columnDefs: [
+                    //    {
+                    //        targets: [5, 6],
+                    //        visible: false
+                    //    }
+                    //],
+                    columns: [
+                        {
+                            "title": "# ",
+                            "data": "Id"
+                        },
+                        {
+                            "title": "اسم الموظف",
+                            "data": "EmployeeName"
+                        },
+                        {
+                            "title": "المبلغ",
+                            "data": "TotalDeductionAmount",
+                            "render": function (data, type, row) {
+                                return `<input type="text" class="form-control totalDeductionAmount" placeholder="اجمالي المبلغ" value="${data}"/>`;
+                            }
+                        },
+                        {
+                            "title": "المبلغ المسدد",
+                            "data": "PaiedAmount",
+                            "render": function (data, type, row) {
+                                return `<input type="text" class="form-control paiedAmount" placeholder="اجمالي المبلغ" disabled value="${data}"/>`;
+                            }
+                        },
+                        {
+                            "title": "<i class='fa fa-cog'></i>",
+                            "data": null,
+                            "width": "10%",
+                            "orderable": false,
+                            "render": function (data) {
+                                return '<a href="#" class="btn btn-success  btnSaveData" id="btnSaveData" onclick="saveData()">حفظ</a>';
+                            }
+                        },
+                        {
+                            "title": "EmployeeId",
+                            "data": "EmployeeId"
+                        },
+                        {
+                            "title": "AccTreeId",
+                            "data": "AccTreeId"
+                        },
+                    ]
+                });
+
+            }
+
+            loadData();
+
+
+            $('#tbx').on('input', '.totalDeductionAmount', function () {
+                //console.log('Input value:', $(this).val());
+                if (!AutoNumeric.getAutoNumericElement(this)) {
+                    CustomAutoNumericForElement(this);
+                }
+            });
+
+            $('#tbx').on('input', '.paiedAmount', function () {
+                //console.log('Input value:', $(this).val());
+                if (!AutoNumeric.getAutoNumericElement(this)) {
+                    CustomAutoNumericForElement(this);
+                }
+            });
+        });
+
+
+        $('#tbx').on('click', '.btnSaveData', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var Id = data['Id'];
+            var employeeId = data['EmployeeId'];
+
+            var accTreeId = $('#accTreeId').val();
+            var totalDeductionAmount = currentRow.find('.totalDeductionAmount').val();
+            var paiedAmount = currentRow.find('.paiedAmount').val();
+
+            // إزالة فواصل الآلاف لتحويل القيمة لرقم
+            totalDeductionAmount = parseFloat(totalDeductionAmount.replace(/,/g, ''));
+
+            var data = {
+                "AccTreeId": parseInt(accTreeId),
+                "Id": Id,
+                "EmployeeId": employeeId,
+                "TotalDeductionAmount": totalDeductionAmount,
+                "PaiedAmount": paiedAmount,
+            }
+
+            $.post('/EmpPettyCash/SaveData', { data: data }, function (response) {
+                toastr[response.Status](response.Message, response.Title);
+                $('#tbx').DataTable().ajax.reload();
+            });
+        });
+
+    </script>
+
+}

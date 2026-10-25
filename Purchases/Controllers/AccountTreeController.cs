@@ -1,15 +1,12 @@
 ﻿using Microsoft.AspNet.Identity;
 using Purchases.MyLogic;
 using Purchases.Models;
-using Purchases.Models.ViewModal;
 using Purchases.Models.ViewModel;
 using Purchases.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Purchases.Controllers
@@ -24,9 +21,10 @@ namespace Purchases.Controllers
         public ActionResult Index()
         {
             var currentYear = db.FinancialCycles.FirstOrDefault(x => x.CurrentYear == true);
+            var userId = User.Identity.GetUserId();
             ViewBag.FinancialCycleId = currentYear.Id;
             ViewBag.Year = currentYear.Year;
-            ViewBag.UserId = Session["userId"].ToString();
+            ViewBag.UserId = userId;
 
             return View();
         }

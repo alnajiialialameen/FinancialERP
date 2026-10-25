@@ -1,0 +1,9 @@
+
+UPDATE rec
+SET rec.EmployeeId = SACEmp.Id
+FROM Recipient AS rec
+INNER JOIN SACLERP.dbo.Employee AS SACEmp
+    ON SACEmp.Name COLLATE Arabic_CI_AS
+     = rec.RecipientName COLLATE Arabic_CI_AS
+WHERE SACEmp.EmploymentTypeId = 1 ;
+
