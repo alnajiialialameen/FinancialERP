@@ -50,6 +50,7 @@ namespace Purchases.Controllers
             return Json(myData, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
         public ActionResult SaveData(EmployeePettyCashCustodyVM data)
         {
             var userId = User.Identity.GetUserId();

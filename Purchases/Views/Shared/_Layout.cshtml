@@ -1,44 +1,1282 @@
 ﻿<!DOCTYPE html>
-<html>
+<html dir="rtl">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <meta name="viewport" content="width=device-width" />
 
+    <link href="~/My-Layout/Select2 4.1.0/css/Select2 4.1.0.min.css" rel="stylesheet" />
+    <link href="~/My-Layout/Bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/My-Layout/Bootstrap/css/bootstrap-icons.css" rel="stylesheet" />
+    @*<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />*@
+    <link href="~/My-Layout/DataTable/datatables.min.css" rel="stylesheet" />
+    <link href="~/Content/toastr.min.css" rel="stylesheet" />
+    <link href="~/Temp/Tree/dist/themes/default/style.min.css" rel="stylesheet" />
+
+    <style>
+        #tbx,
+        #tbx_wrapper,
+        #tbx tbody,
+        #tbx td {
+            overflow: visible !important;
+        }
+
+        .select2-container {
+            flex: 1 1 auto;
+            width: 100% !important;
+        }
+
+            .select2-container .select2-selection--single {
+                height: 38px !important;
+                border: 1px solid #dee2e6 !important;
+                border-radius: 0 0.375rem 0.375rem 0 !important;
+            }
+
+        .select2-container--default
+        .select2-selection--single
+        .select2-selection__rendered {
+            line-height: 36px !important;
+            padding-right: 12px !important;
+            padding-left: 12px !important;
+        }
+
+        .select2-container--default
+        .select2-selection--single
+        .select2-selection__arrow {
+            height: 36px !important;
+        }
+
+        [dir="rtl"] .input-group .select2-container .select2-selection--single {
+            border-radius: 0.375rem 0 0 0.375rem !important;
+        }
+
+        [dir="rtl"] .select2-container--default
+        .select2-selection--single
+        .select2-selection__arrow {
+            left: 6px;
+            right: auto;
+        }
+
+        .modal {
+            overflow: visible !important;
+        }
+
+        .select2-container {
+            z-index: 9999 !important;
+        }
+
+        /*إجبار القائمة المنسدلة لـ Select2 على الظهور فوق أي موديل أو شاشة سوداء*/
+        .select2-container--open {
+            z-index: 9999999 !important;
+        }
+
+        /*إصلاح مشكلة التركيز في حقل البحث داخل Select2*/
+        .select2-search__field {
+            z-index: 9999999 !important;
+        }
+
+        .floating-btn {
+            position: fixed;
+            top: 15px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            z-index: 1050;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+    </style>
+
+    @*@Styles.Render("~/Content/css")
+        @Scripts.Render("~/bundles/modernizr")*@
+
+
+
+    <style>
+        :root {
+            --sidebar-width: 230px;
+            --header-height: 50px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Header */
+        .main-header {
+            height: var(--header-height);
+            width: 100%;
+            display: flex;
+            background: #3c8dbc;
+            color: #fff;
+            position: relative;
+            z-index: 1030;
+        }
+
+            .main-header .logo {
+                width: var(--sidebar-width);
+                min-width: var(--sidebar-width);
+                height: var(--header-height);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                background: #367fa9;
+                color: #fff;
+                text-decoration: none;
+            }
+
+            .main-header .navbar {
+                min-width: 0;
+                min-height: var(--header-height);
+                padding: 0;
+            }
+
+            .main-header .navbar-nav .nav-link {
+                color: #fff;
+            }
+
+            .main-header .dropdown-menu {
+                min-width: 250px;
+            }
+
+        .navbar-expand .navbar-nav .dropdown-menu {
+        }
+        /* Sidebar - right side */
+        .main-sidebar {
+            position: fixed;
+            top: var(--header-height);
+            right: 0;
+            left: auto;
+            bottom: 0;
+            width: var(--sidebar-width);
+            overflow-y: auto;
+            background: #222d32;
+            color: #b8c7ce;
+            z-index: 1020;
+            transform: translateX(0);
+            transition: transform .25s ease;
+        }
+
+        .sidebar-menu,
+        .treeview-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+            .sidebar-menu > li > a {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 12px 15px;
+                color: #b8c7ce;
+                text-decoration: none;
+            }
+
+                .sidebar-menu > li > a:hover,
+                .sidebar-menu > li.active > a {
+                    color: #fff;
+                    background: #1e282c;
+                }
+
+                .sidebar-menu > li > a > i:first-child {
+                    width: 20px;
+                    text-align: center;
+                    flex-shrink: 0;
+                }
+
+            .sidebar-menu .menu-arrow {
+                margin-right: auto;
+                transition: transform .2s ease;
+            }
+
+        .treeview-menu {
+            display: none;
+            background: #2c3b41;
+        }
+
+        .treeview.open > .treeview-menu {
+            display: block;
+        }
+
+        .treeview.open > .menu-toggle .menu-arrow {
+            transform: rotate(-90deg);
+        }
+
+        .treeview-menu a {
+            display: block;
+            padding: 10px 42px 10px 15px;
+            color: #b8c7ce;
+            text-decoration: none;
+        }
+
+            .treeview-menu a:hover {
+                color: #fff;
+                background: #1e282c;
+            }
+
+            .treeview-menu a i {
+                width: 20px;
+                margin-left: 5px;
+                text-align: center;
+            }
+
+        /* Main content: always reserve space for right sidebar */
+        .main-content {
+            display: block;
+            width: calc(100% - var(--sidebar-width));
+            margin-right: var(--sidebar-width);
+            margin-left: 0;
+            padding: 20px;
+            min-width: 0;
+            min-height: calc(100vh - var(--header-height));
+            box-sizing: border-box;
+            transition: width .25s ease, margin-right .25s ease;
+        }
+
+        /* Footer */
+        .main-footer {
+            width: calc(100% - var(--sidebar-width));
+            margin-right: var(--sidebar-width);
+            margin-left: 0;
+            padding: 15px;
+            border-top: 1px solid #dee2e6;
+            background: #fff;
+            box-sizing: border-box;
+            transition: width .25s ease, margin-right .25s ease;
+        }
+
+        /* Sidebar collapsed on desktop */
+        body.sidebar-collapsed .main-sidebar {
+            transform: translateX(100%);
+        }
+
+        body.sidebar-collapsed .main-content,
+        body.sidebar-collapsed .main-footer {
+            width: 100%;
+            margin-right: 0;
+        }
+
+        .input-group > .form-control {
+            border-radius: 0.375rem 0 0 0.375rem !important;
+        }
+
+        .input-group > .input-group-text {
+            border-radius: 0 0.375rem 0.375rem 0 !important;
+        }
+        /* Mobile */
+        @@media (max-width: 767.98px) {
+            .main-header .logo {
+                width: 90px;
+                min-width: 90px;
+            }
+
+            .main-header .logo-lg {
+                display: none;
+            }
+            /* Sidebar hidden by default on mobile */
+            .main-sidebar {
+                transform: translateX(100%);
+            }
+
+            body:not(.sidebar-collapsed) .main-sidebar {
+                transform: translateX(0);
+            }
+            /* Content always full width on mobile */
+            .main-content,
+            .main-footer {
+                width: 100%;
+                margin-right: 0;
+                margin-left: 0;
+            }
+        }
+    </style>
+
+    <!-- Side bar style -->
+    <style>
+        .main-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 250px;
+            height: 100vh;
+            background: #222d32;
+            z-index: 1050;
+            transform: translateX(100%);
+            visibility: hidden;
+            transition: transform 0.3s ease, visibility 0.3s ease;
+            overflow-y: auto;
+        }
+
+            .main-sidebar.show {
+                transform: translateX(0);
+                visibility: visible;
+            }
+
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+            .sidebar-overlay.show {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .sidebar-menu .treeview > .treeview-menu {
+            display: none;
+        }
+
+        .sidebar-menu .treeview.open > .treeview-menu {
+            display: block;
+        }
+
+        .sidebar-menu .treeview > a .menu-arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-menu .treeview.open > a .menu-arrow {
+            transform: rotate(-90deg);
+        }
+
+
+        .input-group .select2-container {
+            flex: 1 1 auto;
+            width: 1% !important;
+        }
+
+            .input-group .select2-container .select2-selection--single {
+                height: 38px;
+                border-radius: 0 6px 6px 0;
+            }
+
+            .input-group .select2-container .select2-selection__rendered {
+                line-height: 36px;
+                text-align: right;
+            }
+
+            .input-group .select2-container .select2-selection__arrow {
+                height: 36px;
+            }
+
+
+        .buttons {
+            display: flex !important;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .float {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            bottom: 50px;
+            left: 100px;
+            border-radius: 50px;
+            text-align: center;
+            box-shadow: 7px 2px 3px #7e7b7b;
+        }
+
+        .one {
+            background-color: #ff6a00;
+            color: #FFF;
+            margin-left: 210px;
+        }
+
+        .two {
+            margin-left: 70px;
+            background-color: #0094ff;
+            color: #FFF;
+        }
+
+        .third {
+            margin-left: 140px;
+            background-color: #0C9;
+            color: #FFF;
+        }
+
+        .exit {
+            float: right;
+            bottom: 120px;
+            background-color: red;
+            color: #FFF;
+        }
+
+        .my-float {
+            margin-top: 10px;
+        }
+        .notification-item {
+            direction: rtl;
+            text-align: right;
+            white-space: normal;
+        }
+
+        .dropdown-menu {
+            width: max-content;
+            min-width: 250px;
+            max-width: 450px;
+            white-space: normal;
+        }
+
+        .notification-item:hover {
+            background-color: var(--bs-tertiary-bg);
+        }
+        .notification-item:hover {
+            background-color: var(--bs-tertiary-bg);
+        }
+    </style>
 </head>
-<body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+<body dir="rtl">
+    <header class="main-header d-flex align-items-center">
+        <!-- Logo -->
+        <a href="@Url.Action("Index", "Home")" class="logo text-decoration-none">
+            <span class="logo-lg"><b>ERP</b></span>
+            <span class="logo-mini"><b>Financial</b></span>
+        </a>
+
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand navbar-dark flex-grow-1">
+            <div class="container-fluid">
+                <!-- Sidebar Toggle -->
+                <button type="button"
+                        class="btn btn-outline-light border-0 sidebar-toggle"
+                        id="sidebarToggle"
+                        aria-label="فتح وإغلاق القائمة">
+                    <i class="bi bi-list fs-5"></i>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+
+                <ul class="navbar-nav me-auto align-items-center">
+                    @if (Request.IsAuthenticated)
+                    {
+                        <!-- Notifications -->
+                        <li class="nav-item dropdown me-3"
+                            id="notificationDropdown"
+                            style="display:none;">
+
+                            <a href="#"
+                               class="nav-link position-relative"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false"
+                               id="btnNotification">
+
+                                <i class="bi bi-bell-fill text-white fs-4"></i>
+
+                                <span class="badge bg-danger position-absolute start-100 translate-middle"
+                                      id="notificationCount">
+                                    0
+                                </span>
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-start shadow"
+                                id="notificationMenu">
+                                <!-- Notifications loaded by JavaScript -->
+                            </ul>
+                        </li>
+
+                        <!-- User Menu -->
+                        <li class="nav-item dropdown">
+                            <a href="#"
+                               class="nav-link dropdown-toggle d-flex align-items-center"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false">
+
+                                <img src="~/Content/img/user3.jpg"
+                                     class="rounded-circle ms-2"
+                                     alt="User Image"
+                                     width="35"
+                                     height="35"
+                                     style="object-fit:cover;">
+
+                                <span class="d-none d-sm-inline">
+                                    @Session["FullName"].ToString()
+                                </span>
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-start shadow pt-0 rounded-1">
+                                <li class="text-center bg-primary text-white p-3">
+                                    <img src="~/Content/img/user3.jpg"
+                                         class="rounded-circle mb-2"
+                                         alt="User Image"
+                                         width="70"
+                                         height="70"
+                                         style="object-fit:cover;">
+
+                                    <div class="fw-bold">
+                                        @Session["FullName"].ToString()
+                                    </div>
+
+                                    <small>
+                                        @Session["Role"].ToString()
+                                    </small>
+                                </li>
+
+                                <li class="p-3">
+                                    <div class="d-flex justify-content-between gap-2">
+                                        <a href="@Url.Action("myProfile", "Account")"
+                                           class="btn btn-primary btn-sm">
+                                            عرض بروفايلي
+                                        </a>
+
+                                        <a class="btn btn-outline-danger btn-sm"
+                                           href="javascript:document.getElementById('logoutForm').submit()">
+                                            تسجيل خروج
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+
                 </ul>
-                @Html.Partial("_LoginPartial")
+            </div>
+        </nav>
+    </header>
+
+    <!-- Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="main-sidebar" id="mainSidebar">
+        <section class="sidebar">
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="@Url.Action("Index", "Home")">
+                        <i class="fa fa-home"></i>
+                        <span>الرئيسية</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("IndexAll1", "Transactions")">
+                        <i class="fas fa-keyboard"></i>
+                        <span>الإدخال</span>
+                    </a>
+                </li>
+                <!-- Purchases -->
+                @*<li class="treeview">
+                        <a href="#" class="menu-toggle">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>المشتريات</span>
+                            <i class="bi bi-chevron-left menu-arrow"></i>
+                        </a>
+
+                        <ul class="treeview-menu">
+                            <li>
+                                <a href="@Url.Action("Index", "Orders")">
+                                    <i class="fas fa-money-bill"></i>
+                                    عروض أسعار
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Index2", "Orders")">
+                                    <i class="fas fa-handshake"></i>
+                                    عطاءات
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Index", "searchOrders")">
+                                    <i class="fa fa-search-dollar"></i>
+                                    استعلام
+                                </a>
+                            </li>
+                        </ul>
+                    </li>*@
+
+                <!-- Sub Accounts -->
+                <li class="treeview">
+                    <a href="#" class="menu-toggle">
+                        <i class="fa fa-file-invoice"></i>
+                        <span>تفاصيل الحسابات الفرعية</span>
+                        <i class="bi bi-chevron-left menu-arrow"></i>
+                    </a>
+
+                    <ul class="treeview-menu">
+                        <li>
+                            <a href="@Url.Action("CurrencyChange", "BankTransfers")">
+                                <i class="fa fa-circle-notch"></i>
+                                تبديل العملات
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "BankAccounts")">
+                                <i class="fas fa-university"></i>
+                                دليل البنوك
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- System Settings -->
+                <li class="treeview">
+                    <a href="#" class="menu-toggle">
+                        <i class="fa fa-cogs"></i>
+                        <span>تهيئة النظام</span>
+                        <i class="bi bi-chevron-left menu-arrow"></i>
+                    </a>
+
+                    <ul class="treeview-menu">
+                        <li>
+                            <a href="@Url.Action("Index", "AccountTree")">
+                                <i class="fa fa-file-contract"></i>
+                                دليل الحسابات
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "FinancialCycles")">
+                                <i class="fa fa-calendar-week"></i>
+                                السنة المالية
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("PostedTransactions", "Transactions")">
+                                <i class="fa fa-calendar-week"></i>
+                                القيود المرحلة
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "OpeningBalances")">
+                                <i class="fa fa-calendar-week"></i>
+                                الأرصدة الافتتاحية
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Balances")">
+                                <i class="fa fa-balance-scale"></i>
+                                الموازنة
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "CurrencyDetails")">
+                                <i class="fa fa-money-bill"></i>
+                                أسعار الصرف
+                            </a>
+                        </li>
+                        @*<li>
+                                <a href="@Url.Action("Index", "items")">
+                                    <i class="fab fa-product-hunt"></i>
+                                    الأصناف
+                                </a>
+                            </li>*@
+                        <li>
+                            <a href="@Url.Action("Index", "Recipients")">
+                                <i class="fa fa-users-cog"></i>
+                                حسابات الموظفين والعملاء
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "EmpPettyCash")">
+                                <i class="fa fa-users-cog"></i>
+                                عهد الموظفين
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Reports -->
+                <li class="treeview">
+                    <a href="#" class="menu-toggle">
+                        <i class="fas fa-chart-line"></i>
+                        <span>التقارير الورقية</span>
+                        <i class="bi bi-chevron-left menu-arrow"></i>
+                    </a>
+
+                    <ul class="treeview-menu">
+                        <li>
+                            <a href="@Url.Action("TaxReport", "Reports")">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                                ضريبة الـ 1%
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("printLedgerReport", "Reports")">
+                                <i class="fas fa-receipt"></i>
+                                دفتر الأستاذ
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("printDataReport", "Reports")">
+                                <i class="fa fa-circle-notch"></i>
+                                قيد اليومية
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("BalancesReport", "Reports")">
+                                <i class="fa fa-balance-scale-left"></i>
+                                موقف الموازنة
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("BalancesReportForBanks", "Reports")">
+                                <i class="fab fa-stack-exchange"></i>
+                                موقف الصرف بالبنوك
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("BankTransReport", "Reports")">
+                                <i class="fa fa-exchange-alt"></i>
+                                التحويلات البنكية
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("FinalAccountingReports", "Reports")">
+                                <i class="fas fa-book"></i>
+                                الحسابات الختامية
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+            </ul>
+        </section>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="container-fluid" id="mainContent">
+        @RenderSection("content", required: false)
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+            <strong>
+                Copyright &copy; @DateTime.Now.Year
+                <a href="#">SACLTD</a>.
+            </strong>
+            All rights reserved.
+        </div>
+
+        <div>
+            <b>Version</b> 1.0
+        </div>
+
+
+        <form method="post" action="/Account/LogOff/" id="logoutForm" style="display:none">
+            @Html.AntiForgeryToken()
+        </form>
+    </footer>
+
+    @*Modals*@
+    <div class="modal fade"
+         id="changepassword-modal"
+         tabindex="-1"
+         aria-labelledby="changePasswordLabel"
+         aria-hidden="true"
+         data-bs-backdrop="static">
+
+        <div class="modal-dialog modal-dialog-top modal-lg">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="d-flex flex-row justify-content-between p-4">
+                    <h5 class="modal-title" id="changePasswordLabel">
+                        تعديل كلمة المرور
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="إغلاق">
+                    </button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+
+                    <form method="post" id="edit-form">
+
+                        <div class="row g-3">
+
+                            <!-- Old Password -->
+                            <div class="col-12">
+                                <label for="oldPassword" class="form-label">
+                                    كلمة المرور القديمة
+                                </label>
+
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-key"></i>
+                                    </span>
+
+                                    <input type="password"
+                                           class="form-control oldPassword"
+                                           autocomplete="off"
+                                           id="oldPassword"
+                                           name="oldPassword"
+                                           placeholder="أدخل كلمة المرور القديمة">
+                                </div>
+                            </div>
+
+                            <!-- New Password -->
+                            <div class="col-12">
+                                <label for="newPassword" class="form-label">
+                                    كلمة المرور الجديدة
+                                </label>
+
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-key"></i>
+                                    </span>
+
+                                    <input type="password"
+                                           class="form-control newPassword"
+                                           autocomplete="new-password"
+                                           id="newPassword"
+                                           name="newPassword"
+                                           placeholder="أدخل كلمة المرور الجديدة">
+                                </div>
+                            </div>
+
+                            <!-- Confirm New Password -->
+                            <div class="col-12">
+                                <label for="reNewPassword" class="form-label">
+                                    تأكيد كلمة المرور الجديدة
+                                </label>
+
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-key-fill"></i>
+                                    </span>
+
+                                    <input type="password"
+                                           class="form-control reNewPassword"
+                                           autocomplete="new-password"
+                                           id="reNewPassword"
+                                           name="reNewPassword"
+                                           placeholder="أعد إدخال كلمة المرور الجديدة">
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer d-flex justify-content-between">
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        رجوع
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-warning btnResetPassword"
+                            value="btnResetPassword">
+                        تعديل
+                    </button>
+
+                </div>
+
             </div>
         </div>
     </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    <div class="modal fade"
+         id="details-modal"
+         tabindex="-1"
+         aria-labelledby="detailsModalLabel"
+         aria-hidden="true"
+         data-bs-backdrop="static">
+
+        <div class="modal-dialog modal-xl" style="max-width: 60%;">
+            <div class="modal-content">
+
+                <div class="d-flex flex-row justify-content-between p-4">
+                    <h5 class="modal-title" id="detailsModalLabel">
+                        عرض تفاصيل القيد
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row mx-0">
+                        <div class="col-lg-3 text-end">
+                            <label>التاريخ :</label>
+                            <label class="tarnsDate"></label>
+                        </div>
+
+                        <div class="col-lg-9 text-start">
+                            <label>البيان :</label>
+                            <label class="tarnsStatement"></label>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead class="table-secondary">
+                                <tr class="text-center">
+                                    <th>#</th>
+                                    <th>الحساب</th>
+                                    <th>مدين</th>
+                                    <th>دائن</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="detailsTBody"></tbody>
+
+                            <tfoot>
+                                <tr>
+                                    <th colspan="2">الإجمالي</th>
+                                    <th id="tdDebitAmount"></th>
+                                    <th id="tdCreditAmount"></th>
+                                </tr>
+
+                                <tr>
+                                    <th colspan="2">الصافي</th>
+                                    <th colspan="2" id="tdBalance"></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    @*@Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")*@
+
+
+    <!-- 1. jQuery أولاً -->
+    <script src="~/My-Layout/jQuery-v3.7.1/jQuery v3.7.1.min.js"></script>
+
+    <!-- 2. Bootstrap -->
+    <script src="~/My-Layout/Bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- 3. Select2 -->
+    <script src="~/My-Layout/Select2 4.1.0/js/Select2 4.1.0.js"></script>
+    <script src="~/My-Layout/DataTable/js/DataTables 3.1.3.js"></script>
+    <script src="~/Temp/AutoNumeric/auto-numeric.js"></script>
+    <script src="~/My-Layout/sweetalert2/sweetalert2-v11.26.25.js"></script>
+    <script src="~/Temp/Tree/dist/jstree.js"></script>
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Temp/charts/chart.js"></script>
+    <script src="~/Scripts/toastr.min.js"></script>
+
+
     @RenderSection("scripts", required: false)
+
+    <script>
+
+        function CustomAutoNumeric(inputId) {
+            return new AutoNumeric(inputId, {
+                digitGroupSeparator: ',', // الفاصلة بين الآلاف
+                decimalCharacter: '.',    // النقطة كعلامة عشرية
+                decimalPlaces: 2,          // عدد المنازل العشرية
+                defaultValue: "0.00"      // القيمة الافتراضية
+            });
+        }
+
+        // الدالة دي بغرض توحيد الدوال حذفت من جميع الشاشات و بقت هنا فقط
+        function select2list(selector, url, placeholder, modalName = null) {
+            $(selector).select2({
+                //dropdownParent: $(modalName),
+                ...(modalName ? { dropdownParent: $(modalName) } : {}),
+                language: {
+                    inputTooShort: function () { return 'ادخل حرف واحد علي الاقل'; },
+                    noResults: function () { return 'لا توجد نتائج مطابقة، يمكنك إدخال قيمة جديدة'; } // رسالة في حالة عدم وجود نتائج
+                },
+                ajax: {
+                    url: url,
+                    dataType: 'json',
+                    delay: 100,
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data,
+                            pagination: {
+                                more: ((data.total_count) > (params.page * 20))
+                            }
+                        };
+                    },
+                    cache: false
+                },
+                placeholder: placeholder,
+                minimumInputLength: 1,
+                width: '100%' // لضبط عرض القائمة المنسدلة لتكون بعرض العنصر الأساسي
+            });
+        };
+
+        // دي حقت اسم المستلم بتقبل انه يدخل قيمة جديدة اذا ما موجودة في البيانات الراجعة - مستخدمة في اسم المستلم
+        function select2listNew(selector, url, placeholder, modalName = null) {
+            $(selector).select2({
+                tags: true, // السماح بإضافة قيم جديدة
+                dropdownParent: $(modalName),
+                language: {
+                    inputTooShort: function () { return 'ادخل حرف واحد على الأقل'; },
+                    noResults: function () { return 'لا توجد نتائج مطابقة، يمكنك إدخال قيمة جديدة'; } // رسالة في حالة عدم وجود نتائج
+                },
+                ajax: {
+                    url: url,
+                    dataType: 'json',
+                    delay: 100,
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        // تحويل البيانات إلى تنسيق { id: ..., text: ... } المطلوب بواسطة Select2
+                        var transformedData = data.map(function (item) {
+                            //return { id: item.text, text: item.text }; // هنا نقوم باستخدام `text` كـ `id` أيضًا
+                            //return { id: item.id??0, text: item.text };
+                            return { id: item.id != null && item.id != 0 ? item.id : item.text, text: item.text };
+                        });
+
+                        // إرجاع البيانات مع التحكم في التحميل المتدرج
+                        return {
+                            results: transformedData,
+                            pagination: {
+                                more: (data.length >= 20) // استخدم شرط مناسب للتحكم في التحميل المتدرج
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: placeholder,
+                minimumInputLength: 1,
+                createTag: function (params) { // للسماح بإدخال القيم الجديدة
+                    return {
+                        id: params.term,
+                        text: params.term,
+                        newTag: true // تحديد العنصر كقيمة جديدة
+                    };
+                }
+            });
+        }
+
+        function formatNumber(num) {
+            //if (num === null) {
+            //    return '0';
+            //}
+
+            if (num === null || num === undefined || isNaN(num)) {
+                return '0';
+            }
+
+            // تمت اضفاته مؤخرا وشغالة تمام
+            num = num.toString(); // ✅ حول القيمة لنص
+
+            // معالجة الجزء الصحيح والجزء العشري
+            var parts = num.split('.');
+            var integerPart = parts[0];
+            var decimalPart = parts[1] || '';
+
+            // إذا كان هناك جزء صحيح، أضف له الفواصل
+            integerPart = integerPart.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+            // إذا كان هناك جزء عشري، أضف له الفواصل
+            if (decimalPart) {
+                // var roundedDecimal = parseFloat(decimalPart).toFixed(2); // تقريب إلى خانتين عشريتين
+                var roundedDecimal = (parseFloat('0.' + decimalPart).toFixed(2)).split('.')[1];
+                // roundedDecimal = roundedDecimal.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                roundedDecimal = roundedDecimal.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return integerPart + '.' + roundedDecimal;
+            }
+
+            return integerPart;
+        }
+
+        function loadNotifications() {
+
+            $.get("/Home/GetNotifications", function (data) {
+
+                var menu = $("#notificationMenu");
+                menu.empty();
+
+                if (data.length > 0) {
+                    $("#notificationDropdown").show(); // إظهار الجرس
+                    $("#notificationDropdown").css("display", "block"); // إظهار
+                    data.forEach(function (item) {
+                        menu.append(`
+                            <li class="border-bottom">
+                                <a class="text-decoration-none text-dark d-block p-2 notification-item"
+                                   href="#"
+                                   onclick="GoToSpecificPage(${item.type})">
+                                    ${item.message}
+                                </a>
+                            </li>
+                        `);
+                    });
+
+                    $("#notificationCount").text(data.length);
+                } else {
+                    // إخفاء الجرس إذا لم توجد إشعارات
+                    $("#notificationDropdown").css("display", "none");  // إخفاء
+                    $("#notificationDropdown").hide(); // إخفاء الجرس
+                    $("#notificationCount").text("0");
+                }
+            });
+        }
+
+        $(function () {
+            loadNotifications();
+        });
+
+        function GoToSpecificPage(type) {
+            switch (type) {
+                case 1:
+                    window.location.href = "/Transactions/PettyCashNotPayed";
+                    break;
+                case 2:
+                    window.location.href = "/Balances/OverLimitItems";
+                    break;
+                case 3:
+                    window.location.href = "/Transactions/IndexAll1";
+                    break;
+                default:
+                    console.log("Unknown type: " + type);
+            }
+        }
+
+        function CustomAutoNumericForElement(inputElement) {
+            return new AutoNumeric(inputElement, {
+                digitGroupSeparator: ',',
+                decimalCharacter: '.',
+                decimalPlaces: 2,
+                minimumValue: '0',
+                emptyInputBehavior: 'zero'
+            });
+        }
+
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const toggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('mainSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            // Sidebar Toggle
+            toggle?.addEventListener('click', function () {
+
+                const isOpen = sidebar.classList.contains('show');
+
+                sidebar.classList.toggle('show', !isOpen);
+                overlay?.classList.toggle('show', !isOpen);
+
+                toggle.setAttribute('aria-expanded', !isOpen);
+            });
+
+            // Close Sidebar when clicking overlay
+            overlay?.addEventListener('click', function () {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+                toggle.setAttribute('aria-expanded', 'false');
+            });
+
+            // Submenu Toggle
+            document.querySelectorAll('.sidebar-menu .menu-toggle')
+                .forEach(function (menuToggle) {
+
+                    menuToggle.addEventListener('click', function (event) {
+
+                        event.preventDefault();
+
+                        const parent = this.closest('.treeview');
+
+                        if (!parent) return;
+
+                        parent.classList.toggle('open');
+                    });
+
+                });
+
+        });
+
+        // عرض التفاصيل
+        $('#tbx').on('click', '.btnDetails', function () {
+            var currentRow = $(this).closest("tr");
+            var data = $('#tbx').DataTable().row(currentRow).data();
+            var IsDeleted = data['IsDeleted'];
+            var TransactionId = data['transactionId'];
+            var TransactionDate = data['transactionDateStr'];
+            var Note = data['note'];
+
+            $('.tarnsDate').text(TransactionDate);
+            $('.tarnsStatement').text(Note);
+
+            if (!IsDeleted) {
+                $.get('/Transactions/getDetailData', { "Id": TransactionId }, function (response) {
+                    $('.detailsTBody').empty();
+                    var sumOfDebit = 0;
+                    var sumOfCredit = 0;
+                    $.each(response, function (key, value) {
+                        var rows = "<tr id='row' style='font-size: 16px;text-align:center;'>"
+                            + "<td class='id'>" + value.id + "</td>"
+                            + "<td class='accName'>" + value.accName + "</td>"
+                            + "<td class='accName'>" + formatNumber(value.debit.toString()) + "</td>"
+                            + "<td class='credit'>" + formatNumber(value.credit.toString()) + "</td>"
+                            + "</tr>";
+                        $('.detailsTBody').append(rows);
+
+                        sumOfCredit = sumOfCredit + value.credit;
+                        sumOfDebit = sumOfDebit + value.debit;
+
+                    });
+
+                    var balance = sumOfDebit.toFixed(2) - sumOfCredit.toFixed(2);
+
+                    $('#tdDebitAmount').text(formatNumber(sumOfDebit.toString()));
+                    $('#tdCreditAmount').text(formatNumber(sumOfCredit.toString()));
+                    $('#tdBalance').text(formatNumber(balance.toString()));
+
+                });
+            }
+            else {
+                $.get('/DeleteTransactions/getDeletedDetailData', { "Id": TransactionId }, function (response) {
+                    $('.detailsTBody').empty();
+                    var sumOfDebit = 0;
+                    var sumOfCredit = 0;
+                    $.each(response, function (key, value) {
+                        var rows = "<tr id='row' style='font-size: 16px;text-align:center;'>"
+                            + "<td class='id'>" + value.id + "</td>"
+                            + "<td class='accName'>" + value.accName + "</td>"
+                            + "<td class='accName'>" + formatNumber(value.debit.toString()) + "</td>"
+                            + "<td class='credit'>" + formatNumber(value.credit.toString()) + "</td>"
+                            + "</tr>";
+                        $('.detailsTBody').append(rows);
+
+                        sumOfCredit = sumOfCredit + value.credit;
+                        sumOfDebit = sumOfDebit + value.debit;
+
+                    });
+
+                    var balance = sumOfDebit.toFixed(2) - sumOfCredit.toFixed(2);
+
+                    $('#tdDebitAmount').text(formatNumber(sumOfDebit.toString()));
+                    $('#tdCreditAmount').text(formatNumber(sumOfCredit.toString()));
+                    $('#tdBalance').text(formatNumber(balance.toString()));
+
+                });
+            }
+        });
+
+    </script>
 </body>
 </html>

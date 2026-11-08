@@ -1,78 +1,152 @@
 ﻿@{
     ViewBag.Title = "TaxReport";
-    Layout = "~/Views/Shared/_Layout2.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h2>TaxReport</h2>
 
 @section content
 {
-    <div class="content-wrapper">
-        <div class="grad"></div>
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <h1>
-                المصروفات حسب البنك
-            </h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
-                <li class="active">المصروفات حسب البنك</li>
-            </ol>
-        </section>
+    <!-- Content Header -->
 
-        <section class="content">
+    <section class="d-flex flex-row justify-content-between align-items-center my-3">
+        <h3>
+            موقف الصرف بالبنوك
+        </h3>
+
+        <ol class="breadcrumb">
+            <li>
+                <a class="text-decoration-none text-black" href="@Url.Action("Index", "Home")">
+                    <i class="bi bi-house-fill"></i>
+                    النظام المحاسبي >
+                </a>
+            </li>
+            <li class="breadcrumb-item active">
+                موقف الصرف بالبنوك
+            </li>
+        </ol>
+    </section>
+
+
+    <!-- Main Content -->
+    <section class="content">
+        <div class="container-fluid">
+
             <div class="row">
-                <div class="col-lg-4">
-                    <div class="form-group">
-                        <label for="transactionDate"> من تاريخ</label>
+
+                <!-- Date From -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="mb-3">
+                        <label for="DateFrom" class="form-label">
+                            من تاريخ
+                        </label>
+
                         <div class="input-group">
-                            <span class="input-group-addon">
-                                <i class="fa fa-calendar-alt"></i>
+                            <span class="input-group-text">
+                                <i class="bi bi-calendar-alt"></i>
                             </span>
-                            <input type="text" class="form-control  calendar DateFrom" id="DateFrom" name="DateFrom" placeholder="تاريخ القيد" autocomplete="off">
+
+                            <input type="date"
+                                   class="form-control calendar DateFrom"
+                                   id="DateFrom"
+                                   name="DateFrom"
+                                   placeholder="تاريخ القيد"
+                                   autocomplete="off">
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="form-group">
-                        <label for="transactionDate"> الي تاريخ</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <i class="fa fa-calendar-alt"></i>
-                            </span>
-                            <input type="text" class="form-control  calendar DateTo" id="DateTo" name="DateTo" placeholder="حتي تاريخ" autocomplete="off">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="form-group">
-                        <label for="name">اسم البنك</label>
-                        <div class="input-group">
-                            <div class="input-group-addon">
-                                <i class="fa fa-book"></i>
-                            </div>
-                            <select class="form-control list addAccName" name="addAccName" id="addAccName" style="width:100%"></select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class=" col-md-3">
-                    <button id="btnsearch" onclick="Search()" class="btn btn-primary btn-sm form-control">بحث</button>
                 </div>
 
-                <div class=" col-md-3">
-                    <button id="btnall" onclick="PrintData()" class="btn form-control btn-info btn-sm">طباعة التقرير </button>
+                <!-- Date To -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="mb-3">
+                        <label for="DateTo" class="form-label">
+                            إلى تاريخ
+                        </label>
+
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-calendar-alt"></i>
+                            </span>
+
+                            <input type="date"
+                                   class="form-control calendar DateTo"
+                                   id="DateTo"
+                                   name="DateTo"
+                                   placeholder="حتى تاريخ"
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bank Name -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="mb-3">
+                        <label for="addAccName" class="form-label">
+                            اسم البنك
+                        </label>
+
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-bank"></i>
+                            </span>
+
+                            <select class="form-select list addAccName"
+                                    name="addAccName"
+                                    id="addAccName"
+                                    style="width:100%">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Actions -->
+            <div class="row g-2 mb-3">
+
+                <div class="col-lg-3 col-md-6">
+                    <button type="button"
+                            id="btnsearch"
+                            onclick="Search()"
+                            class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i>
+                        بحث
+                    </button>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <button type="button"
+                            id="btnall"
+                            onclick="PrintData()"
+                            class="btn btn-info w-100">
+                        <i class="bi bi-printer"></i>
+                        طباعة التقرير
+                    </button>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <button type="button"
+                            onclick="PrintDataAll()"
+                            class="btn btn-warning w-100">
+                        <i class="bi bi-printer-fill"></i>
+                        طباعة جميع المصروفات
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Data Table -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <table id="tbl"
+                               class="dataTable table table-striped table-hover w-100">
+                            <tbody id="tbod"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            <div class="row" style="margin: 30px;">
-                <table id="tbl" class="dataTable table table-striped table-hover" style="width:100%">
-                    <tbody id="tbod"></tbody>
-                </table>
-            </div>
-        </section>
-    </div>
+        </div>
+    </section>
 }
 
 @section scripts{
@@ -81,6 +155,14 @@
         var myId = 0;
 
         $(document).ready(function () {
+             const today = new Date();
+             const selectedYear = @ViewBag.Year;
+
+             const dateValue = `${selectedYear}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+             $('#DateFrom').val(dateValue);
+             $('#DateTo').val(dateValue);
+
             select2list("#addAccName", "/Shared/getAllBanks", "اسم البنك");
         });
 
@@ -102,7 +184,26 @@
 
             window.open(url, '_blank').focus();
         }
-    
+
+        function PrintDataAll() {
+            var Id = $('.addAccName').val();
+            var DateFrom = $('#DateFrom').val();
+            var DateTo = $('#DateTo').val();
+
+            if (Id === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "خطاء",
+                    text: "الرجاء اختيار اسم الحساب",
+                });
+                return;
+            }
+
+            var url = "/Reports/BanksSarafFroAllAccTrees?dateFrom=" + DateFrom + "&dateTo=" + DateTo + "&&ParentId=" + Id;
+
+            window.open(url, '_blank').focus();
+        }
+
         function Search() {
             var DateFrom = $('#DateFrom').val();
             var DateTo = $('#DateTo').val();

@@ -19,7 +19,14 @@ namespace Purchases.Controllers
         private Entities db = new Entities();
         private Reports reportObject = new Reports();
         private SharedClass sh = new SharedClass();
+        private string userYear = "";
 
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            base.OnActionExecuting(filterContext);
+            var userId = User.Identity.GetUserId();
+            userYear = sh.GetUserCurrentFinancialCycleYear(userId);
+        }
         /*---------------------------------------دفتر الاستاذ---------------------------------*/
 
         // طباعة بيانات الحركة لي بند محدد بين تاريخين  
@@ -200,6 +207,7 @@ namespace Purchases.Controllers
         // شاشة طباعة دفتر الاستاذ
         public ActionResult printLedgerReport()
         {
+            ViewBag.Year = userYear;
             return View();
         }
 
@@ -258,6 +266,7 @@ namespace Purchases.Controllers
         // ده شاشة تقرير قيد اليومية في الشاشة الرئيسية
         public ActionResult printDataReport()
         {
+            ViewBag.Year = userYear;
             return View();
         }
 
@@ -319,6 +328,7 @@ namespace Purchases.Controllers
         // شاشة طباعة ضريبة ال 1% الخاصة بالمصروفات
         public ActionResult TaxReport()
         {
+            ViewBag.Year = userYear;
             return View();
         }
 
@@ -772,6 +782,7 @@ namespace Purchases.Controllers
         // شاشة تقرير حركات البنوك
         public ActionResult BankTransReport()
         {
+            ViewBag.Year = userYear;
             return View();
         }
 
@@ -828,6 +839,27 @@ namespace Purchases.Controllers
             //return Json(val, JsonRequestBehavior.AllowGet);
         }
 
+        // دي حسب البنك رئاسة او بورتسودان
+        public ActionResult BanksSarafFroAllAccTrees(DateTime? DateFrom, DateTime? DateTo, int ParentId)
+        {
+            SharedClass sc = new SharedClass();
+            if (DateFrom != null && DateTo != null)
+            {
+                ViewBag.DateFrom = DateFrom.Value.ToShortDateString();
+                ViewBag.DateTo = DateTo.Value.ToShortDateString();
+            }
+            var userId = User.Identity?.GetUserId();
+            ViewBag.AccName = db.AccountTrees.Find(ParentId).AccName;
+            int CurrentFinancialCycleId = sc.GetUserCurrentFinancialCycleId(userId);
+
+            var CurrentFinancialCycle = db.FinancialCycles.Find(CurrentFinancialCycleId).Year;
+            ViewBag.CurrentFinancialCycle = CurrentFinancialCycle;
+            var val = reportObject.BanksSarafFroAllAccTrees(CurrentFinancialCycleId, ParentId, DateFrom, DateTo);
+
+            return View(val);
+            //return Json(val, JsonRequestBehavior.AllowGet);
+        }
+
         // دي تست لي تقرير موقف الموازنه - برسل ليها رقم السنة المالية المحددة وبترجع لي تقرير عن الموقف المالي للموازنة
         public ActionResult printBalancesReportRevenue(DateTime? DateFrom, DateTime? DateTo, int ParentId)
         {
@@ -875,12 +907,14 @@ namespace Purchases.Controllers
         // شاشة تقرير مراقبة الصرف
         public ActionResult BalancesReport()
         {
+            ViewBag.Year = userYear;
             return View();
         }
 
         // شاشة تقرير مراقبة الصرف
         public ActionResult BalancesReportForBanks()
         {
+            ViewBag.Year = userYear;
             return View();
         }
 

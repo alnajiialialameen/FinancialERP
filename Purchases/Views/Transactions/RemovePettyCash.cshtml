@@ -1,246 +1,397 @@
 ﻿@using Purchases.Models.ViewModel;
 @{
     ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_Layout2.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @section content{
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-        <div class="grad"></div>
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <h1>
-                إزالة النثريات
-            </h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
-                <li class="active">إزالة النثريات</li>
-            </ol>
-        </section>
 
-        <section class="content">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="box">
-                        <!-- /.box-header -->
-                        <div class="box-body">
-                            <div class="row m-3">
-                                <div class="col-12">
-                                    <label id="TransactionId" class="hide">@ViewBag.TransactionId</label>
-                                    <a class="btn btn-primary" style="margin-right:45px; margin-bottom: 10px;" href="@Url.Action("PettyCashNotPayed", "Transactions")">النثريات بالعمليات </a>
+    <section class="d-flex flex-row justify-content-between align-items-center my-3">
+        <h3>
+            إزالة النثريات
+        </h3>
+
+        <ol class="breadcrumb">
+            <li>
+                <a class="text-decoration-none text-black" href="@Url.Action("Index", "Home")">
+                    <i class="bi bi-house-fill"></i>
+                    النظام المحاسبي >
+                </a>
+            </li>
+            <li class="breadcrumb-item active">
+                إزالة النثريات
+            </li>
+        </ol>
+    </section>
+
+
+    <section class="content py-3">
+        <div class="container-fluid">
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <!-- Header -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <label id="TransactionId" class="d-none">@ViewBag.TransactionId</label>
+
+                            <a class="btn btn-primary"
+                               href="@Url.Action("PettyCashNotPayed", "Transactions")">
+                                <i class="bi bi-arrow-right-circle me-1"></i>
+                                النثريات بالعمليات
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+
+                        <!-- Petty Cash Details -->
+                        <div class="col-12 col-md-4">
+
+                            <div class="card border-0 bg-body-tertiary">
+                                <div class="card-body">
+
+                                    <h4 class="mb-4">تفاصيل النثرية</h4>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="displayTransactionDate">التاريخ</label>
+                                        <input class="form-control"
+                                               id="displayTransactionDate"
+                                               disabled
+                                               value="@ViewBag.TransactionDate" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="displayRecipient">اسم المستلم</label>
+                                        <input class="form-control"
+                                               id="displayRecipient"
+                                               disabled
+                                               value="@ViewBag.Recipient" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="displayTotalAmount">إجمالي المبلغ</label>
+                                        <input class="form-control"
+                                               id="displayTotalAmount"
+                                               disabled
+                                               value="@ViewBag.TotalAmount" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="displayCurrencyType">العملة</label>
+                                        <input class="form-control"
+                                               id="displayCurrencyType"
+                                               disabled
+                                               value="@ViewBag.CurrencyType" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="displayExchangeRate">سعر الصرف</label>
+                                        <input class="form-control"
+                                               id="displayExchangeRate"
+                                               disabled
+                                               value="@ViewBag.ExchangeRate" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="displayNote">البيان</label>
+                                        <textarea class="form-control"
+                                                  id="displayNote"
+                                                  disabled
+                                                  rows="4">@ViewBag.Note</textarea>
+                                    </div>
+
+                                    <hr class="my-4" />
+
+                                    <!-- Transaction Details -->
+                                    <h4 class="mb-3">تفاصيل القيد</h4>
+
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped table-sm detials align-middle">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>الحساب</th>
+                                                    <th>مدين</th>
+                                                    <th>دائن</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in ViewBag.TransactionDetails as List<TransactionVM>)
+                                                {
+                                                    <tr>
+                                                        <td>@item.accTrreId</td>
+                                                        <td>@item.accName</td>
+                                                        <td>@item.debit</td>
+                                                        <td>@item.credit</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <label id="DebitAccName" class="hide1 d-none">@ViewBag.DebitAccName</label>
+                                    <label id="DebitAccId" class="hide1 d-none">@ViewBag.DebitAccId</label>
+
                                 </div>
                             </div>
-                            <div class="container">
-                                <div class="row ">
-                                    <div class="col-md-4">
-                                        <h3>تفاصيل النثرية</h3>
-                                        <div class="mb-3">
-                                            <lable class="form-label" for="displayTransactionDate">التاريخ</lable>
-                                            <input class="form-control" id="displayTransactionDate" disabled value="@ViewBag.TransactionDate" />
+                        </div>
+
+                        <!-- Add Petty Cash -->
+                        <div class="col-12 col-md-8">
+
+                            <div class="card border-0">
+                                <div class="card-body">
+
+                                    <h4 class="mb-4">إزالة النثرية</h4>
+
+                                    <div class="row g-3">
+
+                                        <!-- Account Name -->
+                                        <div class="col-12 col-lg-6">
+                                            <div class="mb-3">
+                                                <label for="addAccName" class="form-label">اسم الحساب</label>
+
+                                                <div class="input-group">
+                                                    <span class="input-group-text">
+                                                        <i class="bi bi-book"></i>
+                                                    </span>
+
+                                                    <select class="form-select list addAccName"
+                                                            name="addAccName"
+                                                            id="addAccName"
+                                                            style="width:100%">
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
 
-                                        <div class="mb-3">
-                                            <lable class="form-label" for="displayRecipient">اسم المستلم</lable>
-                                            <input class="form-control" id="displayRecipient" disabled value="@ViewBag.Recipient " />
-                                        </div>
+                                        <!-- Amount -->
+                                        <div class="col-12 col-lg-6">
+                                            <div class="mb-3">
 
-                                        <div class="mb-3">
-                                            <lable class="form-label" for="displayTotalAmount">إجمالي المبلغ</lable>
-                                            <input class="form-control" id="displayTotalAmount" disabled value="@ViewBag.TotalAmount " />
-                                        </div>
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <label for="amount" class="form-label mb-0">المبلغ</label>
+                                                    <strong id="AmountCurrencyDecimalText"
+                                                            class="AmountCurrencyDecimalText"></strong>
+                                                </div>
 
-                                        <div class="mb-3">
-                                            <lable class="form-label" for="displayCurrencyType">العملة</lable>
-                                            <input class="form-control" id="displayCurrencyType" disabled value="@ViewBag.CurrencyType" />
-                                        </div>
+                                                <div class="input-group">
+                                                    <span class="input-group-text">
+                                                        <i class="bi bi-cash"></i>
+                                                    </span>
 
-                                        <div class="mb-3">
-                                            <lable class="form-label" for="displayExchangeRate">سعر الصرف</lable>
-                                            <input class="form-control" id="displayExchangeRate" disabled value="@ViewBag.ExchangeRate" />
-                                        </div>
+                                                    <input class="form-control amount"
+                                                           type="text"
+                                                           name="amount"
+                                                           id="amount"
+                                                           placeholder="المبلغ"
+                                                           autocomplete="off" />
+                                                </div>
 
-                                        <div class="mb-3">
-                                            <lable class="form-label" for="displayNote">البيان</lable>
-                                            <textarea class="form-control" id="displayNote" disabled rows="4">@ViewBag.Note</textarea>
-                                        </div>
-
-                                        <div style="margin-top:50px;">
-                                            <h3>تفاصيل القيد</h3>
-                                            <table class="table table-bordered table-striped detials mt-4">
-                                                <thead>
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th>الحساب</th>
-                                                        <th>مدين</th>
-                                                        <th>دائن</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach (var item in ViewBag.TransactionDetails as List<TransactionVM>)
-                                                    {
-                                                        <tr>
-                                                            <td>@item.accTrreId</td>
-                                                            <td>@item.accName</td>
-                                                            <td>@item.debit</td>
-                                                            <td>@item.credit</td>
-                                                        </tr>
-                                                    }
-                                                </tbody>
-                                            </table>
-
-                                            <label id="DebitAccName" class="hide1">@ViewBag.DebitAccName</label>
-                                            <label id="DebitAccId" class="hide1">@ViewBag.DebitAccId</label>
+                                            </div>
                                         </div>
 
                                     </div>
-                                    <div class="col-md-8">
 
-                                        <h3>ازالة النثرية</h3>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    <label for="addAccName">اسم الحساب</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-addon">
-                                                            <i class="fa fa-book"></i>
-                                                        </div>
-                                                        <select class="form-control list addAccName" name="addAccName" id="addAccName" style="width:100%"></select>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    <hr class="my-3" />
 
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    <div class="flex">
-                                                        <label for="amount">المبلغ</label>
-                                                        <strong id="AmountCurrencyDecimalText" class="AmountCurrencyDecimalText"></strong>
-                                                    </div>
-                                                    <div class="input-group">
-                                                        <div class="input-group-addon">
-                                                            <i class="fa  fa-book"></i>
-                                                        </div>
-                                                        <input class="form-control amount" type="text" name="amount" id="amount" placeholder="المبلغ" autocomplete="off" />
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    <!-- Add To Table -->
+                                    <div class="row g-3">
 
+                                        <div class="col-12">
+                                            <button type="button"
+                                                    class="btn btn-info w-100"
+                                                    onclick="addToTable()">
+                                                <i class="bi bi-plus-circle me-1"></i>
+                                                ترحيل
+                                            </button>
                                         </div>
 
-                                        <div class="divider"></div>
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <button type="submit" class="btn btn-info btn-block" onclick="addToTable()">ترحيل</button>
-                                            </div>
+                                        <!-- Transactions Table -->
+                                        <div class="col-12">
+                                            <div class="table-responsive">
 
-                                            <div class="col-lg-12">
-                                                <table id="example1" class="table table-bordered table-striped virtualTable">
-                                                    <thead>
+                                                <table id="example1"
+                                                       class="table table-bordered table-striped table-hover virtualTable align-middle">
+
+                                                    <thead class="table-light">
                                                         <tr>
-                                                            <th style="text-align:center ;width:150px;">#</th>
-                                                            <th style="text-align:center ;width:750px;">اسم الحساب</th>
-                                                            <th style="text-align:center ;width:750px;">مدين</th>
-                                                            <th style="text-align:center ;width:750px;">دائن</th>
+                                                            <th class="text-center text-nowrap" style="width:150px;">#</th>
+                                                            <th class="text-center text-nowrap" style="width:750px;">اسم الحساب</th>
+                                                            <th class="text-center text-nowrap" style="width:750px;">مدين</th>
+                                                            <th class="text-center text-nowrap" style="width:750px;">دائن</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody class="myTbody"></tbody>
-                                                    <tfoot class="myTFoot" style="background-color: #000000; color: #ffffff; text-align: center;"></tfoot>
-                                                </table>
-                                            </div>
 
-                                            <div class="col-lg-12">
-                                                <button type="submit" class="btn btn-success btn-block" id="btnSave">حفظ</button>
+                                                    <tbody class="myTbody"></tbody>
+
+                                                    <tfoot class="myTFoot table-dark text-center"></tfoot>
+
+                                                </table>
+
                                             </div>
                                         </div>
+
+                                        <!-- Save -->
+                                        <div class="col-12">
+                                            <button type="button"
+                                                    class="btn btn-success w-100"
+                                                    id="btnSave">
+                                                <i class="bi bi-save me-1"></i>
+                                                حفظ
+                                            </button>
+                                        </div>
+
                                     </div>
+
                                 </div>
-                            </div><!-- /.box-body -->
+                            </div>
 
-                        </div><!-- /.box -->
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
+                        </div>
+
+                    </div>
+                </div>
             </div>
-        </section>
 
-    </div><!-- /.content-wrapper -->
-
+        </div>
+    </section>
 
 
     <div class="example-modal">
-        <div class="modal fade in" id="add-statement-modal" data-backdrop="static">
-            <div class="modal-dialog" style="width:60% !important">
+
+        <div class="modal fade"
+             id="add-statement-modal"
+             tabindex="-1"
+             aria-labelledby="add-statement-modal-label"
+             aria-hidden="true"
+             data-bs-backdrop="static">
+
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" style="max-width:80%;">
                 <div class="modal-content">
-                    <div class="modal-header .no-border">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title"> إضافة عملية جديدة</h4>
+
+                    <!-- Modal Header -->
+                    <div class="border-0 d-flex justify-content-between align-items-center">
+                        <h5 class="modal-title" id="add-statement-modal-label">
+                            إضافة عملية جديدة
+                        </h5>
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                        </button>
                     </div>
+
+                    <!-- Modal Body -->
                     <div class="modal-body">
+
                         <form id="add-statement-form">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label for="addCurrencyType">العملة</label>
+
+                            <div class="row g-3">
+
+                                <!-- Currency -->
+                                <div class="col-12 col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="addCurrencyType" class="form-label">العملة</label>
+
                                         <div class="input-group">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-money-bill-alt"></i>
-                                            </div>
-                                            <select class="form-control list addCurrencyType" name="addCurrencyType" id="addCurrencyType" style="width:100%"></select>
+                                            <span class="input-group-text">
+                                                <i class="bi bi-cash"></i>
+                                            </span>
+
+                                            <select class="form-select list addCurrencyType"
+                                                    name="addCurrencyType"
+                                                    id="addCurrencyType"
+                                                    style="width:100%">
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label for="recipient">اسم المستلم</label>
+                                <!-- Recipient -->
+                                <div class="col-12 col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="recipient" class="form-label">اسم المستلم</label>
+
                                         <div class="input-group">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-user"></i>
-                                            </div>
-                                            @*<input type="text" class="form-control recipient" name="recipient" id="recipient" placeholder="اسم المستلم" style="width:100%" />*@
-                                            <select class="form-control list recipient" name="recipient" id="recipient" style="width:100%"></select>
+                                            <span class="input-group-text">
+                                                <i class="bi bi-person"></i>
+                                            </span>
+
+                                            <select class="form-select list recipient"
+                                                    name="recipient"
+                                                    id="recipient"
+                                                    style="width:100%">
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label for="statement">البيان</label>
+                                <!-- Statement -->
+                                <div class="col-12">
+                                    <div class="mb-3">
+                                        <label for="statement" class="form-label">البيان</label>
+
                                         <div class="input-group">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-book"></i>
-                                            </div>
-                                            <textarea class="form-control statement" id="statement" name="statement" required> </textarea>
+                                            <span class="input-group-text align-items-start pt-2">
+                                                <i class="bi bi-book"></i>
+                                            </span>
+
+                                            <textarea class="form-control statement"
+                                                      id="statement"
+                                                      name="statement"
+                                                      rows="3"
+                                                      required></textarea>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
 
-                            <div class="row">
-                                <button type="submit" class="btn btn-success btnCreate" style="width: 100%;" onclick="saveData()">حفظ</button>
+                            <!-- Save -->
+                            <div class="d-grid mt-3">
+                                <button type="submit"
+                                        class="btn btn-success btnCreate"
+                                        onclick="saveData()">
+                                    <i class="bi bi-save me-1"></i>
+                                    حفظ
+                                </button>
                             </div>
+
                         </form>
-                        <hr />
-                        <div class="row">
-                            <table class="table table-bordered table-striped table-hover">
-                                <thead style="background-color:#808080">
+
+                        <hr class="my-4" />
+
+                        <!-- Statement Details -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover align-middle">
+
+                                <thead class="table-secondary">
                                     <tr class="text-center">
-                                        <td>مدين</td>
-                                        <td>دائن</td>
-                                        <td>الحساب</td>
+                                        <th>مدين</th>
+                                        <th>دائن</th>
+                                        <th>الحساب</th>
                                     </tr>
                                 </thead>
+
                                 <tbody class="presntTBody"></tbody>
+
                             </table>
                         </div>
 
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            </div><!-- /.modal -->
+                    </div>
+
+                </div>
+            </div>
         </div>
+
     </div>
+    
 
 }
-}
+
 
 @section scripts{
     <script>
@@ -254,7 +405,10 @@
             creditAmountObj = CustomAutoNumeric('#amount');
 
             select2list("#addAccName", "/Shared/GetAccTreesInBalanceAndBanks", "اسم الحساب");
-            select2list("#addCurrencyType", "/Shared/getCurrency", "العملة");
+            select2list("#addCurrencyType", "/Shared/getCurrency", "العملة", "#add-statement-modal");
+
+            select2listNew(".recipient", "/Shared/getAllRecipient", "  اسم المستلم ", "#add-statement-modal");
+
         });
 
 
@@ -342,7 +496,7 @@
                     if (creditAmount > 0) {
                         rptList.push({
                             "addAccName": addAccName,
-                            "accTrreId": addAccNameId,
+                            "accTrreId": parseInt(addAccNameId),
                             "debit": parseFloat(parseFloat(creditAmount).toFixed(2)),
                             "credit": 0,
                             "isCredit": "false",
@@ -351,7 +505,7 @@
                     } else {
                         rptList.push({
                             "addAccName": addAccName,
-                            "accTrreId": addAccNameId,
+                            "accTrreId": parseInt(addAccNameId),
                             "credit": 0,
                             "debit": parseFloat(parseFloat(creditAmount).toFixed(2)),
                             "IsCredit": "false",
@@ -378,7 +532,7 @@
                     // إضافة الدائن بقيمة إجمالي المدين
                     rptList.push({
                         "addAccName": fixedCreditAccountName,
-                        "accTrreId": fixedCreditAccountId,
+                        "accTrreId": parseInt(fixedCreditAccountId),
                         "credit": parseFloat(parseFloat(totalDebitAmount).toFixed(2)),
                         "debit": 0,
                         "isCredit": "false",
@@ -443,7 +597,7 @@
                     + "<td class='name'>" + item.addAccName + "</td>"
                     + "<td class='creditAmount'>" + item.debit + "</td>"
                     + "<td class='debitAmount'>" + item.credit + "</td>"
-                    + "<td class='transDetailId hidden'>0</td>"
+                    + "<td class='transDetailId d-none'>0</td>"
                     //+ '<td class="btnDelete"><button id="delete" class="btn btn-warning transfer delete">حذف<i class="transfer-fa fa fa-trash"></i></button></td>'
                     + "</tr>";
 
@@ -476,9 +630,9 @@
                     "recipient": recipient,
                     "note": statement,
                     "transactionDate": transactionDate,
-                    "currencyId": currencyId,
-                    "recipientId": recipientId,
-                    "transactionId": transactionId
+                    "currencyId": parseInt(currencyId),
+                    "recipientId": parseInt(recipientId),
+                    "transactionId": parseInt(transactionId)
                 }));
 
                 console.log(rptList);
@@ -510,6 +664,17 @@
                 toastr["error"]("الرجاء ادخال جميع البيانات", "خطأ");
             }
         }
+
+
+        $('#add-statement-form').on('submit', function (e) {
+            e.preventDefault();
+
+            // كل الحقول صحيحة
+            saveData();
+
+            this.reset(); // إعادة تعيين النموذج بعد الحفظ
+        });
+
 
         function saveData1() {
             if (rptList.length === 0) {

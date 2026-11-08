@@ -1,5 +1,5 @@
 ﻿@{
-    Layout = "~/Views/Shared/_Layout2.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @section content{
@@ -15,11 +15,12 @@
 
         .print-dueDate {
             position: absolute;
-            top: 90px;
-            right: 110px;
+            top: 105px;
+            right: 120px;
             font-size: 18px;
             font-weight: bold;
         }
+
         .print-payNo {
             position: absolute;
             top: 110px;
@@ -28,17 +29,19 @@
             font-weight: bold;
             display: none;
         }
+
         .print-amount {
             position: absolute;
-            top: 250px;
-	    left: 535px;
+            top: 295px;
+            left: 640px;
             font-size: 22px;
             font-weight: bold;
         }
+
         .print-textAmount {
             position: absolute;
-            top: 160px;
-            right: 120px;
+            top: 185px;
+            right: 140px;
             font-size: 18px;
             font-weight: bold;
             line-height: 1.7;
@@ -46,111 +49,167 @@
 
         .print-recipient {
             position: absolute;
-            top: 120px;
-            right: 120px;
+            top: 140px;
+            right: 130px;
             font-size: 20px;
             font-weight: bold;
             line-height: 1.7;
         }
-        .print-checkNo{
+
+        .print-checkNo {
             position: absolute;
             top: 10px;
-            right: 50px;
+            right: 60px;
             font-size: 20px;
             font-weight: bold;
             line-height: 1.7;
         }
 
         .print-span {
-            color:red
+            color: red
         }
     </style>
 
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-        <div class="grad"></div>
 
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <h1>
-                طباعة الشيكات 
-            </h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-home"></i> النظام المالي </a></li>
-                <li class="active"> طباعة شيكات </li>
-               
-            </ol>
-            <label id="IsCheckPrinted" class="hidden">@ViewBag.IsCheckPrinted</label>
-        </section>
+    <section class="d-flex flex-row justify-content-between align-items-center my-3">
+        <h3>
+            طباعة الشيكات
+        </h3>
 
-        <h4 class="TransactionId hidden">@ViewBag.TransactionId</h4>
+        <ol class="breadcrumb">
+            <li>
+                <a class="text-decoration-none text-black" href="@Url.Action("Index", "Home")">
+                    <i class="bi bi-house-fill"></i>
+                    النظام المحاسبي >
+                </a>
+            </li>
+            <li class="breadcrumb-item active">
+                طباعة الشيكات
+            </li>
+        </ol>
+    </section>
 
-        <section class="content">
+    <h4 class="TransactionId d-none">@ViewBag.TransactionId</h4>
+
+    <section class="content py-3">
+        <div class="container-fluid">
             <div class="row">
-                <div class="col-xs-12">
-                    <div class="box">
-                        <div class="box-header">
-                            <div class="header-content hidden" id="header-content">
-                                تم استخراج شيك من قبل ... عند الطباعة سيتم التعديل علي البيانات السابقة
+                <div class="col-12">
+                    <div class="card shadow-sm">
+
+                        <div class="card-header">
+                            <div class="header-content d-none" id="header-content">
+                                تم استخراج شيك من قبل ... عند الطباعة سيتم التعديل على البيانات السابقة
                             </div>
-                        </div><!-- /.box-header -->
-                        <div class="box-body">
-                            <div class="col-lg-3">
-                                <div class="box box-info">
-                                    <div class="box-body">
-                                        <div class="row">
-                                            <div class="checs-data" style="padding: 0 15px">
-                                                <div class="">
-                                                    <label for="dueDate"> التاريخ</label>
-                                                    <input type="text" class="form-control checs-input dueDate calendar" id="dueDate" name="dueDate" placeholder="تاريخ الشيك" autocomplete="off" />
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row g-3">
+
+                                <!-- Check Data -->
+                                <div class="col-12 col-lg-3">
+                                    <div class="card border-info h-100">
+                                        <div class="card-body">
+
+                                            <div class="checs-data">
+
+                                                <div class="mb-3">
+                                                    <label for="dueDate" class="form-label">التاريخ</label>
+                                                    <input type="date"
+                                                           class="form-control checs-input dueDate calendar"
+                                                           id="dueDate"
+                                                           name="dueDate"
+                                                           placeholder="تاريخ الشيك"
+                                                           autocomplete="off" />
                                                 </div>
-                                                <div class="">
-                                                    <label for="payNo">رقم الدفع</label>
-                                                    <input type="text" class="form-control checs-input payNo" id="payNo" disabled name="payNo" value="@ViewBag.TransactionId" placeholder="رقم الدفع" autocomplete="off" />
+
+                                                <div class="mb-3">
+                                                    <label for="payNo" class="form-label">رقم الدفع</label>
+                                                    <input type="text"
+                                                           class="form-control checs-input payNo"
+                                                           id="payNo"
+                                                           name="payNo"
+                                                           value="@ViewBag.TransactionId"
+                                                           disabled
+                                                           placeholder="رقم الدفع"
+                                                           autocomplete="off" />
                                                 </div>
-                                                <div class="">
-                                                    <label for="amount">المبلغ </label>
-                                                    <input type="text" class="form-control checs-input amount" value="@ViewBag.amount" id="amount" name="amount" placeholder="المبلغ بالارقام" autocomplete="off" />
+
+                                                <div class="mb-3">
+                                                    <label for="amount" class="form-label">المبلغ</label>
+                                                    <input type="text"
+                                                           class="form-control checs-input amount"
+                                                           value="@ViewBag.amount"
+                                                           id="amount"
+                                                           name="amount"
+                                                           placeholder="المبلغ بالأرقام"
+                                                           autocomplete="off" />
                                                 </div>
-                                                <div class="">
-                                                    <label for="checkNo">رقم الشيك </label>
-                                                    <input type="text" class="form-control checs-input checkNo" id="checkNo" name="checkNo" placeholder="رقم الشيك - المتسلسل" autocomplete="off" />
+
+                                                <div class="mb-3">
+                                                    <label for="checkNo" class="form-label">رقم الشيك</label>
+                                                    <input type="text"
+                                                           class="form-control checs-input checkNo"
+                                                           id="checkNo"
+                                                           name="checkNo"
+                                                           placeholder="رقم الشيك - المتسلسل"
+                                                           autocomplete="off" />
                                                 </div>
-                                                <div class="">
-                                                    <label for="recipient">اسم المستلم</label>
-                                                    <input type="text" class="form-control checs-input recipientname" value="@ViewBag.Recipient" id="recipientname" name="recipientname" placeholder="اسم المستلم" autocomplete="off" />
-                                                    @*<select class="form-control list recipient" name="recipient" id="recipient" style="width:100%"></select>*@
+
+                                                <div class="mb-3">
+                                                    <label for="recipientname" class="form-label">اسم المستلم</label>
+                                                    <input type="text"
+                                                           class="form-control checs-input recipientname"
+                                                           value="@ViewBag.Recipient"
+                                                           id="recipientname"
+                                                           name="recipientname"
+                                                           placeholder="اسم المستلم"
+                                                           autocomplete="off" />
                                                 </div>
-                                                <a class="btn btn-info btn-block" style="margin-top:20px" onclick="print()">طباعة</a>
+
+                                                <button type="button"
+                                                        class="btn btn-info w-100 mt-3"
+                                                        onclick="print()">
+                                                    <i class="bi bi-printer me-1"></i>
+                                                    طباعة
+                                                </button>
+
                                             </div>
-                                           
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-9 img-fluid">
-                                
-                                <div class="row" style="position:relative">
-                                    <div class="checs-info" style="position:relative">
-                                        <span class="print-dueDate print-span"></span>
-                                        <span class="print-payNo print-span">@ViewBag.TransactionId</span>
-                                        <span class="print-amount print-span"></span>
-                                        <span class="print-textAmount print-span">@ViewBag.textAmount</span>
-                                        <span class="print-recipient print-span">@ViewBag.Recipient</span>
-                                        <span class="print-checkNo print-span">@ViewBag.CheckNo</span>
+
+                                <!-- Check Preview -->
+                                <div class="col-12 col-lg-9">
+                                    <div class="checs-preview">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="checs-info position-relative">
+                                                    <span class="print-dueDate print-span"></span>
+                                                    <span class="print-payNo print-span">@ViewBag.TransactionId</span>
+                                                    <span class="print-amount print-span"></span>
+                                                    <span class="print-textAmount print-span">@ViewBag.textAmount</span>
+                                                    <span class="print-recipient print-span">@ViewBag.Recipient</span>
+                                                    <span class="print-checkNo print-span">@ViewBag.CheckNo</span>
+                                                </div>
+
+                                                <img src="~/Content/img/checs.jpg"
+                                                     class="img-fluid w-100"
+                                                     alt="Check Preview" />
+                                            </div>
+                                        </div>
                                     </div>
-                                    <img src="~/Content/img/checs.jpg" style="max-width:100%"/>
                                 </div>
+
                             </div>
-                        </div><!-- /.box-body -->
-                    </div><!-- /.box -->
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </section>
+                        </div>
 
-
-    </div><!-- /.content-wrapper -->
-
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+   
 }
 
 
@@ -162,13 +221,13 @@
 
         $(function () {
             //select2listNew("#recipient", "/Shared/getAllRecipient", "اسم المستلم");
-            $('.calendar').datepicker({
-                todayBtn: "linked",
-                language: "it",
-                autoclose: true,
-                todayHighlight: true,
-                format: 'dd/mm/yyyy'
-            });
+            //$('.calendar').datepicker({
+            //    todayBtn: "linked",
+            //    language: "it",
+            //    autoclose: true,
+            //    todayHighlight: true,
+            //    format: 'dd/mm/yyyy'
+            //});
 
             if($('#IsCheckPrinted').text() == "true") {
                 $(".header-content").removeClass("hidden");
@@ -194,6 +253,7 @@
                     //console.log(response);
                 }
             });
+
             $('.dueDate').on("change", function () {
                 $('.print-dueDate').html($(this).val());
             });
@@ -224,7 +284,7 @@
                 });
             });
 
-            
+
             $('.checkNo').on("keyup", function () {
                 $('.print-checkNo').html($(this).val());
             });
@@ -232,7 +292,7 @@
 
         });//End Document Ready
 
-        
+
         function print() {
             var TransactionId = $('.TransactionId').text();
             // var dueDate = moment($(".dueDate").val(), "DD/MM/YYYY").format("MM/DD/YYYY");

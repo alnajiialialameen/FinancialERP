@@ -53,7 +53,7 @@
 
 @{
     DateTime dueDate;
-    if (!DateTime.TryParse(ViewBag.dueDate?.ToString(), out dueDate))
+    if (!DateTime.TryParse(ViewBag.dueDate.ToString(), out dueDate))
     {
         dueDate = DateTime.MinValue; // or any default value you prefer
     }
@@ -61,7 +61,9 @@
 
 <div class="row" style="position:relative; margin-top: 200px;">
     <div class="checs-info" style="position:relative">
-        <span class="print-dueDate print-span">@($"{dueDate.Year} / {dueDate.Month} / {dueDate.Day}")</span>
+        <span class="print-dueDate print-span">
+            @( dueDate.ToString("yyyy / M / d"))
+        </span>
         <span class="print-payNo print-span">@ViewBag.payNo</span>
         <span class="print-amount print-span" id="amount">@ViewBag.amount</span>
         <span class="print-textAmount print-span">@ViewBag.textAmount</span>

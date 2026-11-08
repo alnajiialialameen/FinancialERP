@@ -1,55 +1,103 @@
 ﻿@{
     ViewBag.Title = "TaxReport";
-    Layout = "~/Views/Shared/_Layout2.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h2>TaxReport</h2>
 
 @section content
 {
     <div class="content-wrapper">
-        <div class="grad"></div>
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <h1>
+        <!-- Content Header -->
+
+        <section class="d-flex flex-row justify-content-between align-items-center my-3">
+            <h3>
                 تقارير الحسابات الختامية
-            </h1>
+            </h3>
+
             <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
-                <li class="active">تقارير الحسابات الختامية</li>
+                <li>
+                    <a class="text-decoration-none text-black" href="@Url.Action("Index", "Home")">
+                        <i class="bi bi-house-fill"></i>
+                        النظام المحاسبي >
+                    </a>
+                </li>
+                <li class="breadcrumb-item active">
+                    تقارير الحسابات الختامية
+                </li>
             </ol>
         </section>
-       
+
+
+        <!-- Main Content -->
         <section class="content">
-            <hr />
-            <label style="display:none" id="financeCycleId">@ViewBag.financeCycleId</label>
-            <fieldset>
-                <legend style="width: max-content; padding: 0px 20px;">ميزان المراجعة</legend>
-                <div class="row">
-                    <div class=" col-md-4">
-                        <button id="btnPrintTrailBalance" onclick="printTrailBalance()" class="btn btn-primary form-control">ميزان المراجعة بالارصدة</button>
+            <div class="container-fluid">
+
+                <hr />
+
+                <label class="d-none" id="financeCycleId">
+                    @ViewBag.financeCycleId
+                </label>
+
+                <!-- Trial Balance -->
+                <fieldset class="border rounded p-3 mb-4">
+
+                    <legend class="float-none w-auto px-3 fs-5">
+                        ميزان المراجعة
+                    </legend>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <button type="button"
+                                    id="btnPrintTrailBalance"
+                                    onclick="printTrailBalance()"
+                                    class="btn btn-primary w-100">
+                                ميزان المراجعة بالأرصدة
+                            </button>
+                        </div>
+
+                        <div class="col-md-4">
+                            <button type="button"
+                                    id="btnPrintTrailBalanceSummation"
+                                    onclick="printTrailBalanceSummation()"
+                                    class="btn btn-success w-100">
+                                ميزان المراجعة بالمجاميع
+                            </button>
+                        </div>
+
+                        <div class="col-md-4">
+                            <button type="button"
+                                    id="btnPrintTrailBalanceExplanation"
+                                    onclick="printTrailBalanceExplanation()"
+                                    class="btn btn-info w-100">
+                                ميزان المراجعة الإيضاح
+                            </button>
+                        </div>
+
                     </div>
+                </fieldset>
 
-                    <div class=" col-md-4">
-                        <button id="btnPrintTrailBalanceSummation" onclick="printTrailBalanceSummation()" class="btn btn-success form-control">ميزان المراجعة بالمجاميع</button>
+                <!-- Financial Statements -->
+                <fieldset class="border rounded p-3 mb-4">
+
+                    <legend class="float-none w-auto px-3 fs-5">
+                        القوائم المالية
+                    </legend>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <button type="button"
+                                    id="btnPrintTrailBalanceIncomeStatement"
+                                    onclick="printTrailBalanceIncomeStatement()"
+                                    class="btn btn-danger w-100">
+                                قائمة الدخل
+                            </button>
+                        </div>
+
                     </div>
+                </fieldset>
 
-                    <div class=" col-md-4">
-                        <button id="btnPrintTrailBalanceExplanation" onclick="printTrailBalanceExplanation()" class="btn btn-info form-control">ميزان المراجعة الايضاح</button>
-                    </div>
-                </div>
-            </fieldset>
-
-            <fieldset>
-                <legend style="width: max-content; padding: 0px 20px;">القوائم المالية</legend>
-                <div class="row">
-                    <div class=" col-md-4">
-                        <button id="btnPrintTrailBalanceIncomeStatement" onclick="printTrailBalanceIncomeStatement()" class="btn btn-danger form-control">قائمة الدخل</button>
-                    </div>
-
-                </div>
-            </fieldset>
-
+            </div>
         </section>
     </div>
 }

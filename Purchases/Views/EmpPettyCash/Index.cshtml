@@ -1,56 +1,47 @@
-﻿@using Purchases.Models.ViewModel;
-
-@{
+﻿@{
     ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_Layout2.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @section content{
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-        <div class="grad"></div>
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <h1>
-                عهد الموظفين
-            </h1>
+
+        <section class="d-flex flex-row justify-content-between align-items-center my-3">
+            <h3>عهد الموظفين</h3>
+
             <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
-                <li class="active">عهد الموظفين </li>
+                <li>
+                    <a class="text-decoration-none text-black" href="@Url.Action("Index", "Home")">
+                        <i class="bi bi-house-fill"></i>
+                        النظام المحاسبي >
+                    </a>
+                </li>
+                <li class="active">عهد الموظفين</li>
             </ol>
         </section>
 
-        <section class="content">
+        <section class="container-fluid">
             <div class="row">
-                <div class="col-xs-12">
-                    <div class="box">
-                        <!-- /.box-header -->
-                        <div class="box-body">
-                            <div class="container">
-                                <div class="row my-4 left">
-                                    <div class="col-lg-3">
-                                        <select id="accTreeId" class="form-control">
-                                            <option value="0">-Select Value-</option>
-                                            @{
-                                                foreach (var item in ViewBag.GetPettyCachItems as List<DDListObj>)
-                                                {
-                                                    <option value="@item.id">@item.text</option>
-                                                }
-                                            }
-                                        </select>
-                                    </div>
-                                </div>
-                                <table id="tbx" class="table table-bordered table-sm table-hover" style="width:100%">
-                                </table>
-                            </div><!-- /.box-body -->
-                        </div><!-- /.box -->
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
+                <div class="col-lg-12">
+                    <div class="w-25">
+                        <select id="accTreeId" class="form-select">
+                            @{
+                                foreach(var item in ViewBag.GetPettyCachItems as List<Purchases.Models.ViewModel.DDListObj>)
+                                {
+                                    <option value="@item.id">@item.text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div>
+                        <table id="tbx" class="table table-bordered table-hover"></table>
+                    </div>
+                </div>
             </div>
         </section>
-
     </div>
-    <!-- /.content-wrapper -->
+
 }
 
 
@@ -76,16 +67,16 @@
                         url: '/EmpPettyCash/LoadData/0',
                         dataSrc: ''
                     },
-                    //columnDefs: [
-                    //    {
-                    //        targets: [5, 6],
-                    //        visible: false
-                    //    }
-                    //],
+                    columnDefs: [
+                        {
+                            targets: [5, 6],
+                            className: 'd-none'
+                        }
+                    ],
                     columns: [
                         {
                             "title": "# ",
-                            "data": "Id"
+                            "data": "EmployeeId"
                         },
                         {
                             "title": "اسم الموظف",
@@ -111,7 +102,7 @@
                             "width": "10%",
                             "orderable": false,
                             "render": function (data) {
-                                return '<a href="#" class="btn btn-success  btnSaveData" id="btnSaveData" onclick="saveData()">حفظ</a>';
+                                return '<a href="#" class="btn btn-success  btnSaveData" id="btnSaveData">حفظ</a>';
                             }
                         },
                         {
