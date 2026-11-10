@@ -594,7 +594,8 @@ namespace Purchases.Controllers
                 }
 
                 decimal? totalAmount = data.Where(q => q.isCredit == false).Sum(x => x.total) - data.Where(q => q.isCredit == true).Sum(x => x.total);
-                ViewBag.AmountText = new BaseClass().ChangeNumberToText(totalAmount?.ToString() ?? "0", 0);
+
+                ViewBag.AmountText = new BaseClass().ChangeNumberToText(Math.Abs(totalAmount ?? 0).ToString(), 0);
                 ViewBag.TotalAmount = totalAmount;
 
                 return View(data);
