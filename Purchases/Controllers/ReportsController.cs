@@ -1363,5 +1363,10 @@ namespace Purchases.Controllers
         }
 
 
+        public ActionResult printBankBalance(int bankId, DateTime? DateFrom, DateTime? DateTo)
+        {
+            return View();
+        }
+
     }
 }

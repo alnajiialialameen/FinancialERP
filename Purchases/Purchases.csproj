@@ -836,6 +836,7 @@
     <Content Include="Views\Balances\Index.cshtml" />
     <Content Include="Views\Transactions\Edit.cshtml" />
     <Content Include="Views\Reports\BanksSarafFroAllAccTrees.cshtml" />
+    <Content Include="Views\Reports\printBankLetterNew.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
