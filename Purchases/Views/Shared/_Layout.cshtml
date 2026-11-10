@@ -639,12 +639,12 @@
                                 القيود المرحلة
                             </a>
                         </li>
-                        <li>
+                        @*<li>
                             <a href="@Url.Action("Index", "OpeningBalances")">
                                 <i class="fa fa-calendar-week"></i>
                                 الأرصدة الافتتاحية
                             </a>
-                        </li>
+                        </li>*@
                         <li>
                             <a href="@Url.Action("Index", "Balances")">
                                 <i class="fa fa-balance-scale"></i>
@@ -752,7 +752,7 @@
         </div>
 
         <div>
-            <b>Version</b> 1.0
+            <b>Version</b> 2.0
         </div>
 
 
@@ -978,8 +978,8 @@
             return new AutoNumeric(inputId, {
                 digitGroupSeparator: ',', // الفاصلة بين الآلاف
                 decimalCharacter: '.',    // النقطة كعلامة عشرية
-                decimalPlaces: 2,          // عدد المنازل العشرية
-                defaultValue: "0.00"      // القيمة الافتراضية
+                decimalPlaces: 2         // عدد المنازل العشرية
+                //defaultValue: "0.00"      // القيمة الافتراضية
             });
         }
 

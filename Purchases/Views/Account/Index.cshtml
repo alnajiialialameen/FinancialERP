@@ -62,7 +62,7 @@
          aria-hidden="true"
          data-bs-backdrop="static">
 
-        <div class="modal-dialog modal-xl modal-dialog-top">
+        <div class="modal-dialog  modal-dialog-scrollable modal-xl" style="max-width:90%;">
             <div class="modal-content">
 
                 <!-- Header -->
@@ -440,7 +440,7 @@
                     Phone: $('#name').val(),
                     AirportName: $('#airportName option:selected').text(),
                     CompanyInfoId: parseInt($('#airportName').val()),
-                    Role: $('#role').val()
+                    Role: $('#role option:selected').text()
                 };
 
                 console.clear();
@@ -487,7 +487,7 @@
                     Phone: $('#name').val(),
                     Id: id,
                     CompanyInfoId: parseInt($('#airportName').val()),
-                    Role: $('#role').val()
+                    Role: $('#role option:selected').text()
                 };
 
                 $.ajax({

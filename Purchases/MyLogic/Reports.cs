@@ -15,8 +15,8 @@ namespace Purchases.MyLogic
         private TreeClass trc = new TreeClass();
         private SharedClass sh = new SharedClass();
         private RoleController roleController = new RoleController();
-        /*transactions */
 
+        /*transactions */
         // طباعة جميع الحركات
         public List<TransactionVM> printAllData(int financialCycleId)
         {
@@ -144,7 +144,6 @@ namespace Purchases.MyLogic
                 return data;
             }
         }
-
         // طباعة بيانات الحركة لي بند محدد
         public List<TransactionVM> printLidger(int AccTreeId)
         {

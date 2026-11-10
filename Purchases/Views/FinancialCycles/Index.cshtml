@@ -8,54 +8,50 @@
     }
 </style>
 @section content{
+    <!-- Content Wrapper. Contains page content -->
+    <section class="d-flex flex-row justify-content-between align-items-center my-3">
+        <h3>
+            الاعوام المالية
+        </h3>
 
-    <div class="content-wrapper">
-        <div class="grad"></div>
+        <ol class="breadcrumb">
+            <li>
+                <a class="text-decoration-none text-black" href="@Url.Action("Index", "Home")">
+                    <i class="bi bi-house-fill"></i>
+                    النظام المحاسبي >
+                </a>
+            </li>
+            <li class="breadcrumb-item active">
+                الاعوام المالية
+            </li>
+        </ol>
+    </section>
 
-        <section class="d-flex flex-row justify-content-between align-items-center my-3">
-            <h3>السنة المالية</h3>
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <button type="button"
+                                class="btn btn-primary btn-add float-start"
+                                data-bs-toggle="modal"
+                                data-bs-target="#add-modal">
+                            <i class="bi bi-plus-square"></i>
+                            سنة جديدة
+                        </button>
+                    </div>
 
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a class="text-decoration-none text-black" href="@Url.Action("Index", "Home")">
-                            <i class="bi bi-house"></i>
-                            النظام المالي >
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">
-                        السنوات المالية
-                    </li>
-                </ol>
-            </nav>
-        </section>
-
-        <section class="content">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <button type="button"
-                                    class="btn btn-primary btn-add float-start"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#add-modal">
-                                <i class="bi bi-plus-square"></i>
-                                سنة جديدة
-                            </button>
-                        </div>
-
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="tbx"
-                                       class="table table-bordered table-hover">
-                                </table>
-                            </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="tbx"
+                                   class="table table-bordered table-hover">
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
 
     <div class="modal fade" id="add-modal" tabindex="-1"
          aria-labelledby="addModalLabel" aria-hidden="true">
@@ -178,9 +174,6 @@
             </div>
         </div>
     </div>
-
-
-
 }
 
 @section scripts{

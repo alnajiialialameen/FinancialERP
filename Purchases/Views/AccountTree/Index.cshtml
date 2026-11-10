@@ -15,30 +15,23 @@
 </style>
 @section content{
     <!-- Content Wrapper. Contains page content -->
-    <!-- Content Header -->
-    <section class="content-header py-3">
-        <div class="container-fluid">
-            <div class="row align-items-center">
-                <div class="col-sm-6">
-                    <h4 class="mb-0">الشجرة المحاسبية</h4>
-                </div>
 
-                <div class="col-sm-6">
-                    <ol class="breadcrumb mb-0 justify-content-sm-end">
-                        <li class="breadcrumb-item">
+    <section class="d-flex flex-row justify-content-between align-items-center my-3">
+        <h3>
+            الشجرة المحاسبية 
+        </h3>
 
-                            <a class="text-decoration-none text-black" href="@Url.Action("Index", "Home")">
-                                <i class="bi bi-house-fill"></i>
-                                النظام المحاسبي >
-                            </a>
-                        </li>
-                        <li class="breadcrumb-item active">
-                            الشجره المحاسبية
-                        </li>
-                    </ol>
-                </div>
-            </div>
-        </div>
+        <ol class="breadcrumb">
+            <li>
+                <a class="text-decoration-none text-black" href="@Url.Action("Index", "Home")">
+                    <i class="bi bi-house-fill"></i>
+                    النظام المحاسبي >
+                </a>
+            </li>
+            <li class="breadcrumb-item active">
+                الشجرة المحاسبية 
+            </li>
+        </ol>
     </section>
 
     <section class="container-fluid">
@@ -82,7 +75,6 @@
             </div>
         </div>
     </section>
-
 
     <!-- Add Account Modal -->
     <div class="modal fade" id="add-modal" tabindex="-1" aria-hidden="true">

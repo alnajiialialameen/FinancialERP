@@ -35,7 +35,7 @@ namespace Purchases.MyLogic
         //    return data;
         //}
 
-        public List<EmployeePettyCashCustodyVM> LoadData(string userId, int accTreeId = 0)
+        public List<EmployeePettyCashCustodyVM> LoadData1(string userId, int? EmpId, int accTreeId = 0)
         {
             var financialCycleId = sh.GetUserCurrentFinancialCycleId(userId);
 
@@ -70,6 +70,72 @@ namespace Purchases.MyLogic
             return data;
         }
 
+        public List<EmployeePettyCashCustodyVM> LoadData2(string userId, int? EmpId, int accTreeId = 0)
+        {
+            var financialCycleId = sh.GetUserCurrentFinancialCycleId(userId);
+
+            var data = (
+                from rec in db.Recipients
+                where rec.EmployeeId > 0
+                      && (!EmpId.HasValue || EmpId.Value <= 0 || rec.EmployeeId == EmpId.Value)
+
+                join q in db.EmployeePettyCashCustodies
+                    .Where(x => x.FinancialCycleId == financialCycleId
+                             && (accTreeId <= 0 || x.AccTreeId == accTreeId))
+                on rec.EmployeeId equals q.EmployeeId into custodies
+
+                from q in custodies.DefaultIfEmpty()
+
+                select new EmployeePettyCashCustodyVM
+                {
+                    EmployeeId = rec.EmployeeId,
+                    EmployeeName = rec.RecipientName,
+
+                    Id = q == null ? 0 : q.Id,
+                    AccTreeId = q == null ? 0 : q.AccTreeId,
+                    AccTreeName = q == null ? "" : q.AccountTree.AccName,
+
+                    PaiedAmount = q == null ? 0 : (q.PaiedAmount ?? 0),
+                    TotalDeductionAmount = q == null
+                        ? 0
+                        : q.TotalDeductionAmount
+                }
+            ).ToList();
+
+            return data;
+        }
+        public List<EmployeePettyCashCustodyVM> LoadData(string userId,  int? EmpId,  int accTreeId = 0)
+        {
+            var financialCycleId = sh.GetUserCurrentFinancialCycleId(userId);
+
+            var data = (
+                from q in db.EmployeePettyCashCustodies
+
+                where q.FinancialCycleId == financialCycleId
+                      && (!EmpId.HasValue || EmpId.Value <= 0 || q.EmployeeId == EmpId.Value)
+                      && (accTreeId <= 0 || q.AccTreeId == accTreeId)
+
+                join rec in db.Recipients
+                    on q.EmployeeId equals rec.EmployeeId into recipients
+
+                from rec in recipients.DefaultIfEmpty()
+
+                select new EmployeePettyCashCustodyVM
+                {
+                    EmployeeId = q.EmployeeId,
+                    EmployeeName = rec == null ? "" : rec.RecipientName,
+
+                    Id = q.Id,
+                    AccTreeId = q.AccTreeId,
+                    AccTreeName = q.AccountTree.AccName,
+
+                    PaiedAmount = q.PaiedAmount ?? 0,
+                    TotalDeductionAmount = q.TotalDeductionAmount
+                }
+            ).ToList();
+
+            return data;
+        }
         public List<DDListObj> GetPettyCachItems()
         {
 
