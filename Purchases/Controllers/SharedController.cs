@@ -416,7 +416,7 @@ namespace Purchases.Controllers
             // قائمة الموظفين الرسمية (بالشكل الكامل: "الاسم - البنك")
             var empListWithBankName = recipientsList
                 .Where(x => string.IsNullOrEmpty(q) || x.RecipientName.Contains(q))
-                .Select(x => new { id = x.Id, text = x.RecipientName + " - " + x.BankName.Split(' ')[0] })
+                .Select(x => new { id = x.EmployeeId, text = x.RecipientName })
                 .ToList();
 
             //// قائمة المستلمين من Transactions (أسماء فقط، بدون بنك)

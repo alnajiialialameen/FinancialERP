@@ -21,7 +21,7 @@
                     <span class="accName">
                         @T1.AccName.ToString()
                     </span>
-                    <span class="add-btn" data-id="@T1.Id"><i class="fa fa-plus text-danger"></i></span>
+                    <span class="add-btn" data-id="@T1.Id"><i class="bi bi-plus fs-3 text-danger"></i></span>
                     @foreach (var T2 in Model.Where(x => x.AccParent == T1.Id))
                         {
                     <ul>
@@ -29,7 +29,7 @@
                             <span class="accName">
                                 @T2.AccName.ToString()
                             </span>
-                            <span class="add-btn" data-id="@T2.Id"><i class="fa fa-plus text-danger"></i></span>
+                            <span class="add-btn" data-id="@T2.Id"><i class="bi bi-plus fs-3  text-danger"></i></span>
                             @foreach (var T3 in Model.Where(x => x.AccParent == T2.Id))
                                     {
                             <ul>
@@ -37,7 +37,7 @@
                                     <span class="accName">
                                         @T3.AccName
                                     </span>
-                                    <span class="add-btn" data-id="@T3.Id"><i class="fa fa-plus text-danger"></i></span>
+                                    <span class="add-btn" data-id="@T3.Id"><i class="bi bi-plus fs-3 text-danger"></i></span>
                                     @foreach (var T4 in Model.Where(x => x.AccParent == T3.Id))
                                                 {
                                     <ul>
@@ -45,7 +45,7 @@
                                             <span class="accName">
                                                 @T4.AccName
                                             </span>
-                                            <span class="add-btn" data-id="@T4.Id"><i class="fa fa-plus text-danger"></i></span>
+                                            <span class="add-btn" data-id="@T4.Id"><i class="bi bi-plus fs-3 text-danger"></i></span>
 
                                             @foreach (var T5 in Model.Where(x => x.AccParent == T4.Id))
                                             {
@@ -54,7 +54,7 @@
                                                     <span class="accName">
                                                         @T5.AccName
                                                     </span>
-                                                    <span class="add-btn" data-id="@T5.Id"><i class="fa fa-plus text-danger"></i></span>
+                                                    <span class="add-btn" data-id="@T5.Id"><i class="bi bi-plus fs-3 text-danger"></i></span>
                                                     @foreach (var T6 in Model.Where(x => x.AccParent == T5.Id))
                                                                         {
                                                     <ul>
@@ -62,7 +62,7 @@
                                                             <span>
                                                                 @T6.AccName
                                                             </span>
-                                                            <span class="add-btn" data-id="@T6.Id"><i class="fa fa-plus text-danger"></i></span>
+                                                            <span class="add-btn" data-id="@T6.Id"><i class="bi bi-plus fs-3 text-danger"></i></span>
                                                             @foreach (var T7 in Model.Where(x => x.AccParent == T6.Id))
                                                                                     {
                                                             <ul>

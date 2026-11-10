@@ -1,0 +1,856 @@
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section content{
+
+    <section class="d-flex flex-row justify-content-between align-items-center my-3">
+        <h3>
+             تعديل القيود
+        </h3>
+
+        <ol class="breadcrumb">
+            <li>
+                <a class="text-decoration-none text-black" href="@Url.Action("Index", "Home")">
+                    <i class="bi bi-house-fill"></i>
+                    النظام المحاسبي >
+                </a>
+            </li>
+            <li class="breadcrumb-item active">
+                تعديل القيود
+            </li>
+        </ol>
+    </section>
+
+    <label id="TransactionId" class="d-none">
+        @ViewBag.TransactionId
+    </label>
+
+    <section class="container-fluid">
+        <div class="row">
+
+            <div class="col-12 col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-content-center w-100">
+                            <h4 class="float-end">تفاصيل القيد</h4>
+                            <button type="button" class="btn btn-warning btnEidtMain">
+                                تعديل القيد
+                            </button>
+                        </div>
+                        <div class="container-fluid mt-5 clear-both">
+                            <table id="tbx" class="table table-bordered table-sm w-100">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>الحساب</th>
+                                        <th>مدين</th>
+                                        <th>دائن</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mainTbody">
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+
+                        <fieldset class="border rounded p-3">
+                            <legend class="float-none w-auto px-2 fs-6">
+                                بيانات القيد
+                            </legend>
+
+                            <table class="table table-borderless table-sm align-middle">
+                                <tbody>
+                                    <tr>
+                                        <td>رقم السند</td>
+                                        <td>
+                                            <label class="form-control trans mainTransactionId">
+                                                @ViewBag.TransactionId
+                                            </label>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>تاريخ السند</td>
+                                        <td>
+                                            <label class="form-control trans mainTransactionDate"
+                                                   id="mainTransactionDate"
+                                                   name="mainTransactionDate">
+                                                @ViewBag.TransactionDate
+                                            </label>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>العملة</td>
+                                        <td>
+                                            <label class="form-control trans mainCurrencyType"
+                                                   name="CurrencyType"
+                                                   id="CurrencyType">
+                                                @ViewBag.CurrencyType
+                                            </label>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>نوع القيد</td>
+                                        <td>
+                                            <label class="form-control trans mainDocumentType"
+                                                   name="DocumentType"
+                                                   id="DocumentType">
+                                                @Model.DocumentType.Name
+                                            </label>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>سعر الصرف</td>
+                                        <td>
+                                            <label class="form-control trans ExchangeRate"
+                                                   id="ExchangeRate"
+                                                   name="ExchangeRate">
+                                                @ViewBag.ExchangeRate
+                                            </label>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>اسم المستلم</td>
+                                        <td>
+                                            <label class="form-control trans"
+                                                   id="recipient"
+                                                   name="recipient">
+                                                @ViewBag.Recipient
+                                            </label>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>البيان</td>
+                                        <td>
+                                            <textarea rows="5"
+                                                      disabled
+                                                      class="form-control trans mainNote"
+                                                      id="Note"
+                                                      name="Note">@ViewBag.Note</textarea>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <a href="@Url.Action("IndexAll", "Transactions")"
+                               class="btn btn-danger w-100 mt-3">
+                                خروج
+                            </a>
+
+                            <span class="d-none" id="mainDocumentTypeId">
+                                @Model.DocumentTypeId
+                            </span>
+
+                            <span class="d-none" id="mainCurrencyId">
+                                @Model.CurrencyId
+                            </span>
+
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="modal fade"
+         id="edit-modal"
+         tabindex="-1"
+         aria-labelledby="editModalLabel"
+         aria-hidden="true"
+         data-bs-backdrop="static">
+
+        <div class="modal-dialog  modal-dialog-scrollable modal-xl ">
+            <div class="modal-content">
+
+                <div class="border-0 d-flex justify-content-between align-items-center m-3">
+                    <h5 class="modal-title" id="editModalLabel">
+                        تعديل القيد
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <!-- ضع هنا محتوى النموذج الحالي add-form -->
+
+                    <form id="add-form">
+                        <div class="row">
+
+                            <div class="col-12 col-lg-4">
+                                <div class="form-group mb-3">
+                                    <label for="addAccName" class="form-label">
+                                        اسم الحساب
+                                    </label>
+
+                                    <select class="form-select list addAccName"
+                                            name="addAccName"
+                                            id="addAccName"
+                                            style="width:100%">
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-4">
+                                <div class="form-group mb-3">
+                                    <label for="debitAmount" class="form-label">
+                                        المبلغ مدين
+                                    </label>
+
+                                    <input class="form-control debitAmount"
+                                           value="0"
+                                           type="text"
+                                           name="debitAmount"
+                                           id="debitAmount"
+                                           placeholder="المبلغ مدين"
+                                           autocomplete="off" />
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-4">
+                                <div class="form-group mb-3">
+                                    <label for="creditAmount" class="form-label">
+                                        المبلغ دائن
+                                    </label>
+
+                                    <input class="form-control creditAmount"
+                                           value="0"
+                                           type="text"
+                                           name="creditAmount"
+                                           id="creditAmount"
+                                           placeholder="المبلغ دائن"
+                                           autocomplete="off" />
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <button type="button"
+                                class="btn btn-info w-100"
+                                onclick="addToTable()">
+                            ترحيل
+                        </button>
+                    </form>
+
+                    <div class="table-responsive mt-4">
+                        <table id="example1"
+                               class="table table-bordered table-striped virtualTable">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th class="text-center">اسم الحساب</th>
+                                    <th class="text-center">المبلغ (مدين)</th>
+                                    <th class="text-center">المبلغ (دائن)</th>
+                                    <th class="text-center">
+                                        <i class="fa fa-cogs"></i>
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="myVirtualTbody"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-start gap-2 mt-3">
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            رجوع
+                        </button>
+
+                        <button type="button"
+                                id="btnSave"
+                                class="btn btn-primary">
+                            مراجعة القيد
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade"
+         id="add-statement-modal"
+         tabindex="-1"
+         aria-labelledby="statementModalLabel"
+         aria-hidden="true"
+         data-bs-backdrop="static">
+
+        <div class="modal-dialog  modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+
+                <div class="border-0 d-flex justify-content-between align-items-center m-3">
+                    <h5 class="modal-title" id="statementModalLabel">
+                        مراجعة بيانات القيد
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row">
+
+                        <div class="col-12">
+                            <div class="form-group mb-3">
+                                <label for="finalNote" class="form-label">
+                                    البيان
+                                </label>
+
+
+                                <textarea class="form-control finalNote"
+                                          id="finalNote"
+                                          name="finalNote">@ViewBag.Note</textarea>
+
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group mb-3">
+                                <label for="finalRecipient" class="form-label">
+                                    اسم المستلم
+                                </label>
+
+                                <select class="form-select list finalRecipient"
+                                        name="finalRecipient"
+                                        id="finalRecipient"
+                                        style="width:100%">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group mb-3">
+                                <label for="finalTransactionDate" class="form-label">
+                                    تاريخ القيد
+                                </label>
+
+                                <input type="date"
+                                       class="form-control calendar finalTransactionDate"
+                                       id="finalTransactionDate"
+                                       name="finalTransactionDate"
+                                       placeholder="تاريخ القيد"
+                                       autocomplete="off" />
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group mb-3">
+                                <label for="documentTypeId" class="form-label">
+                                    نوع السند
+                                </label>
+
+                                <select class="form-select list documentTypeId"
+                                        name="documentTypeId"
+                                        id="documentTypeId"
+                                        style="width:100%">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group mb-3">
+                                <label for="finalCurrencyType" class="form-label">
+                                    العملة
+                                </label>
+
+                                <select class="form-select list finalCurrencyType"
+                                        name="finalCurrencyType"
+                                        id="finalCurrencyType"
+                                        style="width:100%">
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <hr />
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead class="table-secondary">
+                                <tr class="text-center">
+                                    <th>مدين</th>
+                                    <th>دائن</th>
+                                    <th>الحساب</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="presntTBody"></tbody>
+                        </table>
+                    </div>
+
+                    <button type="button"
+                            class="btn btn-warning w-100 btnUpdate"
+                            onclick="saveNew()">
+                        تعديل
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@section scripts{
+    <script>
+        let rptList = [];
+        let creditAmountObj;
+        let debitAmountObj;
+        let mainRowsLoaded = false;
+
+        const editModalElement = document.getElementById('edit-modal');
+        const statementModalElement = document.getElementById('add-statement-modal');
+
+        function showModal(element) {
+            if (window.bootstrap && bootstrap.Modal) {
+                bootstrap.Modal.getOrCreateInstance(element).show();
+            } else if (window.jQuery && typeof $(element).modal === 'function') {
+                $(element).modal('show');
+            }
+        }
+
+        function hideModal(element) {
+            if (window.bootstrap && bootstrap.Modal) {
+                bootstrap.Modal.getOrCreateInstance(element).hide();
+            } else if (window.jQuery && typeof $(element).modal === 'function') {
+                $(element).modal('hide');
+            }
+        }
+
+        function showMessage(type, message, title) {
+            if (window.toastr && typeof toastr[type] === 'function') {
+                toastr[type](message, title || '');
+            } else {
+                alert(message || title || 'حدث خطأ');
+            }
+        }
+
+        function toNumber(value) {
+            if (value === null || value === undefined || value === '') return 0;
+            if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
+
+            let normalized = String(value).replace(/,/g, '').trim();
+            const arabicDigits = '٠١٢٣٤٥٦٧٨٩';
+            normalized = normalized.replace(/[٠-٩]/g, digit => arabicDigits.indexOf(digit));
+            normalized = normalized.replace(/٫/g, '.').replace(/٬/g, '');
+            const parsed = Number(normalized);
+            return Number.isFinite(parsed) ? parsed : 0;
+        }
+
+        function formatAmount(value) {
+            const number = toNumber(value);
+            if (typeof formatNumber === 'function') {
+                return formatNumber(number.toFixed(2));
+            }
+            return number.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function getAccountName() {
+            const selected = $('#addAccName option:selected');
+            const text = selected.text();
+            return selected.val() ? text.trim() : '';
+        }
+
+        function getSelectedAccountId() {
+            const value = $('#addAccName').val();
+            return value === null || value === '' ? null : String(value);
+        }
+
+        function calculateTotals() {
+            const totalDebit = rptList.reduce((sum, item) => sum + toNumber(item.debit), 0);
+            const totalCredit = rptList.reduce((sum, item) => sum + toNumber(item.credit), 0);
+            const balance = totalCredit - totalDebit;
+
+            $('#editTotals').html(
+                '<div class="row g-2">' +
+                '<div class="col-12 col-md-4"><div class="border rounded p-2">إجمالي المدين: <strong>' + formatAmount(totalDebit) + '</strong></div></div>' +
+                '<div class="col-12 col-md-4"><div class="border rounded p-2">إجمالي الدائن: <strong>' + formatAmount(totalCredit) + '</strong></div></div>' +
+                '<div class="col-12 col-md-4"><div class="border rounded p-2">الفرق: <strong>' + formatAmount(balance) + '</strong></div></div>' +
+                '</div>'
+            );
+
+            return {
+                debit: Number(totalDebit.toFixed(2)),
+                credit: Number(totalCredit.toFixed(2)),
+                balance: Number(balance.toFixed(2))
+            };
+        }
+
+        function appendMainRow(item) {
+            const row = $('<tr>');
+            $('<td>').text(item.id ?? '').appendTo(row);
+            $('<td>').text(item.accName ?? '').appendTo(row);
+            $('<td>').text(formatAmount(item.debit)).appendTo(row);
+            $('<td>').text(formatAmount(item.credit)).appendTo(row);
+            $('<td>').addClass('d-none accTreeId').text(item.accTrreId ?? item.accTreeId ?? '').appendTo(row);
+            $('#mainTbody').append(row);
+        }
+
+        function loadMainData() {
+            const transactionId = ($('#TransactionId').text() || '').trim();
+            if (!transactionId) {
+                showMessage('error', 'رقم القيد غير موجود');
+                return;
+            }
+
+            $.ajax({
+                url: '/Transactions/getDetailData/' + encodeURIComponent(transactionId),
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    $('#mainTbody').empty();
+
+                    if (!Array.isArray(response)) {
+                        showMessage('error', 'صيغة بيانات تفاصيل القيد غير صحيحة');
+                        return;
+                    }
+
+                    response.forEach(appendMainRow);
+                    mainRowsLoaded = true;
+                },
+                error: function () {
+                    showMessage('error', 'تعذر تحميل تفاصيل القيد');
+                }
+            });
+        }
+
+        function renderEditRows() {
+            const tbody = $('.myVirtualTbody').empty();
+
+            rptList.forEach(function (item, index) {
+                const row = $('<tr>').css({
+                    fontSize: '16px',
+                    textAlign: 'center'
+                });
+
+                $('<td>').addClass('accTreeId d-none').text(item.accTrreId ?? '').appendTo(row);
+                $('<td>').addClass('transDetailId d-none').text(item.transDetailId ?? 0).appendTo(row);
+                $('<td>').addClass('name').text(item.addAccName ?? '').appendTo(row);
+                $('<td>').addClass('debitAmount').text(formatAmount(item.debit)).appendTo(row);
+                $('<td>').addClass('creditAmount').text(formatAmount(item.credit)).appendTo(row);
+
+                const deleteButton = $('<button>', {
+                    type: 'button',
+                    class: 'btn btn-warning transfer delete',
+                    text: 'حذف '
+                }).append($('<i>', { class: 'fa fa-trash' }));
+
+                $('<td>').addClass('tdBtnDelete').append(deleteButton).appendTo(row);
+                row.attr('data-index', index);
+                tbody.append(row);
+            });
+
+            calculateTotals();
+        }
+
+        $(document).ready(function () {
+            loadMainData();
+
+            if (typeof CustomAutoNumeric === 'function') {
+                creditAmountObj = CustomAutoNumeric('#creditAmount');
+                debitAmountObj = CustomAutoNumeric('#debitAmount');
+            }
+
+            if (typeof select2list === 'function') {
+                select2list('#addAccName', '/Shared/getAccTrees', 'اسم الحساب', "#edit-modal");
+                select2list('#finalCurrencyType', '/Shared/getCurrency', 'العملة', "#add-statement-modal");
+                select2list('#documentTypeId', '/Shared/getDocumentTypes', 'نوع السند', "#add-statement-modal");
+            }
+
+            if (typeof select2listNew === 'function') {
+                select2listNew('#finalRecipient', '/Shared/getAllRecipient', 'اسم المستلم', "#add-statement-modal");
+            }
+
+            const exchangeRate = $('#ExchangeRate').text().trim();
+            if (exchangeRate && typeof formatNumber === 'function') {
+                $('#ExchangeRate').text(formatNumber(exchangeRate));
+            }
+        });
+
+        $('.btnEidtMain').on('click', function () {
+            if (!mainRowsLoaded) {
+                showMessage('warning', 'انتظر حتى يتم تحميل تفاصيل القيد');
+                return;
+            }
+
+            rptList = [];
+            $('#tbx tbody tr').each(function () {
+                const cells = $(this).children('td');
+                const detailId = String(cells.eq(0).text()).trim();
+                const accountName = String(cells.eq(1).text()).trim();
+                const debit = toNumber(cells.eq(2).text());
+                const credit = toNumber(cells.eq(3).text());
+                const accountId = String(cells.eq(4).text()).trim();
+
+                if (!accountId) {
+                    return;
+                }
+
+                rptList.push({
+                    transDetailId: detailId,
+                    addAccName: accountName,
+                    accTrreId: accountId,
+                    amount: 0,
+                    debit: debit,
+                    credit: credit,
+                    isCredit: credit > 0,
+                    documentTypeId: Number($('#mainDocumentTypeId').text()) || 0
+                });
+            });
+
+            renderEditRows();
+            showModal(editModalElement);
+        });
+
+        $('.myVirtualTbody').on('click', '.delete', function () {
+            const row = $(this).closest('tr');
+            const detailId = String(row.find('.transDetailId').text()).trim();
+            const accountId = String(row.find('.accTreeId').text()).trim();
+
+            rptList = rptList.filter(function (item) {
+                const sameDetail = detailId && String(item.transDetailId ?? 0) === detailId;
+                const sameAccount = String(item.accTrreId ?? '') === accountId;
+                return !(sameDetail || (!detailId || detailId === '0') && sameAccount);
+            });
+
+            renderEditRows();
+        });
+
+        function addToTable() {
+            const accountName = getAccountName();
+            const accountId = getSelectedAccountId();
+            const credit = creditAmountObj ? toNumber(creditAmountObj.getNumber()) : toNumber($('#creditAmount').val());
+            const debit = debitAmountObj ? toNumber(debitAmountObj.getNumber()) : toNumber($('#debitAmount').val());
+
+            if (!accountId || !accountName || (credit <= 0 && debit <= 0)) {
+                showMessage('error', 'الرجاء اختيار الحساب وإدخال مبلغ مدين أو دائن');
+                return;
+            }
+
+            if (credit > 0 && debit > 0) {
+                showMessage('error', 'لا يمكن إدخال مبلغ مدين ودائن للحساب نفسه');
+                return;
+            }
+
+            const exists = rptList.some(item => String(item.accTrreId) === String(accountId));
+            if (exists) {
+                showMessage('error', 'هذا الحساب موجود في القائمة');
+                return;
+            }
+
+            rptList.push({
+                transDetailId: 0,
+                addAccName: accountName,
+                accTrreId: accountId,
+                amount: 0,
+                debit: Number(debit.toFixed(2)),
+                credit: Number(credit.toFixed(2)),
+                isCredit: credit > 0,
+                documentTypeId: Number($('#mainDocumentTypeId').text()) || 0
+            });
+
+            renderEditRows();
+
+            $('#addAccName').val(null).trigger('change');
+            if (creditAmountObj) creditAmountObj.set(0);
+            else $('#creditAmount').val('0');
+            if (debitAmountObj) debitAmountObj.set(0);
+            else $('#debitAmount').val('0');
+
+            $('.AmountCurrencyDecimalText, .AmountCurrencyDecimalTextCr').text('');
+        }
+
+        $('#creditAmount').on('input', function () {
+            if (toNumber($(this).val()) > 0) {
+                if (debitAmountObj) debitAmountObj.set(0);
+                else $('#debitAmount').val('0');
+            }
+        });
+
+        $('#debitAmount').on('input', function () {
+            if (toNumber($(this).val()) > 0) {
+                if (creditAmountObj) creditAmountObj.set(0);
+                else $('#creditAmount').val('0');
+            }
+        });
+
+        $('#btnSave').on('click', function () {
+            if (!rptList.length) {
+                showMessage('error', 'لا توجد تفاصيل لمراجعتها');
+                return;
+            }
+
+            const totals = calculateTotals();
+            if (Math.abs(totals.debit - totals.credit) > 0.009) {
+                showMessage('error', 'الرجاء مساواة إجمالي المدين والدائن');
+                return;
+            }
+
+            $('.presntTBody').empty();
+            rptList.forEach(function (item) {
+                const row = $('<tr>').css({ fontSize: '16px', textAlign: 'center' });
+                $('<td>').text(formatAmount(item.debit)).appendTo(row);
+                $('<td>').text(formatAmount(item.credit)).appendTo(row);
+                $('<td>').text(item.addAccName ?? '').appendTo(row);
+                $('.presntTBody').append(row);
+            });
+
+            const mainCurrencyId = String($('#mainCurrencyId').text()).trim();
+            const mainCurrencyType = $('#CurrencyType').text().trim();
+            const mainRecipient = $('#recipient').text().trim();
+            const mainDocumentTypeId = String($('#mainDocumentTypeId').text()).trim();
+            const mainDocumentType = $('#DocumentType').text().trim();
+            const mainTransactionDate = $('#mainTransactionDate').text().trim();
+
+            if (mainCurrencyId && !$('#finalCurrencyType option').filter(function () {
+                return String(this.value) === mainCurrencyId;
+            }).length) {
+                $('#finalCurrencyType').append(new Option(mainCurrencyType, mainCurrencyId, true, true));
+            }
+            if (mainRecipient && !$('#finalRecipient option').filter(function () {
+                return $(this).text().trim() === mainRecipient;
+            }).length) {
+                $('#finalRecipient').append(new Option(mainRecipient, mainRecipient, true, true));
+            }
+            if (mainDocumentTypeId && !$('#documentTypeId option').filter(function () {
+                return String(this.value) === mainDocumentTypeId;
+            }).length) {
+                $('#documentTypeId').append(new Option(mainDocumentType, mainDocumentTypeId, true, true));
+            }
+
+            $('#finalCurrencyType').val(mainCurrencyId).trigger('change');
+            $('#documentTypeId').val(mainDocumentTypeId).trigger('change');
+            $('#finalRecipient').val(mainRecipient).trigger('change');
+            $('#finalTransactionDate').val(toDateInputValue(mainTransactionDate));
+            $('#finalNote').val($('#Note').val());
+
+            showModal(statementModalElement);
+        });
+
+        function toDateInputValue(value) {
+            if (!value) return '';
+            const text = String(value).trim();
+            if (/^\d{4}-\d{2}-\d{2}$/.test(text)) return text;
+
+            const match = text.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/);
+            if (match) {
+                // يفترض التنسيق المعروض يوم/شهر/سنة.
+                return match[3] + '-' + match[2].padStart(2, '0') + '-' + match[1].padStart(2, '0');
+            }
+
+            const date = new Date(text);
+            if (Number.isNaN(date.getTime())) return '';
+            return date.getFullYear() + '-' +
+                String(date.getMonth() + 1).padStart(2, '0') + '-' +
+                String(date.getDate()).padStart(2, '0');
+        }
+
+        function saveNew() {
+            const transactionId = String($('#TransactionId').text()).trim();
+            const statement = $('#finalNote').val();
+            const currencyId = $('#finalCurrencyType').val();
+            const documentTypeId = $('#documentTypeId').val();
+            const transactionDate = $('#finalTransactionDate').val();
+            const finalRecipientId = $('#finalRecipient').val();
+            let finalRecipient = $('#finalRecipient option:selected').text().trim();
+
+            if (finalRecipient.includes(' - ')) {
+                finalRecipient = finalRecipient.split(' - ')[0].trim();
+            }
+
+            if (!transactionId || !statement || !currencyId || !documentTypeId || !transactionDate || !finalRecipientId) {
+                showMessage('error', 'الرجاء إدخال جميع البيانات');
+                return;
+            }
+
+            const payload = rptList.map(function (item) {
+                return Object.assign({}, item, {
+                    documentTypeId: documentTypeId,
+                    note: statement,
+                    transactionDate: transactionDate,
+                    currencyId: currencyId,
+                    transactionId: transactionId,
+                    recipient: finalRecipient,
+                    recipientId: finalRecipientId
+                });
+            });
+
+            $('.btnUpdate').prop('disabled', true);
+
+            $.ajax({
+                url: '/Transactions/Update',
+                type: 'POST',
+                data: JSON.stringify(payload),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (response) {
+                    if (response && response.Status) {
+                        showMessage(response.Status, response.Message, response.Title);
+                        if (response.Status === 'success') {
+                            window.location.reload();
+                        }
+                    } else {
+                        showMessage('error', 'استجابة غير متوقعة من الخادم');
+                    }
+                },
+                error: function (xhr) {
+                    const response = xhr.responseJSON;
+                    if (response && response.Status) {
+                        showMessage(response.Status, response.Message, response.Title);
+                    } else {
+                        showMessage('error', 'تعذر حفظ تعديل القيد');
+                    }
+                },
+                complete: function () {
+                    $('.btnUpdate').prop('disabled', false);
+                }
+            });
+        }
+
+        function Delete(id) {
+            if (!id || Number(id) <= 0) return;
+
+            $.post('/Transactions/DeleteTransactionDetails/' + encodeURIComponent(id))
+                .done(function (response) {
+                    if (String(response) === '1') {
+                        showMessage('success', 'تمت العملية بنجاح', 'نجاح');
+                        loadMainData();
+                    } else {
+                        showMessage('error', 'عفواً لم تتم العملية بنجاح', 'خطأ');
+                    }
+                })
+                .fail(function () {
+                    showMessage('error', 'تعذر حذف تفاصيل القيد', 'خطأ');
+                });
+        }</script>
+}

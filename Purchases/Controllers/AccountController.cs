@@ -533,7 +533,12 @@ namespace Purchases.Controllers
                     Session["FullName"] = user.FullName;
                     Session["Role"] = RoleController.GetRole(userid);
                     Session["UserId"] = userid;
-                    Session["AirportName"] = user.AirportName;
+                    var userWorkDetails = db.UserWorkDetails.FirstOrDefault(q=> q.UserId == userid);
+                    var AirportName = userWorkDetails.CompanyInfo.Name;
+
+                    Session["CompanyInfoId"] = userWorkDetails.CompanyInfoId;
+                    Session["CompanyInfoName"] = AirportName;
+                    Session["AirportName"] = AirportName;
 
                     Session["CurrentYear"] = db.FinancialCycles.FirstOrDefault(x=> x.CurrentYear == true).Year;
                     

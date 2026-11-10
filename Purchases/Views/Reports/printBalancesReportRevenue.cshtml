@@ -97,14 +97,17 @@
 
                     var finalObj = Model.Where(q => q.accTreeName == "رسوم الغرامات").FirstOrDefault();
 
-                    <tr class="text-center">
-                        <td class="text-right amount truncateDecimal">@finalObj.actualExchange</td>
-                        <td class="text-right amount truncateDecimal">@finalObj.credintPercent</td>
-                        <td class="text-right amount truncateDecimal">@finalObj.credint</td>
-                        <td colspan="3" class="text-right">@finalObj.accTreeName</td>
-                        <td class="text-center">@counter</td>
-                    </tr>
-                }
+                    if (finalObj != null)
+                    {
+                        <tr class="text-center">
+                            <td class="text-right amount truncateDecimal">@finalObj.actualExchange</td>
+                            <td class="text-right amount truncateDecimal">@finalObj.credintPercent</td>
+                            <td class="text-right amount truncateDecimal">@finalObj.credint</td>
+                            <td colspan="3" class="text-right">@finalObj.accTreeName</td>
+                            <td class="text-center">@counter</td>
+                        </tr>
+                        }
+                    }
             </tbody>
 
             <tfoot>

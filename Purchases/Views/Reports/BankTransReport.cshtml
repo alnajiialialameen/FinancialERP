@@ -1,71 +1,135 @@
 ﻿
 @{
     ViewBag.Title = "TaxReport";
-    Layout = "~/Views/Shared/_Layout2.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>TaxReport</h2>
 
 @section content
 {
-<div class="content-wrapper">
-    <div class="grad"></div>
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <h1>
-            التحويل بين البنوك
-        </h1>
+    <!-- Content Header -->
+
+    <section class="d-flex flex-row justify-content-between align-items-center my-3">
+        <h3>
+            التحاويل بين البنوك
+        </h3>
+
         <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
-            <li class="active"> التحويل بين البنوك </li>
+            <li>
+                <a class="text-decoration-none text-black" href="@Url.Action("Index", "Home")">
+                    <i class="bi bi-house-fill"></i>
+                    النظام المحاسبي >
+                </a>
+            </li>
+            <li class="breadcrumb-item active">
+                التحاويل بين البنوك
+            </li>
         </ol>
     </section>
 
+
+    <!-- Main Content -->
     <section class="content">
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="form-group">
-                    <label for="transactionDate"> من تاريخ</label>
-                    <div class="input-group">
-                        <span class="input-group-addon">
-                            <i class="fa fa-calendar-alt"></i>
-                        </span>
-                        <input type="text" class="form-control  calendar DateFrom" id="DateFrom" name="DateFrom" placeholder="من تاريخ " autocomplete="off">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="mb-3">
+                        <label for="DateFrom" class="form-label">
+                            من تاريخ
+                        </label>
+
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-calendar-alt"></i>
+                            </span>
+                            <input type="date"
+                                   class="form-control calendar DateFrom"
+                                   id="DateFrom"
+                                   name="DateFrom"
+                                   placeholder="من تاريخ"
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="mb-3">
+                        <label for="DateTo" class="form-label">
+                            إلى تاريخ
+                        </label>
+
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-calendar-alt"></i>
+                            </span>
+                            <input type="date"
+                                   class="form-control calendar DateTo"
+                                   id="DateTo"
+                                   name="DateTo"
+                                   placeholder="إلى تاريخ"
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Actions -->
+            <div class="row g-2 mb-3">
+
+                <div class="col-lg-3 col-md-6">
+                    <button type="button"
+                            id="btnsearch"
+                            onclick="Search()"
+                            class="btn btn-primary btn-sm w-100">
+                        <i class="fa fa-search"></i>
+                        بحث
+                    </button>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <button type="button"
+                            id="btnall"
+                            onclick="PrintData()"
+                            class="btn btn-info btn-sm w-100">
+                        <i class="fa fa-print"></i>
+                        طباعة التقرير
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Data Table -->
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <table id="tbx"
+                               class="dataTable table table-striped table-hover w-100">
+                        </table>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <div class="form-group">
-                    <label for="transactionDate"> الي تاريخ</label>
-                    <div class="input-group">
-                        <span class="input-group-addon">
-                            <i class="fa fa-calendar-alt"></i>
-                        </span>
-                        <input type="text" class="form-control  calendar DateTo" id="DateTo" name="DateTo" placeholder=" الى تاريخ " autocomplete="off">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class=" col-md-3">
-                <button id="btnsearch" onclick="Search()" class="btn btn-primary btn-sm form-control">بحث</button>
-            </div>
-            <div class=" col-md-3">
-                <button id="btnall" onclick="PrintData()" class="btn form-control btn-info btn-sm">طباعة التقرير</button>
-            </div>
-            <div class="row" style="margin: 30px;">
-                <table id="tbl" class="dataTable table table-striped table-hover" style="width:100%">
-                </table>
-            </div>
+
         </div>
     </section>
-</div>
 }
 
 @section scripts{
 
     <script>
         var myId = 0;
+
+        $(document).ready(function () {
+             const today = new Date();
+             const selectedYear = @ViewBag.Year;
+
+             const dateValue = `${selectedYear}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+             $('#DateFrom').val(dateValue);
+             $('#DateTo').val(dateValue);
+        });
 
         function PrintData() {
             var DateFrom = $('#DateFrom').val();
@@ -79,7 +143,7 @@
         var DateFrom = $('#DateFrom').val();
         var DateTo = $('#DateTo').val();
         var url = "/Reports/GetBankTransDateRangeForSearch?DateFrom=" + DateFrom + "&DateTo=" + DateTo;
-        
+
         $('#tbl').DataTable({
             destroy: true,
             "language": {
@@ -129,5 +193,5 @@
             var url = "/Reports/printTaxAuthorityReport?dateFrom=" + DateFrom + "&dateTo=" + DateTo;
             window.open(url, '_blank').focus();
         }
-    </script>   
+    </script>
 }

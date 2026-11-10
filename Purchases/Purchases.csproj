@@ -540,6 +540,7 @@
     <Content Include="My-Layout\Select2 4.1.0\css\Select2 4.1.0.min.css" />
     <Content Include="My-Layout\Select2 4.1.0\js\Select2 4.1.0.js" />
     <Content Include="My-Layout\sidebars.css" />
+    <Content Include="My-Layout\sweetalert2\sweetalert2-v11.26.25.js" />
     <Content Include="Scripts\all.js" />
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\app.min.js" />
@@ -685,7 +686,7 @@
     <Content Include="Views\Suppliers\Index.cshtml" />
     <Content Include="Views\CurrencyTypes\Index.cshtml" />
     <Content Include="Views\Items\Index.cshtml" />
-    <Content Include="Views\Balances\Index.cshtml" />
+    <Content Include="Views\Balances\Index-old.cshtml" />
     <Content Include="Temp\jquery\jquery.min.map" />
     <Content Include="Temp\jquery\jquery.slim.min.map" />
     <Content Include="Views\AccountTree\Index.cshtml" />
@@ -719,7 +720,7 @@
     <Content Include="Views\Transactions\Index.cshtml" />
     <Content Include="Views\Transactions\printData.cshtml" />
     <Content Include="Views\Shared\_LayoutPrint.cshtml" />
-    <Content Include="Views\Transactions\Edit.cshtml" />
+    <Content Include="Views\Transactions\Edit1.cshtml" />
     <Content Include="Views\Transactions\printAllData.cshtml" />
     <Content Include="Views\Transactions\printDatas.cshtml" />
     <Content Include="Views\Transactions\Detail.cshtml" />
@@ -830,6 +831,12 @@
     <Content Include="Views\Balances\OverLimitItems.cshtml" />
     <Content Include="Views\Transactions\IndexAll1.cshtml" />
     <Content Include="Views\EmpPettyCash\Index.cshtml" />
+    <Content Include="Views\Transactions\Edit-New.cshtml" />
+    <Content Include="Views\Account\Index - Copy.cshtml" />
+    <Content Include="Views\Balances\Index.cshtml" />
+    <Content Include="Views\Transactions\Edit.cshtml" />
+    <Content Include="Views\Reports\BanksSarafFroAllAccTrees.cshtml" />
+    <Content Include="Views\Reports\printBankLetterNew.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

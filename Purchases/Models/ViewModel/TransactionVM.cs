@@ -38,7 +38,7 @@ namespace Purchases.Models.ViewModel
         public int? CheckType { get; set; }
         public string topParent { get; set; }
         public string hasAddedTaxTxt { get; set; }
-        public Nullable<bool> isCredit { get; set; }
+        public bool isCredit { get; set; }
 
     }
 }

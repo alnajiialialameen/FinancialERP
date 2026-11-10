@@ -4,6 +4,7 @@ using Purchases.Models.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Purchases.MyLogic
@@ -14,8 +15,8 @@ namespace Purchases.MyLogic
         private TreeClass trc = new TreeClass();
         private SharedClass sh = new SharedClass();
         private RoleController roleController = new RoleController();
-        /*transactions */
 
+        /*transactions */
         // طباعة جميع الحركات
         public List<TransactionVM> printAllData(int financialCycleId)
         {
@@ -143,7 +144,6 @@ namespace Purchases.MyLogic
                 return data;
             }
         }
-
         // طباعة بيانات الحركة لي بند محدد
         public List<TransactionVM> printLidger(int AccTreeId)
         {
@@ -339,11 +339,11 @@ namespace Purchases.MyLogic
                                t.TransactionDetails.Any(td => td.AccTreeId == accountId));
 
 
-                //if (userRoles.Contains("المدير المالي بالمطار") || userRoles.Contains("مدير إدارة الحسابات"))
-                //{
-                //    query = query.Where(x => x.CompanyInfoId == companyInfoId);
-                //}
-             
+                if (!userRoles.Contains("مدير الادارة العامة للشؤون المالية والمحاسبية") && !userRoles.Contains("مدير النظام"))
+                {
+                    query = query.Where(x => x.CompanyInfoId == companyInfoId);
+                }
+
                 // تطبيق الفلاتر حسب التواريخ
                 if (dateFrom.HasValue && dateTo.HasValue)
                 {
@@ -434,12 +434,12 @@ namespace Purchases.MyLogic
                                 t.TransactionDetails.Any(td => td.AccTreeId == directChild.Id));
                     }
 
-                    //var userRoles = roleController.GetRole(userId);
+                    var userRoles = roleController.GetRole(userId);
 
-                    //if(userRoles.Equals("موظف بالادارة المالية") || userRoles.Equals("المدير المالي بالمطار"))
-                    //{
-                    //    query = query.Where(q => q.CompanyInfoId == companyInfoId);
-                    //}
+                    if (!userRoles.Contains("مدير الادارة العامة للشؤون المالية والمحاسبية") && !userRoles.Contains("مدير النظام"))
+                    {
+                        query = query.Where(q => q.CompanyInfoId == companyInfoId);
+                    }
 
                     // تطبيق الفلاتر حسب التواريخ
                     if (dateFrom.HasValue && dateTo.HasValue)
@@ -527,7 +527,6 @@ namespace Purchases.MyLogic
 
                     finalResult.Add(data);
                 }
-
                 return finalResult;
             }
             catch (Exception ex)
@@ -1555,6 +1554,123 @@ namespace Purchases.MyLogic
             return parentRes.Where(x => x.credint > 0).ToList();
         }
 
+        public List<BalanceVM> BanksSarafFroAllAccTrees1(int financeCycleId, int? accTreeIdForBank, DateTime? dateFrom, DateTime? dateTo)
+        {
+            var parentRes = new List<BalanceVM>();
+            // var docTypeIds = new List<int> { 1, 3, 7, 8, 9 };
+
+            // حساب عدد الشهور
+            int monthsPercentage = 1;
+            if (dateFrom.HasValue && dateTo.HasValue)
+            {
+                monthsPercentage = ((dateTo.Value.Year - dateFrom.Value.Year) * 12) + (dateTo.Value.Month - dateFrom.Value.Month) + 1;
+                if (dateTo.Value.Day < dateFrom.Value.Day)
+                    monthsPercentage--;
+            }
+
+            // تجهيز الاستعلام لفلترة تفاصيل المعاملات
+            var transactionDetailsQuery = db.TransactionDetails.AsQueryable();
+
+            if (dateFrom.HasValue && dateTo.HasValue)
+            {
+                var from = dateFrom.Value.Date;
+                var to = dateTo.Value.Date;
+                transactionDetailsQuery = transactionDetailsQuery
+                    .Where(x => DbFunctions.TruncateTime(x.Transaction.TransactionDate) >= from &&
+                                DbFunctions.TruncateTime(x.Transaction.TransactionDate) <= to);
+            }
+
+            if (accTreeIdForBank.HasValue)
+            {
+                transactionDetailsQuery = transactionDetailsQuery
+                    .Where(x => x.AccTreeId == accTreeIdForBank.Value);
+            }
+
+            var transactionDetailsList = transactionDetailsQuery
+                .Where(q => q.Transaction.FinancialCycleId == financeCycleId)
+                .GroupBy(q => q.AccTreeId)
+                .Select(g => new BalanceVM
+                {
+                    accTreeId = g.Key,
+                    credit = g.Sum(x => x.Credit),
+                    debit = g.Sum(x => x.Debit),
+                    accTreeName = g.FirstOrDefault().AccountTree.AccName
+                })
+                .ToList();
+
+            return transactionDetailsList.Where(x => x.credit > 0).ToList();
+        }
+
+        public List<BalanceVM> BanksSarafFroAllAccTrees(int financeCycleId, int? accTreeIdForBank, DateTime? dateFrom, DateTime? dateTo)
+        {
+            var query = db.TransactionDetails.AsQueryable();
+
+            query = query.Where(x =>x.Transaction.FinancialCycleId == financeCycleId);
+
+            if (dateFrom.HasValue && dateTo.HasValue)
+            {
+                var from = dateFrom.Value.Date;
+                var to = dateTo.Value.Date.AddDays(1);
+
+                query = query.Where(x =>
+                    x.Transaction.TransactionDate >= from &&
+                    x.Transaction.TransactionDate < to);
+            }
+
+            // العمليات التي تحتوي على الحساب البنكي
+            var transactionIds = query
+                .Where(x => x.AccTreeId == accTreeIdForBank)
+                .Select(x => x.TransactionId);
+
+            // تفاصيل الحسابات الأخرى في نفس العمليات
+            var result = query
+                .Where(x =>
+                    transactionIds.Contains(x.TransactionId) &&
+                    x.AccTreeId != accTreeIdForBank &&
+                    x.Debit > 0)
+                .GroupBy(x => new
+                {
+                    x.AccTreeId,
+                    x.AccountTree.AccName
+                })
+                .Select(g => new BalanceVM
+                {
+                    accTreeId = g.Key.AccTreeId,
+                    accTreeName = g.Key.AccName,
+                    debit = g.Sum(x => x.Debit),
+                    credit = g.Sum(x => x.Credit),
+                })
+                .ToList();
+
+            return result;
+        }
+
+        public List<BalanceVM> printBankBalance(int financeCycleId, int? accTreeIdForBank, DateTime? dateFrom, DateTime? dateTo)
+        {
+            var parentRes = new List<BalanceVM>();
+            var transactionDetailsQuery = db.TransactionDetails.AsQueryable();
+            transactionDetailsQuery = transactionDetailsQuery.Where(x => x.Transaction.FinancialCycleId == financeCycleId);
+           
+            if (dateFrom.HasValue && dateTo.HasValue)
+            {
+                var from = dateFrom.Value.Date;
+                var to = dateTo.Value.Date.AddDays(1);
+                transactionDetailsQuery = transactionDetailsQuery.Where(x =>
+                    x.Transaction.TransactionDate >= from &&
+                    x.Transaction.TransactionDate < to);
+            }
+            if (accTreeIdForBank.HasValue)
+            {
+                transactionDetailsQuery = transactionDetailsQuery.Where(x => x.AccTreeId == accTreeIdForBank);
+            }
+            var result = transactionDetailsQuery
+                .Select(g => new BalanceVM
+                {
+                    // get data here
+                })
+                .ToList();
+            return result;  
+        }
         /*---------------------------------------------------------------تقارير الحسابات الختامية--------------------------------------------------*/
         // تقرير ميزان المراجعة بالارصدة- يعني كل حساب  والرصيد ال فيهو
 

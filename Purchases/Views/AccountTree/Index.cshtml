@@ -1,6 +1,6 @@
 ﻿@{
     ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_Layout2.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @using Purchases.Models;
@@ -10,260 +10,383 @@
     List<AccountTree> Model = db.AccountTrees.ToList();
 }
 <style>
-    .hidden {
-        display: none !important;
+    .add-btn {
     }
 </style>
 @section content{
     <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-        <div class="grad"></div>
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <h1>
-                الشجرة الحسابية <i class="fas fa-folder"></i>
-            </h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-home"></i> النظام المحاسبي</a></li>
-                <li class="active">  الشجرة الحسابية</li>
-            </ol>
-        </section>
 
-        <section class="content">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="box">
-                        <!-- /.box-header -->
-                        <div class="box-body">
-                            <div class="container" style="margin-top:30px;">
-                                <div style="margin-right: 40px;">
-                                    <img src="~/Temp/Image/Tree4.png" height="50" />
-                                </div>
-                                <div id="Refresh-Tree">
-                                    @Html.Partial("_Tree")
-                                </div>
-                                <div>
-                                </div>
+    <section class="d-flex flex-row justify-content-between align-items-center my-3">
+        <h3>
+            الشجرة المحاسبية 
+        </h3>
 
-                                <label id="FinancialCycleId" class="hidden">@ViewBag.FinancialCycleId</label>
+        <ol class="breadcrumb">
+            <li>
+                <a class="text-decoration-none text-black" href="@Url.Action("Index", "Home")">
+                    <i class="bi bi-house-fill"></i>
+                    النظام المحاسبي >
+                </a>
+            </li>
+            <li class="breadcrumb-item active">
+                الشجرة المحاسبية 
+            </li>
+        </ol>
+    </section>
 
-                                <table id="dataTable" class="table table-bordered table-sm table-hover" style="width:100%">
+    <section class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+
+                        <div class="container-fluid mt-4">
+                            <div class="mb-3" style="margin-right: 40px;">
+                                <img src="~/Temp/Image/Tree4.png" height="50" />
+                            </div>
+
+                            <div id="Refresh-Tree">
+                                @Html.Partial("_Tree")
+                            </div>
+
+                            <label id="FinancialCycleId" class="d-none">
+                                @ViewBag.FinancialCycleId
+                            </label>
+
+                            <div class="table-responsive">
+                                <table id="dataTable"
+                                       class="table table-bordered table-sm table-hover w-100">
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>الرقم </th>
+                                            <th>الرقم</th>
                                             <th>الحساب</th>
                                             <th>تحت حساب</th>
-                                            <th> الحساب الاب</th>
+                                            <th>الحساب الأب</th>
                                             <th>العمليات</th>
                                         </tr>
                                     </thead>
                                 </table>
-                            </div><!-- /.box-body -->
-                        </div><!-- /.box -->
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
-            </div>
-        </section>
-    </div>
-
-    <div class="example-modal">
-        <div class="modal fade" id="add-modal">
-            <div class="modal-dialog" style="width:80% !important">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title"> إضافة حساب جديد</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <form method="post" id="add-form">
-                                    <div class="box-body">
-                                        <div class="row">
-                                            <div class="col-lg-12 our-title">
-                                                <span id="addAccParentName" class="addAccParentName">الحساب الاب</span>
-                                                <span id="addAccParent" class="addAccParent hidden"></span>
-                                            </div>
-                                            <div class="col-lg-12">
-                                                <div class="col-lg-6">
-                                                    <div class="form-group">
-                                                        <label for="addAccName">  اسم الحساب</label>
-                                                        <div class="input-group">
-                                                            <div class="input-group-addon">
-                                                                <i class="fa fa-book"></i>
-                                                            </div>
-                                                            <input class="form-control addAccName" name="addAccName" id="addAccName" placeholder="اسم الحساب" autocomplete="off" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <div class="form-group">
-                                                        <label for="addAccFinal">الحساب الختامي</label>
-                                                        <div class="input-group">
-                                                            <div class="input-group-addon">
-                                                                <i class="fa  fa-book"></i>
-                                                            </div>
-                                                            <select class="form-control list addAccFinal" name="addAccFinal" id="addAccFinal" style="width:100%"></select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-12">
-                                                <div class="col-lg-6">
-                                                    <div class="form-group">
-                                                        <label for="addAccNature">  طبيعة الحساب</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon"><i class="fa fa-cash-register"></i></span>
-                                                            <select id="addAccNature" name="addAccNature" class="form-control list addAccNature" placeholder="تحت بتد " style="width:100%"></select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <div class="form-group">
-                                                        <label for="addAccType">   نوع الحساب</label>
-                                                        <div class="input-group">
-                                                            <div class="input-group-addon">
-                                                                <i class="fa  fa-book"></i>
-                                                            </div>
-                                                            <select class="form-control list addAccType" name="addAccType" id="addAccType" style="width:100%"></select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-12">
-                                                <div class="col-lg-6 hidden" id="AddAccSubDiv">
-                                                    <div class="form-group">
-                                                        <label for="addAccSub"> تصنيف الحساب الفرعي</label>
-                                                        <div class="input-group">
-                                                            <div class="input-group-addon">
-                                                                <i class="fa fa-book"></i>
-                                                            </div>
-                                                            <select class="form-control list addAccSub" name="addAccSub" id="addAccSub" style="width:100%"></select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6">
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-12">
-                                                <button id="btnAddToTable" class="btn btn-primary btn-block" onclick="event.preventDefault(); addToTable();">ترحيل</button>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <table id="example1" class="table table-bordered table-striped virtualTable">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="text-align:center ;width:750px;">اسم الحساب</th>
-                                                        <th style="text-align:center ;width:750px;">الحساب الختامي </th>
-                                                        <th style="text-align:center ;width:750px;"> نوع الحساب</th>
-                                                        <th style="text-align:center ;width:750px;"> طبيعة الحساب</th>
-                                                        <th style="text-align:center ;width:750px;">  ت.الحساب الفرعي</th>
-                                                        <th style="text-align:center;"><i class="fa fa-cogs"></i></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="myTbody" class="myTbody"></tbody>
-                                                <tfoot>
-                                                </tfoot>
-                                            </table>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-12 ">
-                                                <div class="pull-left">
-                                                    <button type="button" id="btnDismiss" class="btn btn-default " data-dismiss="modal">رجوع</button>
-                                                    <button type="submit" id="btnSave" class="btn btn-primary save" onclick="saveVirtual()">حفظ</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
                             </div>
+
                         </div>
                     </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
-    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
+    <!-- Add Account Modal -->
+    <div class="modal fade" id="add-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
 
+                <div class="border-0 d-flex justify-content-between align-items-center m-3">
+                    <h5 class="modal-title">إضافة حساب جديد</h5>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
+                </div>
 
+                <div class="modal-body">
 
+                    <form method="post" id="add-form">
 
-
-
-    <div class="example-modal">
-        <div class="modal fade in" id="edit-modal">
-            <div class="modal-dialog" style="width:80% !important">
-                <div class="modal-content">
-                    <div class="modal-header .no-border">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" name="btnDismiss"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title"> تعديل الحساب الاب</h4>
-                    </div>
-                    <div class="modal-body">
                         <div class="row">
-                            <div class="col-lg-12">
-                                <div class="box .no-border">
-                                    <!-- /.box-header -->
-                                    <div class="box-body">
-                                        <!-- Input addon -->
-                                        <div class="row">
-                                            <div class="col-lg-12 our-title">
-                                                <label class="text-danger h3">العام المالي الحالي : </label><label class="text-success h3">@ViewBag.Year</label>
-                                                <label id="AccId" class="hidden"></label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    <label for="edAccName">  اسم الحساب</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-addon">
-                                                            <i class="fa fa-book"></i>
-                                                        </div>
-                                                        <input class="form-control edAccName" disabled name="edAccName" id="edAccName" placeholder="اسم الحساب" autocomplete="off" />
-                                                    </div>
-                                                </div>
-                                            </div>
 
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    <label for="edAccParentNameOld"> اسم الحساب الاب</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-addon">
-                                                            <i class="fa fa-book"></i>
-                                                        </div>
-                                                        <input class="form-control edAccParentNameOld" disabled name="edAccParentNameOld" id="edAccParentNameOld" placeholder="اسم الحساب" autocomplete="off" />
-                                                    </div>
-                                                </div>
-                                            </div>
+                            <div class="col-12 our-title mb-3 text-center text-bold fs-3 text-danger">
+                                <span id="addAccParentName" class="addAccParentName">
+                                    الحساب الأب
+                                </span>
 
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    <span> اسم الحساب الاب الجديد</span>
-                                                    <div class="input-group">
-                                                        <div class="input-group-addon">
-                                                            <i class="fa fa-book"></i>
-                                                        </div>
-                                                        <select class="form-control list edAccParentName" id="edAccParentName" style="width:100%"></select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <span id="addAccParent"
+                                      class="addAccParent d-none">
+                                </span>
+                            </div>
 
-                                        <div class="row">
-                                            <div class="col-lg-12 ">
-                                                <div class="pull-left">
-                                                    <button id="btnUpdate" class="btn btn-warning update" onclick="Update()">تعديل</button>
-                                                </div>
-                                            </div>
-                                        </div>
+                            <!-- Account Name & Final Account -->
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label for="addAccName" class="form-label">
+                                        اسم الحساب
+                                    </label>
+
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-book"></i>
+                                        </span>
+
+                                        <input class="form-control addAccName"
+                                               name="addAccName"
+                                               id="addAccName"
+                                               placeholder="اسم الحساب"
+                                               autocomplete="off" />
                                     </div>
-                                    <!-- /.box-body -->
                                 </div>
                             </div>
+
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label for="addAccFinal" class="form-label">
+                                        الحساب الختامي
+                                    </label>
+
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-book"></i>
+                                        </span>
+
+                                        <select class="form-select list addAccFinal"
+                                                name="addAccFinal"
+                                                id="addAccFinal"
+                                                style="width:100%">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Account Nature & Type -->
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label for="addAccNature" class="form-label">
+                                        طبيعة الحساب
+                                    </label>
+
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-cash-stack"></i>
+                                        </span>
+
+                                        <select id="addAccNature"
+                                                name="addAccNature"
+                                                class="form-select list addAccNature"
+                                                style="width:100%">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label for="addAccType" class="form-label">
+                                        نوع الحساب
+                                    </label>
+
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-book"></i>
+                                        </span>
+
+                                        <select class="form-select list addAccType"
+                                                name="addAccType"
+                                                id="addAccType"
+                                                style="width:100%">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sub Account -->
+                            <div class="col-lg-6 d-none" id="AddAccSubDiv">
+                                <div class="mb-3">
+                                    <label for="addAccSub" class="form-label">
+                                        تصنيف الحساب الفرعي
+                                    </label>
+
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-book"></i>
+                                        </span>
+
+                                        <select class="form-select list addAccSub"
+                                                name="addAccSub"
+                                                id="addAccSub"
+                                                style="width:100%">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Add To Table -->
+                            <div class="col-12 mb-3">
+                                <button type="button"
+                                        id="btnAddToTable"
+                                        class="btn btn-primary w-100"
+                                        onclick="event.preventDefault(); addToTable();">
+                                    ترحيل
+                                </button>
+                            </div>
+
+                        </div>
+
+                        <!-- Virtual Table -->
+                        <div class="table-responsive mb-3">
+                            <table id="example1"
+                                   class="table table-bordered table-striped virtualTable">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">اسم الحساب</th>
+                                        <th class="text-center">الحساب الختامي</th>
+                                        <th class="text-center">نوع الحساب</th>
+                                        <th class="text-center">طبيعة الحساب</th>
+                                        <th class="text-center">ت. الحساب الفرعي</th>
+                                        <th class="text-center">
+                                            <i class="bi bi-gear"></i>
+                                        </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="myTbody" class="myTbody"></tbody>
+
+                                <tfoot></tfoot>
+                            </table>
+                        </div>
+
+                        <!-- Footer Actions -->
+                        <div class="d-flex justify-content-start gap-2">
+
+                            <button type="button"
+                                    id="btnDismiss"
+                                    class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+                                رجوع
+                            </button>
+
+                            <button type="submit"
+                                    id="btnSave"
+                                    class="btn btn-primary save"
+                                    onclick="saveVirtual()">
+                                حفظ
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Edit Account Modal -->
+    <div class="modal fade" id="edit-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+
+                <div class="border-0 d-flex justify-content-between align-items-center m-3">
+                    <h5 class="modal-title">تعديل الحساب الأب</h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                            name="btnDismiss">
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="card border-0">
+                        <div class="card-body">
+
+                            <div class="row">
+
+                                <div class="col-12 our-title mb-3">
+                                    <label class="text-danger h3">
+                                        العام المالي الحالي :
+                                    </label>
+
+                                    <label class="text-success h3">
+                                        @ViewBag.Year
+                                    </label>
+
+                                    <label id="AccId" class="d-none"></label>
+                                </div>
+
+                                <!-- Account Name -->
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="edAccName" class="form-label">
+                                            اسم الحساب
+                                        </label>
+
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="bi bi-book"></i>
+                                            </span>
+
+                                            <input class="form-control edAccName"
+                                                   disabled
+                                                   name="edAccName"
+                                                   id="edAccName"
+                                                   placeholder="اسم الحساب"
+                                                   autocomplete="off" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Old Parent -->
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="edAccParentNameOld" class="form-label">
+                                            اسم الحساب الأب
+                                        </label>
+
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="bi bi-book"></i>
+                                            </span>
+
+                                            <input class="form-control edAccParentNameOld"
+                                                   disabled
+                                                   name="edAccParentNameOld"
+                                                   id="edAccParentNameOld"
+                                                   placeholder="اسم الحساب"
+                                                   autocomplete="off" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- New Parent -->
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="edAccParentName" class="form-label">
+                                            اسم الحساب الأب الجديد
+                                        </label>
+
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="bi bi-book"></i>
+                                            </span>
+
+                                            <select class="form-select list edAccParentName"
+                                                    id="edAccParentName"
+                                                    style="width:100%">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="d-flex justify-content-start mt-3">
+                                <button type="button"
+                                        id="btnUpdate"
+                                        class="btn btn-warning update"
+                                        onclick="Update()">
+                                    تعديل
+                                </button>
+                            </div>
+
                         </div>
                     </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
+
+                </div>
+            </div>
+        </div>
     </div>
 
 }
@@ -309,7 +432,7 @@
                         "data": "Id",
                         "orderable": false,
                         "render": function (data) {
-                            return '<button class="btn btn-info btnDetails" onclick="Detail(' + data + ')"><i class="fa fa-info"></i></button>';
+                            return '<button class="btn btn-info btnDetails" onclick="Detail(' + data + ')"><i class="bi bi-info fs-4"></i></button>';
                         }
                     },
                     { "data": "Id", "autowidth": true },
@@ -330,11 +453,11 @@
                         "render": function (data, type, row) {
 
                             var toggleButton = row.IsActive
-                                ? ' <button class="btn btn-success transfer btn-dataTable" onclick="toggleActive(' + row.Id + ', false)"> مفعل </button>'
-                                : ' <button class="btn btn-default transfer btn-dataTable" onclick="toggleActive(' + row.Id + ', true)"> غير مفعل </button>';
+                                ? ' <button class="btn btn-success transfer btn-dataTable" onclick="toggleActive(' + row.Id + ', false)"> <i class="bi bi-lock fs-4"></i>  </button>'
+                                : ' <button class="btn btn-info transfer btn-dataTable" onclick="toggleActive(' + row.Id + ', true)"> <i class="bi bi-unlock fs-4"></i>  </button>';
 
-                            return '<button class="btn btn-danger transfer btn-dataTable" onclick="Delete(' + row.Id + ')"> حذف </button> ' +
-                                '<button class="btn btn-warning update transfer btn-dataTable" >تعديل</button>' +
+                            return '<button class="btn btn-danger transfer btn-dataTable" onclick="Delete(' + row.Id + ')"> <i class="bi bi-trash fs-4"></i> </button> ' +
+                                '<button class="btn btn-warning update transfer btn-dataTable" > <i class="bi bi-pencil-square fs-4"></i></button>' +
                                 toggleButton;
                         }
                     }
@@ -347,7 +470,7 @@
                 ],
                 "rowCallback": function (row, data) {
                     if (!data.IsActive) {
-                        $(row).css('background-color', '#FFC107'); // أصفر غامق                   
+                        $(row).css('background-color', '#FFC107'); // أصفر غامق
                     }
                 },
                 "language": {
@@ -369,15 +492,11 @@
                 }
             });
 
-             
-
-
-
-            select2list("#edAccParentName", "/AccountTree/GetAccountNoneSub", "اسم الحساب الاب");
-            select2list("#addAccType", "/AccountTree/GetAccountType", "نوع الحساب ");
-            select2list("#addAccNature", "/AccountTree/GetAccountNature", "  طبيعة الحساب ");
-            select2list("#addAccFinal", "/AccountTree/GetAccountFinal", "  الحساب الختامي ");
-            select2list("#addAccSub", "/AccountTree/GetAccountSubCategory", " تصنيف الحساب الفرعي ");
+            select2list("#edAccParentName", "/AccountTree/GetAccountNoneSub", "اسم الحساب الاب", "#edit-modal");
+            select2list("#addAccType", "/AccountTree/GetAccountType", "نوع الحساب ", "#add-modal");
+            select2list("#addAccNature", "/AccountTree/GetAccountNature", "  طبيعة الحساب ", "#add-modal");
+            select2list("#addAccFinal", "/AccountTree/GetAccountFinal", "  الحساب الختامي ", "#add-modal");
+            select2list("#addAccSub", "/AccountTree/GetAccountSubCategory", " تصنيف الحساب الفرعي ", "#add-modal");
 
             //دي دالة ذر الحذف في الجدول الصغير
             $('.table-striped').on('click', '.btn-warning', function () {
@@ -396,13 +515,13 @@
             var AccType = $(this).val();
             switch (AccType) {
                 case "1":
-                    $('#AddAccSubDiv').addClass('hidden');
+                    $('#AddAccSubDiv').addClass('d-none');
                     break;
                 case "2":
-                    $('#AddAccSubDiv').removeClass('hidden');
+                    $('#AddAccSubDiv').removeClass('d-none');
 
                     setTimeout(function () {
-                        select2list(".addAccSub", "/AccountTree/GetAccountSubCategory", " تصنيف الحساب الفرعي ");
+                        select2list(".addAccSub", "/AccountTree/GetAccountSubCategory", " تصنيف الحساب الفرعي ", "#add-modal");
                     }, 100);
 
                     break;
@@ -464,32 +583,6 @@
             fillTreeName();
         });
 
-        //-------------------------------------------------Start Add------------------------------------------------------------------------------------------------------------
-        $('#add-form').bootstrapValidator({
-            onSuccess: function (e) {
-                saveVirtual();
-                e.preventDefault();
-
-            },
-            submitButtons: 'button[type="submit"]',
-            feedbackIcons: {
-                valid: 'glyphicon glyphicon-ok success-feedback-icons',
-                invalid: 'glyphicon glyphicon-remove error-feedback-icons',
-                validating: 'fa fa-refresh fa-spin success-feedback-icons'
-            },
-            fields: {
-                addAccName: {
-                    validators: {
-                        notEmpty: {
-                            message: 'يجب الا يكون حقل اسم الادراة  فارغ'
-                        }
-                    }
-                }
-
-            }
-        });
-        //-------------------------------------------------End Add------------------------------------------------------------------------------------------------------------
-
         //-----------------------------------------------------------------Start Edit---------------------------------------------------------------
 
         //Open Edit Modal
@@ -524,29 +617,6 @@
             });
         }
 
-        //Validation And Save Edit Data
-        $('#edit-form').bootstrapValidator({
-            onSuccess: function (e) {
-                edit();
-                e.preventDefault();
-            },
-            submitButtons: 'button[type="submit"]',
-            feedbackIcons: {
-                valid: 'glyphicon glyphicon-ok success-feedback-icons',
-                invalid: 'glyphicon glyphicon-remove error-feedback-icons',
-                validating: 'fa fa-refresh fa-spin success-feedback-icons'
-            },
-            fields: {
-                edAccName: {
-                    validators: {
-                        notEmpty: {
-                            message: 'يجب الا يكون حقل اسم الادارة  فارغ'
-                        }
-                    }
-                }
-            }
-        });
-
         function edit() {
             var ob = {
                 "Id": $('#edId').val(),
@@ -568,7 +638,7 @@
                     toastr[response.Status](response.Message, response.Title);
                     dataTable.ajax.reload();
                     Refresh();
-                    $('#edit-form').bootstrapValidator('resetForm', true);
+                    //$('#edit-form').bootstrapValidator('resetForm', true);
                     $('#edit-modal').modal('hide');
                 }
             });
@@ -636,32 +706,65 @@
         //=========================================Cusrom Tree====================================================================//
 
         function Delete(id) {
-            swal({
-                title: "هل انت متاكد ",
-                text: " OK تقوم بحذف العنصر! عند الضعط علي",
+            Swal.fire({
+                title: "هل أنت متأكد؟",
+                text: "عند الضغط على OK سيتم حذف العنصر!",
                 icon: "warning",
-                buttons: true,
-                dangerMode: true,
-            })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        $.get("/AccountTree/Delete", { id: id }, function (res) {
-                            if (res) {
-                                if (res.message != null && res.message === "Used") {
-                                    //   toastr[response.Status](response.MessageText, response.Title);
-                                    toastr.error("لايمكن حذف هذا العنصر ", "تعذر الحذف");
-                                }
+                showCancelButton: true,
+                confirmButtonText: "OK",
+                cancelButtonText: "إلغاء",
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#6c757d"
+            }).then((result) => {
 
-                                if (res.message != null && res.message === "Delete") {
-                                    toastr.success("تم الحذف الحساب ", "الحذف");
-                                    Refresh();
-                                    /// toastr[response.Status](response.MessageText, response.Title);
-                                }
-                                dataTable.ajax.reload();
+                if (result.isConfirmed) {
+
+                    $.get("/AccountTree/Delete", { id: id }, function (res) {
+
+                        if (res) {
+
+                            if (res.message === "Used") {
+                                toastr.error("لا يمكن حذف هذا العنصر", "تعذر الحذف");
                             }
-                        });
-                    }
-                });
+
+                            if (res.message === "Delete") {
+                                toastr.success("تم حذف الحساب", "الحذف");
+
+                                Refresh();
+                            }
+
+                            dataTable.ajax.reload();
+                        }
+                    });
+                }
+            });
+
+            //swal({
+            //    title: "هل انت متاكد ",
+            //    text: " OK تقوم بحذف العنصر! عند الضعط علي",
+            //    icon: "warning",
+            //    buttons: true,
+            //    dangerMode: true,
+            //})
+            //    .then((willDelete) => {
+            //        if (willDelete) {
+            //            $.get("/AccountTree/Delete", { id: id }, function (res) {
+            //                if (res) {
+            //                    if (res.message != null && res.message === "Used") {
+            //                        //   toastr[response.Status](response.MessageText, response.Title);
+            //                        toastr.error("لايمكن حذف هذا العنصر ", "تعذر الحذف");
+            //                    }
+
+            //                    if (res.message != null && res.message === "Delete") {
+            //                        toastr.success("تم الحذف الحساب ", "الحذف");
+            //                        Refresh();
+            //                        /// toastr[response.Status](response.MessageText, response.Title);
+            //                    }
+            //                    dataTable.ajax.reload();
+            //                }
+            //            });
+            //        }
+            //    });
         }
 
         function addToTable() {
@@ -689,15 +792,15 @@
                 if ((addAccTypeVal == 2 & addAccSubCatVal != null) | addAccTypeVal == 1) {
                     var rows = "<tr id='row' style='font-size: 16px;text-align:center;'>"
                                     + "<td class='name'>" + addAccName + "</td>"
-                                    + "<td class='nameVal hidden'>" + addAccName + "</td>"
+                                    + "<td class='nameVal d-none'>" + addAccName + "</td>"
                                     + "<td class='final'>" + addAccFinal + "</td>"
-                                    + "<td class='finalVal hidden'>" + addAccFinalVal + "</td>"
+                                    + "<td class='finalVal d-none'>" + addAccFinalVal + "</td>"
                                     + "<td class='type'>" + addAccType + "</td>"
-                                    + "<td class='typeVal hidden'>" + addAccTypeVal + "</td>"
+                                    + "<td class='typeVal d-none'>" + addAccTypeVal + "</td>"
                                     + "<td class='nature'>" + addAccNature + "</td>"
-                                    + "<td class='natureVal hidden'>" + addAccNatureVal + "</td>"
+                                    + "<td class='natureVal d-none'>" + addAccNatureVal + "</td>"
                                     + "<td class='subCat'>" + addAccSubCat + "</td>"
-                                    + "<td class='subCatVal hidden'>" + addAccSubCatVal + "</td>"
+                                    + "<td class='subCatVal d-none'>" + addAccSubCatVal + "</td>"
                                     + '<td  class="employeeName" > <button id="delete"onclick="return deletes()" class="btn btn-warning transfer ">حذف<i class=" transfer-fa fa  fa-edit"></i></button>' + "</td>"
                                     + "</tr>";
                     $('.myTbody').append(rows);
@@ -723,7 +826,7 @@
             $('#AccId').text(AccId);
             $('#edAccParentNameOld').val(AccParentNameOld);
             $('#edAccName').val(AccName);
-            $('#edit-modal').show();
+            $('#edit-modal').modal('show');
         });
 
         $('.close').on('click', function () {
@@ -748,31 +851,60 @@
         }
 
         function toggleActive(id, status) {
-
-            swal({
+            Swal.fire({
                 title: "هل أنت متأكد؟",
                 text: status ? "سيتم تفعيل العنصر" : "سيتم إلغاء تفعيل العنصر",
                 icon: "warning",
-                buttons: true,
-                dangerMode: false,
-            })
-                .then((confirm) => {
+                showCancelButton: true,
+                confirmButtonText: "نعم",
+                cancelButtonText: "إلغاء",
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#6c757d"
+            }).then((result) => {
 
-                    if (confirm) {
+                if (result.isConfirmed) {
 
-                        $.get("/AccountTree/Active", { id: id, IsActive: status }, function (res) {
+                    $.get("/AccountTree/Active", {
+                        id: id,
+                        IsActive: status
+                    }, function (res) {
 
-                            if (res.Status === "success") {
-                                toastr.success(res.Message, "تم");
-                            }
-                            else {
-                                toastr.error(res.Message, "خطأ");
-                            }
+                        if (res.Status === "success") {
+                            toastr.success(res.Message, "تم");
+                        }
+                        else {
+                            toastr.error(res.Message, "خطأ");
+                        }
 
-                            dataTable.ajax.reload(null, false);
-                        });
-                    }
-                });
+                        dataTable.ajax.reload(null, false);
+                    });
+                }
+            });
+
+            //swal({
+            //    title: "هل أنت متأكد؟",
+            //    text: status ? "سيتم تفعيل العنصر" : "سيتم إلغاء تفعيل العنصر",
+            //    icon: "warning",
+            //    buttons: true,
+            //    dangerMode: false,
+            //})
+            //    .then((confirm) => {
+
+            //        if (confirm) {
+
+            //            $.get("/AccountTree/Active", { id: id, IsActive: status }, function (res) {
+
+            //                if (res.Status === "success") {
+            //                    toastr.success(res.Message, "تم");
+            //                }
+            //                else {
+            //                    toastr.error(res.Message, "خطأ");
+            //                }
+
+            //                dataTable.ajax.reload(null, false);
+            //            });
+            //        }
+            //    });
         }
 
     </script>

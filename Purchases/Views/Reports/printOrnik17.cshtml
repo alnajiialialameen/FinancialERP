@@ -66,7 +66,7 @@
 <div class="header">
     <div class="left-side">
         <div>
-            <label>@Session["AirportName"].ToString()</label>
+            <label>@Session["CompanyInfoName"].ToString()</label>
         </div>
 
         <div>
@@ -101,6 +101,8 @@
     @{
         if (ViewBag.BalanceName == "حساب مذكورين")
         {
+            <br />
+            <br />
             <div class="row pull-right">
                 <strong>البيان:</strong>
                 <label for="note">@ViewBag.Note</label>
