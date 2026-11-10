@@ -297,7 +297,7 @@ namespace Purchases.CurencyOperation
 
         private static string[] arabicAppendedTwos =
             new string[] {
-            "مئتا", "ألفا", "مليونا", "مليارا", "تريليونا", "كوادريليونا", "كوينتليونا", "سكستيليونا"
+            "مئتا", "ألفا", "مليونا", "اثنان مليار", "تريليونا", "كوادريليونا", "كوينتليونا", "سكستيليونا"
         };
 
         private static string[] arabicTwos =
