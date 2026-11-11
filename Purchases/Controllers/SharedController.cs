@@ -33,7 +33,10 @@ namespace Purchases.Controllers
         // جلب جميع الحسابات في الشجرة
         public ActionResult getAccTrees(string q)
         {
-            var data = obj.GetAccTrees(q);
+            var userId = User.Identity.GetUserId();
+            int financialCycleId = obj.GetUserCurrentFinancialCycleId(userId);
+
+            var data = obj.GetAccTrees(q, financialCycleId);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

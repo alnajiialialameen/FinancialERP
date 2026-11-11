@@ -31,7 +31,6 @@ namespace Purchases.Controllers
 
         // طباعة بيانات الحركة لي بند محدد بين تاريخين  
         // دفتر الاستاذ لي بند معين بين تاريخين
-        
         [HttpGet]
         public ActionResult printLedgerByDates(int? bankId, int Id, DateTime? dateFrom, DateTime? dateTo)
         {
@@ -69,7 +68,7 @@ namespace Purchases.Controllers
             TreeClass tree = new TreeClass();
             // الارصدة المرحلة تكون في الاصول والخصوم فقط اما الايرادات وبعض المصروفات مافيها ارصد مرحلة
             var rootParentId = tree.getRootParentId(Id); // دالة بتجيب لي الحساب الرئيسي 
-            
+
             if (rootParentId != 3 && rootParentId != 4) // نستثني الايرادات والمصروفات 
             {
                 var openBalance = sc.GetOpenBalanceForSpecificAccTree(FinancialCyclYeare, FinancialCycleId, Id, bankId);
@@ -309,9 +308,6 @@ namespace Purchases.Controllers
             }
         }
 
-
-
-
         //   ده التقرير ال بيمشي لي سلطة الضرائب بخصوص ضريبة الدخل
         [HttpGet]
         public ActionResult printIncomeTaxAuthorityReport(DateTime? DateFrom, DateTime? DateTo, int? bankId)
@@ -348,19 +344,6 @@ namespace Purchases.Controllers
                 return Json("لا توجد بيانات لعرضها", JsonRequestBehavior.AllowGet);
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         /*-------------------------------------------------------- تقارير الشجرة المحاسبية -------------------------------------------------------------*/
 
@@ -533,11 +516,11 @@ namespace Purchases.Controllers
                     if (item.Debit > 0)
                     {
                         // أصل قيمة البند بعد استبعاد القيمة المضافة
-                        decimal baseItemAmount = objTrans.HasAddedTax == true?
+                        decimal baseItemAmount = objTrans.HasAddedTax == true ?
                                                                        item.Debit.Value / (1 + rate) : item.Debit.Value;
 
                         // توزيع ضريبة 1% على البنود
-                        itemTax = objTrans.HasTax == true && baseItemAmount > 0? baseItemAmount * 0.01m : 0;
+                        itemTax = objTrans.HasTax == true && baseItemAmount > 0 ? baseItemAmount * 0.01m : 0;
 
                         itemAmount = baseItemAmount;
                         itemTotalAmount = itemAmount - itemTax;
@@ -595,6 +578,7 @@ namespace Purchases.Controllers
 
                 decimal? totalAmount = data.Where(q => q.isCredit == false).Sum(x => x.total) - data.Where(q => q.isCredit == true).Sum(x => x.total);
                 ViewBag.AmountText = new BaseClass().ChangeNumberToText(totalAmount?.ToString() ?? "0", 0);
+                ViewBag.AmountText = new BaseClass().ChangeNumberToText(Math.Abs(totalAmount ?? 0).ToString(), 0);
                 ViewBag.TotalAmount = totalAmount;
 
                 return View(data);
@@ -1362,11 +1346,27 @@ namespace Purchases.Controllers
             return View();
         }
 
-
         public ActionResult printBankBalance(int bankId, DateTime? DateFrom, DateTime? DateTo)
         {
-            return View();
+            var userId = User.Identity.GetUserId();
+            int financialCycleId = sh.GetUserCurrentFinancialCycleId(userId);
+            var data = reportObject.printBankBalance(financialCycleId, bankId, DateFrom, DateTo);
+
+            data = data.OrderBy(q => q.transactionDate).ToList();
+
+            var AccountName = db.AccountTrees.Find(bankId).AccName;
+            ViewBag.AccountName = AccountName;
+            ViewBag.DateFrom = DateFrom?.ToShortDateString(); ;
+            ViewBag.DateTo = DateTo?.ToShortDateString(); ;
+
+            //return Json(data, JsonRequestBehavior.AllowGet);
+            return View(data);
         }
 
+        public ActionResult BankBalanceReport()
+        {
+            ViewBag.Year = userYear;
+            return View();
+        }
     }
 }
