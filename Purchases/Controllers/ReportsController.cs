@@ -1364,8 +1364,28 @@ namespace Purchases.Controllers
         }
 
 
+
+
         public ActionResult printBankBalance(int bankId, DateTime? DateFrom, DateTime? DateTo)
         {
+            var userId = User.Identity.GetUserId();
+            int financialCycleId = sh.GetUserCurrentFinancialCycleId(userId);
+            var data = reportObject.printBankBalance(financialCycleId, bankId, DateFrom, DateTo);
+
+            data = data.OrderBy(q => q.transactionDate).ToList();
+
+            var AccountName = db.AccountTrees.Find(bankId).AccName;
+            ViewBag.AccountName = AccountName;
+            ViewBag.DateFrom = DateFrom?.ToShortDateString(); ;
+            ViewBag.DateTo = DateTo?.ToShortDateString(); ;
+
+            //return Json(data, JsonRequestBehavior.AllowGet);
+            return View(data);
+        }
+
+        public ActionResult BankBalanceReport()
+        {
+            ViewBag.Year = userYear;
             return View();
         }
 

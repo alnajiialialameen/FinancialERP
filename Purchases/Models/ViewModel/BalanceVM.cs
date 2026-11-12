@@ -28,6 +28,7 @@ namespace Purchases.Models.ViewModel
         public Nullable<DateTime> transactionDate { get; set; }
         public string note { get; set; }
         public string transactionDateStr { get; set; }
+        public string recipient { get; set; }
         public Nullable<decimal> credit { get; set; }
         public Nullable<decimal> debit { get; set; }
         public Nullable<decimal> relativeDeviation { get; set; }

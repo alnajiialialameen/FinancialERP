@@ -66,7 +66,7 @@ namespace Purchases.MyLogic
             }
         }
 
-        public List<DDListObj> GetAccTrees(string q)
+        public List<DDListObj> GetAccTreesOld(string q)
         {
             //var data = db.AccountTrees.Where(x => db.AccountSubs.Any(s => s.AccTreeId == x.Id))
             //            .Select(p => new DDListObj() { id = p.Id, text = p.AccName }).Where(f => f.text.Contains(q)).ToList();
@@ -74,6 +74,27 @@ namespace Purchases.MyLogic
             // تم التعديل ليعرض IsActive فقط
             var data = db.AccountTrees.Where(x => db.AccountSubs.Any(s => s.AccTreeId == x.Id) && x.IsActive == true)
                         .Select(p => new DDListObj() { id = p.Id, text = p.AccName }).Where(f => f.text.Contains(q)).ToList();
+            return data;
+        }
+
+        public List<DDListObj> GetAccTrees(string q, int finanacialCycleId)
+        {
+            var accTreeClass = new TreeClass();
+
+            var AccountTreeIdsInCurrentBalance = db.Balances.Where(b => b.FinanceCycleId == finanacialCycleId).Select(a => a.AccountTreeId ?? 0).ToList();
+   
+            // تم التعديل ليعرض IsActive فقط
+            var data = db.AccountTrees.Where(x => db.AccountSubs.Any(s => s.AccTreeId == x.Id) && x.IsActive == true)
+                        .Select(p => new DDListObj() { id = p.Id, text = p.AccName }).Where(f => f.text.Contains(q)).ToList();
+            // نتحقق هل البند هو بند مصروفات ام لا
+            // اذا كان بند مصروفات لا يظهر في القائمة الا اذا كان موجود في موازنة العام الحالي
+            // اما اذا كان ما بند مصروفات ف يظهر مباشرة في القائمة
+            data = data
+                              .Where(item =>
+                                  accTreeClass.getRootParentId(item.id) != 4 || // ليس بند مصروفات او بند مصروفات لكن موجود في موازنة العام الحالي
+                                  AccountTreeIdsInCurrentBalance.Contains(item.id))
+                              .ToList();
+
             return data;
         }
 
