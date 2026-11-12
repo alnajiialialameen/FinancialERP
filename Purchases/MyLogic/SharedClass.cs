@@ -66,7 +66,7 @@ namespace Purchases.MyLogic
             }
         }
 
-        public List<DDListObj> GetAccTreesOld(string q)
+        public List<DDListObj> GetAccTrees(string q)
         {
             //var data = db.AccountTrees.Where(x => db.AccountSubs.Any(s => s.AccTreeId == x.Id))
             //            .Select(p => new DDListObj() { id = p.Id, text = p.AccName }).Where(f => f.text.Contains(q)).ToList();
@@ -77,7 +77,7 @@ namespace Purchases.MyLogic
             return data;
         }
 
-        public List<DDListObj> GetAccTrees(string q, int finanacialCycleId)
+        public List<DDListObj> GetAccTreesNew(string q, int finanacialCycleId)
         {
             var accTreeClass = new TreeClass();
 
