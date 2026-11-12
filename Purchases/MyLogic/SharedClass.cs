@@ -66,7 +66,7 @@ namespace Purchases.MyLogic
             }
         }
 
-        public List<DDListObj> GetAccTreesOld(string q)
+        public List<DDListObj> GetAccTrees(string q)
         {
             //var data = db.AccountTrees.Where(x => db.AccountSubs.Any(s => s.AccTreeId == x.Id))
             //            .Select(p => new DDListObj() { id = p.Id, text = p.AccName }).Where(f => f.text.Contains(q)).ToList();
@@ -74,21 +74,6 @@ namespace Purchases.MyLogic
             // تم التعديل ليعرض IsActive فقط
             var data = db.AccountTrees.Where(x => db.AccountSubs.Any(s => s.AccTreeId == x.Id) && x.IsActive == true)
                         .Select(p => new DDListObj() { id = p.Id, text = p.AccName }).Where(f => f.text.Contains(q)).ToList();
-            return data;
-        }
-
-        public List<DDListObj> GetAccTrees(string q, int finanacialCycleId)
-        {
-            var AccountTreeIdsInCurrentBalance = db.Balances.Where(b => b.FinanceCycleId == finanacialCycleId).Select(a => a.AccountTreeId ?? 0).ToList();
-            //var data = db.AccountTrees.Where(x => db.AccountSubs.Any(s => s.AccTreeId == x.Id))
-            //            .Select(p => new DDListObj() { id = p.Id, text = p.AccName }).Where(f => f.text.Contains(q)).ToList();
-
-            // تم التعديل ليعرض IsActive فقط
-            var data = db.AccountTrees.Where(x => db.AccountSubs.Any(s => s.AccTreeId == x.Id) && x.IsActive == true)
-                        .Select(p => new DDListObj() { id = p.Id, text = p.AccName }).Where(f => f.text.Contains(q)).ToList();
-
-            data = data.Where(f => AccountTreeIdsInCurrentBalance.Any(a => f.id == a)).ToList();
-
             return data;
         }
 
@@ -356,7 +341,7 @@ namespace Purchases.MyLogic
                             //.AsNoTracking()
                             .Where(x => x.UserId == userId)
                             .Select(x => x.FinancialCycleId)
-                            .FirstOrDefault() ?? 0;
+                            .FirstOrDefault()??0;
 
                 return FinancialCycleId;
             }
@@ -783,15 +768,14 @@ namespace Purchases.MyLogic
             if (userRoles.Contains("المدير المالي بالمطار"))
             {
                 query = query.Where(x => x.companyInfoId == companyInfoId).ToList();
-            }
-            else if (userRoles.Contains("موظف بالادارة المالية"))
+            } else if (userRoles.Contains("موظف بالادارة المالية"))
             {
                 query = null;
             }
 
             return query;
         }
-
+    
         public List<BalanceVM> GetOverloadBalanceItems(string userId)
         {
             var accTreeClass = new TreeClass();
@@ -800,11 +784,11 @@ namespace Purchases.MyLogic
 
             var data = db.Balances
                             .Where(q => q.FinanceCycleId == FinancialCycleId && q.ActualExchange >= q.Credint)
-                            .Select(q => new BalanceVM
+                            .Select(q=> new BalanceVM
                             {
                                 Id = q.Id,
                                 accTreeName = q.AccountTree.AccName,
-                                accTreeId = q.AccountTreeId ?? 0,
+                                accTreeId = q.AccountTreeId??0,
                                 balanceId = q.Id,
                                 actualExchange = q.ActualExchange,
                                 credint = q.Credint,

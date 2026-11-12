@@ -1645,38 +1645,30 @@ namespace Purchases.MyLogic
             return result;
         }
 
-        public List<BalanceVM> printBankBalance(int financeCycleId, int accTreeIdForBank, DateTime? dateFrom, DateTime? dateTo)
+        public List<BalanceVM> printBankBalance(int financeCycleId, int? accTreeIdForBank, DateTime? dateFrom, DateTime? dateTo)
         {
             var parentRes = new List<BalanceVM>();
-            var transactionDetailsQuery = db.TransactionDetails.Include(q=>q.Transaction).AsQueryable();
-            transactionDetailsQuery = transactionDetailsQuery
-                                                                .Where(x => x.Transaction.FinancialCycleId == financeCycleId 
-                                                                               && x.AccTreeId == accTreeIdForBank);
+            var transactionDetailsQuery = db.TransactionDetails.AsQueryable();
+            transactionDetailsQuery = transactionDetailsQuery.Where(x => x.Transaction.FinancialCycleId == financeCycleId);
            
             if (dateFrom.HasValue && dateTo.HasValue)
             {
                 var from = dateFrom.Value.Date;
                 var to = dateTo.Value.Date.AddDays(1);
-                transactionDetailsQuery = transactionDetailsQuery
-                                                                    .Where(x => x.Transaction.TransactionDate >= from 
-                                                                                   && x.Transaction.TransactionDate < to);
+                transactionDetailsQuery = transactionDetailsQuery.Where(x =>
+                    x.Transaction.TransactionDate >= from &&
+                    x.Transaction.TransactionDate < to);
             }
-        
+            if (accTreeIdForBank.HasValue)
+            {
+                transactionDetailsQuery = transactionDetailsQuery.Where(x => x.AccTreeId == accTreeIdForBank);
+            }
             var result = transactionDetailsQuery
                 .Select(g => new BalanceVM
                 {
                     // get data here
-                    debit = g.Debit??0,
-                    credit = g.Credit??0,
-                    note = g.Note,
-                    transactionId = g.TransactionId,
-                    Id = g.Id,
-                    recipient = g.Transaction.Recipient,
-                    transactionDate = g.Transaction.TransactionDate,
-                    transactionDateStr = g.Transaction.TransactionDate.ToString(),
                 })
                 .ToList();
-
             return result;  
         }
         /*---------------------------------------------------------------تقارير الحسابات الختامية--------------------------------------------------*/
